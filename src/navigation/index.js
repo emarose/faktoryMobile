@@ -5,11 +5,12 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import NotFoundScreen from "../screens/NotFoundScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
-import BasicResources from "../components/BasicResources";
-import BasicResourcesScreen from "../screens/BasicResourcesScreen";
+import BuildScreen from "../screens/build/BuildScreen";
+import MapScreen from "../screens/map/MapScreen";
+import BasicResourcesScreen from "../screens/basicResources/BasicResourcesScreen";
+import InventoryScreen from "../screens/inventory/inventoryScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -28,12 +29,13 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen name="BasicResourcesScreen" component={BasicResourcesScreen} />
       <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
+        name="BasicResourcesScreen"
+        component={BasicResourcesScreen}
       />
+      <Stack.Screen name="BuildScreen" component={BuildScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
+      <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
     </Stack.Navigator>
   );
 }

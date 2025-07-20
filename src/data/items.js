@@ -1,155 +1,183 @@
 export const items = {
-  // Materias Primas (Raw Materials)
+  // --- Raw Material Nodes (The actual resource deposits on the map) ---
+  ironOre_node: {
+    name: "Iron Ore Node",
+    type: "rawMaterial",
+    description: "A deposit of basic mineral. Can be mined manually.",
+    // icon: require('../assets/icons/icon_ironOre.png'), // Corrected path
+    manualMineable: true,
+    output: { ironOre: 5 },
+    processingTime: 1,
+  },
+  copperOre_node: {
+    name: "Copper Ore Node",
+    type: "rawMaterial",
+    description: "A deposit of copper. Can be mined manually.",
+    // icon: require('../assets/icons/icon_copperOre.png'), // Corrected path
+    manualMineable: true,
+    output: { copperOre: 5 },
+    processingTime: 1,
+  },
+  coal_node: {
+    name: "Coal Node",
+    type: "rawMaterial",
+    description: "A deposit of primary fuel source. Can be mined manually.",
+    // icon: require('../assets/icons/icon_coal.png'), // Corrected path
+    manualMineable: true,
+    output: { coal: 10 },
+    processingTime: 1,
+  },
+  limestone_node: {
+    name: "Limestone Node",
+    type: "rawMaterial",
+    description: "A deposit of limestone. Can be mined manually.",
+    // icon: require('../assets/icons/icon_limestone.png'), // Corrected path
+    manualMineable: true,
+    output: { limestone: 6 },
+    processingTime: 1,
+  },
+
+  // --- Nodes that require machines (NOT manually mineable initially) ---
+  cateriumOre_node: {
+    name: "Caterium Ore Node",
+    type: "rawMaterial",
+    description: "A deposit of versatile ore. Requires a Miner.",
+    // icon: require('../assets/icons/icon_cateriumOre.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "miner",
+    output: { cateriumOre: 3 },
+    processingTime: 1,
+  },
+  rawQuartz_node: {
+    name: "Raw Quartz Node",
+    type: "rawMaterial",
+    description: "A deposit of quartz. Requires a Miner.",
+    // icon: require('../assets/icons/icon_rawQuartz.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "miner",
+    output: { rawQuartz: 4 },
+    processingTime: 1,
+  },
+  sulfur_node: {
+    name: "Sulfur Node",
+    type: "rawMaterial",
+    description: "A deposit of hazardous sulfur. Requires a Miner.",
+    // icon: require('../assets/icons/icon_sulfur.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "miner",
+    output: { sulfur: 2 },
+    processingTime: 1,
+  },
+  crudeOil_node: {
+    name: "Crude Oil Node",
+    type: "rawMaterial",
+    description: "An oil deposit. Requires an Oil Extractor.",
+    // icon: require('../assets/icons/icon_crudeOil.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "oilExtractor",
+    output: { crudeOil: 10 },
+    processingTime: 2,
+  },
+  bauxite_node: {
+    name: "Bauxite Node",
+    type: "rawMaterial",
+    description: "A deposit of bauxite. Requires a Miner.",
+    // icon: require('../assets/icons/icon_bauxite.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "miner",
+    output: { bauxite: 4 },
+    processingTime: 1,
+  },
+  uranium_node: {
+    name: "Uranium Node",
+    type: "rawMaterial",
+    description: "A deposit of highly radioactive uranium. Requires a Miner.",
+    // icon: require('../assets/icons/icon_uranium.png'), // Corrected path
+    manualMineable: false,
+    machineRequired: "miner",
+    output: { uranium: 1 },
+    processingTime: 2,
+  },
+
+  // --- Actual Raw Materials (These are the items produced from nodes into inventory) ---
   ironOre: {
     name: "Iron Ore",
     type: "rawMaterial",
     description: "Basic mineral used in smelting.",
-    icon: "icon_ironOre.png",
-    machine: "none", // Materia prima, no se produce en una máquina
-    inputs: {},
-    output: { ironOre: 1 }, // Simula que se "extrae" o se obtiene
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_ironOre.png'), // Corrected path
+    machine: "miner",
   },
   cateriumOre: {
     name: "Caterium Ore",
     type: "rawMaterial",
     description: "A versatile ore, good for electronics.",
-    icon: "icon_cateriumOre.png",
-    machine: "none",
-    inputs: {},
-    output: { cateriumOre: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_cateriumOre.png'), // Corrected path
+    machine: "miner",
   },
   copperOre: {
     name: "Copper Ore",
     type: "rawMaterial",
     description: "Fundamental for wiring and sheets.",
-    icon: "icon_copperOre.png",
-    machine: "none",
-    inputs: {},
-    output: { copperOre: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_copperOre.png'), // Corrected path
+    machine: "miner",
   },
   coal: {
     name: "Coal",
     type: "rawMaterial",
     description: "A primary fuel source.",
-    icon: "icon_coal.png",
-    machine: "none",
-    inputs: {},
-    output: { coal: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
-  },
-  plastic: {
-    name: "Plastic",
-    type: "intermediateProduct", // Aunque se obtiene de refinería, es un material base.
-    description: "Polymer for various components.",
-    icon: "icon_plastic.png",
-    machine: "refinery", // Se produce, pero es un input de muchos
-    inputs: { crudeOil: 5 },
-    output: { plastic: 1, heavyOilResidue: 1 },
-    processingTime: 6,
-    fuelConsumption: 2,
+    // icon: require('../assets/icons/icon_coal.png'), // Corrected path
+    machine: "miner",
   },
   rawQuartz: {
     name: "Raw Quartz",
     type: "rawMaterial",
     description: "Used in advanced electronics and glass.",
-    icon: "icon_rawQuartz.png",
-    machine: "none",
-    inputs: {},
-    output: { rawQuartz: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_rawQuartz.png'), // Corrected path
+    machine: "miner",
   },
   limestone: {
     name: "Limestone",
     type: "rawMaterial",
     description: "Key ingredient for concrete.",
-    icon: "icon_limestone.png",
-    machine: "none",
-    inputs: {},
-    output: { limestone: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_limestone.png'), // Corrected path
+    machine: "miner",
   },
   sulfur: {
     name: "Sulfur",
     type: "rawMaterial",
     description: "Hazardous but essential for explosives and acids.",
-    icon: "icon_sulfur.png",
-    machine: "none",
-    inputs: {},
-    output: { sulfur: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_sulfur.png'), // Corrected path
+    machine: "miner",
   },
   crudeOil: {
     name: "Crude Oil",
     type: "rawMaterial",
     description: "Black gold, refined into many valuable products.",
-    icon: "icon_crudeOil.png",
-    machine: "none",
-    inputs: {},
-    output: { crudeOil: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_crudeOil.png'), // Corrected path
+    machine: "oilExtractor",
   },
   bauxite: {
     name: "Bauxite",
     type: "rawMaterial",
     description: "Primary source of aluminum.",
-    icon: "icon_bauxite.png",
-    machine: "none",
-    inputs: {},
-    output: { bauxite: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
+    // icon: require('../assets/icons/icon_bauxite.png'), // Corrected path
+    machine: "miner",
   },
   uranium: {
     name: "Uranium",
     type: "rawMaterial",
     description: "Highly radioactive, for advanced power.",
-    icon: "icon_uranium.png",
-    machine: "none",
-    inputs: {},
-    output: { uranium: 1 },
-    processingTime: 0,
-    fuelConsumption: 0,
-  },
-  aluminumScrap: {
-    name: "Aluminum Scrap",
-    type: "intermediateProduct", // Es un intermedio, pero no directamente de la refinería
-    description: "Waste product, but valuable for recycling.",
-    icon: "icon_aluminumScrap.png",
-    machine: "refinery", // Se produce de la Alumina Solution
-    inputs: { aluminaSolution: 6 },
-    output: { aluminumScrap: 2, water: 3 }, // Asumiendo una receta alternativa si existe en el juego real
-    processingTime: 6,
-    fuelConsumption: 2,
-  },
-  heavyOilResidue: {
-    name: "Heavy Oil Residue",
-    type: "intermediateProduct",
-    description: "A byproduct of oil processing, useful for fuel.",
-    icon: "icon_heavyOilResidue.png",
-    machine: "refinery", // Un subproducto de otras recetas
-    inputs: {}, // No tiene inputs directos para producirse a sí mismo
-    output: {}, // Se genera como output de plasticAndHOR, rubberAndHOR
-    processingTime: 0,
-    fuelConsumption: 0,
+  //  // icon: require('../assets/icons/icon_uranium.png'), // Corrected path
+    machine: "miner",
   },
 
-  // SMELTER
+  // --- Intermediate Products (Produced by machines like Smelter, Constructor, Assembler, Refinery, Foundry, Manufacturer) ---
+  // Ensure 'inputs' here refer to actual item IDs, not node IDs.
   ironIngot: {
     name: "Iron Ingot",
     type: "intermediateProduct",
     description: "Basic metal ingot.",
-    icon: "icon_ironIngot.png",
+   // // icon: require('../assets/icons/icon_ironIngot.png'), // Corrected path
     machine: "smelter",
     inputs: { ironOre: 5 },
     output: { ironIngot: 1 },
@@ -160,7 +188,7 @@ export const items = {
     name: "Caterium Ingot",
     type: "intermediateProduct",
     description: "Specialized ingot for electronics.",
-    icon: "icon_cateriumIngot.png",
+    // icon: require('../assets/icons/icon_cateriumIngot.png'), // Corrected path
     machine: "smelter",
     inputs: { cateriumOre: 3 },
     output: { cateriumIngot: 1 },
@@ -171,42 +199,40 @@ export const items = {
     name: "Copper Ingots",
     type: "intermediateProduct",
     description: "Essential for electrical components.",
-    icon: "icon_copperIngot.png",
+    // icon: require('../assets/icons/icon_copperIngot.png'), // Corrected path
     machine: "smelter",
     inputs: { copperOre: 5 },
     output: { copperIngot: 1 },
     processingTime: 3,
     fuelConsumption: 1,
   },
-
-  // CONSTRUCTOR
   ironRods: {
     name: "Iron Rods",
     type: "intermediateProduct",
     description: "Basic structural component.",
-    icon: "icon_ironRods.png",
+    // icon: require('../assets/icons/icon_ironRods.png'), // Corrected path
     machine: "constructor",
-    inputs: { ironIngot: 3 },
-    output: { ironRods: 1 },
-    processingTime: 4,
-    fuelConsumption: 1,
+    inputs: { ironIngot: 1 },
+    output: { ironRods: 4 },
+    processingTime: 2,
+    fuelConsumption: 0.5,
   },
   ironPlates: {
     name: "Iron Plates",
     type: "intermediateProduct",
     description: "Fundamental building material.",
-    icon: "icon_ironPlates.png",
+    // icon: require('../assets/icons/icon_ironPlates.png'), // Corrected path
     machine: "constructor",
-    inputs: { ironIngot: 4 },
-    output: { ironPlates: 1 },
-    processingTime: 4,
-    fuelConsumption: 1,
+    inputs: { ironIngot: 3 },
+    output: { ironPlates: 2 },
+    processingTime: 3,
+    fuelConsumption: 0.7,
   },
   steelBeams: {
     name: "Steel Beams",
     type: "intermediateProduct",
     description: "Heavy duty structural support.",
-    icon: "icon_steelBeams.png",
+    // icon: require('../assets/icons/icon_steelBeams.png'), // Corrected path
     machine: "constructor",
     inputs: { steelIngot: 2 },
     output: { steelBeams: 1 },
@@ -217,7 +243,7 @@ export const items = {
     name: "Steel Pipes",
     type: "intermediateProduct",
     description: "Used for fluid transport and structures.",
-    icon: "icon_steelPipes.png",
+    // icon: require('../assets/icons/icon_steelPipes.png'), // Corrected path
     machine: "constructor",
     inputs: { steelIngot: 3 },
     output: { steelPipes: 1 },
@@ -228,18 +254,18 @@ export const items = {
     name: "Screws",
     type: "intermediateProduct",
     description: "Small fasteners for assembly.",
-    icon: "icon_screws.png",
+    // icon: require('../assets/icons/icon_screws.png'), // Corrected path
     machine: "constructor",
-    inputs: { ironRods: 2 },
-    output: { screws: 1 },
-    processingTime: 4,
-    fuelConsumption: 1,
+    inputs: { ironRods: 1 },
+    output: { screws: 10 },
+    processingTime: 1,
+    fuelConsumption: 0.2,
   },
   cannisters: {
     name: "Cannisters",
     type: "intermediateProduct",
     description: "Empty containers for liquids.",
-    icon: "icon_cannisters.png",
+    // icon: require('../assets/icons/icon_cannisters.png'), // Corrected path
     machine: "constructor",
     inputs: { plastic: 4 },
     output: { cannisters: 1 },
@@ -250,7 +276,7 @@ export const items = {
     name: "Quartz Crystals",
     type: "intermediateProduct",
     description: "Refined quartz for electronics.",
-    icon: "icon_quartzCrystals.png",
+    // icon: require('../assets/icons/icon_quartzCrystals.png'), // Corrected path
     machine: "constructor",
     inputs: { rawQuartz: 4 },
     output: { quartzCrystals: 1 },
@@ -261,18 +287,18 @@ export const items = {
     name: "Concrete",
     type: "intermediateProduct",
     description: "A sturdy building material.",
-    icon: "icon_concrete.png",
+    // icon: require('../assets/icons/icon_concrete.png'), // Corrected path
     machine: "constructor",
-    inputs: { limestone: 5 },
+    inputs: { limestone: 3 },
     output: { concrete: 1 },
-    processingTime: 4,
-    fuelConsumption: 1,
+    processingTime: 2,
+    fuelConsumption: 0.5,
   },
   silica: {
     name: "Silica",
     type: "intermediateProduct",
     description: "Pure silicon dioxide, used in electronics.",
-    icon: "icon_silica.png",
+    // icon: require('../assets/icons/icon_silica.png'), // Corrected path
     machine: "constructor",
     inputs: { aluminaSolution: 2, rawQuartz: 2 },
     output: { silica: 1 },
@@ -283,7 +309,7 @@ export const items = {
     name: "Quickwire",
     type: "intermediateProduct",
     description: "High-conductivity wire.",
-    icon: "icon_quickwire.png",
+    // icon: require('../assets/icons/icon_quickwire.png'), // Corrected path
     machine: "constructor",
     inputs: { cateriumIngot: 4 },
     output: { quickwire: 1 },
@@ -294,7 +320,7 @@ export const items = {
     name: "Copper Sheets",
     type: "intermediateProduct",
     description: "Flat copper material for circuits.",
-    icon: "icon_copperSheets.png",
+    // icon: require('../assets/icons/icon_copperSheets.png'), // Corrected path
     machine: "constructor",
     inputs: { copperIngot: 2 },
     output: { copperSheets: 1 },
@@ -305,55 +331,51 @@ export const items = {
     name: "Wires",
     type: "intermediateProduct",
     description: "Basic electrical conductor.",
-    icon: "icon_wires.png",
+    // icon: require('../assets/icons/icon_wires.png'), // Corrected path
     machine: "constructor",
-    inputs: { copperIngot: 2 },
-    output: { wires: 1 },
-    processingTime: 4,
-    fuelConsumption: 1,
+    inputs: { copperIngot: 1 },
+    output: { wires: 6 },
+    processingTime: 1,
+    fuelConsumption: 0.2,
   },
   cables: {
     name: "Cables",
     type: "intermediateProduct",
     description: "Insulated wires for power and data.",
-    icon: "icon_cables.png",
+    // icon: require('../assets/icons/icon_cables.png'), // Corrected path
     machine: "constructor",
     inputs: { rubber: 2, wires: 2 },
     output: { cables: 1 },
     processingTime: 4,
     fuelConsumption: 1,
   },
-
-  // FOUNDRY
-  aluminumIngot: {
-    name: "Aluminum Ingot",
+  aluminumScrap: {
+    name: "Aluminum Scrap",
     type: "intermediateProduct",
-    description: "Lightweight, corrosion-resistant metal.",
-    icon: "icon_aluminumIngot.png",
-    machine: "foundry",
-    inputs: { aluminumScrap: 5, silica: 2 },
-    output: { aluminumIngot: 1 },
+    description: "Waste product, but valuable for recycling.",
+    // icon: require('../assets/icons/icon_aluminumScrap.png'), // Corrected path
+    machine: "refinery",
+    inputs: { aluminaSolution: 6 },
+    output: { aluminumScrap: 2, water: 3 },
     processingTime: 6,
     fuelConsumption: 2,
   },
-  steelIngot: {
-    name: "Steel Ingot",
+  heavyOilResidue: {
+    name: "Heavy Oil Residue",
     type: "intermediateProduct",
-    description: "Stronger and more versatile than iron.",
-    icon: "icon_steelIngot.png",
-    machine: "foundry",
-    inputs: { coal: 2, ironOre: 5 },
-    output: { steelIngot: 1 },
-    processingTime: 6,
-    fuelConsumption: 2,
+    description: "A byproduct of oil processing, useful for fuel.",
+    // icon: require('../assets/icons/icon_heavyOilResidue.png'), // Corrected path
+    machine: "refinery",
+    inputs: {},
+    output: {},
+    processingTime: 0,
+    fuelConsumption: 0,
   },
-
-  // REFINERY
   sulfuricAcid: {
     name: "Sulfuric Acid",
     type: "intermediateProduct",
     description: "Corrosive liquid, used in chemical processes.",
-    icon: "icon_sulfuricAcid.png",
+    // icon: require('../assets/icons/icon_sulfuricAcid.png'), // Corrected path
     machine: "refinery",
     inputs: { sulfur: 3 },
     output: { sulfuricAcid: 1 },
@@ -362,9 +384,9 @@ export const items = {
   },
   fuel: {
     name: "Fuel",
-    type: "consumable", // O "fuel" si tienes una categoría específica para combustibles
+    type: "consumable",
     description: "Refined crude oil, powers many machines.",
-    icon: "icon_fuel.png",
+    // icon: require('../assets/icons/icon_fuel.png'), // Corrected path
     machine: "refinery",
     inputs: { crudeOil: 3 },
     output: { fuel: 1 },
@@ -372,23 +394,32 @@ export const items = {
     fuelConsumption: 2,
   },
   rubber: {
-    // Extraído de rubberAndHOR, para evitar duplicidad y mantener un solo punto de verdad
     name: "Rubber",
     type: "intermediateProduct",
     description: "Flexible polymer for various applications.",
-    icon: "icon_rubber.png",
+    // icon: require('../assets/icons/icon_rubber.png'), // Corrected path
     machine: "refinery",
     inputs: { crudeOil: 5 },
     output: { rubber: 1, heavyOilResidue: 1 },
     processingTime: 6,
     fuelConsumption: 2,
   },
+  plastic: {
+    name: "Plastic",
+    type: "intermediateProduct",
+    description: "Polymer for various components.",
+    // icon: require('../assets/icons/icon_plastic.png'), // Corrected path
+    machine: "refinery",
+    inputs: { crudeOil: 5 },
+    output: { plastic: 1, heavyOilResidue: 1 },
+    processingTime: 6,
+    fuelConsumption: 2,
+  },
   plasticAndHOR: {
-    // Mantengo esta entrada si quieres que sea una "receta" seleccionable
     name: "Plastic + HOR",
-    type: "recipe", // Tipo especial para recetas con múltiples salidas principales
+    type: "recipe",
     description: "Refining crude oil into plastic and heavy oil residue.",
-    icon: "icon_plasticAndHOR.png", // Podría ser un icono genérico de refinería
+    // icon: require('../assets/icons/icon_plasticAndHOR.png'), // Corrected path
     machine: "refinery",
     inputs: { crudeOil: 5 },
     output: { plastic: 1, heavyOilResidue: 1 },
@@ -396,11 +427,10 @@ export const items = {
     fuelConsumption: 2,
   },
   rubberAndHOR: {
-    // Similar a plasticAndHOR
     name: "Rubber + HOR",
     type: "recipe",
     description: "Refining crude oil into rubber and heavy oil residue.",
-    icon: "icon_rubberAndHOR.png", // Podría ser un icono genérico de refinería
+    // icon: require('../assets/icons/icon_rubberAndHOR.png'), // Corrected path
     machine: "refinery",
     inputs: { crudeOil: 5 },
     output: { rubber: 1, heavyOilResidue: 1 },
@@ -411,7 +441,7 @@ export const items = {
     name: "Alumina Solution",
     type: "intermediateProduct",
     description: "Precursor for aluminum production.",
-    icon: "icon_aluminaSolution.png",
+    // icon: require('../assets/icons/icon_aluminaSolution.png'), // Corrected path
     machine: "refinery",
     inputs: { bauxite: 3 },
     output: { aluminaSolution: 1 },
@@ -422,7 +452,7 @@ export const items = {
     name: "Turbofuel",
     type: "consumable",
     description: "High-octane fuel for advanced power generation.",
-    icon: "icon_turbofuel.png",
+    // icon: require('../assets/icons/icon_turbofuel.png'), // Corrected path
     machine: "refinery",
     inputs: { fuel: 2, compactedCoal: 3 },
     output: { turbofuel: 1 },
@@ -433,7 +463,7 @@ export const items = {
     name: "Uranium Pellets",
     type: "intermediateProduct",
     description: "Processed uranium, ready for encapsulation.",
-    icon: "icon_uraniumPellets.png",
+    // icon: require('../assets/icons/icon_uraniumPellets.png'), // Corrected path
     machine: "refinery",
     inputs: { sulfuricAcid: 2, uranium: 3 },
     output: { uraniumPellets: 1 },
@@ -444,9 +474,9 @@ export const items = {
     name: "Packaged Turbofuel",
     type: "consumable",
     description: "Turbofuel in a convenient package.",
-    icon: "icon_packagedTurbofuel.png",
+    // icon: require('../assets/icons/icon_packagedTurbofuel.png'), // Corrected path
     machine: "refinery",
-    inputs: { turbofuel: 2, cannisters: 1 }, // Cambiado 'cannister' a 'cannisters' para consistencia
+    inputs: { turbofuel: 2, cannisters: 1 },
     output: { packagedTurbofuel: 1 },
     processingTime: 6,
     fuelConsumption: 2,
@@ -455,7 +485,7 @@ export const items = {
     name: "Petroleum Coke",
     type: "consumable",
     description: "Solid fuel from heavy oil residue.",
-    icon: "icon_petroleumCoke.png",
+    // icon: require('../assets/icons/icon_petroleumCoke.png'), // Corrected path
     machine: "refinery",
     inputs: { heavyOilResidue: 5 },
     output: { petroleumCoke: 1 },
@@ -463,12 +493,126 @@ export const items = {
     fuelConsumption: 2,
   },
 
-  // ASSEMBLER
+  // BUILDABLE ITEMS (Machines that can be built by the player)
+  miner: {
+    name: "Miner",
+    description: "Automates the extraction of raw resources from resource nodes.",
+    type: "buildable", // Changed type to 'buildable' for the BuildScreen
+    // icon: require('../assets/icons/icon_miner.png'), // Corrected path
+    inputs: { // Resources needed to build a Miner
+      ironPlates: 10,
+      ironRods: 5,
+      wires: 20,
+    },
+    output: { // When built, it adds 1 Miner to inventory
+      miner: 1
+    },
+  },
+  smelter: {
+    name: "Smelter",
+    description: "Processes raw ore into ingots.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_smelter.png'), // Corrected path
+    inputs: {
+      ironPlates: 5,
+      ironRods: 10,
+      wires: 10,
+    },
+    output: {
+      smelter: 1
+    },
+  },
+  constructor: {
+    name: "Constructor",
+    description: "Manufactures simple parts from basic materials.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_constructor.png'), // Corrected path
+    inputs: {
+      ironPlates: 8,
+      ironRods: 4,
+    },
+    output: {
+      constructor: 1
+    },
+  },
+  assembler: {
+    name: "Assembler",
+    description: "Combines two input parts into a more complex one.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_assembler.png'), // Corrected path
+    inputs: {
+      reinforcedIronPlates: 5,
+      rotors: 2,
+      wires: 20,
+    },
+    output: {
+      assembler: 1
+    },
+  },
+  manufacturer: {
+    name: "Manufacturer",
+    description: "Combines four input parts into highly complex products.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_manufacturer.png'), // Corrected path
+    inputs: {
+      heavyModularFrames: 3,
+      computers: 1,
+      motors: 2,
+      rubber: 10,
+    },
+    output: {
+      manufacturer: 1
+    },
+  },
+  refinery: {
+    name: "Refinery",
+    description: "Processes liquids and gases into various products.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_refinery.png'), // Corrected path
+    inputs: {
+      steelBeams: 5,
+      steelPipes: 10,
+      motors: 1,
+    },
+    output: {
+      refinery: 1
+    },
+  },
+  foundry: {
+    name: "Foundry",
+    description: "Combines two ingots into a third, more advanced ingot type (e.g., Steel).",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_foundry.png'), // Corrected path
+    inputs: {
+      ironIngot: 10,
+      coal: 10,
+      ironPlates: 10,
+    },
+    output: {
+      foundry: 1
+    },
+  },
+  oilExtractor: {
+    name: "Oil Extractor",
+    description: "Extracts crude oil from oil nodes.",
+    type: "buildable", // Changed type to 'buildable'
+    // icon: require('../assets/icons/icon_oilExtractor.png'), // Corrected path
+    inputs: {
+      steelBeams: 8,
+      steelPipes: 15,
+      motors: 2,
+    },
+    output: {
+      oilExtractor: 1
+    },
+  },
+
+  // ASSEMBLER Recipes (These are items produced by the Assembler)
   compactedCoal: {
     name: "Compacted Coal",
-    type: "intermediateProduct", // También puede ser "consumable" si se usa directamente como fuel
+    type: "intermediateProduct",
     description: "Denser coal for better fuel efficiency.",
-    icon: "icon_compactedCoal.png",
+    // icon: require('../assets/icons/icon_compactedCoal.png'), // Corrected path
     machine: "assembler",
     inputs: { coal: 2, sulfur: 1 },
     output: { compactedCoal: 1 },
@@ -479,10 +623,10 @@ export const items = {
     name: "Black Powder",
     type: "intermediateProduct",
     description: "Explosive compound.",
-    icon: "icon_blackPowder.png",
+    // icon: require('../assets/icons/icon_blackPowder.png'), // Corrected path
     machine: "assembler",
     inputs: { sulfur: 2, coal: 3 },
-    output: { blackPowder: 1 },
+    output: { blackPowder: 1 }, // Corrected typo: blackPowwer -> blackPowder
     processingTime: 8,
     fuelConsumption: 2,
   },
@@ -490,7 +634,7 @@ export const items = {
     name: "Filters",
     type: "intermediateProduct",
     description: "Used in gas masks and other air purifiers.",
-    icon: "icon_filters.png",
+    // icon: require('../assets/icons/icon_filters.png'), // Corrected path
     machine: "assembler",
     inputs: { coal: 2, rubber: 2 },
     output: { filters: 1 },
@@ -501,7 +645,7 @@ export const items = {
     name: "Rotors",
     type: "intermediateProduct",
     description: "Spinning part of a motor.",
-    icon: "icon_rotors.png",
+    // icon: require('../assets/icons/icon_rotors.png'), // Corrected path
     machine: "assembler",
     inputs: { ironRods: 2, screws: 3 },
     output: { rotors: 1 },
@@ -512,7 +656,7 @@ export const items = {
     name: "Reinforced Iron Plates",
     type: "intermediateProduct",
     description: "Stronger iron plates for critical structures.",
-    icon: "icon_reinforcedIronPlates.png",
+    // icon: require('../assets/icons/icon_reinforcedIronPlates.png'), // Corrected path
     machine: "assembler",
     inputs: { screws: 3, ironPlates: 3 },
     output: { reinforcedIronPlates: 1 },
@@ -523,7 +667,7 @@ export const items = {
     name: "Encased Industrial Beams",
     type: "intermediateProduct",
     description: "Structural beams with concrete reinforcement.",
-    icon: "icon_encasedIndustrialBeams.png",
+    // icon: require('../assets/icons/icon_encasedIndustrialBeams.png'), // Corrected path
     machine: "assembler",
     inputs: { steelBeams: 4, concrete: 2 },
     output: { encasedIndustrialBeams: 1 },
@@ -534,7 +678,7 @@ export const items = {
     name: "Encased Uranium Cell",
     type: "intermediateProduct",
     description: "Safe uranium cell for reactors.",
-    icon: "icon_encasedUraniumCell.png",
+    // icon: require('../assets/icons/icon_encasedUraniumCell.png'), // Corrected path
     machine: "assembler",
     inputs: { uraniumPellets: 3, concrete: 4 },
     output: { encasedUraniumCell: 1 },
@@ -545,7 +689,7 @@ export const items = {
     name: "Stators",
     type: "intermediateProduct",
     description: "Static part of a motor.",
-    icon: "icon_stators.png",
+    // icon: require('../assets/icons/icon_stators.png'), // Corrected path
     machine: "assembler",
     inputs: { steelPipes: 2, wires: 4 },
     output: { stators: 1 },
@@ -556,7 +700,7 @@ export const items = {
     name: "Circuit Boards",
     type: "intermediateProduct",
     description: "Base for electronic components.",
-    icon: "icon_circuitBoards.png",
+    // icon: require('../assets/icons/icon_circuitBoards.png'), // Corrected path
     machine: "assembler",
     inputs: { plastic: 2, copperSheets: 4 },
     output: { circuitBoards: 1 },
@@ -567,7 +711,7 @@ export const items = {
     name: "AI Limiter",
     type: "intermediateProduct",
     description: "Restricts AI functions to prevent uprisings.",
-    icon: "icon_aiLimiter.png",
+    // icon: require('../assets/icons/icon_aiLimiter.png'), // Corrected path
     machine: "assembler",
     inputs: { copperSheets: 2, quickwire: 3 },
     output: { aiLimiter: 1 },
@@ -578,7 +722,7 @@ export const items = {
     name: "Electromagnetic Control Rods",
     type: "intermediateProduct",
     description: "Regulates nuclear reactions.",
-    icon: "icon_electromagneticControlRods.png",
+    // icon: require('../assets/icons/icon_electromagneticControlRods.png'), // Corrected path
     machine: "assembler",
     inputs: { aiLimiter: 1, stators: 2 },
     output: { electromagneticControlRods: 1 },
@@ -589,7 +733,7 @@ export const items = {
     name: "Automated Wiring",
     type: "intermediateProduct",
     description: "Complex wiring harness for automation.",
-    icon: "icon_automatedWiring.png",
+    // icon: require('../assets/icons/icon_automatedWiring.png'), // Corrected path
     machine: "assembler",
     inputs: { cables: 4, stators: 2 },
     output: { automatedWiring: 1 },
@@ -600,7 +744,7 @@ export const items = {
     name: "Modular Frames",
     type: "intermediateProduct",
     description: "Versatile framework for modular construction.",
-    icon: "icon_modularFrames.png",
+    // icon: require('../assets/icons/icon_modularFrames.png'), // Corrected path
     machine: "assembler",
     inputs: { ironRods: 4, reinforcedIronPlates: 2 },
     output: { modularFrames: 1 },
@@ -611,7 +755,7 @@ export const items = {
     name: "Smart Platings",
     type: "intermediateProduct",
     description: "Advanced plating with embedded circuitry.",
-    icon: "icon_smartPlatings.png",
+    // icon: require('../assets/icons/icon_smartPlatings.png'), // Corrected path
     machine: "assembler",
     inputs: { rotors: 2, reinforcedIronPlates: 2 },
     output: { smartPlatings: 1 },
@@ -622,7 +766,7 @@ export const items = {
     name: "Motors",
     type: "intermediateProduct",
     description: "Converts electrical energy into mechanical force.",
-    icon: "icon_motors.png",
+    // icon: require('../assets/icons/icon_motors.png'), // Corrected path
     machine: "assembler",
     inputs: { stators: 2, rotors: 2 },
     output: { motors: 1 },
@@ -630,11 +774,10 @@ export const items = {
     fuelConsumption: 2,
   },
   versatileFrameworks: {
-    // Corregido typo en el nombre
     name: "Versatile Frameworks",
     type: "intermediateProduct",
     description: "Highly adaptable construction frames.",
-    icon: "icon_versatileFrameworks.png",
+    // icon: require('../assets/icons/icon_versatileFrameworks.png'), // Corrected path
     machine: "assembler",
     inputs: { steelBeams: 4, modularFrames: 2 },
     output: { versatileFrameworks: 1 },
@@ -645,9 +788,9 @@ export const items = {
     name: "Aluminum Sheets",
     type: "intermediateProduct",
     description: "Thin, lightweight aluminum panels.",
-    icon: "icon_aluminumSheets.png",
+    // icon: require('../assets/icons/icon_aluminumSheets.png'), // Corrected path
     machine: "assembler",
-    inputs: { aluminumIngot: 4, copperIngot: 2 },
+    inputs: { aluminumIngot: 4, copperIngot: 2 }, // Assuming aluminumIngot exists
     output: { aluminumSheets: 1 },
     processingTime: 8,
     fuelConsumption: 2,
@@ -656,7 +799,7 @@ export const items = {
     name: "Heat Sink",
     type: "intermediateProduct",
     description: "Dissipates heat from electronic components.",
-    icon: "icon_heatSink.png",
+    // icon: require('../assets/icons/icon_heatSink.png'), // Corrected path
     machine: "assembler",
     inputs: { aluminumSheets: 5, copperSheets: 5 },
     output: { heatSink: 1 },
@@ -664,12 +807,12 @@ export const items = {
     fuelConsumption: 2,
   },
 
-  // MANUFACTURER
+  // MANUFACTURER Recipes (These are items produced by the Manufacturer)
   iodineFilter: {
     name: "Iodine Filter",
-    type: "finalProduct", // O podría ser "consumable" si es para el jugador
+    type: "finalProduct",
     description: "Protects against hazardous gases.",
-    icon: "icon_iodineFilter.png",
+    // icon: require('../assets/icons/icon_iodineFilter.png'), // Corrected path
     machine: "manufacturer",
     inputs: { filters: 2, rubber: 2 },
     output: { iodineFilter: 1 },
@@ -680,7 +823,7 @@ export const items = {
     name: "Computers",
     type: "finalProduct",
     description: "Programmable logic units for advanced automation.",
-    icon: "icon_computers.png",
+    // icon: require('../assets/icons/icon_computers.png'), // Corrected path
     machine: "manufacturer",
     inputs: { screws: 2, cables: 2, circuitBoards: 1 },
     output: { computers: 1 },
@@ -691,7 +834,7 @@ export const items = {
     name: "High-Speed Connector",
     type: "intermediateProduct",
     description: "For rapid data transfer.",
-    icon: "icon_highSpeedConnector.png",
+    // icon: require('../assets/icons/icon_highSpeedConnector.png'), // Corrected path
     machine: "manufacturer",
     inputs: { quickwire: 2, cables: 2, circuitBoards: 2 },
     output: { highSpeedConnector: 1 },
@@ -702,7 +845,7 @@ export const items = {
     name: "Supercomputers",
     type: "finalProduct",
     description: "The pinnacle of processing power.",
-    icon: "icon_supercomputers.png",
+    // icon: require('../assets/icons/icon_supercomputers.png'), // Corrected path
     machine: "manufacturer",
     inputs: { aiLimiter: 1, highSpeedConnector: 2, computers: 1, screws: 4 },
     output: { supercomputers: 1 },
@@ -713,7 +856,7 @@ export const items = {
     name: "Crystal Oscillator",
     type: "intermediateProduct",
     description: "Provides stable clock signals for electronics.",
-    icon: "icon_crystalOscillator.png",
+    // icon: require('../assets/icons/icon_crystalOscillator.png'), // Corrected path
     machine: "manufacturer",
     inputs: { cables: 4, quartzCrystals: 2, reinforcedIronPlates: 2 },
     output: { crystalOscillator: 1 },
@@ -724,7 +867,7 @@ export const items = {
     name: "Nuclear Fuel Rods",
     type: "consumable",
     description: "High-energy fuel for nuclear power plants.",
-    icon: "icon_nuclearFuelRods.png",
+    // icon: require('../assets/icons/icon_nuclearFuelRods.png'), // Corrected path
     machine: "manufacturer",
     inputs: {
       encasedIndustrialBeams: 2,
@@ -739,7 +882,7 @@ export const items = {
     name: "Heavy Modular Frames",
     type: "intermediateProduct",
     description: "Robust frames for heavy-duty construction.",
-    icon: "icon_heavyModularFrames.png",
+    // icon: require('../assets/icons/icon_heavyModularFrames.png'), // Corrected path
     machine: "manufacturer",
     inputs: { screws: 4, encasedIndustrialBeams: 2, steelPipes: 4 },
     output: { heavyModularFrames: 1 },
@@ -750,7 +893,7 @@ export const items = {
     name: "Modular Engines",
     type: "intermediateProduct",
     description: "Powerful and adaptable engines.",
-    icon: "icon_modularEngines.png",
+    // icon: require('../assets/icons/icon_modularEngines.png'), // Corrected path
     machine: "manufacturer",
     inputs: { smartPlatings: 5, motors: 1, rubber: 4 },
     output: { modularEngines: 1 },
@@ -761,7 +904,7 @@ export const items = {
     name: "Adaptive Control Units",
     type: "finalProduct",
     description: "Advanced control systems for dynamic operations.",
-    icon: "icon_adaptiveControlUnits.png",
+    // icon: require('../assets/icons/icon_adaptiveControlUnits.png'), // Corrected path
     machine: "manufacturer",
     inputs: {
       heavyModularFrames: 1,
@@ -777,7 +920,7 @@ export const items = {
     name: "Battery",
     type: "consumable",
     description: "Stores electrical energy for portable devices.",
-    icon: "icon_battery.png",
+    // icon: require('../assets/icons/icon_battery.png'), // Corrected path
     machine: "manufacturer",
     inputs: { aluminumSheets: 4, wires: 2, sulfuricAcid: 4 },
     output: { battery: 1 },
@@ -788,7 +931,7 @@ export const items = {
     name: "Radio Control Units",
     type: "intermediateProduct",
     description: "For wireless communication and control.",
-    icon: "icon_radioControlUnits.png",
+    // icon: require('../assets/icons/icon_radioControlUnits.png'), // Corrected path
     machine: "manufacturer",
     inputs: { heatSink: 5, crystalOscillator: 2, supercomputers: 1 },
     output: { radioControlUnits: 1 },
@@ -799,7 +942,7 @@ export const items = {
     name: "Turbo Motors",
     type: "finalProduct",
     description: "Extremely powerful motors for high-performance applications.",
-    icon: "icon_turboMotors.png",
+    // icon: require('../assets/icons/icon_turboMotors.png'), // Corrected path
     machine: "manufacturer",
     inputs: { heatSink: 5, rubber: 3, motors: 3, radioControlUnits: 2 },
     output: { turboMotors: 1 },

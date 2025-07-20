@@ -23,6 +23,7 @@
     "react-native-web": "~0.19.6"
   },
   "devDependencies": {
+    "@react-native-community/cli": "latest",
     "@babel/core": "^7.19.3"
   },
   "name": "faktorymobile",
