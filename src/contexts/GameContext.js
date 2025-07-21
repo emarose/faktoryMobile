@@ -5,13 +5,11 @@ import { useMachines } from "../hooks/useMachines";
 import { useProduction } from "../hooks/useProduction";
 import { useBuilding } from "../hooks/useBuilding";
 import { useMining } from "../hooks/useMining";
-import { useCrafting } from "../hooks/useCrafting"; // Import the new hook
+import useCrafting from "../hooks/useCrafting"; // Changed to default import
 
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  // Static data like allResourceNodes are defined here or in a separate data file
-  // and passed down. Keeping it here for simplicity.
   const allResourceNodes = useMemo(
     () => [
       {
@@ -83,8 +81,8 @@ export const GameProvider = ({ children }) => {
   );
 
   const {
-    inventory, // This is inventoryState.items
-    ownedMachines, // This is inventoryState.ownedMachines
+    inventory,
+    ownedMachines,
     addResource,
     removeResources,
     getInventoryItem,
@@ -94,7 +92,7 @@ export const GameProvider = ({ children }) => {
   } = useInventory();
 
   const { placedMachines, mineableNodes, placeMachine } = useMachines(
-    inventory, // This is `inventoryState.items`
+    inventory,
     removeResources,
     allResourceNodes
   );
@@ -105,24 +103,27 @@ export const GameProvider = ({ children }) => {
     addResource,
     removeResources,
     buildableItems,
-    addMachine // <--- Pass addMachine so useBuilding can add machines to ownedMachines
+    addMachine
   );
 
   const { mineResource } = useMining(addResource, allResourceNodes);
 
-  const { craftItem } = useCrafting(
-    inventory, // Pass inventory (which is inventoryState.items)
-    ownedMachines, // Pass ownedMachines explicitly
+  // --- CRITICAL: Destructure activeCrafts from useCrafting ---
+  const { craftItem, activeCrafts } = useCrafting(
+    // useCrafting is now the default export
+    inventory,
+    ownedMachines,
     addResource,
     removeResources,
     canAfford,
     addMachine
   );
+  // --- END CRITICAL ---
 
   const contextValue = useMemo(
     () => ({
-      inventory, // Expose the items object
-      ownedMachines, // <--- Expose ownedMachines
+      inventory,
+      ownedMachines,
       mineableNodes,
       buildableItems,
       allResourceNodes,
@@ -135,11 +136,12 @@ export const GameProvider = ({ children }) => {
       buildItem,
       placeMachine,
       craftItem,
-      addMachine, // <--- Expose addMachine
+      activeCrafts, // <--- EXPOSE activeCrafts
+      addMachine,
     }),
     [
       inventory,
-      ownedMachines, // <--- Add to dependencies
+      ownedMachines,
       mineableNodes,
       buildableItems,
       allResourceNodes,
@@ -152,7 +154,8 @@ export const GameProvider = ({ children }) => {
       buildItem,
       placeMachine,
       craftItem,
-      addMachine, // <--- Add to dependencies
+      activeCrafts, // <--- ADD activeCrafts to dependencies
+      addMachine,
     ]
   );
 

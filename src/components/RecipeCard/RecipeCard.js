@@ -1,10 +1,10 @@
 // components/RecipeCard/RecipeCard.js
 import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import { items } from "../../data/items"; // Still needed to look up item names
+import { items } from "../../data/items";
 
-// Ensure you receive 'recipe', 'inventory' (which has .items and .ownedMachines), and 'craftItem'
-const RecipeCard = ({ recipe, inventory, craftItem }) => {
+// Now accepting 'activeCrafts' as a prop
+const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
   if (!recipe) {
     return null;
   }
@@ -12,41 +12,46 @@ const RecipeCard = ({ recipe, inventory, craftItem }) => {
   const currentItems = inventory?.items || {};
   const ownedMachines = inventory?.ownedMachines || [];
 
-  // --- CRITICAL FIX: Correctly extract output item ID and quantity ---
   let outputItemKey = null;
   let outputQuantity = 0;
 
   if (recipe.output && Object.keys(recipe.output).length > 0) {
-    outputItemKey = Object.keys(recipe.output)[0]; // Get the first (and likely only) key
-    outputQuantity = recipe.output[outputItemKey]; // Get the value for that key
+    outputItemKey = Object.keys(recipe.output)[0];
+    outputQuantity = recipe.output[outputItemKey];
   }
-  // --- END CRITICAL FIX ---
 
+  // Get current craft status for this recipe
+  const currentCraft = activeCrafts[recipe.id];
+  const isCrafting = !!currentCraft; // True if this recipe is currently active
 
   const canCraft = useMemo(() => {
-    // Check if the machine is owned
-    if (!ownedMachines.includes(recipe.machine)) {
-      return false; // Cannot craft if the required machine type is not owned
+    // If already crafting, cannot craft again
+    if (isCrafting) {
+        return false;
     }
 
-    // Check if player has enough input resources
+    if (!ownedMachines.includes(recipe.machine)) {
+      return false;
+    }
+
     for (const inputId in recipe.inputs) {
       const requiredAmount = recipe.inputs[inputId];
       const currentAmount = currentItems[inputId]?.currentAmount || 0;
       if (currentAmount < requiredAmount) {
-        return false; // Not enough resources
+        return false;
       }
     }
-    return true; // All conditions met
-  }, [recipe, currentItems, ownedMachines]);
+    return true;
+  }, [recipe, currentItems, ownedMachines, isCrafting]); // Add isCrafting to dependencies
 
   const handleCraft = () => {
     if (canCraft) {
-      // --- CRITICAL FIX: Pass correct output ID and quantity to craftItem ---
       craftItem(recipe.id, outputItemKey, outputQuantity);
-      // --- END CRITICAL FIX ---
     }
   };
+
+  // Calculate progress for the progress bar
+  const progress = currentCraft ? (currentCraft.totalTime - currentCraft.remainingTime) / currentCraft.totalTime : 0;
 
   return (
     <View style={cardStyles.card}>
@@ -73,26 +78,42 @@ const RecipeCard = ({ recipe, inventory, craftItem }) => {
 
       {/* Output */}
       <Text style={cardStyles.sectionTitle}>Output:</Text>
-      {outputItemKey ? ( // <--- Use the new outputItemKey for conditional rendering
+      {outputItemKey ? (
         <Text style={cardStyles.resourceText}>
-          - {items[outputItemKey]?.name || outputItemKey}:{" "} {/* Use outputItemKey here */}
-          {outputQuantity} {/* Use outputQuantity here */}
+          - {items[outputItemKey]?.name || outputItemKey}:{" "}
+          {outputQuantity}
         </Text>
       ) : (
         <Text style={cardStyles.resourceText}>No output defined for this recipe.</Text>
       )}
 
+      {/* Timer and Progress Bar */}
+      {isCrafting && currentCraft ? (
+        <View style={cardStyles.timerContainer}>
+          <Text style={cardStyles.timerText}>
+            Crafting: {currentCraft.remainingTime}s remaining
+          </Text>
+          <View style={cardStyles.progressBarBackground}>
+            <View style={[cardStyles.progressBarFill, { width: `${progress * 100}%` }]} />
+          </View>
+        </View>
+      ) : null}
+
       {/* Craft Button */}
       <TouchableOpacity
         style={[
           cardStyles.craftButton,
-          !canCraft && cardStyles.craftButtonDisabled,
+          (!canCraft || isCrafting) && cardStyles.craftButtonDisabled, // Disable if crafting
         ]}
         onPress={handleCraft}
-        disabled={!canCraft}
+        disabled={!canCraft || isCrafting} // Disable if crafting
       >
         <Text style={cardStyles.craftButtonText}>
-          {canCraft ? `Craft ${recipe.name}` : "Cannot Craft"}
+          {isCrafting
+            ? "Crafting..."
+            : canCraft
+            ? `Craft ${recipe.name}`
+            : "Cannot Craft"}
         </Text>
       </TouchableOpacity>
     </View>
@@ -127,6 +148,27 @@ const cardStyles = StyleSheet.create({
     fontSize: 14,
     color: "#cccccc",
     marginLeft: 10,
+  },
+  timerContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  timerText: {
+    fontSize: 16,
+    color: '#f0f0f0',
+    marginBottom: 5,
+  },
+  progressBarBackground: {
+    width: '100%',
+    height: 10,
+    backgroundColor: '#555',
+    borderRadius: 5,
+    overflow: 'hidden', // Ensures fill stays within bounds
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#a0d911', // Green progress bar
+    borderRadius: 5,
   },
   craftButton: {
     backgroundColor: "#007bff",

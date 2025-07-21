@@ -1,26 +1,24 @@
 // components/MachineRecipeModal/MachineRecipeModal.js
 import React, { useMemo } from 'react';
 import { Modal, View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { items } from '../../data/items'; // Assuming this path is correct
-import RecipeCard from '../RecipeCard/RecipeCard'; // Assuming this path is correct
+import { items } from '../../data/items';
+import RecipeCard from '../RecipeCard/RecipeCard';
+import { useGame } from '../../contexts/GameContext'; // Import useGame to get activeCrafts
 
-// Ensure you receive the craftItem function and the correctly structured inventory
 const MachineRecipeModal = ({ isVisible, onClose, machineType, inventory, craftItem }) => {
+  const { activeCrafts } = useGame(); // <--- Get activeCrafts from GameContext
 
-  // CRITICAL: Filter recipes based on the machineType and ensure data integrity
   const recipesForMachine = useMemo(() => {
-    if (!machineType) return []; // No machine selected, no recipes to show
+    if (!machineType) return [];
 
     const machineRecipes = [];
     Object.values(items).forEach(itemDefinition => {
-      // Check if this item is a craftable recipe for the selected machineType
-      // Ensure 'inputs' and 'output' are defined for it to be a valid recipe
       if (itemDefinition.machine === machineType && itemDefinition.inputs && itemDefinition.output) {
         machineRecipes.push(itemDefinition);
       }
     });
     return machineRecipes;
-  }, [machineType, items]); // Depend on machineType and global items data
+  }, [machineType, items]);
 
   return (
     <Modal
@@ -39,10 +37,11 @@ const MachineRecipeModal = ({ isVisible, onClose, machineType, inventory, craftI
             {recipesForMachine.length > 0 ? (
               recipesForMachine.map((recipe) => (
                 <RecipeCard
-                  key={recipe.id} // Use recipe.id for key
+                  key={recipe.id}
                   recipe={recipe}
-                  inventory={inventory} // Pass the correctly structured inventory
+                  inventory={inventory}
                   craftItem={craftItem}
+                  activeCrafts={activeCrafts} // <--- Pass activeCrafts to RecipeCard
                 />
               ))
             ) : (
@@ -97,7 +96,7 @@ const modalStyles = StyleSheet.create({
   },
   scrollView: {
     width: '100%',
-    maxHeight: '70%', // Limit height of scrollable area
+    maxHeight: '70%',
   },
   noRecipesText: {
     color: '#ccc',

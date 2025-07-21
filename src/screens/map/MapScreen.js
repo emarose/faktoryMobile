@@ -146,7 +146,6 @@ const NodeDisplayForPlacement = React.memo(({
   );
 });
 
-// --- MapScreen Component ---
 const MapScreen = () => {
   const { inventory, allResourceNodes, placedMachines, mineResource, placeMachine } = useGame();
 
@@ -164,7 +163,6 @@ const MapScreen = () => {
     Alert.alert("Mined!", "You gathered some resources!");
   };
 
-  // --- Filter and prepare nodes for display using useMemo ---
   const displayableNodes = useMemo(() => {
     return allResourceNodes.filter(node => {
       const nodeDefinition = items[node.type];
@@ -271,11 +269,10 @@ const MapScreen = () => {
 
 
   return (
-    <SafeAreaView style={styles.fullScreenContainer}> {/* Use new style for full screen scroll */}
-      <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}> {/* Wrap all content in a ScrollView */}
+    <SafeAreaView style={styles.fullScreenContainer}> 
+      <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}>
         <Text style={styles.title}>Resource Map</Text>
 
-        {/* --- Map Legend --- */}
         <View style={styles.mapLegend}>
           <Text style={styles.mapLegendTitle}>Node Types</Text>
           <View style={styles.mapLegendItems}>
@@ -292,18 +289,14 @@ const MapScreen = () => {
           </View>
         </View>
 
-        {/* --- Visual Map Section --- */}
         <View style={styles.mapVisualContainer}>
           <View style={[styles.mapGrid, { width: MAP_DISPLAY_SIZE, height: MAP_DISPLAY_SIZE }]}>
-            {gridLines} {/* Render grid lines and labels */}
-
-            {/* Render Player Position (fixed in center of visual map) */}
+            {gridLines}
             <View style={[styles.playerPositionDot, { left: PLAYER_DISPLAY_X, top: PLAYER_DISPLAY_Y }]} />
             <Text style={[styles.playerPositionLabel, { left: PLAYER_DISPLAY_X + 10, top: PLAYER_DISPLAY_Y - 5 }]}>
               You ({currentPlayerGameX},{currentPlayerGameY})
             </Text>
 
-            {/* Render ONLY the displayableNodes on the visual map */}
             {displayableNodes.map(node => {
               const { x: displayX, y: displayY } = getDisplayCoords(node.x, node.y);
               const nodeColor = getNodeColor(node.type);
@@ -319,7 +312,7 @@ const MapScreen = () => {
                       top: displayY,
                       backgroundColor: nodeColor,
                       borderColor: isAssigned ? '#00FF00' : nodeColor,
-                      borderWidth: isAssigned ? 2 : 1, // Slightly thinner border for non-assigned
+                      borderWidth: isAssigned ? 2 : 1,
                     }
                   ]}
                 >
