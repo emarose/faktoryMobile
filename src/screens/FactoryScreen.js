@@ -87,9 +87,7 @@ export default function FactoryScreen() {
           {/* Product Builder / Available Products */}
           <TouchableOpacity
             style={styles.gridItem}
-            onPress={() =>
-              alert("Coming Soon: Craft complex products for shipment!")
-            }
+            onPress={() => navigation.navigate("ProductAssemblyScreen")}
           >
             <Text style={styles.gridItemTitle}>Product Assembly</Text>
             <Text style={styles.gridItemDescription}>

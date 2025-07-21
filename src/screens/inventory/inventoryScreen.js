@@ -42,7 +42,7 @@ const InventoryScreen = () => {
                   {/* You can replace this with an actual Image component:
                   <Image source={item.icon} style={styles.itemIcon} />
                   Make sure your 'items' data in GameContext provides an 'icon' property. */}
-                  <Text style={styles.iconText}>{item.name.charAt(0).toUpperCase()}</Text>
+                  <Text style={styles.iconText}>{item.name}</Text>
                 </View>
 
                 {/* Amount on top of/next to icon, Minecraft style */}
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     color: '#e0e0e0',
-    fontSize: 24, // Larger initial for placeholder
+    fontSize: 16, // Larger initial for placeholder
     fontWeight: 'bold',
   },
   // If you use actual images:

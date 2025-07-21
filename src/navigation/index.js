@@ -11,6 +11,7 @@ import BuildScreen from "../screens/build/BuildScreen";
 import MapScreen from "../screens/map/MapScreen";
 import BasicResourcesScreen from "../screens/basicResources/BasicResourcesScreen";
 import InventoryScreen from "../screens/inventory/inventoryScreen";
+import ProductAssemblyScreen from "../screens/assembly/ProductAssemblyScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -36,6 +37,7 @@ function RootNavigator() {
       <Stack.Screen name="BuildScreen" component={BuildScreen} />
       <Stack.Screen name="MapScreen" component={MapScreen} />
       <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
+      <Stack.Screen name="ProductAssemblyScreen" component={ProductAssemblyScreen} />
     </Stack.Navigator>
   );
 }

@@ -1,6 +1,7 @@
 export const items = {
   // --- Raw Material Nodes (The actual resource deposits on the map) ---
   ironOre_node: {
+    id: "ironOre_node", // Added ID
     name: "Iron Ore Node",
     type: "rawMaterial",
     description: "A deposit of basic mineral. Can be mined manually.",
@@ -10,6 +11,7 @@ export const items = {
     processingTime: 1,
   },
   copperOre_node: {
+    id: "copperOre_node", // Added ID
     name: "Copper Ore Node",
     type: "rawMaterial",
     description: "A deposit of copper. Can be mined manually.",
@@ -19,6 +21,7 @@ export const items = {
     processingTime: 1,
   },
   coal_node: {
+    id: "coal_node", // Added ID
     name: "Coal Node",
     type: "rawMaterial",
     description: "A deposit of primary fuel source. Can be mined manually.",
@@ -28,6 +31,7 @@ export const items = {
     processingTime: 1,
   },
   limestone_node: {
+    id: "limestone_node", // Added ID
     name: "Limestone Node",
     type: "rawMaterial",
     description: "A deposit of limestone. Can be mined manually.",
@@ -39,6 +43,7 @@ export const items = {
 
   // --- Nodes that require machines (NOT manually mineable initially) ---
   cateriumOre_node: {
+    id: "cateriumOre_node", // Added ID
     name: "Caterium Ore Node",
     type: "rawMaterial",
     description: "A deposit of versatile ore. Requires a Miner.",
@@ -49,6 +54,7 @@ export const items = {
     processingTime: 1,
   },
   rawQuartz_node: {
+    id: "rawQuartz_node", // Added ID
     name: "Raw Quartz Node",
     type: "rawMaterial",
     description: "A deposit of quartz. Requires a Miner.",
@@ -59,6 +65,7 @@ export const items = {
     processingTime: 1,
   },
   sulfur_node: {
+    id: "sulfur_node", // Added ID
     name: "Sulfur Node",
     type: "rawMaterial",
     description: "A deposit of hazardous sulfur. Requires a Miner.",
@@ -69,6 +76,7 @@ export const items = {
     processingTime: 1,
   },
   crudeOil_node: {
+    id: "crudeOil_node", // Added ID
     name: "Crude Oil Node",
     type: "rawMaterial",
     description: "An oil deposit. Requires an Oil Extractor.",
@@ -79,6 +87,7 @@ export const items = {
     processingTime: 2,
   },
   bauxite_node: {
+    id: "bauxite_node", // Added ID
     name: "Bauxite Node",
     type: "rawMaterial",
     description: "A deposit of bauxite. Requires a Miner.",
@@ -89,6 +98,7 @@ export const items = {
     processingTime: 1,
   },
   uranium_node: {
+    id: "uranium_node", // Added ID
     name: "Uranium Node",
     type: "rawMaterial",
     description: "A deposit of highly radioactive uranium. Requires a Miner.",
@@ -101,6 +111,7 @@ export const items = {
 
   // --- Actual Raw Materials (These are the items produced from nodes into inventory) ---
   ironOre: {
+    id: "ironOre", // Added ID
     name: "Iron Ore",
     type: "rawMaterial",
     description: "Basic mineral used in smelting.",
@@ -108,6 +119,7 @@ export const items = {
     machine: "miner",
   },
   cateriumOre: {
+    id: "cateriumOre", // Added ID
     name: "Caterium Ore",
     type: "rawMaterial",
     description: "A versatile ore, good for electronics.",
@@ -115,6 +127,7 @@ export const items = {
     machine: "miner",
   },
   copperOre: {
+    id: "copperOre", // Added ID
     name: "Copper Ore",
     type: "rawMaterial",
     description: "Fundamental for wiring and sheets.",
@@ -122,6 +135,7 @@ export const items = {
     machine: "miner",
   },
   coal: {
+    id: "coal", // Added ID
     name: "Coal",
     type: "rawMaterial",
     description: "A primary fuel source.",
@@ -129,6 +143,7 @@ export const items = {
     machine: "miner",
   },
   rawQuartz: {
+    id: "rawQuartz", // Added ID
     name: "Raw Quartz",
     type: "rawMaterial",
     description: "Used in advanced electronics and glass.",
@@ -136,6 +151,7 @@ export const items = {
     machine: "miner",
   },
   limestone: {
+    id: "limestone", // Added ID
     name: "Limestone",
     type: "rawMaterial",
     description: "Key ingredient for concrete.",
@@ -143,6 +159,7 @@ export const items = {
     machine: "miner",
   },
   sulfur: {
+    id: "sulfur", // Added ID
     name: "Sulfur",
     type: "rawMaterial",
     description: "Hazardous but essential for explosives and acids.",
@@ -150,6 +167,7 @@ export const items = {
     machine: "miner",
   },
   crudeOil: {
+    id: "crudeOil", // Added ID
     name: "Crude Oil",
     type: "rawMaterial",
     description: "Black gold, refined into many valuable products.",
@@ -157,6 +175,7 @@ export const items = {
     machine: "oilExtractor",
   },
   bauxite: {
+    id: "bauxite", // Added ID
     name: "Bauxite",
     type: "rawMaterial",
     description: "Primary source of aluminum.",
@@ -164,20 +183,22 @@ export const items = {
     machine: "miner",
   },
   uranium: {
+    id: "uranium", // Added ID
     name: "Uranium",
     type: "rawMaterial",
     description: "Highly radioactive, for advanced power.",
-  //  // icon: require('../assets/icons/icon_uranium.png'), // Corrected path
+    // // icon: require('../assets/icons/icon_uranium.png'), // Corrected path
     machine: "miner",
   },
 
   // --- Intermediate Products (Produced by machines like Smelter, Constructor, Assembler, Refinery, Foundry, Manufacturer) ---
   // Ensure 'inputs' here refer to actual item IDs, not node IDs.
   ironIngot: {
+    id: "ironIngot", // Added ID
     name: "Iron Ingot",
     type: "intermediateProduct",
     description: "Basic metal ingot.",
-   // // icon: require('../assets/icons/icon_ironIngot.png'), // Corrected path
+    // // icon: require('../assets/icons/icon_ironIngot.png'), // Corrected path
     machine: "smelter",
     inputs: { ironOre: 5 },
     output: { ironIngot: 1 },
@@ -185,6 +206,7 @@ export const items = {
     fuelConsumption: 1,
   },
   cateriumIngot: {
+    id: "cateriumIngot", // Added ID
     name: "Caterium Ingot",
     type: "intermediateProduct",
     description: "Specialized ingot for electronics.",
@@ -196,6 +218,7 @@ export const items = {
     fuelConsumption: 1,
   },
   copperIngot: {
+    id: "copperIngot", // Added ID
     name: "Copper Ingots",
     type: "intermediateProduct",
     description: "Essential for electrical components.",
@@ -207,6 +230,7 @@ export const items = {
     fuelConsumption: 1,
   },
   ironRods: {
+    id: "ironRods", // Added ID
     name: "Iron Rods",
     type: "intermediateProduct",
     description: "Basic structural component.",
@@ -218,6 +242,7 @@ export const items = {
     fuelConsumption: 0.5,
   },
   ironPlates: {
+    id: "ironPlates", // Added ID
     name: "Iron Plates",
     type: "intermediateProduct",
     description: "Fundamental building material.",
@@ -229,6 +254,7 @@ export const items = {
     fuelConsumption: 0.7,
   },
   steelBeams: {
+    id: "steelBeams", // Added ID
     name: "Steel Beams",
     type: "intermediateProduct",
     description: "Heavy duty structural support.",
@@ -240,6 +266,7 @@ export const items = {
     fuelConsumption: 1,
   },
   steelPipes: {
+    id: "steelPipes", // Added ID
     name: "Steel Pipes",
     type: "intermediateProduct",
     description: "Used for fluid transport and structures.",
@@ -251,6 +278,7 @@ export const items = {
     fuelConsumption: 1,
   },
   screws: {
+    id: "screws", // Added ID
     name: "Screws",
     type: "intermediateProduct",
     description: "Small fasteners for assembly.",
@@ -262,6 +290,7 @@ export const items = {
     fuelConsumption: 0.2,
   },
   cannisters: {
+    id: "cannisters", // Added ID
     name: "Cannisters",
     type: "intermediateProduct",
     description: "Empty containers for liquids.",
@@ -273,6 +302,7 @@ export const items = {
     fuelConsumption: 1,
   },
   quartzCrystals: {
+    id: "quartzCrystals", // Added ID
     name: "Quartz Crystals",
     type: "intermediateProduct",
     description: "Refined quartz for electronics.",
@@ -284,6 +314,7 @@ export const items = {
     fuelConsumption: 1,
   },
   concrete: {
+    id: "concrete", // Added ID
     name: "Concrete",
     type: "intermediateProduct",
     description: "A sturdy building material.",
@@ -295,6 +326,7 @@ export const items = {
     fuelConsumption: 0.5,
   },
   silica: {
+    id: "silica", // Added ID
     name: "Silica",
     type: "intermediateProduct",
     description: "Pure silicon dioxide, used in electronics.",
@@ -306,6 +338,7 @@ export const items = {
     fuelConsumption: 1,
   },
   quickwire: {
+    id: "quickwire", // Added ID
     name: "Quickwire",
     type: "intermediateProduct",
     description: "High-conductivity wire.",
@@ -317,6 +350,7 @@ export const items = {
     fuelConsumption: 1,
   },
   copperSheets: {
+    id: "copperSheets", // Added ID
     name: "Copper Sheets",
     type: "intermediateProduct",
     description: "Flat copper material for circuits.",
@@ -328,6 +362,7 @@ export const items = {
     fuelConsumption: 1,
   },
   wires: {
+    id: "wires", // Added ID
     name: "Wires",
     type: "intermediateProduct",
     description: "Basic electrical conductor.",
@@ -339,6 +374,7 @@ export const items = {
     fuelConsumption: 0.2,
   },
   cables: {
+    id: "cables", // Added ID
     name: "Cables",
     type: "intermediateProduct",
     description: "Insulated wires for power and data.",
@@ -350,6 +386,7 @@ export const items = {
     fuelConsumption: 1,
   },
   aluminumScrap: {
+    id: "aluminumScrap", // Added ID
     name: "Aluminum Scrap",
     type: "intermediateProduct",
     description: "Waste product, but valuable for recycling.",
@@ -361,6 +398,7 @@ export const items = {
     fuelConsumption: 2,
   },
   heavyOilResidue: {
+    id: "heavyOilResidue", // Added ID
     name: "Heavy Oil Residue",
     type: "intermediateProduct",
     description: "A byproduct of oil processing, useful for fuel.",
@@ -372,6 +410,7 @@ export const items = {
     fuelConsumption: 0,
   },
   sulfuricAcid: {
+    id: "sulfuricAcid", // Added ID
     name: "Sulfuric Acid",
     type: "intermediateProduct",
     description: "Corrosive liquid, used in chemical processes.",
@@ -383,6 +422,7 @@ export const items = {
     fuelConsumption: 2,
   },
   fuel: {
+    id: "fuel", // Added ID
     name: "Fuel",
     type: "consumable",
     description: "Refined crude oil, powers many machines.",
@@ -394,6 +434,7 @@ export const items = {
     fuelConsumption: 2,
   },
   rubber: {
+    id: "rubber", // Added ID
     name: "Rubber",
     type: "intermediateProduct",
     description: "Flexible polymer for various applications.",
@@ -405,6 +446,7 @@ export const items = {
     fuelConsumption: 2,
   },
   plastic: {
+    id: "plastic", // Added ID
     name: "Plastic",
     type: "intermediateProduct",
     description: "Polymer for various components.",
@@ -416,6 +458,7 @@ export const items = {
     fuelConsumption: 2,
   },
   plasticAndHOR: {
+    id: "plasticAndHOR", // Added ID
     name: "Plastic + HOR",
     type: "recipe",
     description: "Refining crude oil into plastic and heavy oil residue.",
@@ -427,6 +470,7 @@ export const items = {
     fuelConsumption: 2,
   },
   rubberAndHOR: {
+    id: "rubberAndHOR", // Added ID
     name: "Rubber + HOR",
     type: "recipe",
     description: "Refining crude oil into rubber and heavy oil residue.",
@@ -438,6 +482,7 @@ export const items = {
     fuelConsumption: 2,
   },
   aluminaSolution: {
+    id: "aluminaSolution", // Added ID
     name: "Alumina Solution",
     type: "intermediateProduct",
     description: "Precursor for aluminum production.",
@@ -449,6 +494,7 @@ export const items = {
     fuelConsumption: 2,
   },
   turbofuel: {
+    id: "turbofuel", // Added ID
     name: "Turbofuel",
     type: "consumable",
     description: "High-octane fuel for advanced power generation.",
@@ -460,6 +506,7 @@ export const items = {
     fuelConsumption: 2,
   },
   uraniumPellets: {
+    id: "uraniumPellets", // Added ID
     name: "Uranium Pellets",
     type: "intermediateProduct",
     description: "Processed uranium, ready for encapsulation.",
@@ -471,6 +518,7 @@ export const items = {
     fuelConsumption: 2,
   },
   packagedTurbofuel: {
+    id: "packagedTurbofuel", // Added ID
     name: "Packaged Turbofuel",
     type: "consumable",
     description: "Turbofuel in a convenient package.",
@@ -482,6 +530,7 @@ export const items = {
     fuelConsumption: 2,
   },
   petroleumCoke: {
+    id: "petroleumCoke", // Added ID
     name: "Petroleum Coke",
     type: "consumable",
     description: "Solid fuel from heavy oil residue.",
@@ -495,34 +544,36 @@ export const items = {
 
   // BUILDABLE ITEMS (Machines that can be built by the player)
   miner: {
+    id: "miner", // Added ID
     name: "Miner",
     description: "Automates the extraction of raw resources from resource nodes.",
     type: "buildable", // Changed type to 'buildable' for the BuildScreen
     // icon: require('../assets/icons/icon_miner.png'), // Corrected path
     inputs: { // Resources needed to build a Miner
-      ironPlates: 10,
-      ironRods: 5,
-      wires: 20,
+      ironOre: 20,
+      coal: 5,
     },
     output: { // When built, it adds 1 Miner to inventory
       miner: 1
     },
   },
   smelter: {
+    id: "smelter", // Added ID
     name: "Smelter",
     description: "Processes raw ore into ingots.",
     type: "buildable", // Changed type to 'buildable'
     // icon: require('../assets/icons/icon_smelter.png'), // Corrected path
     inputs: {
-      ironPlates: 5,
-      ironRods: 10,
-      wires: 10,
+      limestone: 10,
+      ironOre: 10,
+      coal: 15,
     },
     output: {
       smelter: 1
     },
   },
   constructor: {
+    id: "constructor", // Added ID
     name: "Constructor",
     description: "Manufactures simple parts from basic materials.",
     type: "buildable", // Changed type to 'buildable'
@@ -536,6 +587,7 @@ export const items = {
     },
   },
   assembler: {
+    id: "assembler", // Added ID
     name: "Assembler",
     description: "Combines two input parts into a more complex one.",
     type: "buildable", // Changed type to 'buildable'
@@ -550,6 +602,7 @@ export const items = {
     },
   },
   manufacturer: {
+    id: "manufacturer", // Added ID
     name: "Manufacturer",
     description: "Combines four input parts into highly complex products.",
     type: "buildable", // Changed type to 'buildable'
@@ -565,6 +618,7 @@ export const items = {
     },
   },
   refinery: {
+    id: "refinery", // Added ID
     name: "Refinery",
     description: "Processes liquids and gases into various products.",
     type: "buildable", // Changed type to 'buildable'
@@ -579,6 +633,7 @@ export const items = {
     },
   },
   foundry: {
+    id: "foundry", // Added ID
     name: "Foundry",
     description: "Combines two ingots into a third, more advanced ingot type (e.g., Steel).",
     type: "buildable", // Changed type to 'buildable'
@@ -593,6 +648,7 @@ export const items = {
     },
   },
   oilExtractor: {
+    id: "oilExtractor", // Added ID
     name: "Oil Extractor",
     description: "Extracts crude oil from oil nodes.",
     type: "buildable", // Changed type to 'buildable'
@@ -609,6 +665,7 @@ export const items = {
 
   // ASSEMBLER Recipes (These are items produced by the Assembler)
   compactedCoal: {
+    id: "compactedCoal", // Added ID
     name: "Compacted Coal",
     type: "intermediateProduct",
     description: "Denser coal for better fuel efficiency.",
@@ -620,6 +677,7 @@ export const items = {
     fuelConsumption: 2,
   },
   blackPowder: {
+    id: "blackPowder", // Added ID
     name: "Black Powder",
     type: "intermediateProduct",
     description: "Explosive compound.",
@@ -631,6 +689,7 @@ export const items = {
     fuelConsumption: 2,
   },
   filters: {
+    id: "filters", // Added ID
     name: "Filters",
     type: "intermediateProduct",
     description: "Used in gas masks and other air purifiers.",
@@ -642,6 +701,7 @@ export const items = {
     fuelConsumption: 2,
   },
   rotors: {
+    id: "rotors", // Added ID
     name: "Rotors",
     type: "intermediateProduct",
     description: "Spinning part of a motor.",
@@ -653,6 +713,7 @@ export const items = {
     fuelConsumption: 2,
   },
   reinforcedIronPlates: {
+    id: "reinforcedIronPlates", // Added ID
     name: "Reinforced Iron Plates",
     type: "intermediateProduct",
     description: "Stronger iron plates for critical structures.",
@@ -664,6 +725,7 @@ export const items = {
     fuelConsumption: 2,
   },
   encasedIndustrialBeams: {
+    id: "encasedIndustrialBeams", // Added ID
     name: "Encased Industrial Beams",
     type: "intermediateProduct",
     description: "Structural beams with concrete reinforcement.",
@@ -675,6 +737,7 @@ export const items = {
     fuelConsumption: 2,
   },
   encasedUraniumCell: {
+    id: "encasedUraniumCell", // Added ID
     name: "Encased Uranium Cell",
     type: "intermediateProduct",
     description: "Safe uranium cell for reactors.",
@@ -686,6 +749,7 @@ export const items = {
     fuelConsumption: 2,
   },
   stators: {
+    id: "stators", // Added ID
     name: "Stators",
     type: "intermediateProduct",
     description: "Static part of a motor.",
@@ -697,6 +761,7 @@ export const items = {
     fuelConsumption: 2,
   },
   circuitBoards: {
+    id: "circuitBoards", // Added ID
     name: "Circuit Boards",
     type: "intermediateProduct",
     description: "Base for electronic components.",
@@ -708,6 +773,7 @@ export const items = {
     fuelConsumption: 2,
   },
   aiLimiter: {
+    id: "aiLimiter", // Added ID
     name: "AI Limiter",
     type: "intermediateProduct",
     description: "Restricts AI functions to prevent uprisings.",
@@ -719,6 +785,7 @@ export const items = {
     fuelConsumption: 2,
   },
   electromagneticControlRods: {
+    id: "electromagneticControlRods", // Added ID
     name: "Electromagnetic Control Rods",
     type: "intermediateProduct",
     description: "Regulates nuclear reactions.",
@@ -730,6 +797,7 @@ export const items = {
     fuelConsumption: 2,
   },
   automatedWiring: {
+    id: "automatedWiring", // Added ID
     name: "Automated Wiring",
     type: "intermediateProduct",
     description: "Complex wiring harness for automation.",
@@ -741,6 +809,7 @@ export const items = {
     fuelConsumption: 2,
   },
   modularFrames: {
+    id: "modularFrames", // Added ID
     name: "Modular Frames",
     type: "intermediateProduct",
     description: "Versatile framework for modular construction.",
@@ -752,6 +821,7 @@ export const items = {
     fuelConsumption: 2,
   },
   smartPlatings: {
+    id: "smartPlatings", // Added ID
     name: "Smart Platings",
     type: "intermediateProduct",
     description: "Advanced plating with embedded circuitry.",
@@ -763,6 +833,7 @@ export const items = {
     fuelConsumption: 2,
   },
   motors: {
+    id: "motors", // Added ID
     name: "Motors",
     type: "intermediateProduct",
     description: "Converts electrical energy into mechanical force.",
@@ -774,6 +845,7 @@ export const items = {
     fuelConsumption: 2,
   },
   versatileFrameworks: {
+    id: "versatileFrameworks", // Added ID
     name: "Versatile Frameworks",
     type: "intermediateProduct",
     description: "Highly adaptable construction frames.",
@@ -785,6 +857,7 @@ export const items = {
     fuelConsumption: 2,
   },
   aluminumSheets: {
+    id: "aluminumSheets", // Added ID
     name: "Aluminum Sheets",
     type: "intermediateProduct",
     description: "Thin, lightweight aluminum panels.",
@@ -796,6 +869,7 @@ export const items = {
     fuelConsumption: 2,
   },
   heatSink: {
+    id: "heatSink", // Added ID
     name: "Heat Sink",
     type: "intermediateProduct",
     description: "Dissipates heat from electronic components.",
@@ -809,6 +883,7 @@ export const items = {
 
   // MANUFACTURER Recipes (These are items produced by the Manufacturer)
   iodineFilter: {
+    id: "iodineFilter", // Added ID
     name: "Iodine Filter",
     type: "finalProduct",
     description: "Protects against hazardous gases.",
@@ -820,6 +895,7 @@ export const items = {
     fuelConsumption: 4,
   },
   computers: {
+    id: "computers", // Added ID
     name: "Computers",
     type: "finalProduct",
     description: "Programmable logic units for advanced automation.",
@@ -831,6 +907,7 @@ export const items = {
     fuelConsumption: 4,
   },
   highSpeedConnector: {
+    id: "highSpeedConnector", // Added ID
     name: "High-Speed Connector",
     type: "intermediateProduct",
     description: "For rapid data transfer.",
@@ -842,6 +919,7 @@ export const items = {
     fuelConsumption: 4,
   },
   supercomputers: {
+    id: "supercomputers", // Added ID
     name: "Supercomputers",
     type: "finalProduct",
     description: "The pinnacle of processing power.",
@@ -853,6 +931,7 @@ export const items = {
     fuelConsumption: 4,
   },
   crystalOscillator: {
+    id: "crystalOscillator", // Added ID
     name: "Crystal Oscillator",
     type: "intermediateProduct",
     description: "Provides stable clock signals for electronics.",
@@ -864,6 +943,7 @@ export const items = {
     fuelConsumption: 4,
   },
   nuclearFuelRods: {
+    id: "nuclearFuelRods", // Added ID
     name: "Nuclear Fuel Rods",
     type: "consumable",
     description: "High-energy fuel for nuclear power plants.",
@@ -879,6 +959,7 @@ export const items = {
     fuelConsumption: 4,
   },
   heavyModularFrames: {
+    id: "heavyModularFrames", // Added ID
     name: "Heavy Modular Frames",
     type: "intermediateProduct",
     description: "Robust frames for heavy-duty construction.",
@@ -890,6 +971,7 @@ export const items = {
     fuelConsumption: 4,
   },
   modularEngines: {
+    id: "modularEngines", // Added ID
     name: "Modular Engines",
     type: "intermediateProduct",
     description: "Powerful and adaptable engines.",
@@ -901,6 +983,7 @@ export const items = {
     fuelConsumption: 4,
   },
   adaptiveControlUnits: {
+    id: "adaptiveControlUnits", // Added ID
     name: "Adaptive Control Units",
     type: "finalProduct",
     description: "Advanced control systems for dynamic operations.",
@@ -917,6 +1000,7 @@ export const items = {
     fuelConsumption: 4,
   },
   battery: {
+    id: "battery", // Added ID
     name: "Battery",
     type: "consumable",
     description: "Stores electrical energy for portable devices.",
@@ -928,6 +1012,7 @@ export const items = {
     fuelConsumption: 4,
   },
   radioControlUnits: {
+    id: "radioControlUnits", // Added ID
     name: "Radio Control Units",
     type: "intermediateProduct",
     description: "For wireless communication and control.",
@@ -939,6 +1024,7 @@ export const items = {
     fuelConsumption: 4,
   },
   turboMotors: {
+    id: "turboMotors", // Added ID
     name: "Turbo Motors",
     type: "finalProduct",
     description: "Extremely powerful motors for high-performance applications.",

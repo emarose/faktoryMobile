@@ -10,11 +10,11 @@ import {
   Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// No need to import 'items' directly here anymore, GameContext provides all necessary data.
 import { useGame } from "../../contexts/GameContext";
 
 const BuildScreen = () => {
-  const { buildableItems, buildItem, inventory } = useGame(); // Destructure inventory to access it directly
+  const { buildableItems, buildItem, inventory, ownedMachines } = useGame();
+  console.log("🚀 ~ BuildScreen ~ ownedMachines:", ownedMachines);
 
   const handleBuild = (itemId) => {
     // We can get the item name from buildableItems array directly

@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.emarose.faktoryMobile"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -33,6 +34,11 @@
     "plugins": [
       "expo-font",
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "edec21e9-34df-4300-b6db-78cd57ded924"
+      }
+    }
   }
 }
