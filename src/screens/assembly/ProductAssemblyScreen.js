@@ -12,6 +12,7 @@ import styles from "./styles"; // Assuming your styles are in a separate file
 const ProductAssemblyScreen = () => {
   // Destructure everything you need from useGame
   const { inventory, craftItem, ownedMachines } = useGame(); // ownedMachines is correctly destructured
+  console.log("🚀 ~ ProductAssemblyScreen ~ ownedMachines:", ownedMachines)
 
   // State for modal visibility and the currently selected machine
   const [isModalVisible, setIsModalVisible] = useState(false);

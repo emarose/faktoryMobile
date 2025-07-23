@@ -1,45 +1,58 @@
-// hooks/useBuilding.js
 import { useCallback } from "react";
-import { items } from "../data/items"; // For item definitions
+// No es necesario importar 'items' aquí si 'buildableItems' ya viene pre-calculado
 
 export const useBuilding = (
   addResourceCallback,
   removeResourcesCallback,
-  buildableItems
+  buildableItems, // Este array ya contiene la información de los ítems construibles y si se pueden construir
+  addMachine // La función para añadir un tipo de máquina a la lista de poseídas
 ) => {
   const buildItem = useCallback(
     (itemId) => {
-      const itemToBuild = buildableItems.find((item) => item.id === itemId); // Use the pre-calculated buildable item
+      const itemToBuild = buildableItems.find((item) => item.id === itemId);
 
       if (!itemToBuild || !itemToBuild.canBuild) {
         console.warn(
-          `Cannot build ${
+          `No se puede construir ${
             itemToBuild?.name || itemId
-          }: Not enough resources or not a buildable item.`
+          }: Recursos insuficientes o no es un ítem construible.`
         );
         return false;
       }
 
-      // Deduct resources
+      // Deducir recursos
       const deducted = removeResourcesCallback(itemToBuild.inputs);
       if (!deducted) {
         console.warn(
-          `Failed to deduct resources for ${itemToBuild.name}. This should not happen if canBuild is true.`
+          `Fallo al deducir recursos para ${itemToBuild.name}. Esto no debería ocurrir si canBuild es true.`
         );
         return false;
       }
 
-      // Add the built item to inventory
+      // Añadir el ítem construido al inventario (si es un ítem consumible o un producto)
+      // Para máquinas, esto significa que tienes una "máquina" en tu inventario de ítems.
       const quantityBuilt = itemToBuild.output?.[itemId] || 1;
       addResourceCallback(itemId, quantityBuilt);
 
+      // CRÍTICO: Si el ítem construido es una máquina/edificio, también añadirlo a la lista de máquinas poseídas
+      if (itemToBuild.type === "buildable" || itemToBuild.type === "machine") {
+        console.log(
+          "DEBUG: Intentando añadir máquina. itemToBuild:",
+          itemToBuild
+        );
+        addMachine(itemId); // Llama a la función addMachine para actualizar ownedMachines
+        console.log(
+          `Máquina construida: ${itemToBuild.name}. Añadida a ownedMachines.`
+        );
+      }
+
       console.log(
-        `Successfully built ${itemToBuild.name}! Added to inventory.`
+        `Construido exitosamente ${itemToBuild.name}! Añadido al inventario.`
       );
       return true;
     },
-    [addResourceCallback, removeResourcesCallback, buildableItems]
-  ); // Dependencies are callbacks and derived buildableItems
+    [addResourceCallback, removeResourcesCallback, buildableItems, addMachine] // Añadir addMachine a las dependencias
+  );
 
   return {
     buildItem,
