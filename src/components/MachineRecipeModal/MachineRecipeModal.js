@@ -1,28 +1,56 @@
-// components/MachineRecipeModal/MachineRecipeModal.js
 import React, { useMemo } from 'react';
 import { Modal, View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { items } from '../../data/items';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import { useGame } from '../../contexts/GameContext'; // Import useGame to get activeCrafts
-
+import modalStyles from './styles'; // Assuming you have a styles.js for modal styles
 const MachineRecipeModal = ({ isVisible, onClose, machineType, inventory, craftItem }) => {
   const { activeCrafts } = useGame(); // <--- Get activeCrafts from GameContext
 
+  // Depuración: Log cuando el modal se hace visible y qué machineType recibe
+  React.useEffect(() => {
+    if (isVisible) {
+      console.log("MODAL DEBUG: MachineRecipeModal is visible. machineType received:", machineType);
+    }
+  }, [isVisible, machineType]);
+
   const recipesForMachine = useMemo(() => {
-    if (!machineType) return [];
+    if (!machineType) {
+      console.log("MODAL DEBUG: No machineType provided, returning empty recipes.");
+      return [];
+    }
 
     const machineRecipes = [];
+    console.log(`MODAL DEBUG: Looking for recipes for machineType: "${machineType}"`);
+
     Object.values(items).forEach(itemDefinition => {
+      // Depuración: Log cada itemDefinition que se está revisando y su propiedad 'machine'
+      // console.log(`  Checking item: ${itemDefinition.id}, machine: ${itemDefinition.machine}`);
+
       if (itemDefinition.machine === machineType && itemDefinition.inputs && itemDefinition.output) {
         machineRecipes.push(itemDefinition);
+        console.log(`  FOUND RECIPE: ${itemDefinition.name} for ${machineType}`);
+      } else {
+        // Depuración: Si no coincide, log por qué
+        // if (itemDefinition.machine !== machineType) {
+        //   console.log(`  SKIP: ${itemDefinition.name} (machine mismatch: ${itemDefinition.machine} !== ${machineType})`);
+        // }
+        // if (!itemDefinition.inputs) {
+        //   console.log(`  SKIP: ${itemDefinition.name} (missing inputs)`);
+        // }
+        // if (!itemDefinition.output) {
+        //   console.log(`  SKIP: ${itemDefinition.name} (missing output)`);
+        // }
       }
     });
+
+    console.log(`MODAL DEBUG: Found ${machineRecipes.length} recipes for ${machineType}.`);
     return machineRecipes;
-  }, [machineType, items]);
+  }, [machineType, items]); // La dependencia 'items' asegura que se re-ejecuta si los datos de ítems cambian (aunque items es una constante, es buena práctica si se pudiera modificar dinámicamente)
 
   return (
     <Modal
-      animationType="slide"
+      animationType="none"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
@@ -41,7 +69,7 @@ const MachineRecipeModal = ({ isVisible, onClose, machineType, inventory, craftI
                   recipe={recipe}
                   inventory={inventory}
                   craftItem={craftItem}
-                  activeCrafts={activeCrafts} // <--- Pass activeCrafts to RecipeCard
+                  activeCrafts={activeCrafts}
                 />
               ))
             ) : (
@@ -62,60 +90,5 @@ const MachineRecipeModal = ({ isVisible, onClose, machineType, inventory, craftI
     </Modal>
   );
 };
-
-const modalStyles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: 'rgba(0,0,0,0.7)',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "#2a2a4a",
-    borderRadius: 10,
-    padding: 25,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '90%',
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#e0e0e0",
-  },
-  scrollView: {
-    width: '100%',
-    maxHeight: '70%',
-  },
-  noRecipesText: {
-    color: '#ccc',
-    fontSize: 16,
-    textAlign: 'center',
-    padding: 20,
-  },
-  closeButton: {
-    backgroundColor: "#007bff",
-    borderRadius: 8,
-    padding: 12,
-    elevation: 2,
-    marginTop: 20,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  }
-});
 
 export default MachineRecipeModal;

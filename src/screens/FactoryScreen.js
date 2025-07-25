@@ -59,11 +59,11 @@ export default function FactoryScreen() {
           {/* Future: Machine Management (what was "Built Machines" & "Machine Builder" ideas) */}
           <TouchableOpacity
             style={styles.gridItem}
-            onPress={() => alert("Coming Soon: Manage your deployed machines!")}
+            onPress={() => navigation.navigate("DeployedMachinesScreen")}
           >
             <Text style={styles.gridItemTitle}>Deployed Machines</Text>
             <Text style={styles.gridItemDescription}>
-              Monitor & upgrade your factory
+              Monitor & upgrade your factory machines
             </Text>
           </TouchableOpacity>
         </View>

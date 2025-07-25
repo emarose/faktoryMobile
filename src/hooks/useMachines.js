@@ -48,6 +48,8 @@ export const useMachines = (
 
   const placeMachine = useCallback(
     (machineIdInInventory, targetNodeId = null, recipeId = null) => {
+      console.log(`Attempting to place machine: ${machineIdInInventory} on node: ${targetNodeId}`);
+      
       // Check inventory via the canAfford callback from useInventory (or directly via inventory prop)
       if ((inventory[machineIdInInventory]?.currentAmount || 0) <= 0) {
         console.warn(
@@ -59,7 +61,7 @@ export const useMachines = (
       }
 
       const machineTypeData = items[machineIdInInventory];
-      if (!machineTypeData || machineTypeData.type !== "buildable") {
+      if (!machineTypeData || machineTypeData.type !== "machine") {
         console.warn(
           `${machineIdInInventory} is not a valid machine type to place.`
         );

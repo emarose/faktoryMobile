@@ -170,7 +170,7 @@ export const useInventory = () => {
     return Object.keys(items)
       .filter(
         (key) =>
-          items[key].type === "buildable" || items[key].type === "building"
+          items[key].type === "machine" || items[key].type === "building"
       )
       .map((key) => {
         const buildableItem = items[key];

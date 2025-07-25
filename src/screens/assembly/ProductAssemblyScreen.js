@@ -18,23 +18,13 @@ const ProductAssemblyScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMachineType, setSelectedMachineType] = useState(null);
 
-  // Get unique machine types present in the player's ownedMachines list
   const ownedCraftingMachineTypes = useMemo(() => {
-    // ownedMachines is an array of IDs like ["smelter", "constructor"]
-    // We only want unique machine types. Since `ownedMachines` should already contain unique IDs,
-    // we can just map these to their full definitions if needed, or use them directly.
-    // The previous logic was trying to filter by counting machines in 'inventory'
-    // but ownedMachines is the direct list.
 
-    // If you only want to show unique *types* of machines (e.g., if you own 2 smelters, only show "Smelter" once)
-    // then a Set is still useful.
     const uniqueOwnedMachineTypes = new Set(ownedMachines);
 
-    // You might want to filter this list to only include machines that actually have recipes defined for them
-    // (though your modal already does this, so it's optional here).
-    // For now, let's just return the unique list of machine IDs.
+
     return Array.from(uniqueOwnedMachineTypes);
-  }, [ownedMachines]); // This now correctly depends only on ownedMachines
+  }, [ownedMachines]); 
 
   const handleMachinePress = (machineId) => {
     setSelectedMachineType(machineId);
@@ -43,20 +33,17 @@ const ProductAssemblyScreen = () => {
 
   const handleModalClose = () => {
     setIsModalVisible(false);
-    setSelectedMachineType(null); // Clear selected machine when modal closes
+    setSelectedMachineType(null); 
   };
 
-  // Helper to get the display name for the MachineGridItem
-  // This helps ensure `MachineGridItem` can render a proper name from the ID
   const getMachineDisplayName = (machineId) => {
-    return items[machineId]?.name || machineId; // Fallback to ID if name not found
+    return items[machineId]?.name || machineId;
   };
 
   const renderMachineGridItem = ({ item }) => (
     <MachineGridItem
-      // Pass the actual machine ID, and its display name
-      machineId={item} // item is the machineType ID (e.g., 'smelter')
-      machineName={getMachineDisplayName(item)} // Pass the display name
+      machineId={item} 
+      machineName={getMachineDisplayName(item)} 
       onPress={handleMachinePress}
     />
   );

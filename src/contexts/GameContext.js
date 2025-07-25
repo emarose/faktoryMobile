@@ -5,7 +5,8 @@ import { useMachines } from "../hooks/useMachines";
 import { useProduction } from "../hooks/useProduction";
 import { useBuilding } from "../hooks/useBuilding";
 import { useMining } from "../hooks/useMining";
-import useCrafting from "../hooks/useCrafting"; // Changed to default import
+import useCrafting from "../hooks/useCrafting";
+import useProductionRate from "../hooks/useProductionRate";
 
 export const GameContext = createContext();
 
@@ -108,9 +109,7 @@ export const GameProvider = ({ children }) => {
 
   const { mineResource } = useMining(addResource, allResourceNodes);
 
-  // --- CRITICAL: Destructure activeCrafts from useCrafting ---
   const { craftItem, activeCrafts } = useCrafting(
-    // useCrafting is now the default export
     inventory,
     ownedMachines,
     addResource,
@@ -118,7 +117,8 @@ export const GameProvider = ({ children }) => {
     canAfford,
     addMachine
   );
-  // --- END CRITICAL ---
+
+  const { getProductionRate } = useProductionRate(placedMachines);
 
   const contextValue = useMemo(
     () => ({
@@ -136,8 +136,9 @@ export const GameProvider = ({ children }) => {
       buildItem,
       placeMachine,
       craftItem,
-      activeCrafts, // <--- EXPOSE activeCrafts
+      activeCrafts,
       addMachine,
+      getProductionRate,
     }),
     [
       inventory,
@@ -154,8 +155,9 @@ export const GameProvider = ({ children }) => {
       buildItem,
       placeMachine,
       craftItem,
-      activeCrafts, // <--- ADD activeCrafts to dependencies
+      activeCrafts,
       addMachine,
+      getProductionRate,
     ]
   );
 
