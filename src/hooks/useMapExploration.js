@@ -47,15 +47,14 @@ export const useMapExploration = (allResourceNodes) => {
     [allResourceNodes]
   );
 
-  // Derived state: Get nodes that are *actually* discovered
   const getDiscoveredNodes = useCallback(() => {
     return allResourceNodes.filter((node) => discoveredNodes[node.id]);
   }, [allResourceNodes, discoveredNodes]);
 
   return {
-    discoveredNodes, // Raw boolean map {nodeId: true/false}
+    discoveredNodes, 
     playerMapPosition,
-    exploreArea, // Function to simulate exploration
-    getDiscoveredNodes, // Function to get the filtered list of discovered nodes
+    exploreArea, 
+    getDiscoveredNodes,
   };
 };

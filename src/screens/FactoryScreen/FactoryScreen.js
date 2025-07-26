@@ -8,21 +8,18 @@ import {
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import ResourceOverviewHeader from "../../components/ResourceOverviewHeader/ResourceOverviewHeader"; // Assuming this path is correct
+import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ResourceOverviewHeader from "./components/ResourceOverviewHeader/ResourceOverviewHeader";
 
 export default function FactoryScreen() {
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Resource Overview Header (at the very top) */}
       <ResourceOverviewHeader />
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {/* Removed "Current Resources" section as it's redundant with the header */}
-        {/* --- Section 1: Core Production & Management --- */}
         <Text style={styles.sectionTitle}>Production & Construction</Text>
         <View style={styles.gridContainer}>
           <TouchableOpacity
@@ -45,10 +42,9 @@ export default function FactoryScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Dedicated Inventory Button */}
           <TouchableOpacity
             style={styles.gridItem}
-            onPress={() => navigation.navigate("InventoryScreen")} // Navigate to the new InventoryScreen
+            onPress={() => navigation.navigate("InventoryScreen")}
           >
             <Text style={styles.gridItemTitle}>Full Inventory</Text>
             <Text style={styles.gridItemDescription}>
@@ -56,7 +52,6 @@ export default function FactoryScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Future: Machine Management (what was "Built Machines" & "Machine Builder" ideas) */}
           <TouchableOpacity
             style={styles.gridItem}
             onPress={() => navigation.navigate("DeployedMachinesScreen")}
@@ -68,10 +63,8 @@ export default function FactoryScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* --- Section 2: Progression & Research (Milestones, Products) --- */}
         <Text style={styles.sectionTitle}>Progression & Products</Text>
         <View style={styles.gridContainer}>
-          {/* Milestones */}
           <TouchableOpacity
             style={styles.gridItem}
             onPress={() =>
@@ -84,7 +77,6 @@ export default function FactoryScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Product Builder / Available Products */}
           <TouchableOpacity
             style={styles.gridItem}
             onPress={() => navigation.navigate("ProductAssemblyScreen")}
@@ -99,55 +91,3 @@ export default function FactoryScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: "#1a1a2e",
-    paddingTop: 0, // No specific padding from this screen, header handles it
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#a0d911",
-    marginTop: 25,
-    marginBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#4a4a6e",
-    paddingBottom: 5,
-  },
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  gridItem: {
-    width: "48%", // Roughly half width, allowing for spacing
-    backgroundColor: "#2a2a4a",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#4a4a6e",
-  },
-  gridItemTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#f0f0f0",
-    textAlign: "center",
-    marginBottom: 5,
-  },
-  gridItemDescription: {
-    fontSize: 12,
-    color: "#cccccc",
-    textAlign: "center",
-  },
-});

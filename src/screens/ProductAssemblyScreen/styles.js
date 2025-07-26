@@ -1,4 +1,3 @@
-// screens/assembly/styles.js
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -19,8 +18,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
    gridContainer: {
-    justifyContent: 'space-around', // Distribute items evenly
-    paddingBottom: 20, // Give some space at the bottom if content goes off screen
+    justifyContent: 'space-around',
+    paddingBottom: 20,
   },
   noMachinesText: {
     color: '#aaa',
@@ -29,9 +28,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     paddingHorizontal: 20,
   },
-  // You might remove recipeCard-specific styles from here if RecipeCard has its own style sheet
-  // For example, if you move recipeCard, recipeCardAvailable, etc. to components/RecipeCard/styles.js
-  // Then this file would become much smaller.
+
 });
 
 export default styles;

@@ -1,27 +1,26 @@
-// styles.js
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e', // Darker background for game feel
-    paddingTop: 10, // A little extra padding from the safe area top
+    backgroundColor: '#1a1a2e',
+    paddingTop: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#e0e0e0', // Light text color
+    color: '#e0e0e0',
     textAlign: 'center',
     marginBottom: 20,
   },
   scrollViewContent: {
     width: '100%',
-    paddingHorizontal: 15, // Padding on sides for the cards
+    paddingHorizontal: 15,
   },
   resourceCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2a4a', // Slightly lighter dark background for cards
+    backgroundColor: '#2a2a4a',
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
@@ -29,21 +28,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 8, // Android shadow
+    elevation: 8,
   },
   resourceInfo: {
-    flex: 1, // Takes up available space
-    marginLeft: 10, // Add some left margin since there's no icon
+    flex: 1,
+    marginLeft: 10,
   },
   resourceName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#c0c0c0', // Slightly dimmed text
+    color: '#c0c0c0',
     marginBottom: 5,
   },
   resourceDescription: {
     fontSize: 14,
-    color: '#a0a0a0', // Lighter gray for description
+    color: '#a0a0a0',
     marginBottom: 10,
   },
   resourceStats: {
@@ -51,14 +50,14 @@ const styles = StyleSheet.create({
     color: '#e0e0e0',
     fontWeight: '600',
   },
-  mineButton: { // Renamed from extractButton for clarity
-    backgroundColor: '#4CAF50', // Green button
+  mineButton: {
+    backgroundColor: '#4CAF50',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
-    marginLeft: 15, // Space from text
+    marginLeft: 15,
   },
-  mineButtonText: { // Renamed from extractButtonText
+  mineButtonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 15,

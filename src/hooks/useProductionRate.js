@@ -1,6 +1,5 @@
-// hooks/useProductionRate.js
-import { useMemo } from 'react';
-import { items } from '../data/items';
+import { useMemo } from "react";
+import { items } from "../data/items";
 
 /**
  * Custom hook to calculate the total production rate for a given resource
@@ -12,28 +11,20 @@ import { items } from '../data/items';
  * and returns its total production rate per second.
  */
 const useProductionRate = (placedMachines) => {
-
-  // Memoize the production rates to avoid recalculating on every render
-  // unless placedMachines changes.
   const productionRates = useMemo(() => {
     const rates = {};
 
-    placedMachines.forEach(machine => {
-      // Find the machine definition from your raw game data to get its output and processing time.
-      const machineDefinition = items[machine.machineType]; // e.g., rawGameData['miner']
+    placedMachines.forEach((machine) => {
+      const machineDefinition = items[machine.machineType];
 
-      if (machineDefinition && machineDefinition.output && machineDefinition.processingTime) {
-        // Assuming a miner/pump directly outputs a raw material at a base rate
-        // You might need more complex logic here if:
-        // - Miners have levels that affect rate
-        // - Different machine types produce at different base speeds
-        // - Recipes need to be considered for constructors/foundries (this hook is for raw material extraction primarily)
+      if (
+        machineDefinition &&
+        machineDefinition.output &&
+        machineDefinition.processingTime
+      ) {
+        const resourceTarget = machine.resourceTarget;
 
-        const resourceTarget = machine.resourceTarget; // The resource ID this machine is extracting
-
-        // For simplicity, let's assume raw material extractors produce 1 unit per processing time
-        // Adjust this if your game has a base production rate per machine type or per resource node
-        const baseRate = 1 / machineDefinition.processingTime; // Units per second
+        const baseRate = 1 / machineDefinition.processingTime;
 
         if (rates[resourceTarget]) {
           rates[resourceTarget] += baseRate;

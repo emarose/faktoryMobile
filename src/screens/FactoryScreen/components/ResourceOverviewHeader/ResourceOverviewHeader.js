@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
+import { useGame } from "../../../../contexts/GameContext";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();

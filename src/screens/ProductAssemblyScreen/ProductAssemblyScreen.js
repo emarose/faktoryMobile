@@ -4,9 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";
 import { items } from "../../data/items";
-import MachineGridItem from "../../components/MachineGridItem/MachineGridItem";
-import MachineRecipeModal from "../../components/MachineRecipeModal/MachineRecipeModal";
+import MachineRecipeModal from "./components/MachineRecipeModal/MachineRecipeModal";
 import styles from "./styles";
+import MachineGridItem from "./components/MachineGridItem/MachineGridItem";
 
 const ProductAssemblyScreen = () => {
   const { inventory, craftItem, ownedMachines } = useGame();

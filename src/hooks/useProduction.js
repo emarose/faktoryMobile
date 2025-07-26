@@ -1,4 +1,3 @@
-// hooks/useProduction.js
 import { useEffect, useRef } from "react";
 import { items } from "../data/items";
 

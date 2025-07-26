@@ -1,11 +1,10 @@
 import { useCallback } from "react";
-// No es necesario importar 'items' aquí si 'buildableItems' ya viene pre-calculado
 
 export const useBuilding = (
   addResourceCallback,
   removeResourcesCallback,
-  buildableItems, // Este array ya contiene la información de los ítems construibles y si se pueden construir
-  addMachine // La función para añadir un tipo de máquina a la lista de poseídas
+  buildableItems,
+  addMachine
 ) => {
   const buildItem = useCallback(
     (itemId) => {
@@ -29,18 +28,15 @@ export const useBuilding = (
         return false;
       }
 
-      // Añadir el ítem construido al inventario (si es un ítem consumible o un producto)
-      // Para máquinas, esto significa que tienes una "máquina" en tu inventario de ítems.
       const quantityBuilt = itemToBuild.output?.[itemId] || 1;
       addResourceCallback(itemId, quantityBuilt);
 
-      // CRÍTICO: Si el ítem construido es una máquina/edificio, también añadirlo a la lista de máquinas poseídas
       if (itemToBuild.type === "buildable" || itemToBuild.type === "machine") {
         console.log(
           "DEBUG: Intentando añadir máquina. itemToBuild:",
           itemToBuild
         );
-        addMachine(itemId); // Llama a la función addMachine para actualizar ownedMachines
+        addMachine(itemId);
         console.log(
           `Máquina construida: ${itemToBuild.name}. Añadida a ownedMachines.`
         );
@@ -51,7 +47,7 @@ export const useBuilding = (
       );
       return true;
     },
-    [addResourceCallback, removeResourcesCallback, buildableItems, addMachine] // Añadir addMachine a las dependencias
+    [addResourceCallback, removeResourcesCallback, buildableItems, addMachine]
   );
 
   return {
