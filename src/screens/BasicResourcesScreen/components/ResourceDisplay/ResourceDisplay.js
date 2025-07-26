@@ -13,8 +13,9 @@ const ResourceDisplay = ({
   hasMiner,
   canManualMine,
   onMinePress,
+  cap = 1000,
 }) => {
-  const { placeMachine } = useGame();
+  const { placeMachine, inventory } = useGame();
 
   const resourceTypeId = Object.keys(items).find(
     (key) => items[key].name === outputItemName
@@ -42,13 +43,13 @@ const ResourceDisplay = ({
   };
 
   return (
-    <View style={styles.resourceCard}>
+    <View style={canManualMine || hasMiner ? styles.resourceCard : styles.resourceCardSmall}>
       <View style={styles.resourceInfo}>
         <Text style={styles.resourceName}>{name}</Text>
         <Text style={styles.resourceDescription}>{fetchedDescription}</Text>
 
         <Text style={styles.resourceStats}>
-          Your Inventory: {currentAmount} {displayName}
+          Your Inventory: {currentAmount} / {cap} {displayName}
         </Text>
 
         <Text style={styles.resourceStats}>
@@ -67,12 +68,13 @@ const ResourceDisplay = ({
           </TouchableOpacity>
         )}
 
-        {!hasMiner && (
+        {/* Only show Place Miner button if user has a miner/pump in inventory */}
+        {!hasMiner && machineType && inventory[machineType]?.currentAmount > 0 && (
           <TouchableOpacity
             style={styles.placeMinerButton}
             onPress={handlePlaceMiner}
           >
-            <Text style={styles.placeMinerButtonText}>Place Miner</Text>
+            <Text style={styles.placeMinerButtonText}>Place {machineType.charAt(0).toUpperCase() + machineType.slice(1)}</Text>
           </TouchableOpacity>
         )}
 

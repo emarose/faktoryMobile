@@ -1,13 +1,16 @@
 {
   "dependencies": {
+    "@expo/metro-runtime": "~4.0.1",
     "@expo/vector-icons": "^14.0.0",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-picker/picker": "^2.11.1",
     "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/stack": "^6.3.4",
     "expo": "^52.0.16",
     "expo-asset": "~11.0.1",
     "expo-constants": "~17.0.3",
+    "expo-dev-client": "~5.0.20",
     "expo-font": "~13.0.1",
     "expo-linking": "~7.0.5",
     "expo-splash-screen": "~0.29.24",
@@ -21,13 +24,11 @@
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.6",
-    "expo-dev-client": "~5.0.20",
-    "undefined": "@expo/metro-runtime}",
-    "@expo/metro-runtime": "~4.0.1"
+    "undefined": "@expo/metro-runtime}"
   },
   "devDependencies": {
-    "@react-native-community/cli": "latest",
-    "@babel/core": "^7.19.3"
+    "@babel/core": "^7.19.3",
+    "@react-native-community/cli": "latest"
   },
   "name": "faktorymobile",
   "version": "1.0.0",

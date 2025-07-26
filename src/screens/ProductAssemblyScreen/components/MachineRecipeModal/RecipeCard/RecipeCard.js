@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { items } from "../../../../../data/items";
-import { cardStyles } from "./styles";
+import styles from "./styles";
 
 const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
   if (!recipe) {
@@ -53,12 +53,12 @@ const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
     : 0;
 
   return (
-    <View style={cardStyles.card}>
-      <Text style={cardStyles.recipeName}>{recipe.name}</Text>
+    <View style={styles.card}>
+      <Text style={styles.recipeName}>{recipe.name}</Text>
 
-      <Text style={cardStyles.sectionTitle}>Inputs:</Text>
+      <Text style={styles.sectionTitle}>Inputs:</Text>
       {Object.entries(recipe.inputs || {}).map(([inputId, amount]) => (
-        <Text key={inputId} style={cardStyles.resourceText}>
+        <Text key={inputId} style={styles.resourceText}>
           - {currentItems[inputId]?.name || inputId}: {amount} (
           <Text
             style={{
@@ -74,28 +74,25 @@ const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
         </Text>
       ))}
 
-      <Text style={cardStyles.sectionTitle}>Output:</Text>
+      <Text style={styles.sectionTitle}>Output:</Text>
       {outputItemKey ? (
-        <Text style={cardStyles.resourceText}>
+        <Text style={styles.resourceText}>
           - {items[outputItemKey]?.name || outputItemKey}: {outputQuantity}
         </Text>
       ) : (
-        <Text style={cardStyles.resourceText}>
+        <Text style={styles.resourceText}>
           No output defined for this recipe.
         </Text>
       )}
 
       {isCrafting && currentCraft ? (
-        <View style={cardStyles.timerContainer}>
-          <Text style={cardStyles.timerText}>
+        <View style={styles.timerContainer}>
+          <Text style={styles.timerText}>
             Crafting: {currentCraft.remainingTime}s remaining
           </Text>
-          <View style={cardStyles.progressBarBackground}>
+          <View style={styles.progressBarBackground}>
             <View
-              style={[
-                cardStyles.progressBarFill,
-                { width: `${progress * 100}%` },
-              ]}
+              style={[styles.progressBarFill, { width: `${progress * 100}%` }]}
             />
           </View>
         </View>
@@ -103,13 +100,13 @@ const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
 
       <TouchableOpacity
         style={[
-          cardStyles.craftButton,
-          (!canCraft || isCrafting) && cardStyles.craftButtonDisabled,
+          styles.craftButton,
+          (!canCraft || isCrafting) && styles.craftButtonDisabled,
         ]}
         onPress={handleCraft}
         disabled={!canCraft || isCrafting}
       >
-        <Text style={cardStyles.craftButtonText}>
+        <Text style={styles.craftButtonText}>
           {isCrafting
             ? "Crafting..."
             : canCraft

@@ -1,35 +1,24 @@
-// hooks/useInventory.js
 import { useState, useCallback, useMemo } from "react";
-import { items } from "../data/items"; // Make sure this path is correct
-
+import { items } from "../data/items";
 export const useInventory = () => {
   const [inventoryState, setInventoryState] = useState(() => {
     const initialItems = {};
-
-    // Initialize ALL items from the 'items' data,
-    // regardless of whether they are nodes or have debug amounts
-    // This ensures every possible item ID used as an input exists.
     Object.keys(items).forEach((key) => {
-      // Exclude '_node' types from the main inventory if you prefer,
-      // but ensure other types (raw materials, products, buildables) are included.
-      // If a '_node' item is also used as a crafting input, you might need to adjust.
-      // For safety, let's include everything except resource nodes that only exist on the map.
       if (!key.endsWith("_node")) {
-        // Adjust this condition if resource node IDs are also inputs
         initialItems[key] = {
           id: key,
           name: items[key].name,
           description: items[key].description,
           icon: items[key].icon,
           type: items[key].type,
-          currentAmount: 0, // Start with 0 for all items by default
+          currentAmount: 0,
         };
       }
     });
 
     // --- DEBUG/TEST: Initial resources for building (apply to initialItems now) ---
     // Ensure these IDs match exactly what's in your items.js
-    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
+/*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
@@ -41,7 +30,6 @@ export const useInventory = () => {
     if (initialItems.wires) initialItems.wires.currentAmount = 50;
     if (initialItems.concrete) initialItems.concrete.currentAmount = 20;
 
-    // Initialize machine *items* (these are the items you hold in inventory when you build a machine)
     if (initialItems.miner) initialItems.miner.currentAmount = 0;
     if (initialItems.smelter) initialItems.smelter.currentAmount = 0;
     if (initialItems.constructor) initialItems.constructor.currentAmount = 0;
@@ -49,13 +37,11 @@ export const useInventory = () => {
     if (initialItems.manufacturer) initialItems.manufacturer.currentAmount = 0;
     if (initialItems.refinery) initialItems.refinery.currentAmount = 0;
     if (initialItems.foundry) initialItems.foundry.currentAmount = 0;
-    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0;
-    // --- END DEBUG/TEST ---
+    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0; */
 
-    // Initialize ownedMachines as an empty array (for unique machine types you've built)
     const initialOwnedMachines = [];
-    // For testing, add a 'smelter' to ownedMachines if you want to see recipes immediately.
-    //initialOwnedMachines.push("smelter"); // REMOVE OR COMMENT THIS LINE ONCE BUILDING IS FULLY FUNCTIONAL
+    // For testing, add a 'smelter' instance to ownedMachines if you want to see recipes immediately.
+    // initialOwnedMachines.push({ id: `smelter-${Date.now()}-0`, type: "smelter", currentRecipeId: null });
 
     return {
       items: initialItems,
@@ -80,9 +66,14 @@ export const useInventory = () => {
           currentAmount: 0,
         };
       }
+      // Cap the resource at 1000
+      const updatedAmount = Math.min(
+        newItems[resourceId].currentAmount + amount,
+        1000
+      );
       newItems[resourceId] = {
         ...newItems[resourceId],
-        currentAmount: newItems[resourceId].currentAmount + amount,
+        currentAmount: updatedAmount,
       };
       return { ...prevInventory, items: newItems };
     });
@@ -127,19 +118,16 @@ export const useInventory = () => {
 
   const addMachine = useCallback((machineType) => {
     setInventoryState((prevInventory) => {
-      // Si el tipo de máquina ya está en la lista de máquinas poseídas, no hacer nada para evitar duplicados.
-      // Esto asume que 'ownedMachines' es una lista de TIPOS únicos de máquinas que el jugador tiene.
-      if (!prevInventory.ownedMachines.includes(machineType)) {
-        console.log(
-          `Añadiendo tipo de máquina a ownedMachines: ${machineType}`
-        );
-        return {
-          ...prevInventory,
-          ownedMachines: [...prevInventory.ownedMachines, machineType],
-        };
-      }
-      console.log(`Tipo de máquina ${machineType} ya poseído.`);
-      return prevInventory; // Retorna el estado anterior si ya existe
+      // Always add a new machine instance with a unique id
+      const newMachine = {
+        id: `${machineType}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+        type: machineType,
+        currentRecipeId: null,
+      };
+      return {
+        ...prevInventory,
+        ownedMachines: [...prevInventory.ownedMachines, newMachine],
+      };
     });
   }, []);
 
@@ -209,5 +197,16 @@ export const useInventory = () => {
     getInventoryItem,
     canAfford,
     buildableItems,
+    assignRecipeToMachine: (machineId, recipeId) => {
+      setInventoryState((prevInventory) => {
+        const updatedMachines = prevInventory.ownedMachines.map((machine) =>
+          machine.id === machineId ? { ...machine, currentRecipeId: recipeId } : machine
+        );
+        return {
+          ...prevInventory,
+          ownedMachines: updatedMachines,
+        };
+      });
+    },
   };
 };

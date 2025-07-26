@@ -1,302 +1,104 @@
-import { useMemo, useState } from "react";
-import { Text, View, ScrollView, TouchableOpacity, Modal } from "react-native";
+import React from "react";
+import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
+import { useNavigation } from "@react-navigation/native";
+
 
 const DeployedMachinesScreen = () => {
-  const { placedMachines, ownedMachines, allResourceNodes, setMachineRecipe } =
-    useGame();
-  const [selectedMachine, setSelectedMachine] = useState(null);
-  const [viewMode, setViewMode] = useState("all"); // 'all', 'placed', 'owned'
+  const { placedMachines, ownedMachines, allResourceNodes } = useGame();
+  const navigation = useNavigation();
 
-  const groupedMachines = useMemo(() => {
-    const groups = {};
-    const machines =
-      viewMode === "placed"
-        ? placedMachines
-        : viewMode === "owned"
-        ? ownedMachines.filter(
-            (m) => !placedMachines.find((p) => p.id === m.id)
-          )
-        : [
-            ...placedMachines,
-            ...ownedMachines.filter(
-              (m) => !placedMachines.find((p) => p.id === m.id)
-            ),
-          ];
+  // Combine all machine instances
+  const allMachines = [...placedMachines, ...ownedMachines.filter(m => !placedMachines.some(p => p.id === m.id))];
 
-    machines.forEach((machine) => {
-      const machineType =
-        items[machine.machineType]?.name || machine.machineType;
-      if (!groups[machineType]) {
-        groups[machineType] = [];
-      }
-      groups[machineType].push(machine);
-    });
-    return groups;
-  }, [placedMachines, ownedMachines, viewMode]);
+  // Helper to get node info
+  const getNodeInfo = (machine) => {
+    // Prefer assignedNodeId for miners/pumps
+    const nodeId = machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
+    if (!nodeId) return null;
+    const node = allResourceNodes.find(n => n.id === nodeId);
+    return node ? node : null;
+  };
 
-  // Helper to determine machine state
+  // Helper to get machine state
   const getMachineState = (machine) => {
-    if (!machine.currentRecipeId) return "Idle";
-
-    const recipe = items[machine.currentRecipeId];
-    if (!recipe || !recipe.inputs) return "Invalid Recipe";
-
-    // Check if machine is placed and if the recipe requires placement
-    const isPlaced = placedMachines.some((p) => p.id === machine.id);
-    if (recipe.requiresPlacement && !isPlaced) return "Needs Placement";
-
-    // If machine is configured for resource extraction
-    if (machine.resourceTarget) {
-      const resourceName =
-        items[machine.resourceTarget]?.name || "Unknown Resource";
-      return `Extracting ${resourceName}`;
+    const node = getNodeInfo(machine);
+    if (machine.type === "miner" || machine.type === "pump") {
+      if (node) {
+        if (node.depleted) return `Depleted: ${node.name}`;
+        if (node.currentAmount !== undefined && node.currentAmount < 1000) {
+          return `Extracting ${node.name}`;
+        }
+        if (node.currentAmount >= 1000) {
+          return `Idle (Reached Cap)`;
+        }
+      }
+      if (machine.assignedNodeId) {
+        const assignedNode = allResourceNodes.find(n => n.id === machine.assignedNodeId);
+        if (assignedNode) {
+          return `Extracting ${assignedNode.name}`;
+        }
+      }
+      return "Idle (Not placed)";
     }
-
-    const outputItemName = recipe.name || "Unknown Item";
-    return `Processing ${outputItemName}`;
+    if (machine.currentRecipeId) {
+      const recipe = items[machine.currentRecipeId];
+      if (!recipe || !recipe.inputs) return "Invalid Recipe";
+      return `Processing ${recipe.name}`;
+    }
+    return "Idle";
   };
 
-  const getNodeNameById = (nodeId) => {
-    const node = allResourceNodes.find((n) => n.id === nodeId);
-    return node ? node.name : nodeId;
-  };
-
-  // --- Machine Detail View Component ---
-  const MachineDetailModal = ({ machine, onClose }) => {
-    if (!machine) return null;
-
-    const machineDefinition = items[machine.machineType];
-    const machineName = machineDefinition?.name || machine.machineType;
-    const machineDescription = machineDefinition?.description || "";
-    const machineLevel = machine.level || 1;
-
-    const availableRecipes = useMemo(() => {
-      return Object.values(items).filter(
-        (item) => item.inputs && item.machine === machine.machineType
-      );
-    }, [machine.machineType]);
-
-    const currentRecipeOutputName =
-      machine.currentRecipeId && items[machine.currentRecipeId]?.name;
-
-    const handleAssignRecipe = (recipeId) => {
-      setMachineRecipe(machine.id, recipeId);
-      console.log(`Assigned recipe ${recipeId} to machine ${machine.id}`);
-    };
-
-    const handleRemoveRecipe = () => {
-      setMachineRecipe(machine.id, null);
-      console.log(`Cleared recipe for machine ${machine.id}`);
-    };
-
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={!!machine}
-        onRequestClose={onClose}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalTitle}>{machineName} Details</Text>
-            <ScrollView style={styles.modalScrollView}>
-              <Text style={styles.modalText}>
-                **ID:** {machine.id.substring(0, 8)}...
-              </Text>
-              <Text style={styles.modalText}>**Type:** {machineName}</Text>
-              <Text style={styles.modalText}>
-                **Description:** {machineDescription}
-              </Text>
-              {machine.nodeTargetId && (
-                <Text style={styles.modalText}>
-                  **Node:** {getNodeNameById(machine.nodeTargetId)}
-                </Text>
-              )}
-              <Text style={styles.modalText}>
-                **State:** {getMachineState(machine)}
-              </Text>
-              <Text style={styles.modalText}>**Level:** {machineLevel}</Text>
-
-              {machineDefinition.type === "machine" && (
-                <View style={styles.recipeSection}>
-                  <Text style={styles.sectionTitle}>Assign Recipe</Text>
-                  {machine.currentRecipeId && currentRecipeOutputName ? (
-                    <View>
-                      <Text style={styles.currentRecipeText}>
-                        Currently: Crafting {currentRecipeOutputName}
-                      </Text>
-                      <TouchableOpacity
-                        style={styles.removeRecipeButton}
-                        onPress={handleRemoveRecipe}
-                      >
-                        <Text style={styles.removeRecipeButtonText}>
-                          Clear Recipe
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ) : (
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      style={styles.recipeScroll}
-                    >
-                      {availableRecipes.length > 0 ? (
-                        availableRecipes.map((recipe) => (
-                          <TouchableOpacity
-                            key={recipe.id}
-                            style={styles.recipeButton}
-                            onPress={() => handleAssignRecipe(recipe.id)}
-                          >
-                            <Text style={styles.recipeButtonText}>
-                              Craft {recipe.name}
-                            </Text>
-                          </TouchableOpacity>
-                        ))
-                      ) : (
-                        <Text style={styles.emptyRecipeText}>
-                          No recipes available for this machine type.
-                        </Text>
-                      )}
-                    </ScrollView>
-                  )}
-                </View>
-              )}
-
-              <TouchableOpacity
-                style={styles.upgradeButton}
-                onPress={() => {
-                  console.log(`Upgrade triggered for ${machine.id}`);
-                }}
-              >
-                <Text style={styles.upgradeButtonText}>Upgrade Machine</Text>
-              </TouchableOpacity>
-            </ScrollView>
-
-            <Pressable style={styles.closeButton} onPress={onClose}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-
-  const ViewModeSelector = () => (
-    <View style={styles.viewModeContainer}>
-      <TouchableOpacity
-        style={[
-          styles.modeButton,
-          viewMode === "all" && styles.modeButtonActive,
-        ]}
-        onPress={() => setViewMode("all")}
-      >
-        <Text
-          style={[
-            styles.modeButtonText,
-            viewMode === "all" && { color: "#ffffff" },
-          ]}
-        >
-          All Machines
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.modeButton,
-          viewMode === "placed" && styles.modeButtonActive,
-        ]}
-        onPress={() => setViewMode("placed")}
-      >
-        <Text
-          style={[
-            styles.modeButtonText,
-            viewMode === "placed" && { color: "#ffffff" },
-          ]}
-        >
-          Placed Only
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.modeButton,
-          viewMode === "owned" && styles.modeButtonActive,
-        ]}
-        onPress={() => setViewMode("owned")}
-      >
-        <Text
-          style={[
-            styles.modeButtonText,
-            viewMode === "owned" && { color: "#ffffff" },
-          ]}
-        >
-          Unplaced Only
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+  // Group machines by type for better separation
+  const machinesByType = allMachines.reduce((acc, machine) => {
+    const typeName = items[machine.type]?.name || machine.type;
+    if (!acc[typeName]) acc[typeName] = [];
+    acc[typeName].push(machine);
+    return acc;
+  }, {});
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Machines Overview</Text>
-      <ViewModeSelector />
-
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {Object.keys(groupedMachines).length > 0 ? (
-          Object.keys(groupedMachines)
-            .sort()
-            .map((groupName) => (
-              <View key={groupName} style={styles.machineGroup}>
-                <Text style={styles.groupTitle}>{groupName}s</Text>
-                {groupedMachines[groupName].map((machine) => (
+        {Object.keys(machinesByType).length > 0 ? (
+          Object.keys(machinesByType).map((typeName) => (
+            <View key={typeName} style={styles.machineTypeSection}>
+              <Text style={styles.groupTitle}>{typeName}s</Text>
+              {machinesByType[typeName].map((machine) => {
+                const node = getNodeInfo(machine);
+                const recipe = machine.currentRecipeId ? items[machine.currentRecipeId] : null;
+                return (
                   <TouchableOpacity
                     key={machine.id}
-                    style={styles.machineCard}
-                    onPress={() => setSelectedMachine(machine)}
+                    style={[styles.machineCard, { borderColor: '#4CAF50', borderWidth: 1, marginBottom: 12 }]}
+                    onPress={() => navigation.navigate('MachineDetailsScreen', { machine, node, recipe })}
                   >
                     <View style={styles.machineInfo}>
-                      <Text style={styles.machineName}>
-                        {items[machine.machineType]?.name ||
-                          machine.machineType}
+                      <Text style={[styles.machineName, { color: '#4CAF50' }]}>
+                        {items[machine.type]?.name || machine.type}
                       </Text>
-                      <Text style={styles.machineStatus}>
-                        {getMachineState(machine)}
-                      </Text>
-                      {placedMachines.some((p) => p.id === machine.id) &&
-                        machine.nodeId && (
-                          <Text style={styles.nodeName}>
-                            @ {getNodeNameById(machine.nodeId)}
-                          </Text>
-                        )}
+                      <Text style={styles.machineStatus}>{getMachineState(machine)}</Text>
+                      {node && <Text style={styles.nodeName}>@ {node.name}</Text>}
+                      {recipe && <Text style={styles.recipeName}>Recipe: {recipe.name}</Text>}
+                      {machine.level && <Text style={styles.machineLevel}>Level: {machine.level}</Text>}
+                      {/* Additional info: show currentAmount for extractors */}
+                      {(machine.type === "miner" || machine.type === "pump") && node && (
+                        <Text style={styles.machineAmount}>Current: {node.currentAmount ?? 0} / 1000</Text>
+                      )}
                     </View>
                   </TouchableOpacity>
-                ))}
-              </View>
-            ))
+                );
+              })}
+            </View>
+          ))
         ) : (
-          <Text style={styles.emptyStateText}>
-            No machines{" "}
-            {viewMode === "placed"
-              ? "placed"
-              : viewMode === "owned"
-              ? "owned"
-              : ""}{" "}
-            yet.
-            {viewMode === "placed"
-              ? " Start placing your machines!"
-              : viewMode === "owned"
-              ? " Start crafting machines!"
-              : " Start building your factory!"}
-          </Text>
+          <Text style={styles.emptyStateText}>No machines deployed or owned yet.</Text>
         )}
       </ScrollView>
-
-      <MachineDetailModal
-        machine={selectedMachine}
-        onClose={() => setSelectedMachine(null)}
-      />
     </SafeAreaView>
   );
 };

@@ -1,6 +1,22 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+  resourceCardSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#23233a',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 3,
+    opacity: 0.7,
+    minHeight: 60,
+    maxHeight: 80,
+  },
   container: {
     flex: 1,
     backgroundColor: '#1a1a2e',

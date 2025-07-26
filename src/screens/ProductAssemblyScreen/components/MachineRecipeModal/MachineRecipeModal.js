@@ -15,20 +15,28 @@ import RecipeCard from "./RecipeCard/RecipeCard";
 const MachineRecipeModal = ({
   isVisible,
   onClose,
-  machineType,
+  machineId,
+  ownedMachines,
+  assignRecipeToMachine,
   inventory,
   craftItem,
 }) => {
   const { activeCrafts } = useGame();
 
+  // Find the machine object by id
+  const machine = ownedMachines?.find((m) => m.id === machineId);
+  const machineType = machine?.type;
+
   useEffect(() => {
     if (isVisible) {
       console.log(
-        "MODAL DEBUG: MachineRecipeModal is visible. machineType received:",
+        "MODAL DEBUG: MachineRecipeModal is visible. machineId received:",
+        machineId,
+        "machineType:",
         machineType
       );
     }
-  }, [isVisible, machineType]);
+  }, [isVisible, machineId, machineType]);
 
   const recipesForMachine = useMemo(() => {
     if (!machineType) {
@@ -37,9 +45,7 @@ const MachineRecipeModal = ({
       );
       return [];
     }
-
     const machineRecipes = [];
-
     Object.values(items).forEach((itemDefinition) => {
       if (
         itemDefinition.machine === machineType &&
@@ -47,18 +53,11 @@ const MachineRecipeModal = ({
         itemDefinition.output
       ) {
         machineRecipes.push(itemDefinition);
-        console.log(
-          `  FOUND RECIPE: ${itemDefinition.name} for ${machineType}`
-        );
-      } else {
       }
     });
-
-    console.log(
-      `MODAL DEBUG: Found ${machineRecipes.length} recipes for ${machineType}.`
-    );
     return machineRecipes;
   }, [machineType, items]);
+
   return (
     <Modal
       animationType="none"
@@ -71,7 +70,6 @@ const MachineRecipeModal = ({
           <Text style={modalStyles.modalTitle}>
             Recipes for {items[machineType]?.name || machineType}
           </Text>
-
           <ScrollView style={modalStyles.scrollView}>
             {recipesForMachine.length > 0 ? (
               recipesForMachine.map((recipe) => (
@@ -81,6 +79,10 @@ const MachineRecipeModal = ({
                   inventory={inventory}
                   craftItem={craftItem}
                   activeCrafts={activeCrafts}
+                  onSelectRecipe={() => {
+                    assignRecipeToMachine(machineId, recipe.id);
+                    onClose();
+                  }}
                 />
               ))
             ) : (
@@ -89,7 +91,6 @@ const MachineRecipeModal = ({
               </Text>
             )}
           </ScrollView>
-
           <TouchableOpacity style={modalStyles.closeButton} onPress={onClose}>
             <Text style={modalStyles.textStyle}>Close</Text>
           </TouchableOpacity>

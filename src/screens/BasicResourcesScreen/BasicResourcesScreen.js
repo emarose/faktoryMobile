@@ -26,6 +26,7 @@ const BasicResourcesScreen = () => {
               hasMiner={node.hasMiner}
               canManualMine={node.canManualMine}
               onMinePress={() => mineResource(node.id)}
+              cap={1000}
             />
           ))
         ) : (

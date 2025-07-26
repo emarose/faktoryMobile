@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export default cardStyles = StyleSheet.create({
+export default styles = StyleSheet.create({
   card: {
     backgroundColor: "#3a3a5a",
     borderRadius: 8,

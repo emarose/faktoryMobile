@@ -90,9 +90,9 @@ export const GameProvider = ({ children }) => {
     canAfford,
     buildableItems,
     addMachine,
-  } = useInventory();
+  } = useInventory(placedMachines, allResourceNodes);
 
-  const { placedMachines, mineableNodes, placeMachine } = useMachines(
+  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine } = useMachines(
     inventory,
     removeResources,
     allResourceNodes
@@ -107,7 +107,7 @@ export const GameProvider = ({ children }) => {
     addMachine
   );
 
-  const { mineResource } = useMining(addResource, allResourceNodes);
+  const { mineResource } = useMining(addResource, allResourceNodes, placedMachines, inventory);
 
   const { craftItem, activeCrafts } = useCrafting(
     inventory,
@@ -128,6 +128,7 @@ export const GameProvider = ({ children }) => {
       buildableItems,
       allResourceNodes,
       placedMachines,
+      setPlacedMachines, // Expose setPlacedMachines
       addResource,
       removeResources,
       getInventoryItem,
@@ -147,6 +148,7 @@ export const GameProvider = ({ children }) => {
       buildableItems,
       allResourceNodes,
       placedMachines,
+      setPlacedMachines, // Add dependency
       addResource,
       removeResources,
       getInventoryItem,

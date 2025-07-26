@@ -135,6 +135,7 @@ export const useMachines = (
 
   return {
     placedMachines,
+    setPlacedMachines,
     mineableNodes,
     placeMachine,
     // Add functions for updating machine recipes, removing machines, etc.

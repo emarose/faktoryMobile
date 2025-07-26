@@ -9,25 +9,29 @@ import styles from "./styles";
 import MachineGridItem from "./components/MachineGridItem/MachineGridItem";
 
 const ProductAssemblyScreen = () => {
-  const { inventory, craftItem, ownedMachines } = useGame();
+  const { inventory, craftItem, ownedMachines, assignRecipeToMachine } = useGame();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMachineType, setSelectedMachineType] = useState(null);
+  const [selectedMachineId, setSelectedMachineId] = useState(null);
 
   const ownedCraftingMachineTypes = useMemo(() => {
-    const uniqueOwnedMachineTypes = new Set(ownedMachines);
-
-    return Array.from(uniqueOwnedMachineTypes);
-  }, [ownedMachines]);
+    // Filter only machine objects of type 'machine'
+    return ownedMachines.filter(
+      (machine) =>
+        inventory[machine.type] &&
+        inventory[machine.type].type === "machine"
+    );
+  }, [ownedMachines, inventory]);
 
   const handleMachinePress = (machineId) => {
-    setSelectedMachineType(machineId);
+    setSelectedMachineId(machineId);
     setIsModalVisible(true);
   };
 
   const handleModalClose = () => {
     setIsModalVisible(false);
-    setSelectedMachineType(null);
+    setSelectedMachineId(null);
   };
 
   const getMachineDisplayName = (machineId) => {
@@ -36,9 +40,11 @@ const ProductAssemblyScreen = () => {
 
   const renderMachineGridItem = ({ item }) => (
     <MachineGridItem
-      machineId={item}
-      machineName={getMachineDisplayName(item)}
-      onPress={handleMachinePress}
+      machineId={item.id}
+      machineType={item.type}
+      machineName={getMachineDisplayName(item.type)}
+      currentRecipeId={item.currentRecipeId}
+      onPress={() => handleMachinePress(item.id)}
     />
   );
 
@@ -50,7 +56,7 @@ const ProductAssemblyScreen = () => {
         <FlatList
           data={ownedCraftingMachineTypes}
           renderItem={renderMachineGridItem}
-          keyExtractor={(item) => item} 
+          keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={styles.gridContainer}
         />
@@ -64,9 +70,11 @@ const ProductAssemblyScreen = () => {
       {/* The Machine Recipe Modal */}
       <MachineRecipeModal
         isVisible={isModalVisible}
-        onClose={handleModalClose} 
-        machineType={selectedMachineType}
-        inventory={{ items: inventory, ownedMachines: ownedMachines }}
+        onClose={handleModalClose}
+        machineId={selectedMachineId}
+        ownedMachines={ownedMachines}
+        assignRecipeToMachine={assignRecipeToMachine}
+        inventory={inventory}
         craftItem={craftItem}
       />
     </SafeAreaView>

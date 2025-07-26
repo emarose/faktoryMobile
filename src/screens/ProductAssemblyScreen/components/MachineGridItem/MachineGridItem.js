@@ -1,24 +1,18 @@
-import { TouchableOpacity, Text, View, Image, StyleSheet } from "react-native";
-import { items } from "../../../../data/items";
+import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 
-const MachineGridItem = ({ machineId, onPress }) => {
-  const machine = items[machineId];
-  if (!machine) {
-    return null;
-  }
-
-  // const icon = machine.icon || require('../../assets/icons/default_machine.png');
-
+const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId, onPress }) => {
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => onPress(machineId)}
     >
-      {/* <Image source={icon} style={styles.icon} /> */}
       <View style={styles.iconPlaceholder}>
-        <Text style={styles.iconText}>{machine.name.charAt(0)}</Text>
+        <Text style={styles.iconText}>{machineName.charAt(0)}</Text>
       </View>
-      <Text style={styles.name}>{machine.name}</Text>
+      <Text style={styles.name}>{machineName}</Text>
+      {currentRecipeId && (
+        <Text style={styles.recipeText}>Recipe: {currentRecipeId}</Text>
+      )}
     </TouchableOpacity>
   );
 };
