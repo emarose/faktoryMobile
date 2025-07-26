@@ -4,9 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useColorScheme } from "react-native";
 
 import Colors from "../constants/Colors";
-import ProductionScreen from "../screens/ProductionScreen";
-import MachineryScreen from "../screens/MachineryScreen";
-import FactoryScreen from "../screens/FactoryScreen";
+
+import FactoryScreen from "../screens/FactoryScreen/FactoryScreen";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -20,7 +19,7 @@ export default function BottomTabNavigator() {
     >
       <BottomTab.Screen
         name="Production"
-        component={ProductionScreen}
+        component={FactoryScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
@@ -40,7 +39,7 @@ export default function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Machinery"
-        component={MachineryScreen}
+        component={FactoryScreen}
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
@@ -63,7 +62,7 @@ function TabOneNavigator() {
     <TabOneStack.Navigator>
       <TabOneStack.Screen
         name="Production"
-        component={ProductionScreen}
+        component={FactoryScreen}
         options={{ headerTitle: "Production" }}
       />
     </TabOneStack.Navigator>
@@ -77,7 +76,7 @@ function TabTwoNavigator() {
     <TabTwoStack.Navigator>
       <TabTwoStack.Screen
         name="Machinery"
-        component={MachineryScreen}
+        component={FactoryScreen}
         options={{ headerTitle: "Machinery" }}
       />
     </TabTwoStack.Navigator>

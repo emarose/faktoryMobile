@@ -7,12 +7,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
-import BuildScreen from "../screens/build/BuildScreen";
-import MapScreen from "../screens/map/MapScreen";
-import BasicResourcesScreen from "../screens/basicResources/BasicResourcesScreen";
-import InventoryScreen from "../screens/inventory/inventoryScreen";
-import ProductAssemblyScreen from "../screens/assembly/ProductAssemblyScreen";
-import DeployedMachinesScreen from "../screens/deployedMachinesScreen/DeployedMachinesScreen";
+import BuildScreen from "../screens/BuildScreen/BuildScreen";
+import MapScreen from "../screens/MapScreen/MapScreen";
+import InventoryScreen from "../screens/InventoryScreen/InventoryScreen";
+import ProductAssemblyScreen from "../screens/ProductAssemblyScreen/ProductAssemblyScreen";
+import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
+import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResourcesScreen";
 
 export default function Navigation({ colorScheme }) {
   return (

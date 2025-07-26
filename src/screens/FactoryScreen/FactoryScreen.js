@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import ResourceOverviewHeader from "../components/ResourceOverviewHeader/ResourceOverviewHeader"; // Assuming this path is correct
+import ResourceOverviewHeader from "../../components/ResourceOverviewHeader/ResourceOverviewHeader"; // Assuming this path is correct
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FactoryScreen() {

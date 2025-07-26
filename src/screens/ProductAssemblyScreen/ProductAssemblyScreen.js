@@ -1,30 +1,24 @@
-// screens/ProductAssemblyScreen.js
-import React, { useMemo, useState } from "react";
-import { Text, View, FlatList, StyleSheet } from "react-native";
+import { useMemo, useState } from "react";
+import { Text, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";
-import { items } from "../../data/items"; // Still needed to get machine names/definitions
+import { items } from "../../data/items";
 import MachineGridItem from "../../components/MachineGridItem/MachineGridItem";
 import MachineRecipeModal from "../../components/MachineRecipeModal/MachineRecipeModal";
-import styles from "./styles"; // Assuming your styles are in a separate file
+import styles from "./styles";
 
 const ProductAssemblyScreen = () => {
-  // Destructure everything you need from useGame
-  const { inventory, craftItem, ownedMachines } = useGame(); // ownedMachines is correctly destructured
-  console.log("🚀 ~ ProductAssemblyScreen ~ ownedMachines:", ownedMachines)
+  const { inventory, craftItem, ownedMachines } = useGame();
 
-  // State for modal visibility and the currently selected machine
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMachineType, setSelectedMachineType] = useState(null);
 
   const ownedCraftingMachineTypes = useMemo(() => {
-
     const uniqueOwnedMachineTypes = new Set(ownedMachines);
 
-
     return Array.from(uniqueOwnedMachineTypes);
-  }, [ownedMachines]); 
+  }, [ownedMachines]);
 
   const handleMachinePress = (machineId) => {
     setSelectedMachineType(machineId);
@@ -33,7 +27,7 @@ const ProductAssemblyScreen = () => {
 
   const handleModalClose = () => {
     setIsModalVisible(false);
-    setSelectedMachineType(null); 
+    setSelectedMachineType(null);
   };
 
   const getMachineDisplayName = (machineId) => {
@@ -42,8 +36,8 @@ const ProductAssemblyScreen = () => {
 
   const renderMachineGridItem = ({ item }) => (
     <MachineGridItem
-      machineId={item} 
-      machineName={getMachineDisplayName(item)} 
+      machineId={item}
+      machineName={getMachineDisplayName(item)}
       onPress={handleMachinePress}
     />
   );
@@ -56,8 +50,8 @@ const ProductAssemblyScreen = () => {
         <FlatList
           data={ownedCraftingMachineTypes}
           renderItem={renderMachineGridItem}
-          keyExtractor={(item) => item} // The item itself is the unique ID
-          numColumns={2} // Display items in 2 columns
+          keyExtractor={(item) => item} 
+          numColumns={2}
           contentContainerStyle={styles.gridContainer}
         />
       ) : (
@@ -70,9 +64,9 @@ const ProductAssemblyScreen = () => {
       {/* The Machine Recipe Modal */}
       <MachineRecipeModal
         isVisible={isModalVisible}
-        onClose={handleModalClose} // Use the dedicated close handler
+        onClose={handleModalClose} 
         machineType={selectedMachineType}
-        inventory={{ items: inventory, ownedMachines: ownedMachines }} // Pass both items and ownedMachines
+        inventory={{ items: inventory, ownedMachines: ownedMachines }}
         craftItem={craftItem}
       />
     </SafeAreaView>
