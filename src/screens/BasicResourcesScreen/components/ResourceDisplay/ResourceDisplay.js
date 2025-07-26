@@ -2,6 +2,7 @@ import { Text, View, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import { useGame } from "../../../../contexts/GameContext";
 import { items } from "../../../../data/items";
+import RESOURCE_CAP from '../../../../constants/ResourceCap';
 
 const ResourceDisplay = ({
   id,
@@ -13,7 +14,7 @@ const ResourceDisplay = ({
   hasMiner,
   canManualMine,
   onMinePress,
-  cap = 1000,
+  cap = RESOURCE_CAP,
 }) => {
   const { placeMachine, inventory } = useGame();
 
@@ -49,7 +50,7 @@ const ResourceDisplay = ({
         <Text style={styles.resourceDescription}>{fetchedDescription}</Text>
 
         <Text style={styles.resourceStats}>
-          Your Inventory: {currentAmount} / {cap} {displayName}
+          Your Inventory: {currentAmount} / {RESOURCE_CAP} {displayName}
         </Text>
 
         <Text style={styles.resourceStats}>

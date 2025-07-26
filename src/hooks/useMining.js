@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { items } from "../data/items";
+import RESOURCE_CAP from "../constants/ResourceCap";
 
 export const useMining = (
   addResourceCallback,
@@ -20,8 +21,7 @@ export const useMining = (
       const output = items[node.type].output;
       for (const resourceId in output) {
         // --- CAP LOGIC ---
-        // The cap for each resource is always 100, regardless of miners
-        const maxAmount = 1000;
+        const maxAmount = RESOURCE_CAP;
         const currentAmount =
           inventory && inventory[resourceId]
             ? inventory[resourceId].currentAmount

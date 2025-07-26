@@ -5,6 +5,7 @@ import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ResourceDisplay from "./components/ResourceDisplay/ResourceDisplay";
+import RESOURCE_CAP from "../../constants/ResourceCap";
 
 const BasicResourcesScreen = () => {
   const { mineableNodes, mineResource } = useGame();
@@ -26,7 +27,7 @@ const BasicResourcesScreen = () => {
               hasMiner={node.hasMiner}
               canManualMine={node.canManualMine}
               onMinePress={() => mineResource(node.id)}
-              cap={1000}
+              cap={RESOURCE_CAP}
             />
           ))
         ) : (

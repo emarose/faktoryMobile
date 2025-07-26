@@ -1,5 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { items } from "../data/items";
+import RESOURCE_CAP from '../constants/ResourceCap';
+
 export const useInventory = () => {
   const [inventoryState, setInventoryState] = useState(() => {
     const initialItems = {};
@@ -62,14 +64,13 @@ export const useInventory = () => {
           name: items[resourceId]?.name || resourceId,
           description: items[resourceId]?.description || "",
           icon: items[resourceId]?.icon || "",
-          type: items[resourceId]?.type || "unknown", // Set a default type
+          type: items[resourceId]?.type || "unknown",
           currentAmount: 0,
         };
       }
-      // Cap the resource at 1000
       const updatedAmount = Math.min(
         newItems[resourceId].currentAmount + amount,
-        1000
+        RESOURCE_CAP
       );
       newItems[resourceId] = {
         ...newItems[resourceId],
