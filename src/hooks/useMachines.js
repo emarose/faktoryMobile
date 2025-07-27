@@ -1,4 +1,3 @@
-// hooks/useMachines.js
 import { useState, useCallback, useMemo } from "react";
 import { items } from "../data/items";
 
@@ -9,7 +8,6 @@ export const useMachines = (
 ) => {
   const [placedMachines, setPlacedMachines] = useState([]);
 
-  // Memoized data about mineable nodes with current state
   const mineableNodes = useMemo(() => {
     return allResourceNodes
       .filter(

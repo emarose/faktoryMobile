@@ -30,18 +30,57 @@ const Stack = createStackNavigator();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: "#1a1a2e",
+        },
+        headerTintColor: "#fff",
+      }}
+    >
+      <Stack.Screen
+        name="Root"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
+
       <Stack.Screen
         name="BasicResourcesScreen"
         component={BasicResourcesScreen}
+        options={{ title: "Basic Resources" }}
       />
-      <Stack.Screen name="BuildScreen" component={BuildScreen} />
-      <Stack.Screen name="MapScreen" component={MapScreen} />
-      <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
-      <Stack.Screen name="ProductAssemblyScreen" component={ProductAssemblyScreen} />
-      <Stack.Screen name="DeployedMachinesScreen" component={DeployedMachinesScreen} />
-      <Stack.Screen name="MachineDetailsScreen" component={MachineDetailsScreen} options={{ title: 'Machine Details' }} />
+      <Stack.Screen
+        name="BuildScreen"
+        component={BuildScreen}
+        options={{ title: "Build Machines" }}
+      />
+      <Stack.Screen
+        name="MapScreen"
+        component={MapScreen}
+        options={{ title: "World Map" }}
+      />
+      <Stack.Screen
+        name="InventoryScreen"
+        component={InventoryScreen}
+        options={{ title: "Inventory" }}
+      />
+      <Stack.Screen
+        name="ProductAssemblyScreen"
+        component={ProductAssemblyScreen}
+        options={{ title: "Product Assembly" }}
+      />
+      <Stack.Screen
+        name="DeployedMachinesScreen"
+        component={DeployedMachinesScreen}
+        options={{ title: "Deployed Machines" }}
+      />
+      <Stack.Screen
+        name="MachineDetailsScreen"
+        component={MachineDetailsScreen}
+        options={{ title: "Machine Details" }}
+      />
     </Stack.Navigator>
   );
 }

@@ -56,7 +56,7 @@ const MachineRecipeModal = ({
       }
     });
     return machineRecipes;
-  }, [machineType, items]);
+  }, [machineType]);
 
   return (
     <Modal
