@@ -13,7 +13,6 @@ const DeployedMachinesScreen = () => {
     useGame();
   const navigation = useNavigation();
 
-  // Combine all machine instances
   const allMachines = [
     ...placedMachines,
     ...ownedMachines.filter((m) => !placedMachines.some((p) => p.id === m.id)),
@@ -128,7 +127,15 @@ const DeployedMachinesScreen = () => {
                           : getMachineState(machine)}
                       </Text>
                       {node && (
-                        <Text style={styles.nodeName}>@ {node.name}</Text>
+                        <View style={styles.nodeDetails}>
+                          <Text style={styles.nodeName}>@ {node.name}</Text>
+                          <Text style={styles.nodeId}>Node ID: {node.id}</Text>
+                          {typeof node.currentAmount !== "undefined" && (
+                            <Text style={styles.nodeAmount}>
+                              Amount: {node.currentAmount} / {RESOURCE_CAP}
+                            </Text>
+                          )}
+                        </View>
                       )}
                       {recipe && (
                         <Text style={styles.recipeName}>

@@ -2,6 +2,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { items } from "../../../data/items";
+import ProgressBar from "../../../components/ProgressBar";
 
 const NodeCard = React.memo(
   ({ node, inventory, onPlaceMachine, placedMachines, onMineResource, styles }) => {
@@ -40,6 +41,9 @@ const NodeCard = React.memo(
       machineRequired === "oilExtractor" &&
       assignedMachineCount === 0;
     const showManualMineButton = manualMineable;
+    // Get node depletion amount if available
+    const nodeDepletionAmount = typeof node.currentAmount !== "undefined" ? node.currentAmount : null;
+    const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 50;
     return (
       <View style={styles.nodeCard}>
         <Text style={styles.nodeName}>{name}</Text>
@@ -66,6 +70,15 @@ const NodeCard = React.memo(
               Current Yield: +{automatedProductionRate.toFixed(1)}/s {producedItemName}
             </Text>
           </View>
+        )}
+        {/* Node depletion progress bar */}
+        {nodeDepletionAmount !== null && (
+          <ProgressBar
+            value={nodeDepletionAmount}
+            max={nodeCapacity}
+            label={"Node Depletion"}
+            style={{ marginTop: 8, marginBottom: 8 }}
+          />
         )}
         <View style={styles.placementActions}>
           {showManualMineButton && (

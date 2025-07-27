@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import {
   Text,
   View,
@@ -18,6 +17,9 @@ import { getNodeTypeDefinition, getNodeColor } from "../../data/nodeTypes";
 import MapLegend from "./components/MapLegend";
 import MapGrid from "./components/MapGrid";
 import NodeCard from "./components/NodeCard";
+import RESOURCE_CAP from "../../constants/ResourceCap";
+import useWorldMapExploration from "./useWorldMapExploration";
+import React, { useState } from "react";
 const { width: screenWidth } = Dimensions.get("window");
 const MapScreen = () => {
   const {
@@ -26,9 +28,55 @@ const MapScreen = () => {
     mineResource,
     placeMachine,
   } = useGame();
-  const { allResourceNodes } = useMapNodes();
+  const { resourceNodes, setResourceNodes } = useGame();
+
+  // Exploration logic
+  const {
+    discoveredNodes,
+    playerMapPosition,
+    exploreArea,
+    getDiscoveredNodes,
+    exploreDirection,
+    lastDirection,
+  } = useWorldMapExploration(resourceNodes);
+
+  // Track map offset for grid shifting
+  const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
+
+  // Watch for player position changes and update offset if needed
+  React.useEffect(() => {
+    let newOffset = { ...mapOffset };
+    let changed = false;
+    if (playerMapPosition.x >= mapOffset.x + 300) {
+      newOffset.x += 300;
+      changed = true;
+    } else if (playerMapPosition.x < mapOffset.x) {
+      newOffset.x -= 300;
+      changed = true;
+    }
+    if (playerMapPosition.y >= mapOffset.y + 300) {
+      newOffset.y += 300;
+      changed = true;
+    } else if (playerMapPosition.y < mapOffset.y) {
+      newOffset.y -= 300;
+      changed = true;
+    }
+    if (changed) setMapOffset(newOffset);
+  }, [playerMapPosition.x, playerMapPosition.y]);
 
   const handlePlaceMachine = (machineType, nodeId) => {
+    const nodeIdx = resourceNodes.findIndex((n) => n.id === nodeId);
+    if (nodeIdx === -1) return;
+    const node = resourceNodes[nodeIdx];
+    // Simulate miner extraction: decrease node currentAmount by 1 (or more if needed)
+    if (node.currentAmount < node.capacity) {
+      const updatedNodes = [...resourceNodes];
+      updatedNodes[nodeIdx] = {
+        ...node,
+        currentAmount: Math.min(node.currentAmount + 1, node.capacity),
+      };
+      setResourceNodes(updatedNodes);
+    }
     const success = placeMachine(machineType, nodeId);
     if (!success) {
       Alert.alert(
@@ -44,21 +92,39 @@ const MapScreen = () => {
   };
 
   const handleMineResource = (nodeId) => {
+    const nodeIdx = resourceNodes.findIndex((n) => n.id === nodeId);
+    if (nodeIdx === -1) return;
+    const node = resourceNodes[nodeIdx];
+    // Manual mining: decrease node currentAmount by 1
+    if (node.currentAmount < node.capacity) {
+      const updatedNodes = [...resourceNodes];
+      updatedNodes[nodeIdx] = {
+        ...node,
+        currentAmount: Math.min(node.currentAmount + 1, node.capacity),
+      };
+      setResourceNodes(updatedNodes);
+    }
     mineResource(nodeId);
-    console.log("Manual mining ",nodeId);
+    console.log("Manual mining ", nodeId);
   };
 
-  const displayableNodes = useMemo(() => {
-    return allResourceNodes.filter((node) => {
+  // Only show discovered nodes within discovery radius
+  const DISCOVERY_RADIUS = 150; // Should match useMapExploration
+  const displayableNodes = React.useMemo(() => {
+    return resourceNodes.filter((node) => {
+      if (!discoveredNodes[node.id]) return false;
+      // Only render if within radius
+      const dx = node.x - playerMapPosition.x;
+      const dy = node.y - playerMapPosition.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance > DISCOVERY_RADIUS) return false;
       const nodeDefinition = items[node.type];
       if (!nodeDefinition || !nodeDefinition.output) {
         return false;
       }
-
       if (nodeDefinition.manualMineable) {
         return true;
       }
-
       if (nodeDefinition.machineRequired) {
         const requiredMachineType = nodeDefinition.machineRequired;
         const machineInInventoryCount =
@@ -66,13 +132,11 @@ const MapScreen = () => {
         const isMachineAssigned = placedMachines.some(
           (m) => m.assignedNodeId === node.id && m.type === requiredMachineType
         );
-
         return machineInInventoryCount > 0 || isMachineAssigned;
       }
-
       return false;
     });
-  }, [allResourceNodes, inventory, placedMachines]);
+  }, [resourceNodes, inventory, placedMachines, discoveredNodes, playerMapPosition.x, playerMapPosition.y]);
 
   const {
     MAP_DISPLAY_SIZE,
@@ -88,10 +152,7 @@ const MapScreen = () => {
     <SafeAreaView style={styles.fullScreenContainer}>
       <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}>
         <Text style={styles.title}>Resource Map</Text>
-{/* TODO: only the nodes that are suitable for placement will be displayed
-this includes nodes that are mineable or have machines assigned */}
         <MapLegend />
-{/* TODO: Move map to its own components inside the MapScreen/components folder */}
         <View style={styles.mapVisualContainer}>
           <MapGrid
             displayableNodes={displayableNodes}
@@ -99,13 +160,49 @@ this includes nodes that are mineable or have machines assigned */}
             getDisplayCoords={getDisplayCoords}
             gridLines={gridLines}
             MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
-            PLAYER_DISPLAY_X={PLAYER_DISPLAY_X}
-            PLAYER_DISPLAY_Y={PLAYER_DISPLAY_Y}
-            currentPlayerGameX={currentPlayerGameX}
-            currentPlayerGameY={currentPlayerGameY}
+            PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x}
+            PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y}
+            currentPlayerGameX={playerMapPosition.x}
+            currentPlayerGameY={playerMapPosition.y}
             getNodeColor={getNodeColor}
             styles={styles}
+            lastDirection={lastDirection}
+            mapOffset={mapOffset}
           />
+        </View>
+
+        {/* Exploration controls */}
+        <View style={{ marginVertical: 12, alignItems: "center" }}>
+          <Text>Player Position: x={playerMapPosition.x}, y={playerMapPosition.y}</Text>
+          <Text style={{ marginVertical: 6 }}>
+            Last explored direction: {lastDirection ? lastDirection.toUpperCase() : "None"}
+          </Text>
+          <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 8 }}>
+            <TouchableOpacity
+              style={{ backgroundColor: lastDirection === "up" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
+              onPress={() => exploreDirection("up")}
+            >
+              <Text style={{ color: "white" }}>↑ Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: lastDirection === "down" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
+              onPress={() => exploreDirection("down")}
+            >
+              <Text style={{ color: "white" }}>↓ Down</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: lastDirection === "left" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
+              onPress={() => exploreDirection("left")}
+            >
+              <Text style={{ color: "white" }}>← Left</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ backgroundColor: lastDirection === "right" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
+              onPress={() => exploreDirection("right")}
+            >
+              <Text style={{ color: "white" }}>→ Right</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <Text style={styles.subtitle}>Available Mining Sites</Text>
@@ -114,7 +211,7 @@ this includes nodes that are mineable or have machines assigned */}
             Miners Available: {inventory.miner?.currentAmount || 0}
           </Text>
           <Text style={styles.inventoryStatus}>
-            Oil Extractors Available:{" "}
+            Oil Extractors Available: {" "}
             {inventory.oilExtractor?.currentAmount || 0}
           </Text>
         </View>

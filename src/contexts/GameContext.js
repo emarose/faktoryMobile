@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import { useMapNodes } from "../hooks/useMapNodes";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
@@ -12,6 +12,7 @@ export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
   const { allResourceNodes } = useMapNodes();
+  const [resourceNodes, setResourceNodes] = useState(allResourceNodes);
 
   const {
     inventory,
@@ -24,11 +25,8 @@ export const GameProvider = ({ children }) => {
     addMachine,
   } = useInventory(placedMachines, allResourceNodes);
 
-  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine } = useMachines(
-    inventory,
-    removeResources,
-    allResourceNodes
-  );
+  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine } =
+    useMachines(inventory, removeResources, allResourceNodes);
 
   useProduction(addResource, removeResources, placedMachines, allResourceNodes);
 
@@ -39,7 +37,12 @@ export const GameProvider = ({ children }) => {
     addMachine
   );
 
-  const { mineResource } = useMining(addResource, allResourceNodes, placedMachines, inventory);
+  const { mineResource } = useMining(
+    addResource,
+    allResourceNodes,
+    placedMachines,
+    inventory
+  );
 
   const { craftItem, activeCrafts } = useCrafting(
     inventory,
@@ -58,7 +61,8 @@ export const GameProvider = ({ children }) => {
       ownedMachines,
       mineableNodes,
       buildableItems,
-      allResourceNodes,
+      resourceNodes,
+      setResourceNodes,
       placedMachines,
       setPlacedMachines,
       addResource,
@@ -78,7 +82,8 @@ export const GameProvider = ({ children }) => {
       ownedMachines,
       mineableNodes,
       buildableItems,
-      allResourceNodes,
+      resourceNodes,
+      setResourceNodes,
       placedMachines,
       setPlacedMachines,
       addResource,
