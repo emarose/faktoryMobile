@@ -1,8 +1,3 @@
-// In hooks/useInventory.js or a new hooks/useMapExploration.js
-// For simplicity, let's add it to useInventory for now,
-// or better, create a new useMapExploration.js for this specific concern.
-
-// hooks/useMapExploration.js (New File)
 import { useState, useCallback, useMemo } from "react";
 import { items } from "../data/items"; // If needed for node definitions
 
