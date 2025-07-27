@@ -3,7 +3,7 @@ import styles from "../styles";
 import { useMapNodes } from "../../../hooks/useMapNodes";
 
 const MapLegend = () => {
-
+// TODO make the nodes appear if the player has explored them
   const { NODE_TYPES_MAP } = useMapNodes();
   return (
     <View style={styles.mapLegend}>

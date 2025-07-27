@@ -1,13 +1,6 @@
 // MapScreen/components/MapGrid.js
 import React from "react";
-import { View, Text } from "react-native";
-
-const DIRECTION_OFFSETS = {
-  up: { x: 0, y: -100 },
-  down: { x: 0, y: 100 },
-  left: { x: -100, y: 0 },
-  right: { x: 100, y: 0 },
-};
+import { View, Text, TouchableOpacity } from "react-native";
 
 const MapGrid = ({
   displayableNodes,
@@ -23,8 +16,9 @@ const MapGrid = ({
   styles,
   lastDirection,
   mapOffset,
+  exploreDirection,
 }) => {
-  // Shift everything by mapOffset
+
   return (
     <View
       style={[
@@ -84,6 +78,43 @@ const MapGrid = ({
       >
         You ({currentPlayerGameX},{currentPlayerGameY})
       </Text>
+      {/* Touchable carets for movement directions on outer edges */}
+      {/* Up */}
+      <View style={{ position: "absolute", left: MAP_DISPLAY_SIZE / 2 - 20, top: 5, zIndex: 10 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: lastDirection === "up" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 16 }}
+          onPress={() => exploreDirection && exploreDirection("up")}
+        >
+          <Text style={{ color: "white", fontSize: 22 }}>↑</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Down */}
+      <View style={{ position: "absolute", left: MAP_DISPLAY_SIZE / 2 - 20, top: MAP_DISPLAY_SIZE - 45, zIndex: 10 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: lastDirection === "down" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 16 }}
+          onPress={() => exploreDirection && exploreDirection("down")}
+        >
+          <Text style={{ color: "white", fontSize: 22 }}>↓</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Left */}
+      <View style={{ position: "absolute", left: 5, top: MAP_DISPLAY_SIZE / 2 - 20, zIndex: 10 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: lastDirection === "left" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 16 }}
+          onPress={() => exploreDirection && exploreDirection("left")}
+        >
+          <Text style={{ color: "white", fontSize: 22 }}>←</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Right */}
+      <View style={{ position: "absolute", left: MAP_DISPLAY_SIZE - 45, top: MAP_DISPLAY_SIZE / 2 - 20, zIndex: 10 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: lastDirection === "right" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 16 }}
+          onPress={() => exploreDirection && exploreDirection("right")}
+        >
+          <Text style={{ color: "white", fontSize: 22 }}>→</Text>
+        </TouchableOpacity>
+      </View>
       {/* Visual movement radius around player */}
       <View
         style={[
@@ -123,6 +154,8 @@ const MapGrid = ({
               },
             ]}
           >
+            {/* Node type label */}
+            <Text style={{ fontSize: 10, color: "#333", position: "absolute", top: 18, left: 0, width: 40, textAlign: "center" }}>{node.type}</Text>
             {isAssigned && <Text style={styles.machineIcon}>⚙️</Text>}
           </View>
         );

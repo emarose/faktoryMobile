@@ -154,54 +154,23 @@ const MapScreen = () => {
         <Text style={styles.title}>Resource Map</Text>
         <MapLegend />
         <View style={styles.mapVisualContainer}>
-          <MapGrid
-            displayableNodes={displayableNodes}
-            placedMachines={placedMachines}
-            getDisplayCoords={getDisplayCoords}
-            gridLines={gridLines}
-            MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
-            PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x}
-            PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y}
-            currentPlayerGameX={playerMapPosition.x}
-            currentPlayerGameY={playerMapPosition.y}
-            getNodeColor={getNodeColor}
-            styles={styles}
-            lastDirection={lastDirection}
-            mapOffset={mapOffset}
-          />
-        </View>
-
-        {/* Exploration controls */}
-        <View style={{ marginVertical: 12, alignItems: "center" }}>
-          <Text>Player Position: x={playerMapPosition.x}, y={playerMapPosition.y}</Text>
-          <Text style={{ marginVertical: 6 }}>
-            Last explored direction: {lastDirection ? lastDirection.toUpperCase() : "None"}
-          </Text>
-          <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 8 }}>
-            <TouchableOpacity
-              style={{ backgroundColor: lastDirection === "up" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
-              onPress={() => exploreDirection("up")}
-            >
-              <Text style={{ color: "white" }}>↑ Up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: lastDirection === "down" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
-              onPress={() => exploreDirection("down")}
-            >
-              <Text style={{ color: "white" }}>↓ Down</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: lastDirection === "left" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
-              onPress={() => exploreDirection("left")}
-            >
-              <Text style={{ color: "white" }}>← Left</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ backgroundColor: lastDirection === "right" ? "#27ae60" : "#3498db", padding: 10, borderRadius: 8, marginHorizontal: 4 }}
-              onPress={() => exploreDirection("right")}
-            >
-              <Text style={{ color: "white" }}>→ Right</Text>
-            </TouchableOpacity>
+          <View style={{ position: "relative" }}>
+            <MapGrid
+              displayableNodes={displayableNodes}
+              placedMachines={placedMachines}
+              getDisplayCoords={getDisplayCoords}
+              gridLines={gridLines}
+              MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
+              PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x}
+              PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y}
+              currentPlayerGameX={playerMapPosition.x}
+              currentPlayerGameY={playerMapPosition.y}
+              getNodeColor={getNodeColor}
+              styles={styles}
+              lastDirection={lastDirection}
+              mapOffset={mapOffset}
+              exploreDirection={exploreDirection}
+            />
           </View>
         </View>
 
