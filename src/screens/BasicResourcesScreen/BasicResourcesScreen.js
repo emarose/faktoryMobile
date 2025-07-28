@@ -4,18 +4,26 @@ import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import ResourceDisplay from "./components/ResourceDisplay/ResourceDisplay";
 import RESOURCE_CAP from "../../constants/ResourceCap";
+import useWorldMapExploration from "../MapScreen/useWorldMapExploration";
+
 
 const BasicResourcesScreen = () => {
-  const { mineableNodes, mineResource } = useGame();
+  const { mineableNodes, mineResource, resourceNodes } = useGame();
+  // Use the same exploration logic as MapScreen
+  const { discoveredNodes } = useWorldMapExploration(resourceNodes);
+
+  // Only show mineable nodes that have been discovered
+  const discoveredMineableNodes = mineableNodes.filter((node) => discoveredNodes[node.id]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Basic Resources</Text>
       <ScrollView style={styles.scrollViewContent}>
-        {mineableNodes.length > 0 ? (
-          mineableNodes.map((node) => (
+        {discoveredMineableNodes.length > 0 ? (
+          discoveredMineableNodes.map((node) => (
             <ResourceDisplay
               key={node.id}
               id={node.id}
@@ -32,7 +40,7 @@ const BasicResourcesScreen = () => {
           ))
         ) : (
           <Text style={styles.noResourcesText}>
-            No mineable resources to display.
+            No discovered mineable resources to display.
           </Text>
         )}
       </ScrollView>

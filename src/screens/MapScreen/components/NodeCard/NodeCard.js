@@ -1,8 +1,8 @@
 // MapScreen/components/NodeCard.js
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { items } from "../../../data/items";
-import ProgressBar from "../../../components/ProgressBar";
+import { items } from "../../../../data/items";
+import ProgressBar from "../../../../components/ProgressBar";
 
 const NodeCard = React.memo(
   ({ node, inventory, onPlaceMachine, placedMachines, onMineResource, styles }) => {

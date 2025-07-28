@@ -1,17 +1,14 @@
 import { useMapExploration } from "../../hooks/useMapExploration";
-
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { GameContext } from "../../contexts/GameContext";
 
 export default function useWorldMapExploration(resourceNodes) {
   const {
-    discoveredNodes,
     playerMapPosition,
-    exploreArea,
-    getDiscoveredNodes,
-  } = useMapExploration(resourceNodes);
-
-  // Track last explored direction for UI feedback
-  const [lastDirection, setLastDirection] = useState(null);
+    setPlayerMapPosition,
+    discoveredNodes,
+    setDiscoveredNodes,
+  } = useContext(GameContext);
 
   // Directions: 'up', 'down', 'left', 'right'
   const DIRECTION_OFFSETS = {
@@ -22,6 +19,28 @@ export default function useWorldMapExploration(resourceNodes) {
   };
 
   // Explore in a given direction from current position
+  const [lastDirection, setLastDirection] = useState(null);
+
+  const exploreArea = (centerX, centerY) => {
+    setPlayerMapPosition({ x: centerX, y: centerY });
+    setDiscoveredNodes((prevDiscovered) => {
+      const newDiscovered = { ...prevDiscovered };
+      resourceNodes.forEach((node) => {
+        const distance = Math.sqrt(
+          Math.pow(node.x - centerX, 2) + Math.pow(node.y - centerY, 2)
+        );
+        if (distance <= 150 && !newDiscovered[node.id]) {
+          newDiscovered[node.id] = true;
+        }
+      });
+      return newDiscovered;
+    });
+  };
+
+  const getDiscoveredNodes = () => {
+    return resourceNodes.filter((node) => discoveredNodes[node.id]);
+  };
+
   const exploreDirection = (direction) => {
     const offset = DIRECTION_OFFSETS[direction];
     if (!offset) return;

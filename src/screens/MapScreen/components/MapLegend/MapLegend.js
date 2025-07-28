@@ -1,9 +1,9 @@
 import { View, Text } from "react-native";
-import styles from "../styles";
-import { useMapNodes } from "../../../hooks/useMapNodes";
+import styles from "../../styles";
+import { useMapNodes } from "../../../../hooks/useMapNodes";
 
 const MapLegend = () => {
-// TODO make the nodes appear if the player has explored them
+  // This display is, for now, disabled in the UI since im going to show the name of the nodes on the displayableNodes itself
   const { NODE_TYPES_MAP } = useMapNodes();
   return (
     <View style={styles.mapLegend}>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import MapGridControls from "./MapGridControls";
+import MapGridControls from "../MapGridControls/MapGridControls";
 import { View, Text, TouchableOpacity } from "react-native";
-import NodeDetailsModal from "./NodeDetailsModal";
+import NodeDetailsModal from "../NodeDetailsModal/NodeDetailsModal";
 
 const MapGrid = ({
   displayableNodes,
@@ -118,10 +118,7 @@ const MapGrid = ({
         ]}
       />
       {/* Render discovered nodes */}
-      {/* Show all discovered nodes, not just those within radius */}
-      {Object.keys(discoveredNodes).filter((id) => discoveredNodes[id]).map((nodeId) => {
-        const node = displayableNodes.find((n) => n.id === nodeId);
-        if (!node) return null;
+      {displayableNodes.map((node) => {
         const { x: displayX, y: displayY } = getDisplayCoords(node.x, node.y);
         const nodeColor = getNodeColor(node.type);
         const isAssigned = placedMachines.some(
@@ -150,27 +147,27 @@ const MapGrid = ({
                 color: "#fff",
                 position: "absolute",
                 top: 18,
-        return (
-          <TouchableOpacity
-            key={`map-node-${node.id}`}
-            style={[
-              styles.mapNodeDot,
-              {
-                left: getDisplayCoords(node.x, node.y).x,
-                top: getDisplayCoords(node.x, node.y).y,
-                backgroundColor: getNodeColor(node.type),
-                borderColor: placedMachines.some((m) => m.assignedNodeId === node.id) ? "#00FF00" : getNodeColor(node.type),
-                borderWidth: placedMachines.some((m) => m.assignedNodeId === node.id) ? 2 : 1,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-            ]}
-            onPress={() => handleNodePress(node)}
-          >
-            <Text style={{ fontSize: 10, color: "#fff", position: "absolute", top: 18, left: 0, width: 40, textAlign: "center" }}>{node.name}</Text>
-            {placedMachines.some((m) => m.assignedNodeId === node.id) && <Text style={styles.machineIcon}>⚙️</Text>}
+                left: 0,
+                width: 40,
+                textAlign: "center",
+              }}
+            >
+              {node.name}
+            </Text>
+            {isAssigned && <Text style={styles.machineIcon}>⚙️</Text>}
           </TouchableOpacity>
         );
+      })}
+
+      {/* Node details modal */}
+      <NodeDetailsModal
+        visible={modalVisible}
+        node={selectedNode}
+        onClose={() => setModalVisible(false)}
+        onExtract={handleExtract}
+        onPlaceMachine={handlePlaceMachine}
+        isAssigned={
+          selectedNode &&
           placedMachines.some((m) => m.assignedNodeId === selectedNode.id)
         }
         styles={styles}

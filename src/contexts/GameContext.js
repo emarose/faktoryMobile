@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
+import { useMapExploration } from "../hooks/useMapExploration";
 import { useMapNodes } from "../hooks/useMapNodes";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
@@ -13,6 +14,10 @@ export const GameContext = createContext();
 export const GameProvider = ({ children }) => {
   const { allResourceNodes } = useMapNodes();
   const [resourceNodes, setResourceNodes] = useState(allResourceNodes);
+
+  // Persisted map exploration state
+  const [playerMapPosition, setPlayerMapPosition] = useState({ x: 0, y: 0 });
+  const [discoveredNodes, setDiscoveredNodes] = useState({});
 
   const {
     inventory,
@@ -76,6 +81,11 @@ export const GameProvider = ({ children }) => {
       activeCrafts,
       addMachine,
       getProductionRate,
+      // Map exploration state
+      playerMapPosition,
+      setPlayerMapPosition,
+      discoveredNodes,
+      setDiscoveredNodes,
     }),
     [
       inventory,
@@ -97,6 +107,10 @@ export const GameProvider = ({ children }) => {
       activeCrafts,
       addMachine,
       getProductionRate,
+      playerMapPosition,
+      setPlayerMapPosition,
+      discoveredNodes,
+      setDiscoveredNodes,
     ]
   );
 

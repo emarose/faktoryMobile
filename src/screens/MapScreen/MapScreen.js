@@ -2,25 +2,22 @@ import {
   Text,
   View,
   ScrollView,
-  TouchableOpacity,
   Alert,
   Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";
-import { useMapNodes } from "../../hooks/useMapNodes";
 import { items } from "../../data/items";
 import styles from "./styles";
 import { useMapGrid } from "../../hooks/useMapGrid";
-import { getNodeTypeDefinition, getNodeColor } from "../../data/nodeTypes";
-import MapLegend from "./components/MapLegend";
-import MapGrid from "./components/MapGrid";
-import NodeCard from "./components/NodeCard";
-import RESOURCE_CAP from "../../constants/ResourceCap";
+import { getNodeColor } from "../../data/nodeTypes";
 import useWorldMapExploration from "./useWorldMapExploration";
 import React, { useState } from "react";
+import MapGrid from "./components/MapGrid/MapGrid";
+import NodeCard from "./components/NodeCard/NodeCard";
 const { width: screenWidth } = Dimensions.get("window");
+
 const MapScreen = () => {
   const {
     inventory,
@@ -152,7 +149,8 @@ const MapScreen = () => {
     <SafeAreaView style={styles.fullScreenContainer}>
       <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}>
         <Text style={styles.title}>Resource Map</Text>
-        <MapLegend />
+      
+       {/*  <MapLegend /> */}
         <View style={styles.mapVisualContainer}>
           <View style={{ position: "relative" }}>
             <MapGrid

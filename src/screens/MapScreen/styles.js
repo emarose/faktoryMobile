@@ -1,4 +1,3 @@
-// screens/map/styles.js
 import { StyleSheet, Dimensions } from "react-native";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -130,14 +129,14 @@ const styles = StyleSheet.create({
   // --- Player Position ---
   playerPositionDot: {
     position: "absolute",
-    width: 16, 
+    width: 16,
     height: 16,
     borderRadius: 8,
     backgroundColor: "#00FF00",
-    borderWidth: 1.5, 
+    borderWidth: 1.5,
     borderColor: "#fff",
     zIndex: 100,
-    transform: [{ translateX: -8 }, { translateY: -8 }], 
+    transform: [{ translateX: -8 }, { translateY: -8 }],
   },
   playerPositionLabel: {
     position: "absolute",
@@ -148,7 +147,7 @@ const styles = StyleSheet.create({
   },
   // --- Resource Node List Section Styles ---
   subtitle: {
-    fontSize: 20, 
+    fontSize: 20,
     fontWeight: "bold",
     color: "#e0e0e0",
     marginTop: 15,
