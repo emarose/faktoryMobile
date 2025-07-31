@@ -7,11 +7,34 @@ import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
 import { Picker } from '@react-native-picker/picker';
 
+// Helpers to normalize inputs/outputs to arrays of {item, amount}
+function normalizeInputs(inputs) {
+  if (!inputs) return [];
+  if (Array.isArray(inputs)) return inputs;
+  if (typeof inputs === 'object') {
+    return Object.entries(inputs).map(([item, amount]) => ({ item, amount }));
+  }
+  return [];
+}
+function normalizeOutputs(outputs) {
+  if (!outputs) return [];
+  if (Array.isArray(outputs)) return outputs;
+  if (typeof outputs === 'object') {
+    return Object.entries(outputs).map(([item, amount]) => ({ item, amount }));
+  }
+  return [];
+}
+
 const MachineDetailsScreen = ({ route }) => {
   const { machine, node, recipe } = route.params;
-  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, addResource, removeResources, canAfford } = useGame();
+  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford } = useGame();
   // Use useCrafting hook for crafting logic
-  const ownedMachines = useMemo(() => placedMachines.map(m => m.type), [placedMachines]);
+  // TODO: ownedMachines must also contemplate not placed machines since later ownedMachines will have some machines that will not need placememnt
+  //const ownedMachines = useMemo(() => placedMachines.map(m => m.type), [placedMachines]);
+  const ownedMachines = useMemo(
+    () => (contextOwnedMachines || []).map(m => m.type),
+    [contextOwnedMachines]
+  );
   const { craftItem } = useCrafting(
     inventory,
     ownedMachines,
@@ -30,21 +53,21 @@ const MachineDetailsScreen = ({ route }) => {
       .map(item => ({
         id: item.id,
         name: item.name,
-        // Assume item.inputs and item.outputs follow the same structure as before
-        inputs: item.inputs || [],
-        outputs: [{ item: item.id, amount: item.outputAmount || 1 }],
-        // Add any other properties needed for display
+        inputs: normalizeInputs(item.inputs),
+        outputs: normalizeOutputs(item.output || item.outputs),
+        processingTime: item.processingTime,
       }));
   }, [machine.type]);
+
   const [selectedRecipeId, setSelectedRecipeId] = useState(availableRecipes[0]?.id || null);
+
   const selectedRecipe = useMemo(() => {
     const found = availableRecipes.find(r => r.id === selectedRecipeId);
     if (!found) return null;
-    // Defensive: always ensure .inputs is an array
     return {
       ...found,
-      inputs: Array.isArray(found.inputs) ? found.inputs : [],
-      outputs: Array.isArray(found.outputs) ? found.outputs : [],
+      inputs: normalizeInputs(found.inputs),
+      outputs: normalizeOutputs(found.outputs),
     };
   }, [availableRecipes, selectedRecipeId]);
   const [productAmount, setProductAmount] = useState("1");
@@ -131,76 +154,76 @@ const MachineDetailsScreen = ({ route }) => {
                   <Picker.Item key={recipe.id} label={recipe.name} value={recipe.id} />
                 ))}
               </Picker>
-              {selectedRecipe && (
-                (() => {
-                  // Defensive: always treat inputs as array
-                  const inputs = Array.isArray(selectedRecipe.inputs) ? selectedRecipe.inputs : [];
-                  let maxCraftable = Infinity;
-                  inputs.forEach(input => {
-                    const inv = inventory[input.item]?.currentAmount || 0;
-                    const possible = input.amount > 0 ? Math.floor(inv / input.amount) : 0;
-                    if (possible < maxCraftable) maxCraftable = possible;
-                  });
-                  // Output info
-                  const output = (Array.isArray(selectedRecipe.outputs) ? selectedRecipe.outputs : [])[0];
-                  // Can craft?
-                  const amount = Math.max(1, parseInt(productAmount) || 1);
-                  const canCraft = amount > 0 && amount <= maxCraftable;
-                  return (
-                    <View style={{marginBottom: 12}}>
-                      <Text style={styles.detailsText}>Required Resources:</Text>
-                      {inputs.length === 0 ? (
-                        <Text style={styles.detailsText}>None</Text>
-                      ) : (
-                        inputs.map(input => (
-                          <Text key={input.item} style={styles.detailsText}>
-                            {input.amount * amount} x {items[input.item]?.name || input.item} (You have: {inventory[input.item]?.currentAmount || 0})
-                          </Text>
-                        ))
-                      )}
-                      <Text style={styles.detailsText}>Expected Output:</Text>
-                      <Text style={styles.detailsText}>
-                        {output ? output.amount * amount : 0} x {output ? (items[output.item]?.name || output.item) : ''}
-                      </Text>
-                      <Text style={styles.detailsText}>Amount to craft:</Text>
-                      <TextInput
-                        style={{ backgroundColor: '#fff', color: '#222', borderRadius: 6, padding: 6, marginBottom: 8, width: 80 }}
-                        keyboardType="numeric"
-                        value={String(productAmount)}
-                        onChangeText={val => setProductAmount(val.replace(/[^0-9]/g, ""))}
-                      />
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: canCraft ? '#27ae60' : '#aaa',
-                          borderRadius: 6,
-                          paddingVertical: 10,
-                          paddingHorizontal: 24,
-                          alignItems: 'center',
-                          marginTop: 6,
-                        }}
-                        disabled={!canCraft}
-                        onPress={() => {
-                          if (selectedRecipe && canCraft) {
-                            const success = craftItem(selectedRecipe.id, amount);
-                            if (success) {
-                              alert('Crafted successfully!');
-                            } else {
-                              alert('Crafting failed.');
-                            }
-                          }
-                        }}
-                      >
-                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                          Craft {amount} {output ? output.item : ''}
+              {selectedRecipe && (() => {
+                // Always treat inputs/outputs as arrays
+                const inputs = Array.isArray(selectedRecipe.inputs) ? selectedRecipe.inputs : (selectedRecipe.inputs ? [selectedRecipe.inputs] : []);
+                const outputs = Array.isArray(selectedRecipe.outputs) ? selectedRecipe.outputs : (selectedRecipe.outputs ? [selectedRecipe.outputs] : []);
+                let maxCraftable = Infinity;
+                inputs.forEach(input => {
+                  const inv = inventory[input.item]?.currentAmount || 0;
+                  const possible = input.amount > 0 ? Math.floor(inv / input.amount) : 0;
+                  if (possible < maxCraftable) maxCraftable = possible;
+                });
+                // Output info
+                const output = outputs[0];
+                // Can craft?
+                const amount = Math.max(1, parseInt(productAmount) || 1);
+                const canCraft = amount > 0 && amount <= maxCraftable;
+                return (
+                  <View style={{ marginBottom: 12 }}>
+                    <Text style={styles.detailsText}>Required Resources:</Text>
+                    {inputs.length === 0 ? (
+                      <Text style={styles.detailsText}>None</Text>
+                    ) : (
+                      inputs.map(input => (
+                        <Text key={input.item} style={styles.detailsText}>
+                          {input.amount * amount} x {items[input.item]?.name || input.item} (You have: {inventory[input.item]?.currentAmount || 0})
                         </Text>
-                      </TouchableOpacity>
-                      {!canCraft && (
-                        <Text style={{ color: '#e53935', marginTop: 4 }}>Not enough resources or invalid amount.</Text>
-                      )}
-                    </View>
-                  );
-                })()
-              )}
+                      ))
+                    )}
+                    <Text style={styles.detailsText}>Expected Output:</Text>
+                    <Text style={styles.detailsText}>
+                      {output ? output.amount * amount : 0} x {output ? (items[output.item]?.name || output.item) : ''}
+                    </Text>
+                    <Text style={styles.detailsText}>Amount to craft:</Text>
+                    <TextInput
+                      style={{ backgroundColor: '#fff', color: '#222', borderRadius: 6, padding: 6, marginBottom: 8, width: 80 }}
+                      keyboardType="numeric"
+                      value={String(productAmount)}
+                      onChangeText={val => setProductAmount(val.replace(/[^0-9]/g, ""))}
+                    />
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: canCraft ? '#27ae60' : '#aaa',
+                        borderRadius: 6,
+                        paddingVertical: 10,
+                        paddingHorizontal: 24,
+                        alignItems: 'center',
+                        marginTop: 6,
+                      }}
+                      disabled={!canCraft}
+                      onPress={() => {
+                        if (selectedRecipe && canCraft) {
+                          // Pass the full recipe object, not just the id
+                          const success = craftItem(selectedRecipe, amount);
+                          if (success) {
+                            alert('Crafted successfully!');
+                          } else {
+                            alert('Crafting failed.');
+                          }
+                        }
+                      }}
+                    >
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                        Craft {amount} {output ? output.item : ''}
+                      </Text>
+                    </TouchableOpacity>
+                    {!canCraft && (
+                      <Text style={{ color: '#e53935', marginTop: 4 }}>Not enough resources or invalid amount.</Text>
+                    )}
+                  </View>
+                );
+              })()}
             </View>
           )
         )}

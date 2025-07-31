@@ -1,3 +1,12 @@
+// Helper to normalize inputs to array of {item, amount}
+function normalizeInputs(inputs) {
+  if (!inputs) return [];
+  if (Array.isArray(inputs)) return inputs;
+  if (typeof inputs === 'object') {
+    return Object.entries(inputs).map(([item, amount]) => ({ item, amount }));
+  }
+  return [];
+}
 // hooks/useCrafting.js
 import { useState, useCallback, useEffect, useRef } from 'react'; // Import useRef
 import { items } from '../data/items';
@@ -25,10 +34,9 @@ const useCrafting = (inventoryItems, ownedMachines, addResource, removeResources
   }, []); // Empty dependency array: runs once on mount, cleans up on unmount
 
   // Synchronous crafting: checks, removes resources, adds output
-  const craftItem = useCallback((recipeId, amount = 1) => {
-    const recipe = items[recipeId];
+  const craftItem = useCallback((recipe, amount = 1) => {
     if (!recipe || !recipe.inputs || !recipe.machine) {
-      console.warn(`Attempted to craft invalid or incomplete recipe: ${recipeId}`);
+      console.warn(`Attempted to craft invalid or incomplete recipe:`, recipe);
       return false;
     }
     if (!ownedMachines.includes(recipe.machine)) {
@@ -36,7 +44,7 @@ const useCrafting = (inventoryItems, ownedMachines, addResource, removeResources
       return false;
     }
     // Check if enough resources for the requested amount
-    const totalInputs = (recipe.inputs || []).map(input => ({
+    const totalInputs = normalizeInputs(recipe.inputs).map(input => ({
       item: input.item,
       amount: input.amount * amount
     }));
@@ -45,6 +53,7 @@ const useCrafting = (inventoryItems, ownedMachines, addResource, removeResources
       return false;
     }
     // Remove resources
+    console.log(`Crafting ${recipe.name} x${amount} with inputs:`, totalInputs);
     const resourcesRemoved = removeResources(totalInputs);
     if (resourcesRemoved) {
       // Add output(s)
