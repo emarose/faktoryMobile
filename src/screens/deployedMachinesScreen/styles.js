@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
+  machineStatus: {
+    fontSize: 16,
+    color: "#ffffff",
+    marginBottom: 5,
+  },
   machineName: {
     fontSize: 18,
     fontWeight: "bold",
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   upgradeButton: {
-    backgroundColor: "#007bff", 
+    backgroundColor: "#007bff",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,

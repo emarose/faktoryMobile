@@ -8,9 +8,15 @@ import { useNavigation } from "@react-navigation/native";
 import ProgressBar from "../../components/ProgressBar";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 
+import { useEffect } from "react";
+
 const DeployedMachinesScreen = () => {
-  const { placedMachines, ownedMachines, allResourceNodes, inventory } =
-    useGame();
+  const {
+    placedMachines,
+    ownedMachines,
+    allResourceNodes = [],
+    inventory,
+  } = useGame();
   const navigation = useNavigation();
 
   const allMachines = [
@@ -66,7 +72,18 @@ const DeployedMachinesScreen = () => {
     acc[typeName].push(machine);
     return acc;
   }, {});
-
+  useEffect(() => {
+    console.log("allMachines:", allMachines);
+    console.log(
+      "🚀 ~ DeployedMachinesScreen ~ placedMachines:",
+      placedMachines
+    );
+    console.log(
+      "🚀 ~ DeployedMachinesScreen ~ allResourceNodes:",
+      allResourceNodes
+    );
+    console.log("🚀 ~ DeployedMachinesScreen ~ ownedMachines:", ownedMachines);
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Machines Overview</Text>
@@ -115,6 +132,7 @@ const DeployedMachinesScreen = () => {
                       })
                     }
                   >
+                    {console.log("machine",machine)}
                     <View style={styles.machineInfo}>
                       <Text style={[styles.machineName, { color: "#4CAF50" }]}>
                         {items[machine.type]?.name || machine.type}

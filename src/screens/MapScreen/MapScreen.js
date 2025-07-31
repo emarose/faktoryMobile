@@ -12,7 +12,7 @@ import { items } from "../../data/items";
 import styles from "./styles";
 import { useMapGrid } from "../../hooks/useMapGrid";
 import { getNodeColor } from "../../data/nodeTypes";
-import useWorldMapExploration from "./useWorldMapExploration";
+import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import React, { useState } from "react";
 import MapGrid from "./components/MapGrid/MapGrid";
 import NodeCard from "./components/NodeCard/NodeCard";

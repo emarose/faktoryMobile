@@ -1,6 +1,5 @@
-import { useMapExploration } from "../../hooks/useMapExploration";
 import { useState, useContext } from "react";
-import { GameContext } from "../../contexts/GameContext";
+import { GameContext } from "../contexts/GameContext";
 
 export default function useWorldMapExploration(resourceNodes) {
   const {

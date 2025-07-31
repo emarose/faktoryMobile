@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from "react";
-import { useMapExploration } from "../hooks/useMapExploration";
-import { useMapNodes } from "../hooks/useMapNodes";
+import React, {useEffect, createContext, useContext, useMemo, useState } from "react";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
 import { useProduction } from "../hooks/useProduction";
@@ -8,14 +6,18 @@ import { useBuilding } from "../hooks/useBuilding";
 import { useMining } from "../hooks/useMining";
 import useCrafting from "../hooks/useCrafting";
 import useProductionRate from "../hooks/useProductionRate";
+import { useMapNodes } from "../hooks/useMapNodes";
 
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
   const { allResourceNodes } = useMapNodes();
-  const [resourceNodes, setResourceNodes] = useState(allResourceNodes);
+  const [resourceNodes, setResourceNodes] = useState([]);
 
-  // Persisted map exploration state
+  useEffect(() => {
+    setResourceNodes(allResourceNodes);
+  }, [allResourceNodes]);
+
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 0, y: 0 });
   const [discoveredNodes, setDiscoveredNodes] = useState({});
 
@@ -63,6 +65,7 @@ export const GameProvider = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       inventory,
+      allResourceNodes,
       ownedMachines,
       mineableNodes,
       buildableItems,
@@ -81,7 +84,6 @@ export const GameProvider = ({ children }) => {
       activeCrafts,
       addMachine,
       getProductionRate,
-      // Map exploration state
       playerMapPosition,
       setPlayerMapPosition,
       discoveredNodes,

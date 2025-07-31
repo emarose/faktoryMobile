@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import ResourceDisplay from "./components/ResourceDisplay/ResourceDisplay";
 import RESOURCE_CAP from "../../constants/ResourceCap";
-import useWorldMapExploration from "../MapScreen/useWorldMapExploration";
+import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 
 
 const BasicResourcesScreen = () => {

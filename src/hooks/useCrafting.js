@@ -24,81 +24,45 @@ const useCrafting = (inventoryItems, ownedMachines, addResource, removeResources
     };
   }, []); // Empty dependency array: runs once on mount, cleans up on unmount
 
-  const craftItem = useCallback((recipeId, outputItemId, outputAmount) => {
+  // Synchronous crafting: checks, removes resources, adds output
+  const craftItem = useCallback((recipeId, amount = 1) => {
     const recipe = items[recipeId];
-
-    if (!recipe || !recipe.inputs || !recipe.machine || !recipe.processingTime) {
+    if (!recipe || !recipe.inputs || !recipe.machine) {
       console.warn(`Attempted to craft invalid or incomplete recipe: ${recipeId}`);
       return false;
     }
-
-    // Use the ref to check active crafts
-    if (activeCraftsRef.current[recipeId]) {
-      console.warn(`Recipe ${recipe.name} is already being crafted.`);
-      return false;
-    }
-
     if (!ownedMachines.includes(recipe.machine)) {
       console.warn(`Cannot craft ${recipe.name}: Machine type '${recipe.machine}' not found in ownedMachines. Current owned:`, ownedMachines);
       return false;
     }
-
-    if (!canAfford(recipe.inputs)) {
-      console.warn(`Cannot craft ${recipe.name}: Not enough resources. Needs:`, recipe.inputs, 'Has:', inventoryItems);
+    // Check if enough resources for the requested amount
+    const totalInputs = (recipe.inputs || []).map(input => ({
+      item: input.item,
+      amount: input.amount * amount
+    }));
+    if (!canAfford(totalInputs)) {
+      console.warn(`Cannot craft ${recipe.name}: Not enough resources. Needs:`, totalInputs, 'Has:', inventoryItems);
       return false;
     }
-
-    const resourcesRemoved = removeResources(recipe.inputs);
+    // Remove resources
+    const resourcesRemoved = removeResources(totalInputs);
     if (resourcesRemoved) {
-      const totalTime = recipe.processingTime;
-
-      // Start the interval first and capture its ID
-      const interval = setInterval(() => {
-        setActiveCrafts(prevActiveCrafts => {
-          const currentCraft = prevActiveCrafts[recipeId];
-          if (!currentCraft) { // Craft might have been removed already
-            clearInterval(interval);
-            return prevActiveCrafts;
-          }
-
-          const newRemainingTime = currentCraft.remainingTime - 1;
-
-          if (newRemainingTime <= 0) {
-            clearInterval(interval);
-            addResource(outputItemId, outputAmount);
-            console.log(`Successfully crafted ${outputAmount} ${items[outputItemId]?.name || outputItemId}`);
-
-            const finalActiveCrafts = { ...prevActiveCrafts };
-            delete finalActiveCrafts[recipeId];
-            return finalActiveCrafts;
-          }
-
-          return {
-            ...prevActiveCrafts,
-            [recipeId]: {
-              ...currentCraft,
-              remainingTime: newRemainingTime,
-            }
-          };
+      // Add output(s)
+      if (recipe.output) {
+        // Single output
+        addResource(recipe.output, (recipe.outputAmount || 1) * amount);
+      } else if (recipe.outputs && Array.isArray(recipe.outputs)) {
+        // Multiple outputs
+        recipe.outputs.forEach(output => {
+          addResource(output.item, (output.amount || 1) * amount);
         });
-      }, 1000); // Update every second
-
-      // Now update the state with the initial craft details and the interval ID
-      setActiveCrafts(prevActiveCrafts => ({
-        ...prevActiveCrafts,
-        [recipeId]: {
-          remainingTime: totalTime,
-          totalTime: totalTime,
-          intervalId: interval, // Store the actual interval ID
-        }
-      }));
-
+      }
       return true;
     } else {
       console.warn(`Failed to remove resources for crafting ${recipe.name}`);
       return false;
     }
-  }, [inventoryItems, ownedMachines, addResource, removeResources, canAfford, addMachine]); // Still no activeCrafts in dependency array
+  }, [inventoryItems, ownedMachines, addResource, removeResources, canAfford, addMachine]);
 
   return { craftItem, activeCrafts };
 };
