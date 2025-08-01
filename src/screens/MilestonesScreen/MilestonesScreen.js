@@ -1,28 +1,23 @@
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import styles from "./styles";
-import useMilestone from "../../hooks/useMilestone";
 import { useGame } from "../../contexts/GameContext";
 
 export default function MilestonesScreen() {
-  const { inventory } = useGame();
-  console.log(inventory);
-  
-  const {
-    milestones,
-    canCompleteCurrentMilestone,
-    completeCurrentMilestone,
-  } = useMilestone(inventory);
+  const { milestones } = useGame();
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Milestones</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {milestones.map((milestone, idx) => (
+        {milestones.map((milestone) => (
           <View
             key={milestone.id}
-            style={[styles.milestoneCard, milestone.unlocked ? styles.milestoneUnlocked : styles.milestoneLocked]}
+            style={[
+              styles.milestoneCard,
+              milestone.unlocked ? styles.milestoneUnlocked : styles.milestoneLocked,
+            ]}
           >
             <Text style={styles.milestoneName}>{milestone.name}</Text>
             <Text style={styles.milestoneDescription}>{milestone.description}</Text>
@@ -32,15 +27,16 @@ export default function MilestonesScreen() {
             ))}
             {milestone.unlocked ? (
               <Text style={styles.unlockedText}>Unlocked</Text>
-            ) : canCompleteCurrentMilestone ? (
-              <TouchableOpacity
-                style={[styles.unlockButton, { marginTop: 8 }]}
-                onPress={completeCurrentMilestone}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Complete Milestone</Text>
-              </TouchableOpacity>
             ) : (
-              <Text style={styles.lockedText}>Requirements not met</Text>
+              <View>
+                <Text style={styles.lockedText}>Requirements not met</Text>
+                <Text style={styles.requirementsTitle}>Requirements:</Text>
+                {Object.entries(milestone.requirements || {}).map(([req, val]) => (
+                  <Text key={req} style={styles.requirementItem}>
+                    {req === "discoveredNodes" ? `Discover ${val} node(s)` : `${req}: ${val}`}
+                  </Text>
+                ))}
+              </View>
             )}
           </View>
         ))}

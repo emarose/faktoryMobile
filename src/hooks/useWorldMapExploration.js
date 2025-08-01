@@ -1,13 +1,17 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { GameContext } from "../contexts/GameContext";
 
 export default function useWorldMapExploration(resourceNodes) {
+  const gameContext = useContext(GameContext);
+  if (!gameContext) {
+    throw new Error("useWorldMapExploration must be used within a GameProvider");
+  }
   const {
     playerMapPosition,
     setPlayerMapPosition,
     discoveredNodes,
     setDiscoveredNodes,
-  } = useContext(GameContext);
+  } = gameContext;
 
   // Directions: 'up', 'down', 'left', 'right'
   const DIRECTION_OFFSETS = {
@@ -19,11 +23,14 @@ export default function useWorldMapExploration(resourceNodes) {
 
   // Explore in a given direction from current position
   const [lastDirection, setLastDirection] = useState(null);
+  const [discoveredNodesScout, setDiscoveredNodesScout] = useState({});
+  const [discoveredCount, setDiscoveredCount] = useState(0);
 
   const exploreArea = (centerX, centerY) => {
     setPlayerMapPosition({ x: centerX, y: centerY });
     setDiscoveredNodes((prevDiscovered) => {
       const newDiscovered = { ...prevDiscovered };
+
       resourceNodes.forEach((node) => {
         const distance = Math.sqrt(
           Math.pow(node.x - centerX, 2) + Math.pow(node.y - centerY, 2)
@@ -32,6 +39,8 @@ export default function useWorldMapExploration(resourceNodes) {
           newDiscovered[node.id] = true;
         }
       });
+
+      setDiscoveredCount(Object.keys(newDiscovered).length);
       return newDiscovered;
     });
   };
@@ -56,5 +65,8 @@ export default function useWorldMapExploration(resourceNodes) {
     getDiscoveredNodes,
     exploreDirection,
     lastDirection,
+    discoveredNodesScout,
+    setDiscoveredNodesScout,
+    discoveredCount,
   };
 }
