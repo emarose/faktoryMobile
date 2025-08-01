@@ -10,23 +10,33 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGame } from "../../contexts/GameContext";
+
 import styles from "./styles";
+import useMilestone from "../../hooks/useMilestone";
 
 const BuildScreen = () => {
+
   const { buildableItems, buildItem, inventory, ownedMachines } = useGame();
 
+  // Use milestone logic from useMilestone hook
+  const { milestones, unlockedMachineNames } = useMilestone(inventory);
+
+  // Only show buildable items where the machine is unlocked
+  const filteredBuildableItems = buildableItems.filter(item =>
+    unlockedMachineNames.includes(item.name)
+  );
+
   const handleBuild = (itemId) => {
-    const itemToBuild = buildableItems.find((item) => item.id === itemId);
+    const itemToBuild = filteredBuildableItems.find((item) => item.id === itemId);
     const success = buildItem(itemId);
-    
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Build Machines</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        {buildableItems.length > 0 ? (
-          buildableItems.map((item) => (
+        {filteredBuildableItems.length > 0 ? (
+          filteredBuildableItems.map((item) => (
             <View key={item.id} style={styles.buildCard}>
               <View style={styles.itemHeader}>
                 {item.icon ? (
@@ -86,9 +96,14 @@ const BuildScreen = () => {
             </View>
           ))
         ) : (
-          <Text style={styles.noItemsText}>
-            No buildable machines available yet.
-          </Text>
+          <View style={{ alignItems: 'center', marginTop: 32 }}>
+            <Text style={styles.noItemsText}>
+              No buildable machines available yet.
+            </Text>
+            <Text style={{ color: '#fff', marginTop: 12, fontSize: 16, textAlign: 'center' }}>
+              Unlock further milestones in the Milestones screen to advance your progression and access more machines.
+            </Text>
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>

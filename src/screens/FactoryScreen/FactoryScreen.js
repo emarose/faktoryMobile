@@ -62,14 +62,12 @@ export default function FactoryScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-
+{/* TODO: Implement Milestones Screen to unlock further progression, each milestone will unlock a set of new machines and recipes */}
         <Text style={styles.sectionTitle}>Progression & Products</Text>
         <View style={styles.gridContainer}>
           <TouchableOpacity
             style={styles.gridItem}
-            onPress={() =>
-              alert("Coming Soon: Track your progress & unlock new tech!")
-            }
+            onPress={() => navigation.navigate("MilestonesScreen")}
           >
             <Text style={styles.gridItemTitle}>Milestones</Text>
             <Text style={styles.gridItemDescription}>

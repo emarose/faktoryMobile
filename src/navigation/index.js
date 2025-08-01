@@ -14,6 +14,7 @@ import ProductAssemblyScreen from "../screens/ProductAssemblyScreen/ProductAssem
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResourcesScreen";
 import MachineDetailsScreen from "../screens/MachineDetailsScreen/MachineDetailsScreen";
+import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -80,6 +81,11 @@ function RootNavigator() {
         name="MachineDetailsScreen"
         component={MachineDetailsScreen}
         options={{ title: "Machine Details" }}
+      />
+      <Stack.Screen
+        name="MilestonesScreen"
+        component={MilestonesScreen}
+        options={{ title: "Milestones" }}
       />
     </Stack.Navigator>
   );
