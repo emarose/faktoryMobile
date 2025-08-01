@@ -1,10 +1,4 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  Alert,
-  Dimensions,
-} from "react-native";
+import { Text, View, ScrollView, Alert, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";
@@ -19,12 +13,7 @@ import NodeCard from "./components/NodeCard/NodeCard";
 const { width: screenWidth } = Dimensions.get("window");
 
 const MapScreen = () => {
-  const {
-    inventory,
-    placedMachines,
-    mineResource,
-    placeMachine,
-  } = useGame();
+  const { inventory, placedMachines, mineResource, placeMachine } = useGame();
   const { resourceNodes, setResourceNodes } = useGame();
 
   // Exploration logic
@@ -105,16 +94,10 @@ const MapScreen = () => {
     console.log("Manual mining ", nodeId);
   };
 
-  // Only show discovered nodes within discovery radius
-  const DISCOVERY_RADIUS = 150; // Should match useMapExploration
+  // Only show discovered nodes, regardless of player position
   const displayableNodes = React.useMemo(() => {
     return resourceNodes.filter((node) => {
       if (!discoveredNodes[node.id]) return false;
-      // Only render if within radius
-      const dx = node.x - playerMapPosition.x;
-      const dy = node.y - playerMapPosition.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance > DISCOVERY_RADIUS) return false;
       const nodeDefinition = items[node.type];
       if (!nodeDefinition || !nodeDefinition.output) {
         return false;
@@ -133,7 +116,7 @@ const MapScreen = () => {
       }
       return false;
     });
-  }, [resourceNodes, inventory, placedMachines, discoveredNodes, playerMapPosition.x, playerMapPosition.y]);
+  }, [resourceNodes, inventory, placedMachines, discoveredNodes]);
 
   const {
     MAP_DISPLAY_SIZE,
@@ -149,8 +132,8 @@ const MapScreen = () => {
     <SafeAreaView style={styles.fullScreenContainer}>
       <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}>
         <Text style={styles.title}>Resource Map</Text>
-      
-       {/*  <MapLegend /> */}
+
+        {/*  <MapLegend /> */}
         <View style={styles.mapVisualContainer}>
           <View style={{ position: "relative" }}>
             <MapGrid
@@ -159,8 +142,12 @@ const MapScreen = () => {
               getDisplayCoords={getDisplayCoords}
               gridLines={gridLines}
               MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
-              PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x}
-              PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y}
+              PLAYER_DISPLAY_X={
+                getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x
+              }
+              PLAYER_DISPLAY_Y={
+                getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y
+              }
               currentPlayerGameX={playerMapPosition.x}
               currentPlayerGameY={playerMapPosition.y}
               getNodeColor={getNodeColor}
@@ -178,7 +165,7 @@ const MapScreen = () => {
             Miners Available: {inventory.miner?.currentAmount || 0}
           </Text>
           <Text style={styles.inventoryStatus}>
-            Oil Extractors Available: {" "}
+            Oil Extractors Available:{" "}
             {inventory.oilExtractor?.currentAmount || 0}
           </Text>
         </View>
