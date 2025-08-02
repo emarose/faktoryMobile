@@ -10,9 +10,10 @@ export default function useWorldMapExploration(resourceNodes) {
   } = useContext(GameContext);
 
   // Directions: 'up', 'down', 'left', 'right'
+  // Fix: up increases Y, down decreases Y
   const DIRECTION_OFFSETS = {
-    up: { x: 0, y: -50 },
-    down: { x: 0, y: 50 },
+    up: { x: 0, y: 50 },
+    down: { x: 0, y: -50 },
     left: { x: -50, y: 0 },
     right: { x: 50, y: 0 },
   };

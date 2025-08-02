@@ -26,30 +26,29 @@ const MapScreen = () => {
     lastDirection,
   } = useWorldMapExploration(resourceNodes);
 
-  // Track map offset for grid shifting
+  // Track map offset for chunked map rendering
+  const CHUNK_SIZE = 300;
   const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
 
-  // Watch for player position changes and update offset if needed
   React.useEffect(() => {
-    let newOffset = { ...mapOffset };
-    let changed = false;
-    if (playerMapPosition.x >= mapOffset.x + 300) {
-      newOffset.x += 300;
-      changed = true;
-    } else if (playerMapPosition.x < mapOffset.x) {
-      newOffset.x -= 300;
-      changed = true;
-    }
-    if (playerMapPosition.y >= mapOffset.y + 300) {
-      newOffset.y += 300;
-      changed = true;
-    } else if (playerMapPosition.y < mapOffset.y) {
-      newOffset.y -= 300;
-      changed = true;
-    }
-    if (changed) setMapOffset(newOffset);
-  }, [playerMapPosition.x, playerMapPosition.y]);
+    // Calcula la nueva esquina superior izquierda del chunk.
+    // Usa `Math.trunc()` para manejar correctamente los valores negativos.
+    const newOffsetX =
+      Math.trunc(playerMapPosition.x / CHUNK_SIZE) * CHUNK_SIZE;
+    const newOffsetY =
+      Math.trunc(playerMapPosition.y / CHUNK_SIZE) * CHUNK_SIZE;
 
+    // Si el nuevo offset es diferente al actual, actualízalo.
+    if (newOffsetX !== mapOffset.x || newOffsetY !== mapOffset.y) {
+      setMapOffset({ x: newOffsetX, y: newOffsetY });
+    }
+  }, [
+    playerMapPosition.x,
+    playerMapPosition.y,
+    mapOffset.x,
+    mapOffset.y,
+    CHUNK_SIZE,
+  ]);
   const handlePlaceMachine = (machineType, nodeId) => {
     const nodeIdx = resourceNodes.findIndex((n) => n.id === nodeId);
     if (nodeIdx === -1) return;
@@ -94,10 +93,19 @@ const MapScreen = () => {
     console.log("Manual mining ", nodeId);
   };
 
-  // Only show discovered nodes, regardless of player position
+  // Only show discovered nodes within the current chunk
   const displayableNodes = React.useMemo(() => {
     return resourceNodes.filter((node) => {
       if (!discoveredNodes[node.id]) return false;
+      // Only render nodes within the current chunk
+      if (
+        node.x < mapOffset.x ||
+        node.x >= mapOffset.x + CHUNK_SIZE ||
+        node.y < mapOffset.y ||
+        node.y >= mapOffset.y + CHUNK_SIZE
+      ) {
+        return false;
+      }
       const nodeDefinition = items[node.type];
       if (!nodeDefinition || !nodeDefinition.output) {
         return false;
@@ -116,7 +124,7 @@ const MapScreen = () => {
       }
       return false;
     });
-  }, [resourceNodes, inventory, placedMachines, discoveredNodes]);
+  }, [resourceNodes, inventory, placedMachines, discoveredNodes, mapOffset.x, mapOffset.y]);
 
   const {
     MAP_DISPLAY_SIZE,
@@ -137,17 +145,17 @@ const MapScreen = () => {
         <View style={styles.mapVisualContainer}>
           <View style={{ position: "relative" }}>
             <MapGrid
-              displayableNodes={displayableNodes}
+              displayableNodes={displayableNodes.map((node) => ({
+                ...node,
+                chunkX: node.x - mapOffset.x,
+                chunkY: node.y - mapOffset.y,
+              }))}
               placedMachines={placedMachines}
               getDisplayCoords={getDisplayCoords}
               gridLines={gridLines}
               MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
-              PLAYER_DISPLAY_X={
-                getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x
-              }
-              PLAYER_DISPLAY_Y={
-                getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y
-              }
+              PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x - mapOffset.x, playerMapPosition.y - mapOffset.y).x}
+              PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x - mapOffset.x, playerMapPosition.y - mapOffset.y).y}
               currentPlayerGameX={playerMapPosition.x}
               currentPlayerGameY={playerMapPosition.y}
               getNodeColor={getNodeColor}
