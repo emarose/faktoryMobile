@@ -10,16 +10,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGame } from "../../contexts/GameContext";
-
 import styles from "./styles";
-import useMilestone from "../../hooks/useMilestone";
 
 const BuildScreen = () => {
-
-  const { buildableItems, buildItem, inventory, ownedMachines } = useGame();
-
-  // Use milestone logic from useMilestone hook
-  const { milestones, unlockedMachineNames } = useMilestone(inventory);
+  const { buildableItems, buildItem, inventory, ownedMachines, unlockedMachineNames } = useGame();
 
   // Only show buildable items where the machine is unlocked
   const filteredBuildableItems = buildableItems.filter(item =>

@@ -7,6 +7,8 @@ import { useMining } from "../hooks/useMining";
 import useCrafting from "../hooks/useCrafting";
 import useProductionRate from "../hooks/useProductionRate";
 import { useMapNodes } from "../hooks/useMapNodes";
+import useMilestone from "../hooks/useMilestone";
+import { useToast } from "./ToastContext";
 
 export const GameContext = createContext();
 
@@ -61,6 +63,29 @@ export const GameProvider = ({ children }) => {
   );
 
   const { getProductionRate } = useProductionRate(placedMachines);
+  const { showToast } = useToast();
+  const discoveredNodesCount = Object.keys(discoveredNodes).length;
+  const {
+    milestones,
+    canCompleteCurrentMilestone,
+    completeCurrentMilestone,
+    activeMilestone,
+    currentMilestone,
+    unlockedMachineNames,
+    setMilestones,
+    setActiveMilestone,
+  } = useMilestone(inventory, discoveredNodesCount);
+
+  useEffect(() => {
+    if (canCompleteCurrentMilestone) {
+      Promise.resolve().then(() => {
+        const message = completeCurrentMilestone();
+        if (message) {
+          showToast(message);
+        }
+      });
+    }
+  }, [canCompleteCurrentMilestone, completeCurrentMilestone, showToast, discoveredNodesCount]);
 
   const contextValue = useMemo(
     () => ({
@@ -88,6 +113,14 @@ export const GameProvider = ({ children }) => {
       setPlayerMapPosition,
       discoveredNodes,
       setDiscoveredNodes,
+      milestones,
+      canCompleteCurrentMilestone,
+      completeCurrentMilestone,
+      activeMilestone,
+      currentMilestone,
+      unlockedMachineNames,
+      setMilestones,
+      setActiveMilestone,
     }),
     [
       inventory,
@@ -113,6 +146,14 @@ export const GameProvider = ({ children }) => {
       setPlayerMapPosition,
       discoveredNodes,
       setDiscoveredNodes,
+      milestones,
+      canCompleteCurrentMilestone,
+      completeCurrentMilestone,
+      activeMilestone,
+      currentMilestone,
+      unlockedMachineNames,
+      setMilestones,
+      setActiveMilestone,
     ]
   );
 
