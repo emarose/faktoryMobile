@@ -7,7 +7,7 @@ import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 
 const TILE_SIZE = 30;
-const CHUNK_SIZE = 10;
+const CHUNK_SIZE = 11; // 11x11 grid
 const VIEW_SIZE = CHUNK_SIZE;
 
 const PLAYER_COLOR = "#FF0000";
@@ -33,7 +33,9 @@ function generateChunk(cx, cy, resourceNodes) {
 }
 
 const MapScreen = () => {
-  const [player, setPlayer] = useState({ x: 0, y: 0 });
+  // Center player on grid (5,5 for 0-based 11x11)
+  const center = Math.floor(CHUNK_SIZE / 2);
+  const [player, setPlayer] = useState({ x: center, y: center });
   const [chunks, setChunks] = useState({});
   const { allResourceNodes } = useMapNodes();
   const {
@@ -46,8 +48,13 @@ const MapScreen = () => {
   } = useWorldMapExploration(allResourceNodes);
 
   useEffect(() => {
-    // Sync player position with exploration logic
-    setPlayer({ x: playerMapPosition.x, y: playerMapPosition.y });
+    // On mount, set exploration logic to center if at 0,0
+    if (playerMapPosition.x === 0 && playerMapPosition.y === 0) {
+      exploreArea(center, center);
+      setPlayer({ x: center, y: center });
+    } else {
+      setPlayer({ x: playerMapPosition.x, y: playerMapPosition.y });
+    }
     const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
     const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
     const key = `${cx},${cy}`;
@@ -82,7 +89,7 @@ const MapScreen = () => {
         const gy = cy * CHUNK_SIZE + y;
         const isPlayer = gx === player.x && gy === player.y;
         let color = isPlayer ? PLAYER_COLOR : "#222";
-        const tileNode = chunk.tiles[y][x].node;
+        const tileNode = chunk.tiles[y][x]?.node;
         // Only show discovered nodes (once discovered, always visible)
         let showNode = false;
         if (tileNode && discoveredNodes[tileNode.id]) {

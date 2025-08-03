@@ -13,13 +13,12 @@ export default function useWorldMapExploration(resourceNodes) {
     setDiscoveredNodes,
   } = gameContext;
 
-  // Directions: 'up', 'down', 'left', 'right'
-  // Fix: up increases Y, down decreases Y
+  // Directions: 'up', 'down', 'left', 'right' (tile-based movement)
   const DIRECTION_OFFSETS = {
-    up: { x: 0, y: 50 },
-    down: { x: 0, y: -50 },
-    left: { x: -50, y: 0 },
-    right: { x: 50, y: 0 },
+    up: { x: 0, y: -1 },
+    down: { x: 0, y: 1 },
+    left: { x: -1, y: 0 },
+    right: { x: 1, y: 0 },
   };
 
   // Explore in a given direction from current position
@@ -27,24 +26,27 @@ export default function useWorldMapExploration(resourceNodes) {
   const [discoveredNodesScout, setDiscoveredNodesScout] = useState({});
   const [discoveredCount, setDiscoveredCount] = useState(0);
 
+  const DISCOVERY_RADIUS = 47; // Match MapScreen
   const exploreArea = (centerX, centerY) => {
     setPlayerMapPosition({ x: centerX, y: centerY });
     setDiscoveredNodes((prevDiscovered) => {
       const newDiscovered = { ...prevDiscovered };
-
       resourceNodes.forEach((node) => {
         const distance = Math.sqrt(
           Math.pow(node.x - centerX, 2) + Math.pow(node.y - centerY, 2)
         );
-        if (distance <= 150 && !newDiscovered[node.id]) {
+        if (distance <= DISCOVERY_RADIUS && !newDiscovered[node.id]) {
           newDiscovered[node.id] = true;
         }
       });
-
-      setDiscoveredCount(Object.keys(newDiscovered).length);
       return newDiscovered;
     });
   };
+
+  // Update discoveredCount safely after discoveredNodes changes
+  useEffect(() => {
+    setDiscoveredCount(Object.keys(discoveredNodes).length);
+  }, [discoveredNodes]);
 
   const getDiscoveredNodes = () => {
     return resourceNodes.filter((node) => discoveredNodes[node.id]);
