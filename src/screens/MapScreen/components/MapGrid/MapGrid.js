@@ -47,6 +47,8 @@ const MapGrid = ({
       {/* Render grid lines and axis labels from gridLines array */}
       {gridLines.map((line, idx) => {
         if (line.type === "vertical") {
+          // Add chunk offset to axis label
+          const worldLabel = line.label + (mapOffset?.x || 0);
           return (
             <React.Fragment key={`vx-${line.label}` + idx}>
               <View
@@ -58,41 +60,44 @@ const MapGrid = ({
               <Text
                 style={[styles.axisLabelX, { left: line.x + 2, bottom: 2 }]}
               >
-                {line.label}
+                {worldLabel}
               </Text>
             </React.Fragment>
           );
         } else if (line.type === "horizontal") {
+          // Flip Y axis for label and line, add chunk offset
+          const flippedY = MAP_DISPLAY_SIZE - line.y;
+          const worldLabel = line.label + (mapOffset?.y || 0);
           return (
             <React.Fragment key={`hy-${line.label}` + idx}>
               <View
                 style={[
                   styles.gridLine,
-                  { top: line.y, left: 0, right: 0, height: 1 },
+                  { top: flippedY, left: 0, right: 0, height: 1 },
                 ]}
               />
-              <Text style={[styles.axisLabelY, { top: line.y + 2, left: 2 }]}>
-                {line.label}
+              <Text style={[styles.axisLabelY, { top: flippedY + 2, left: 2 }]}> 
+                {worldLabel}
               </Text>
             </React.Fragment>
           );
         }
         return null;
       })}
-      {/* Player current position */}
+      {/* Player current position (dot and label use flipped Y) */}
       <View
         style={[
           styles.playerPositionDot,
-          { left: PLAYER_DISPLAY_X, top: PLAYER_DISPLAY_Y },
+          { left: PLAYER_DISPLAY_X, top: MAP_DISPLAY_SIZE - PLAYER_DISPLAY_Y },
         ]}
       />
       <Text
         style={[
           styles.playerPositionLabel,
-          { left: PLAYER_DISPLAY_X + 10, top: PLAYER_DISPLAY_Y - 5 },
+          { left: PLAYER_DISPLAY_X + 10, top: MAP_DISPLAY_SIZE - PLAYER_DISPLAY_Y - 5 },
         ]}
       >
-        You ({currentPlayerGameX},{currentPlayerGameY})
+        You {currentPlayerGameX}, {currentPlayerGameY}
       </Text>
       {/* Directional controls */}
       <MapGridControls
@@ -105,7 +110,7 @@ const MapGrid = ({
           styles.movementRadiusCircle,
           {
             left: PLAYER_DISPLAY_X - 75,
-            top: PLAYER_DISPLAY_Y - 75,
+            top: MAP_DISPLAY_SIZE - PLAYER_DISPLAY_Y - 75,
             width: 150,
             height: 150,
             borderRadius: 75,
@@ -119,7 +124,9 @@ const MapGrid = ({
       />
       {/* Render discovered nodes */}
       {displayableNodes.map((node) => {
-        const { x: displayX, y: displayY } = getDisplayCoords(node.x, node.y);
+        let { x: displayX, y: displayY } = getDisplayCoords(node.x, node.y);
+        // Flip Y axis so origin is bottom-left
+        displayY = MAP_DISPLAY_SIZE - displayY;
         const nodeColor = getNodeColor(node.type);
         const isAssigned = placedMachines.some(
           (m) => m.assignedNodeId === node.id
