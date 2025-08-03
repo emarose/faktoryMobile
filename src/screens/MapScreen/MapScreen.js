@@ -1,33 +1,41 @@
-import {
-  Text,
-  View,
-  ScrollView,
-  Alert,
-  Dimensions,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-import { useGame } from "../../contexts/GameContext";
-import { items } from "../../data/items";
+import React, { useState, useEffect } from "react";
+import { View, Text, Button } from "react-native";
 import styles from "./styles";
-import { useMapGrid } from "../../hooks/useMapGrid";
-import { getNodeColor } from "../../data/nodeTypes";
+import { NODE_TYPES_MAP, getNodeColor } from "../../data/nodeTypes";
+import MapGridControls from "./components/MapGridControls/MapGridControls";
+import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
-import React, { useState } from "react";
-import MapGrid from "./components/MapGrid/MapGrid";
-import NodeCard from "./components/NodeCard/NodeCard";
-const { width: screenWidth } = Dimensions.get("window");
+
+const TILE_SIZE = 30;
+const CHUNK_SIZE = 10;
+const VIEW_SIZE = CHUNK_SIZE;
+
+const PLAYER_COLOR = "#FF0000";
+
+function generateChunk(cx, cy, resourceNodes) {
+  const tiles = [];
+  for (let y = 0; y < CHUNK_SIZE; y++) {
+    tiles[y] = [];
+    for (let x = 0; x < CHUNK_SIZE; x++) {
+      // Calculate global coordinates for this tile
+      const gx = cx * CHUNK_SIZE + x;
+      const gy = cy * CHUNK_SIZE + y;
+      // Find a resource node at this position
+      const node = resourceNodes.find((n) => n.x === gx && n.y === gy);
+      if (node) {
+        tiles[y][x] = { type: node.type, node };
+      } else {
+        tiles[y][x] = { type: null };
+      }
+    }
+  }
+  return { cx, cy, tiles };
+}
 
 const MapScreen = () => {
-  const {
-    inventory,
-    placedMachines,
-    mineResource,
-    placeMachine,
-  } = useGame();
-  const { resourceNodes, setResourceNodes } = useGame();
-
-  // Exploration logic
+  const [player, setPlayer] = useState({ x: 0, y: 0 });
+  const [chunks, setChunks] = useState({});
+  const { allResourceNodes } = useMapNodes();
   const {
     discoveredNodes,
     playerMapPosition,
@@ -35,173 +43,123 @@ const MapScreen = () => {
     getDiscoveredNodes,
     exploreDirection,
     lastDirection,
-  } = useWorldMapExploration(resourceNodes);
+  } = useWorldMapExploration(allResourceNodes);
 
-  // Track map offset for grid shifting
-  const [mapOffset, setMapOffset] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    // Sync player position with exploration logic
+    setPlayer({ x: playerMapPosition.x, y: playerMapPosition.y });
+    const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
+    const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
+    const key = `${cx},${cy}`;
+    if (!chunks[key]) {
+      setChunks((prev) => ({ ...prev, [key]: generateChunk(cx, cy, allResourceNodes) }));
+    }
+    // Only discover nodes after first movement
+    if (playerMapPosition.x !== 0 || playerMapPosition.y !== 0) {
+      exploreArea(playerMapPosition.x, playerMapPosition.y);
+    }
+  }, [playerMapPosition.x, playerMapPosition.y, allResourceNodes]);
 
-  // Watch for player position changes and update offset if needed
-  React.useEffect(() => {
-    let newOffset = { ...mapOffset };
-    let changed = false;
-    if (playerMapPosition.x >= mapOffset.x + 300) {
-      newOffset.x += 300;
-      changed = true;
-    } else if (playerMapPosition.x < mapOffset.x) {
-      newOffset.x -= 300;
-      changed = true;
-    }
-    if (playerMapPosition.y >= mapOffset.y + 300) {
-      newOffset.y += 300;
-      changed = true;
-    } else if (playerMapPosition.y < mapOffset.y) {
-      newOffset.y -= 300;
-      changed = true;
-    }
-    if (changed) setMapOffset(newOffset);
-  }, [playerMapPosition.x, playerMapPosition.y]);
-
-  const handlePlaceMachine = (machineType, nodeId) => {
-    const nodeIdx = resourceNodes.findIndex((n) => n.id === nodeId);
-    if (nodeIdx === -1) return;
-    const node = resourceNodes[nodeIdx];
-    // Simulate miner extraction: decrease node currentAmount by 1 (or more if needed)
-    if (node.currentAmount < node.capacity) {
-      const updatedNodes = [...resourceNodes];
-      updatedNodes[nodeIdx] = {
-        ...node,
-        currentAmount: Math.min(node.currentAmount + 1, node.capacity),
-      };
-      setResourceNodes(updatedNodes);
-    }
-    const success = placeMachine(machineType, nodeId);
-    if (!success) {
-      Alert.alert(
-        "Placement Failed",
-        "You might not have enough machines or this node isn't suitable, or it already has a machine."
-      );
-    } else {
-      Alert.alert(
-        "Machine Placed!",
-        `${items[machineType]?.name || machineType} successfully placed.`
-      );
-    }
+  const movePlayer = (dx, dy) => {
+    const nx = player.x + dx;
+    const ny = player.y + dy;
+    exploreArea(nx, ny);
   };
 
-  const handleMineResource = (nodeId) => {
-    const nodeIdx = resourceNodes.findIndex((n) => n.id === nodeId);
-    if (nodeIdx === -1) return;
-    const node = resourceNodes[nodeIdx];
-    // Manual mining: decrease node currentAmount by 1
-    if (node.currentAmount < node.capacity) {
-      const updatedNodes = [...resourceNodes];
-      updatedNodes[nodeIdx] = {
-        ...node,
-        currentAmount: Math.min(node.currentAmount + 1, node.capacity),
-      };
-      setResourceNodes(updatedNodes);
-    }
-    mineResource(nodeId);
-    console.log("Manual mining ", nodeId);
-  };
+  const DISCOVERY_RADIUS = 47;
 
-  // Only show discovered nodes within discovery radius
-  const DISCOVERY_RADIUS = 150; // Should match useMapExploration
-  const displayableNodes = React.useMemo(() => {
-    return resourceNodes.filter((node) => {
-      if (!discoveredNodes[node.id]) return false;
-      // Only render if within radius
-      const dx = node.x - playerMapPosition.x;
-      const dy = node.y - playerMapPosition.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance > DISCOVERY_RADIUS) return false;
-      const nodeDefinition = items[node.type];
-      if (!nodeDefinition || !nodeDefinition.output) {
-        return false;
-      }
-      if (nodeDefinition.manualMineable) {
-        return true;
-      }
-      if (nodeDefinition.machineRequired) {
-        const requiredMachineType = nodeDefinition.machineRequired;
-        const machineInInventoryCount =
-          inventory[requiredMachineType]?.currentAmount || 0;
-        const isMachineAssigned = placedMachines.some(
-          (m) => m.assignedNodeId === node.id && m.type === requiredMachineType
+  const renderTiles = () => {
+    const tiles = [];
+    const cx = Math.floor(player.x / CHUNK_SIZE);
+    const cy = Math.floor(player.y / CHUNK_SIZE);
+    const chunkKey = `${cx},${cy}`;
+    const chunk = chunks[chunkKey];
+    if (!chunk) return tiles;
+    for (let y = 0; y < CHUNK_SIZE; y++) {
+      const rowTiles = [];
+      for (let x = 0; x < CHUNK_SIZE; x++) {
+        const gx = cx * CHUNK_SIZE + x;
+        const gy = cy * CHUNK_SIZE + y;
+        const isPlayer = gx === player.x && gy === player.y;
+        let color = isPlayer ? PLAYER_COLOR : "#222";
+        const tileNode = chunk.tiles[y][x].node;
+        // Only show discovered nodes (once discovered, always visible)
+        let showNode = false;
+        if (tileNode && discoveredNodes[tileNode.id]) {
+          color = isPlayer ? PLAYER_COLOR : getNodeColor(tileNode.type);
+          showNode = true;
+        }
+        rowTiles.push(
+          <View
+            key={`${gx}-${gy}`}
+            style={{
+              width: TILE_SIZE,
+              height: TILE_SIZE,
+              backgroundColor: color,
+              borderWidth: 1,
+              borderColor: "#999",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            {/* Show node name if present and discovered */}
+            {showNode && (
+              <Text style={{ fontSize: 8, color: "#fff", textAlign: "center" }}>
+                {tileNode.name}
+              </Text>
+            )}
+          </View>
         );
-        return machineInInventoryCount > 0 || isMachineAssigned;
       }
-      return false;
-    });
-  }, [resourceNodes, inventory, placedMachines, discoveredNodes, playerMapPosition.x, playerMapPosition.y]);
-
-  const {
-    MAP_DISPLAY_SIZE,
-    PLAYER_DISPLAY_X,
-    PLAYER_DISPLAY_Y,
-    currentPlayerGameX,
-    currentPlayerGameY,
-    getDisplayCoords,
-    gridLines,
-  } = useMapGrid({ screenWidth });
+      tiles.push(
+        <View key={`row-${y}`} style={{ flexDirection: "row" }}>
+          {rowTiles}
+        </View>
+      );
+    }
+    return tiles;
+  };
 
   return (
-    <SafeAreaView style={styles.fullScreenContainer}>
-      <ScrollView contentContainerStyle={styles.scrollViewContentWrapper}>
-        <Text style={styles.title}>Resource Map</Text>
-      
-       {/*  <MapLegend /> */}
-        <View style={styles.mapVisualContainer}>
-          <View style={{ position: "relative" }}>
-            <MapGrid
-              displayableNodes={displayableNodes}
-              placedMachines={placedMachines}
-              getDisplayCoords={getDisplayCoords}
-              gridLines={gridLines}
-              MAP_DISPLAY_SIZE={MAP_DISPLAY_SIZE}
-              PLAYER_DISPLAY_X={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).x}
-              PLAYER_DISPLAY_Y={getDisplayCoords(playerMapPosition.x, playerMapPosition.y).y}
-              currentPlayerGameX={playerMapPosition.x}
-              currentPlayerGameY={playerMapPosition.y}
-              getNodeColor={getNodeColor}
-              styles={styles}
-              lastDirection={lastDirection}
-              mapOffset={mapOffset}
-              exploreDirection={exploreDirection}
+    <View style={styles.fullScreenContainer}>
+      <Text style={styles.title}>Resource Map</Text>
+      <View style={styles.mapVisualContainer}>
+        <View style={{ position: "relative", width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE, alignSelf: "center" }}>
+          <View style={[styles.grid, { flexDirection: "column", width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE }]}>
+            {renderTiles()}
+          </View>
+          {/* Discovery radius visual */}
+          <View
+            style={{
+              position: "absolute",
+              left: player.x % CHUNK_SIZE * TILE_SIZE + TILE_SIZE / 2 - DISCOVERY_RADIUS,
+              top: player.y % CHUNK_SIZE * TILE_SIZE + TILE_SIZE / 2 - DISCOVERY_RADIUS,
+              width: DISCOVERY_RADIUS * 2,
+              height: DISCOVERY_RADIUS * 2,
+              borderRadius: DISCOVERY_RADIUS,
+              borderWidth: 2,
+              borderColor: "#27ae60",
+              opacity: 0.2,
+              backgroundColor: "#27ae60",
+              zIndex: 2,
+            }}
+          />
+          <View style={{ position: "absolute", left: 0, top: 0, width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE, justifyContent: "center", alignItems: "center" }}>
+            <MapGridControls
+              MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
+              exploreDirection={(dir) => {
+                if (dir === "up") movePlayer(0, -1);
+                else if (dir === "down") movePlayer(0, 1);
+                else if (dir === "left") movePlayer(-1, 0);
+                else if (dir === "right") movePlayer(1, 0);
+              }}
             />
           </View>
         </View>
-
-        <Text style={styles.subtitle}>Available Mining Sites</Text>
-        <View style={styles.inventorySummary}>
-          <Text style={styles.inventoryStatus}>
-            Miners Available: {inventory.miner?.currentAmount || 0}
-          </Text>
-          <Text style={styles.inventoryStatus}>
-            Oil Extractors Available: {" "}
-            {inventory.oilExtractor?.currentAmount || 0}
-          </Text>
-        </View>
-
-        {displayableNodes.length > 0 ? (
-          displayableNodes.map((node) => (
-            <NodeCard
-              key={node.id}
-              node={node}
-              inventory={inventory}
-              onPlaceMachine={handlePlaceMachine}
-              placedMachines={placedMachines}
-              onMineResource={handleMineResource}
-              styles={styles}
-            />
-          ))
-        ) : (
-          <Text style={styles.noNodesText}>
-            No active mining sites available. Build more machines or explore!
-          </Text>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+      <Text style={styles.info}>Player: ({player.x}, {player.y})</Text>
+      <Text style={styles.info}>Discovered Nodes: {Object.keys(discoveredNodes).length}</Text>
+    </View>
   );
 };
 
