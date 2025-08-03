@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { NODE_TYPES_MAP } from "../data/nodeTypes";
 
 export function useMapNodes() {
-  //TODO: make these nodes dynamic and add an amount to each generated node to be extracted
   const allResourceNodes = useMemo(
     () => [
       {
@@ -27,8 +26,8 @@ export function useMapNodes() {
         id: "limestoneNode1",
         name: "Limestone Node",
         type: "limestone_node",
-        x: 300,
-        y: 200,
+        x: 2,
+        y: 7,
         currentAmount: 0,
         capacity: 50,
       },

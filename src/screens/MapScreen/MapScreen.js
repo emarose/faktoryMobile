@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text } from "react-native";
 import styles from "./styles";
-import { NODE_TYPES_MAP, getNodeColor } from "../../data/nodeTypes";
+import { getNodeColor } from "../../data/nodeTypes";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 
 const TILE_SIZE = 30;
-const CHUNK_SIZE = 11; // 11x11 grid
+const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
-
+const DISCOVERY_RADIUS_PX = 47;
 const PLAYER_COLOR = "#FF0000";
 
 function generateChunk(cx, cy, resourceNodes) {
@@ -17,86 +17,70 @@ function generateChunk(cx, cy, resourceNodes) {
   for (let y = 0; y < CHUNK_SIZE; y++) {
     tiles[y] = [];
     for (let x = 0; x < CHUNK_SIZE; x++) {
-      // Calculate global coordinates for this tile
       const gx = cx * CHUNK_SIZE + x;
       const gy = cy * CHUNK_SIZE + y;
-      // Find a resource node at this position
-      const node = resourceNodes.find((n) => n.x === gx && n.y === gy);
-      if (node) {
-        tiles[y][x] = { type: node.type, node };
-      } else {
-        tiles[y][x] = { type: null };
-      }
+      const node = resourceNodes.find(n => n.x === gx && n.y === gy);
+      tiles[y][x] = { node: node || null };
     }
   }
   return { cx, cy, tiles };
 }
 
-const MapScreen = () => {
-  // Center player on grid (5,5 for 0-based 11x11)
-  const center = Math.floor(CHUNK_SIZE / 2);
-  const [player, setPlayer] = useState({ x: center, y: center });
-  const [chunks, setChunks] = useState({});
-  const { allResourceNodes } = useMapNodes();
-  const {
-    discoveredNodes,
-    playerMapPosition,
-    exploreArea,
-    getDiscoveredNodes,
-    exploreDirection,
-    lastDirection,
-  } = useWorldMapExploration(allResourceNodes);
+export default function MapScreen() {
+  // Desestructuramos el objeto que viene del hook
+  const { allResourceNodes, NODE_TYPES_MAP } = useMapNodes();
 
+  const {
+    playerMapPosition,
+    discoveredNodes,
+    exploreDirection,
+  } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX);
+
+  const [chunks, setChunks] = useState({});
+
+  // Cargar el chunk actual bajo demanda
   useEffect(() => {
-    // On mount, set exploration logic to center if at 0,0
-    if (playerMapPosition.x === 0 && playerMapPosition.y === 0) {
-      exploreArea(center, center);
-      setPlayer({ x: center, y: center });
-    } else {
-      setPlayer({ x: playerMapPosition.x, y: playerMapPosition.y });
-    }
     const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
     const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
     const key = `${cx},${cy}`;
-    if (!chunks[key]) {
-      setChunks((prev) => ({ ...prev, [key]: generateChunk(cx, cy, allResourceNodes) }));
-    }
-    // Only discover nodes after first movement
-    if (playerMapPosition.x !== 0 || playerMapPosition.y !== 0) {
-      exploreArea(playerMapPosition.x, playerMapPosition.y);
-    }
-  }, [playerMapPosition.x, playerMapPosition.y, allResourceNodes]);
+    setChunks(prev => {
+      if (prev[key]) return prev;
+      return {
+        ...prev,
+        [key]: generateChunk(cx, cy, allResourceNodes),
+      };
+    });
+  }, [playerMapPosition, allResourceNodes]);
 
-  const movePlayer = (dx, dy) => {
-    const nx = player.x + dx;
-    const ny = player.y + dy;
-    exploreArea(nx, ny);
-  };
-
-  const DISCOVERY_RADIUS = 47;
+  // Filtramos únicamente los nodos descubiertos
+  const displayableNodes = allResourceNodes.filter(
+    node => discoveredNodes[node.id]
+  );
 
   const renderTiles = () => {
-    const tiles = [];
-    const cx = Math.floor(player.x / CHUNK_SIZE);
-    const cy = Math.floor(player.y / CHUNK_SIZE);
-    const chunkKey = `${cx},${cy}`;
-    const chunk = chunks[chunkKey];
-    if (!chunk) return tiles;
+    const rows = [];
+    const px = playerMapPosition.x;
+    const py = playerMapPosition.y;
+    const cx = Math.floor(px / CHUNK_SIZE);
+    const cy = Math.floor(py / CHUNK_SIZE);
+    const chunk = chunks[`${cx},${cy}`];
+    if (!chunk) return rows;
+
     for (let y = 0; y < CHUNK_SIZE; y++) {
-      const rowTiles = [];
+      const cols = [];
       for (let x = 0; x < CHUNK_SIZE; x++) {
         const gx = cx * CHUNK_SIZE + x;
         const gy = cy * CHUNK_SIZE + y;
-        const isPlayer = gx === player.x && gy === player.y;
+        const isPlayer = gx === px && gy === py;
         let color = isPlayer ? PLAYER_COLOR : "#222";
-        const tileNode = chunk.tiles[y][x]?.node;
-        // Only show discovered nodes (once discovered, always visible)
-        let showNode = false;
-        if (tileNode && discoveredNodes[tileNode.id]) {
-          color = isPlayer ? PLAYER_COLOR : getNodeColor(tileNode.type);
-          showNode = true;
+
+        const tileNode = chunk.tiles[y][x].node;
+        const discovered = displayableNodes.find(n => n.id === tileNode?.id);
+        if (discovered) {
+          color = getNodeColor(discovered.type);
         }
-        rowTiles.push(
+
+        cols.push(
           <View
             key={`${gx}-${gy}`}
             style={{
@@ -109,41 +93,63 @@ const MapScreen = () => {
               alignItems: "center",
             }}
           >
-            {/* Show node name if present and discovered */}
-            {showNode && (
+            {discovered && (
               <Text style={{ fontSize: 8, color: "#fff", textAlign: "center" }}>
-                {tileNode.name}
+                {discovered.name}
               </Text>
             )}
           </View>
         );
       }
-      tiles.push(
+      rows.push(
         <View key={`row-${y}`} style={{ flexDirection: "row" }}>
-          {rowTiles}
+          {cols}
         </View>
       );
     }
-    return tiles;
+
+    return rows;
   };
 
   return (
     <View style={styles.fullScreenContainer}>
       <Text style={styles.title}>Resource Map</Text>
       <View style={styles.mapVisualContainer}>
-        <View style={{ position: "relative", width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE, alignSelf: "center" }}>
-          <View style={[styles.grid, { flexDirection: "column", width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE }]}>
+        <View
+          style={{
+            position: "relative",
+            width: TILE_SIZE * VIEW_SIZE,
+            height: TILE_SIZE * VIEW_SIZE,
+            alignSelf: "center",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "column",
+              width: TILE_SIZE * VIEW_SIZE,
+              height: TILE_SIZE * VIEW_SIZE,
+            }}
+          >
             {renderTiles()}
           </View>
-          {/* Discovery radius visual */}
           <View
             style={{
               position: "absolute",
-              left: player.x % CHUNK_SIZE * TILE_SIZE + TILE_SIZE / 2 - DISCOVERY_RADIUS,
-              top: player.y % CHUNK_SIZE * TILE_SIZE + TILE_SIZE / 2 - DISCOVERY_RADIUS,
-              width: DISCOVERY_RADIUS * 2,
-              height: DISCOVERY_RADIUS * 2,
-              borderRadius: DISCOVERY_RADIUS,
+              left:
+                ((playerMapPosition.x % CHUNK_SIZE) + CHUNK_SIZE) %
+                  CHUNK_SIZE *
+                  TILE_SIZE +
+                TILE_SIZE / 2 -
+                DISCOVERY_RADIUS_PX,
+              top:
+                ((playerMapPosition.y % CHUNK_SIZE) + CHUNK_SIZE) %
+                  CHUNK_SIZE *
+                  TILE_SIZE +
+                TILE_SIZE / 2 -
+                DISCOVERY_RADIUS_PX,
+              width: DISCOVERY_RADIUS_PX * 2,
+              height: DISCOVERY_RADIUS_PX * 2,
+              borderRadius: DISCOVERY_RADIUS_PX,
               borderWidth: 2,
               borderColor: "#27ae60",
               opacity: 0.2,
@@ -151,23 +157,30 @@ const MapScreen = () => {
               zIndex: 2,
             }}
           />
-          <View style={{ position: "absolute", left: 0, top: 0, width: TILE_SIZE * VIEW_SIZE, height: TILE_SIZE * VIEW_SIZE, justifyContent: "center", alignItems: "center" }}>
+          <View
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: TILE_SIZE * VIEW_SIZE,
+              height: TILE_SIZE * VIEW_SIZE,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <MapGridControls
               MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-              exploreDirection={(dir) => {
-                if (dir === "up") movePlayer(0, -1);
-                else if (dir === "down") movePlayer(0, 1);
-                else if (dir === "left") movePlayer(-1, 0);
-                else if (dir === "right") movePlayer(1, 0);
-              }}
+              exploreDirection={exploreDirection}
             />
           </View>
         </View>
       </View>
-      <Text style={styles.info}>Player: ({player.x}, {player.y})</Text>
-      <Text style={styles.info}>Discovered Nodes: {Object.keys(discoveredNodes).length}</Text>
+      <Text style={styles.info}>
+        Player: ({playerMapPosition.x}, {playerMapPosition.y})
+      </Text>
+      <Text style={styles.info}>
+        Discovered Nodes: {displayableNodes.length}
+      </Text>
     </View>
   );
-};
-
-export default MapScreen;
+}

@@ -16,9 +16,7 @@ export function useMilestone(inventory, discoveredCount) {
     const canCompleteCurrentMilestone = currentMilestone
         ? Object.entries(currentMilestone.requirements || {}).every(
             ([itemId, requiredAmount]) => {
-                if (itemId === "discoveredNodes") {
-                    console.log("discoveredNodes milestone:", discoveredCount);
-                    
+                if (itemId === "discoveredNodes") {                    
                     return discoveredCount  === 1;
                 }
                 return (inventory[itemId]?.currentAmount || 0) >= requiredAmount;
