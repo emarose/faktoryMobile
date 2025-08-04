@@ -5,7 +5,7 @@ import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
 
 const NodeCard = React.memo(
-  ({ node, inventory, onPlaceMachine, placedMachines, onMineResource, styles }) => {
+  ({ node, inventory, onPlaceMachine, placedMachines, onMineResource, styles, playerPosition, discoveryRadius }) => {
     const { id: nodeId, name, x, y, type: nodeType } = node;
     const nodeDefinition = items[nodeType];
     if (!nodeDefinition) {
@@ -44,6 +44,15 @@ const NodeCard = React.memo(
     // Get node depletion amount if available
     const nodeDepletionAmount = typeof node.currentAmount !== "undefined" ? node.currentAmount : null;
     const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 50;
+    // Calculate if player is within discovery radius (in grid units)
+    let canManualMine = false;
+    if (playerPosition && typeof playerPosition.x === 'number' && typeof playerPosition.y === 'number') {
+      // Convert pixel radius to grid units, but require player to be strictly closer (e.g. radius - 1)
+      const tileSize = typeof global.TILE_SIZE === 'number' ? global.TILE_SIZE : 30;
+      const discoveryRadiusTiles = Math.max(1, Math.floor((discoveryRadius || 0) / tileSize));
+      const dist = Math.sqrt(Math.pow(playerPosition.x - x, 2) + Math.pow(playerPosition.y - y, 2));
+      canManualMine = dist <= discoveryRadiusTiles;
+    }
     return (
       <View style={styles.nodeCard}>
         <Text style={styles.nodeName}>{name}</Text>
@@ -82,12 +91,18 @@ const NodeCard = React.memo(
         )}
         <View style={styles.placementActions}>
           {showManualMineButton && (
-            <TouchableOpacity
-              style={styles.mineButton}
-              onPress={() => onMineResource(nodeId)}
-            >
-              <Text style={styles.mineButtonText}>Manual Mine</Text>
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={[styles.mineButton, !canManualMine && { opacity: 0.5, backgroundColor: '#aaa' }]}
+                onPress={() => canManualMine && onMineResource(nodeId)}
+                disabled={!canManualMine}
+              >
+                <Text style={styles.mineButtonText}>Manual Mine</Text>
+              </TouchableOpacity>
+              {!canManualMine && (
+                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>Move closer to the node to manually mine (within discovery radius)</Text>
+              )}
+            </>
           )}
           {canPlaceMiner && (
             <TouchableOpacity

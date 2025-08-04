@@ -212,6 +212,8 @@ export default function MapScreen({ navigation }) {
             onMineResource={onMineResource}
             onPlaceMachine={onPlaceMachine}
             styles={styles}
+            playerPosition={playerMapPosition}
+            discoveryRadius={DISCOVERY_RADIUS_PX}
           />
         )}
         style={styles.nodeList}
