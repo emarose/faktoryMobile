@@ -5,7 +5,7 @@ import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 
 export default function MilestonesScreen() {
-  const { milestones } = useGame();
+  const { milestones, activeMilestone, currentMilestone, unlockedMachineNames } = useGame();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,9 +30,9 @@ export default function MilestonesScreen() {
             ) : (
               <View>
                 <Text style={styles.lockedText}>Requirements not met</Text>
-                <Text style={styles.requirementsTitle}>Requirements:</Text>
+                <Text style={styles.unlocksTitle}>Requirements:</Text>
                 {Object.entries(milestone.requirements || {}).map(([req, val]) => (
-                  <Text key={req} style={styles.requirementItem}>
+                  <Text key={req} style={styles.unlockItem}>
                     {req === "discoveredNodes" ? `Discover ${val} node(s)` : `${req}: ${val}`}
                   </Text>
                 ))}
@@ -40,6 +40,18 @@ export default function MilestonesScreen() {
             )}
           </View>
         ))}
+        <View style={{ marginTop: 16 }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Active Milestone:</Text>
+          <Text style={{ color: '#27ae60', fontSize: 15 }}>{activeMilestone}</Text>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginTop: 8 }}>Unlocked Machines:</Text>
+          {unlockedMachineNames.length > 0 ? (
+            unlockedMachineNames.map((name) => (
+              <Text key={name} style={{ color: '#a0d911', marginLeft: 8 }}>- {name}</Text>
+            ))
+          ) : (
+            <Text style={{ color: '#bbb', marginLeft: 8 }}>None yet</Text>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

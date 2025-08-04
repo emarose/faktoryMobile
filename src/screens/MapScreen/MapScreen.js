@@ -39,11 +39,11 @@ function generateChunk(cx, cy, resourceNodes) {
 
 export default function MapScreen({ navigation }) {
   const { allResourceNodes } = useMapNodes();
+  const { discoveredNodes, setDiscoveredNodes } = useContext(GameContext);
   const {
     playerMapPosition,
-    discoveredNodes,
     exploreDirection,
-  } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX);
+  } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX, discoveredNodes, setDiscoveredNodes);
 
   // Si tu contexto incluye inventario y máquinas:
   const { inventory, placedMachines } = useContext(GameContext);

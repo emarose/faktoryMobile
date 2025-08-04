@@ -7,6 +7,7 @@ export function useMilestone(inventory, discoveredCount) {
 
     // Find the current milestone (first locked one)
     const currentMilestone = milestones.find(m => !m.unlocked);
+    console.log("🚀 ~ useMilestone ~ currentMilestone.requirements:", currentMilestone.requirements)
     const unlockedMachineNames = milestones
         .filter(m => m.unlocked)
         .flatMap(m => m.unlocks);
@@ -16,13 +17,16 @@ export function useMilestone(inventory, discoveredCount) {
     const canCompleteCurrentMilestone = currentMilestone
         ? Object.entries(currentMilestone.requirements || {}).every(
             ([itemId, requiredAmount]) => {
-                if (itemId === "discoveredNodes") {                    
+                if (itemId === "discoveredNodes") {       
+                    console.log("discoveredCount:", discoveredCount);
+                                 
                     return discoveredCount  === 1;
                 }
                 return (inventory[itemId]?.currentAmount || 0) >= requiredAmount;
             }
         )
         : false;
+    console.log("🚀 ~ useMilestone ~ canCompleteCurrentMilestone:", canCompleteCurrentMilestone)
 
     // Complete milestone if requirements met
     const completeCurrentMilestone = () => {
