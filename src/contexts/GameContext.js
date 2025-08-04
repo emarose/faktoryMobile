@@ -22,7 +22,6 @@ export const GameProvider = ({ children }) => {
 
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 0, y: 0 });
   const [discoveredNodes, setDiscoveredNodes] = useState({});
-  console.log("🚀 ~ GameProvider ~ discoveredNodes:", discoveredNodes)
 
   const {
     inventory,

@@ -21,7 +21,7 @@ const milestones = [
         description: "Unlocks Constructor and basic recipes.",
         unlocked: false,
         unlocks: ["Constructor", "Iron Ingot", "Iron Plate", "Iron Rod"],
-        requirements: { "Iron Ingot": 30 },
+        requirements: { "ironIngot": 30 },
     },
     {
         id: "milestone3",
@@ -29,7 +29,7 @@ const milestones = [
         description: "Unlocks advanced machines and recipes.",
         unlocked: false,
         unlocks: ["Assembler", "Copper Ingot", "Wire", "Cable"],
-        requirements: { "Wire": 50, "Cable": 20 },
+        requirements: { "wire": 50, "cable": 20 },
     },
     {
         id: "milestone4",

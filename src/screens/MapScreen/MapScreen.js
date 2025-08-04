@@ -16,6 +16,7 @@ import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
 import PlayerInfoCard from "./components/PlayerInfoCard/PlayerInfoCard";
+import MapToast from "./components/MapToast/MapToast";
 
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
@@ -40,10 +41,31 @@ function generateChunk(cx, cy, resourceNodes) {
 export default function MapScreen({ navigation }) {
   const { allResourceNodes } = useMapNodes();
   const { discoveredNodes, setDiscoveredNodes } = useContext(GameContext);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const prevDiscoveredRef = React.useRef({});
   const {
     playerMapPosition,
     exploreDirection,
   } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX, discoveredNodes, setDiscoveredNodes);
+
+  useEffect(() => {
+    // Show toast for newly discovered node
+    const prevDiscovered = prevDiscoveredRef.current;
+    const newlyDiscovered = Object.keys(discoveredNodes).filter(
+      (id) => !prevDiscovered[id]
+    );
+    if (newlyDiscovered.length > 0) {
+      // Show toast for the first new node
+      const nodeId = newlyDiscovered[0];
+      const node = allResourceNodes.find((n) => n.id === nodeId);
+      if (node) {
+        setToastMessage(`Found new node: ${node.type}`);
+        setToastVisible(true);
+      }
+    }
+    prevDiscoveredRef.current = { ...discoveredNodes };
+  }, [discoveredNodes, allResourceNodes]);
 
   // Si tu contexto incluye inventario y máquinas:
   const { inventory, placedMachines } = useContext(GameContext);
@@ -125,6 +147,7 @@ export default function MapScreen({ navigation }) {
 
   return (
     <View style={styles.fullScreenContainer}>
+      <MapToast visible={toastVisible} message={toastMessage} onHide={() => setToastVisible(false)} />
       <Text style={styles.title}>Resource Map</Text>
 
       <View style={styles.mapVisualContainer}>
@@ -196,7 +219,6 @@ export default function MapScreen({ navigation }) {
       <PlayerInfoCard playerPosition={playerMapPosition} discoveredCount={displayableNodes.length} />
 
       {/* Lista de NodeCard debajo del mapa */}
-      <Text style={styles.sectionTitle}>Detalles de nodos descubiertos</Text>
       <FlatList
         data={displayableNodes}
         keyExtractor={(item) => item.id}

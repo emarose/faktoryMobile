@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { items } from "../data/items";
-import RESOURCE_CAP from '../constants/ResourceCap';
+import RESOURCE_CAP from "../constants/ResourceCap";
 
 export const useInventory = () => {
   const [inventoryState, setInventoryState] = useState(() => {
@@ -17,13 +17,14 @@ export const useInventory = () => {
         };
       }
     });
-if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
+    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
+    //if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
     // --- DEBUG/TEST: Initial resources for building (apply to initialItems now) ---
     // Ensure these IDs match exactly what's in your items.js
-/*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
+    /*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
@@ -161,8 +162,7 @@ if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
   const buildableItems = useMemo(() => {
     return Object.keys(items)
       .filter(
-        (key) =>
-          items[key].type === "machine" || items[key].type === "building"
+        (key) => items[key].type === "machine" || items[key].type === "building"
       )
       .map((key) => {
         const buildableItem = items[key];
@@ -204,7 +204,9 @@ if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
     assignRecipeToMachine: (machineId, recipeId) => {
       setInventoryState((prevInventory) => {
         const updatedMachines = prevInventory.ownedMachines.map((machine) =>
-          machine.id === machineId ? { ...machine, currentRecipeId: recipeId } : machine
+          machine.id === machineId
+            ? { ...machine, currentRecipeId: recipeId }
+            : machine
         );
         return {
           ...prevInventory,

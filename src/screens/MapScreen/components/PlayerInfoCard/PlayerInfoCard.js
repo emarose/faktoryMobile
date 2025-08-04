@@ -4,7 +4,6 @@ import { View, Text, StyleSheet } from "react-native";
 const PlayerInfoCard = ({ playerPosition, discoveredCount }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Player Info</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Position:</Text>
         <Text style={styles.value}>({playerPosition.x}, {playerPosition.y})</Text>
