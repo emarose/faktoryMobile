@@ -10,7 +10,6 @@ export function useMapNodes() {
         type: "ironOre_node",
         x: 8,
         y: 8,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -19,7 +18,6 @@ export function useMapNodes() {
         type: "copperOre_node",
         x: 10,
         y: 15,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -28,17 +26,15 @@ export function useMapNodes() {
         type: "limestone_node",
         x: 2,
         y: 7,
-        currentAmount: 0,
         capacity: 50,
       },
-      { id: "coalNode1", name: "Coal Node", type: "coal_node", x: 150, y: 250, currentAmount: 0, capacity: 50 },
+      { id: "coalNode1", name: "Coal Node", type: "coal_node", x: 150, y: 250, capacity: 50 },
       {
         id: "cateriumNode1",
         name: "Caterium Ore Node",
         type: "cateriumOre_node",
         x: 400,
         y: 100,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -47,7 +43,6 @@ export function useMapNodes() {
         type: "rawQuartz_node",
         x: 500,
         y: 200,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -56,7 +51,6 @@ export function useMapNodes() {
         type: "sulfur_node",
         x: 250,
         y: 300,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -65,7 +59,6 @@ export function useMapNodes() {
         type: "crudeOil_node",
         x: 350,
         y: 400,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -74,7 +67,6 @@ export function useMapNodes() {
         type: "bauxite_node",
         x: 100,
         y: 450,
-        currentAmount: 0,
         capacity: 50,
       },
       {
@@ -83,7 +75,6 @@ export function useMapNodes() {
         type: "uranium_node",
         x: 550,
         y: 350,
-        currentAmount: 0,
         capacity: 50,
       },
     ],

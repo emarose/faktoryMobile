@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
-import styles from "./styles";
+// MapScreen.js
+
+import React, { useState, useEffect, useContext } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
+import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
+import { GameContext } from "../../contexts/GameContext";
+import NodeCard from "./components/NodeCard/NodeCard";
 
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
@@ -19,43 +29,53 @@ function generateChunk(cx, cy, resourceNodes) {
     for (let x = 0; x < CHUNK_SIZE; x++) {
       const gx = cx * CHUNK_SIZE + x;
       const gy = cy * CHUNK_SIZE + y;
-      const node = resourceNodes.find(n => n.x === gx && n.y === gy);
+      const node = resourceNodes.find((n) => n.x === gx && n.y === gy);
       tiles[y][x] = { node: node || null };
     }
   }
   return { cx, cy, tiles };
 }
 
-export default function MapScreen() {
-  // Desestructuramos el objeto que viene del hook
-  const { allResourceNodes, NODE_TYPES_MAP } = useMapNodes();
-
+export default function MapScreen({ navigation }) {
+  const { allResourceNodes } = useMapNodes();
   const {
     playerMapPosition,
     discoveredNodes,
     exploreDirection,
   } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX);
 
+  // Si tu contexto incluye inventario y máquinas:
+  const { inventory, placedMachines } = useContext(GameContext);
+
   const [chunks, setChunks] = useState({});
 
-  // Cargar el chunk actual bajo demanda
+  // Generar o recuperar el chunk actual
   useEffect(() => {
     const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
     const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
     const key = `${cx},${cy}`;
-    setChunks(prev => {
-      if (prev[key]) return prev;
-      return {
-        ...prev,
-        [key]: generateChunk(cx, cy, allResourceNodes),
-      };
-    });
+    setChunks((prev) =>
+      prev[key]
+        ? prev
+        : { ...prev, [key]: generateChunk(cx, cy, allResourceNodes) }
+    );
   }, [playerMapPosition, allResourceNodes]);
 
-  // Filtramos únicamente los nodos descubiertos
+  // Nodos ya descubiertos
   const displayableNodes = allResourceNodes.filter(
-    node => discoveredNodes[node.id]
+    (node) => discoveredNodes[node.id]
   );
+
+  // Callbacks para NodeCard
+  const onMineResource = (nodeId) => {
+    console.log("Mining resource on node", nodeId);
+    // TODO: lógica de minería
+  };
+
+  const onPlaceMachine = (machineType, nodeId) => {
+    console.log("Placing machine", machineType, "on node", nodeId);
+    // TODO: lógica de colocación de máquinas
+  };
 
   const renderTiles = () => {
     const rows = [];
@@ -71,13 +91,13 @@ export default function MapScreen() {
       for (let x = 0; x < CHUNK_SIZE; x++) {
         const gx = cx * CHUNK_SIZE + x;
         const gy = cy * CHUNK_SIZE + y;
+        const tile = chunk.tiles[y][x];
         const isPlayer = gx === px && gy === py;
         let color = isPlayer ? PLAYER_COLOR : "#222";
 
-        const tileNode = chunk.tiles[y][x].node;
-        const discovered = displayableNodes.find(n => n.id === tileNode?.id);
+        const discovered = tile.node && discoveredNodes[tile.node.id];
         if (discovered) {
-          color = getNodeColor(discovered.type);
+          color = getNodeColor(tile.node.type);
         }
 
         cols.push(
@@ -88,17 +108,9 @@ export default function MapScreen() {
               height: TILE_SIZE,
               backgroundColor: color,
               borderWidth: 1,
-              borderColor: "#999",
-              justifyContent: "center",
-              alignItems: "center",
+              borderColor: "#555",
             }}
-          >
-            {discovered && (
-              <Text style={{ fontSize: 8, color: "#fff", textAlign: "center" }}>
-                {discovered.name}
-              </Text>
-            )}
-          </View>
+          />
         );
       }
       rows.push(
@@ -107,13 +119,13 @@ export default function MapScreen() {
         </View>
       );
     }
-
     return rows;
   };
 
   return (
     <View style={styles.fullScreenContainer}>
       <Text style={styles.title}>Resource Map</Text>
+
       <View style={styles.mapVisualContainer}>
         <View
           style={{
@@ -132,18 +144,20 @@ export default function MapScreen() {
           >
             {renderTiles()}
           </View>
+
+          {/* Radio de descubrimiento */}
           <View
             style={{
               position: "absolute",
               left:
-                ((playerMapPosition.x % CHUNK_SIZE) + CHUNK_SIZE) %
-                  CHUNK_SIZE *
+                ((playerMapPosition.x % CHUNK_SIZE + CHUNK_SIZE) %
+                  CHUNK_SIZE) *
                   TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               top:
-                ((playerMapPosition.y % CHUNK_SIZE) + CHUNK_SIZE) %
-                  CHUNK_SIZE *
+                ((playerMapPosition.y % CHUNK_SIZE + CHUNK_SIZE) %
+                  CHUNK_SIZE) *
                   TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
@@ -157,6 +171,8 @@ export default function MapScreen() {
               zIndex: 2,
             }}
           />
+
+          {/* Controles */}
           <View
             style={{
               position: "absolute",
@@ -175,12 +191,32 @@ export default function MapScreen() {
           </View>
         </View>
       </View>
+
       <Text style={styles.info}>
         Player: ({playerMapPosition.x}, {playerMapPosition.y})
       </Text>
       <Text style={styles.info}>
-        Discovered Nodes: {displayableNodes.length}
+        Nodos descubiertos: {displayableNodes.length}
       </Text>
+
+      {/* Lista de NodeCard debajo del mapa */}
+      <Text style={styles.sectionTitle}>Detalles de nodos descubiertos</Text>
+      <FlatList
+        data={displayableNodes}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <NodeCard
+            node={item}
+            inventory={inventory}
+            placedMachines={placedMachines}
+            onMineResource={onMineResource}
+            onPlaceMachine={onPlaceMachine}
+            styles={styles}
+          />
+        )}
+        style={styles.nodeList}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
     </View>
   );
 }

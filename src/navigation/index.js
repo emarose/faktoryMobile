@@ -15,6 +15,7 @@ import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMa
 import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResourcesScreen";
 import MachineDetailsScreen from "../screens/MachineDetailsScreen/MachineDetailsScreen";
 import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
+import NodeDetailScreen from "../screens/NodeDetailScreen/NodeDetailScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -81,6 +82,11 @@ function RootNavigator() {
         name="MachineDetailsScreen"
         component={MachineDetailsScreen}
         options={{ title: "Machine Details" }}
+      />
+      <Stack.Screen
+        name="NodeDetailScreen"
+        component={NodeDetailScreen}
+        options={{ title: "Node Details" }}
       />
       <Stack.Screen
         name="MilestonesScreen"
