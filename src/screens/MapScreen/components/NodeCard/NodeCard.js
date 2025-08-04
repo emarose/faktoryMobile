@@ -47,11 +47,11 @@ const NodeCard = React.memo(
     // Calculate if player is within discovery radius (in grid units)
     let canManualMine = false;
     if (playerPosition && typeof playerPosition.x === 'number' && typeof playerPosition.y === 'number') {
-      // Convert pixel radius to grid units, but require player to be strictly closer (e.g. radius - 1)
+      // Use Chebyshev (chessboard) distance for grid adjacency, so corners are included
       const tileSize = typeof global.TILE_SIZE === 'number' ? global.TILE_SIZE : 30;
       const discoveryRadiusTiles = Math.max(1, Math.floor((discoveryRadius || 0) / tileSize));
-      const dist = Math.sqrt(Math.pow(playerPosition.x - x, 2) + Math.pow(playerPosition.y - y, 2));
-      canManualMine = dist <= discoveryRadiusTiles;
+      const chebyshevDist = Math.max(Math.abs(playerPosition.x - x), Math.abs(playerPosition.y - y));
+      canManualMine = chebyshevDist <= discoveryRadiusTiles;
     }
     return (
       <View style={styles.nodeCard}>

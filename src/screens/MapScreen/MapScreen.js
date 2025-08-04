@@ -15,6 +15,7 @@ import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
+import PlayerInfoCard from "./components/PlayerInfoCard/PlayerInfoCard";
 
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
@@ -192,12 +193,7 @@ export default function MapScreen({ navigation }) {
         </View>
       </View>
 
-      <Text style={styles.info}>
-        Player: ({playerMapPosition.x}, {playerMapPosition.y})
-      </Text>
-      <Text style={styles.info}>
-        Nodos descubiertos: {displayableNodes.length}
-      </Text>
+      <PlayerInfoCard playerPosition={playerMapPosition} discoveredCount={displayableNodes.length} />
 
       {/* Lista de NodeCard debajo del mapa */}
       <Text style={styles.sectionTitle}>Detalles de nodos descubiertos</Text>
