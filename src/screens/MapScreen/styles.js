@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   // --- Map Visualization Section Styles ---
   mapVisualContainer: {
-    width: screenWidth * 0.9,
+    //width: screenWidth * 0.9,
     alignSelf: "center",
     backgroundColor: "#0f0f1c",
     borderWidth: 1,

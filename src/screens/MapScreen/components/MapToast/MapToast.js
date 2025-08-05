@@ -1,33 +1,16 @@
-import React, { useEffect } from "react";
-import { Animated, Text, StyleSheet } from "react-native";
+import React from "react";
+import { Animated, Text, StyleSheet, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const MapToast = ({ visible, message, onHide }) => {
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (visible) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-      // Hide after 1.5s
-      const timer = setTimeout(() => {
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 2000,
-          useNativeDriver: true,
-        }).start(() => onHide && onHide());
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [visible, fadeAnim, onHide]);
-
   if (!visible) return null;
 
   return (
-    <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>  
+    <Animated.View style={styles.toast}>
       <Text style={styles.text}>{message}</Text>
+      <TouchableOpacity style={styles.closeBtn} onPress={onHide}>
+        <Icon name="close" size={18} color="#aaa" />
+      </TouchableOpacity>
     </Animated.View>
   );
 };
@@ -35,7 +18,7 @@ const MapToast = ({ visible, message, onHide }) => {
 const styles = StyleSheet.create({
   toast: {
     position: 'absolute',
-    top: 32,
+    top: 25,
     alignSelf: 'center',
     backgroundColor: '#23272a',
     paddingHorizontal: 18,
@@ -47,11 +30,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.18,
     shadowRadius: 4,
     zIndex: 999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#27ae60',
   },
   text: {
     color: '#27ae60',
     fontWeight: 'bold',
     fontSize: 15,
+    flex: 1,
+  },
+  closeBtn: {
+    marginLeft: 10,
+    padding: 4,
   },
 });
 

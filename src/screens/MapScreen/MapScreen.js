@@ -6,6 +6,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  Pressable,
   Dimensions,
 } from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
@@ -60,7 +61,12 @@ export default function MapScreen({ navigation }) {
       const nodeId = newlyDiscovered[0];
       const node = allResourceNodes.find((n) => n.id === nodeId);
       if (node) {
-        setToastMessage(`Found new node: ${node.type}`);
+        // Format display name: e.g. 'Limestone Node' instead of 'limestone_node'
+        let displayName = node.name || node.type;
+        if (!displayName.toLowerCase().includes('node')) {
+          displayName += ' Node';
+        }
+        setToastMessage(`Found new node: ${displayName}`);
         setToastVisible(true);
       }
     }
@@ -84,10 +90,19 @@ export default function MapScreen({ navigation }) {
     );
   }, [playerMapPosition, allResourceNodes]);
 
-  // Nodos ya descubiertos
-  const displayableNodes = allResourceNodes.filter(
-    (node) => discoveredNodes[node.id]
-  );
+  // Nodos ya descubiertos y ordenados por cercanía al jugador, with ability to pin a node to top
+  const [pinnedNodeId, setPinnedNodeId] = useState(null);
+  let displayableNodes = allResourceNodes
+    .filter((node) => discoveredNodes[node.id]);
+  displayableNodes = displayableNodes.sort((a, b) => {
+    if (pinnedNodeId) {
+      if (a.id === pinnedNodeId) return -1;
+      if (b.id === pinnedNodeId) return 1;
+    }
+    const distA = Math.max(Math.abs(playerMapPosition.x - a.x), Math.abs(playerMapPosition.y - a.y));
+    const distB = Math.max(Math.abs(playerMapPosition.x - b.x), Math.abs(playerMapPosition.y - b.y));
+    return distA - distB;
+  });
 
   // Callbacks para NodeCard
   const onMineResource = (nodeId) => {
@@ -123,18 +138,34 @@ export default function MapScreen({ navigation }) {
           color = getNodeColor(tile.node.type);
         }
 
-        cols.push(
-          <View
-            key={`${gx}-${gy}`}
-            style={{
-              width: TILE_SIZE,
-              height: TILE_SIZE,
-              backgroundColor: color,
-              borderWidth: 1,
-              borderColor: "#555",
-            }}
-          />
-        );
+        if (tile.node && discovered) {
+          cols.push(
+            <Pressable
+              key={`${gx}-${gy}`}
+              style={{
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                backgroundColor: color,
+                borderWidth: 1,
+                borderColor: "#555",
+              }}
+              onPress={() => setPinnedNodeId(tile.node.id)}
+            />
+          );
+        } else {
+          cols.push(
+            <View
+              key={`${gx}-${gy}`}
+              style={{
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                backgroundColor: color,
+                borderWidth: 1,
+                borderColor: "#555",
+              }}
+            />
+          );
+        }
       }
       rows.push(
         <View key={`row-${y}`} style={{ flexDirection: "row" }}>
