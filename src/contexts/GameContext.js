@@ -26,7 +26,7 @@ export const GameProvider = ({ children }) => {
     setResourceNodes(allResourceNodes);
   }, [allResourceNodes]);
 
-  const [playerMapPosition, setPlayerMapPosition] = useState({ x: 0, y: 0 });
+  const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
   const [discoveredNodes, setDiscoveredNodes] = useState({});
   // Track all nodeIds for which toast was dismissed
   const [dismissedNodeIds, setDismissedNodeIds] = useState(new Set());

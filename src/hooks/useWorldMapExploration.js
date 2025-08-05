@@ -24,10 +24,10 @@ export default function useWorldMapExploration(nodes, discoveryRadiusPx, discove
       const newX = pos.x + delta.x;
       const newY = pos.y + delta.y;
 
-      // Evitamos coordenadas negativas
+      // Permitir coordenadas negativas y positivas para chunks
       return {
-        x: newX < 0 ? 0 : newX,
-        y: newY < 0 ? 0 : newY,
+        x: newX,
+        y: newY,
       };
     });
   };

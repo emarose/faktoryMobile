@@ -5,7 +5,7 @@ import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
 
 const NodeCard = React.memo(
-  ({ node, inventory, onPlaceMachine, placedMachines, onMineResource, styles, playerPosition, discoveryRadius }) => {
+  ({ node, inventory, placedMachines, styles, playerPosition, discoveryRadius, onDepleteNode, placeMachine }) => {
     const { id: nodeId, name, x, y, type: nodeType } = node;
     const nodeDefinition = items[nodeType];
     if (!nodeDefinition) {
@@ -53,6 +53,21 @@ const NodeCard = React.memo(
       const chebyshevDist = Math.max(Math.abs(playerPosition.x - x), Math.abs(playerPosition.y - y));
       canManualMine = chebyshevDist <= discoveryRadiusTiles;
     }
+    // Manual mining logic
+    const handleManualMine = () => {
+      if (typeof node.currentAmount === "number" && node.currentAmount > 0) {
+        if (onDepleteNode) {
+          onDepleteNode(nodeId, node.currentAmount - 1);
+        }
+      }
+    };
+
+    // Helper to update node amount for miner placement
+    const handlePlaceMachine = (machineType, nodeId) => {
+      if (placeMachine) {
+        placeMachine(machineType, nodeId);
+      }
+    };
     return (
       <View style={styles.nodeCard}>
         <Text style={styles.nodeName}>{name}</Text>
@@ -94,7 +109,7 @@ const NodeCard = React.memo(
             <>
               <TouchableOpacity
                 style={[styles.mineButton, !canManualMine && { opacity: 0.5, backgroundColor: '#aaa' }]}
-                onPress={() => canManualMine && onMineResource(nodeId)}
+                onPress={() => canManualMine && handleManualMine()}
                 disabled={!canManualMine}
               >
                 <Text style={styles.mineButtonText}>Manual Mine</Text>
@@ -107,7 +122,7 @@ const NodeCard = React.memo(
           {canPlaceMiner && (
             <TouchableOpacity
               style={styles.placeButton}
-              onPress={() => onPlaceMachine("miner", nodeId)}
+              onPress={() => handlePlaceMachine("miner", nodeId)}
             >
               <Text style={styles.placeButtonText}>
                 Place Miner ({minerCountInInventory} available)
@@ -117,7 +132,7 @@ const NodeCard = React.memo(
           {machineRequired === "oilExtractor" && canPlaceOilExtractor && (
             <TouchableOpacity
               style={styles.placeButton}
-              onPress={() => onPlaceMachine("oilExtractor", nodeId)}
+              onPress={() => handlePlaceMachine("oilExtractor", nodeId)}
             >
               <Text style={styles.placeButtonText}>
                 Place Oil Extractor ({oilExtractorCountInInventory} available)

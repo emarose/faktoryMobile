@@ -14,6 +14,8 @@ import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import { useMapNodes } from "../../hooks/useMapNodes";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
+import { useMachines } from "../../hooks/useMachines";
+import { useProduction } from "../../hooks/useProduction";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
 import PlayerInfoCard from "./components/PlayerInfoCard/PlayerInfoCard";
@@ -47,7 +49,10 @@ export default function MapScreen({ navigation }) {
     playerMapPosition,
     setPlayerMapPosition,
     toastShownNodeIds,
-    setToastShownNodeIds
+    setToastShownNodeIds,
+    inventory,
+    addResource,
+    removeResources,
   } = useContext(GameContext);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -62,29 +67,22 @@ export default function MapScreen({ navigation }) {
   );
 
   useEffect(() => {
-    // Filtra los nodos que han sido descubiertos y para los que no se ha mostrado un toast
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
       (id) => !toastShownNodeIds.has(id)
     );
-
     if (newlyDiscovered.length > 0) {
       const nodeId = newlyDiscovered[0];
       const node = allResourceNodes.find((n) => n.id === nodeId);
-
       if (node) {
         let displayName = node.name || node.type;
         if (!displayName.toLowerCase().includes("node")) {
           displayName += " Node";
         }
-
         setToastMessage(
           `Found new node: ${displayName} at (${node.x}, ${node.y})`
         );
         setToastVisible(true);
-
-        // Agrega el ID del nodo al estado del contexto
         setToastShownNodeIds((prev) => new Set(prev).add(nodeId));
-
         setTimeout(() => setToastVisible(false), 2500);
       }
     }
@@ -95,12 +93,22 @@ export default function MapScreen({ navigation }) {
     setToastShownNodeIds,
   ]);
 
-  // Si tu contexto incluye inventario y máquinas:
-  const { inventory, placedMachines } = useContext(GameContext);
+  // Machines and mining logic
+  const {
+    mineableNodes,
+    placeMachine,
+    placedMachines,
+    setPlacedMachines,
+  } = useMachines(inventory, removeResources, allResourceNodes);
+
+  useProduction(
+    addResource,
+    removeResources,
+    placedMachines,
+    mineableNodes
+  );
 
   const [chunks, setChunks] = useState({});
-
-  // Generar o recuperar el chunk actual
   useEffect(() => {
     const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
     const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
@@ -112,11 +120,45 @@ export default function MapScreen({ navigation }) {
     );
   }, [playerMapPosition, allResourceNodes]);
 
-  // Nodos ya descubiertos y ordenados por cercanía al jugador, with ability to pin a node to top
+  // Track node depletion amounts in local state
+  const [nodeAmounts, setNodeAmounts] = useState(() => {
+    const amounts = {};
+    allResourceNodes.forEach(node => {
+      amounts[node.id] = typeof node.currentAmount === "number" ? node.currentAmount : node.capacity || 50;
+    });
+    return amounts;
+  });
+
+  // Update nodeAmounts if new nodes are added
+  useEffect(() => {
+    setNodeAmounts(prev => {
+      const updated = { ...prev };
+      allResourceNodes.forEach(node => {
+        if (typeof updated[node.id] !== "number") {
+          updated[node.id] = typeof node.currentAmount === "number" ? node.currentAmount : node.capacity || 50;
+        }
+      });
+      return updated;
+    });
+  }, [allResourceNodes]);
+
+  // Node depletion callback for manual mining
+  const handleDepleteNode = (nodeId, newAmount) => {
+    setNodeAmounts(prev => ({ ...prev, [nodeId]: Math.max(0, newAmount) }));
+    // Optionally, add resource to inventory when manually mining
+    const node = allResourceNodes.find(n => n.id === nodeId);
+    const nodeDefinition = node && node.type ? require('../../data/items').items[node.type] : null;
+    if (nodeDefinition && nodeDefinition.output) {
+      const resourceId = Object.keys(nodeDefinition.output)[0];
+      addResource(resourceId, 1, nodeId);
+    }
+  };
+
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
-  let displayableNodes = allResourceNodes.filter(
-    (node) => discoveredNodes[node.id]
-  );
+  // Merge nodeAmounts into displayableNodes for correct ProgressBar
+  let displayableNodes = mineableNodes
+    .filter((node) => discoveredNodes[node.id])
+    .map((node) => ({ ...node, currentAmount: nodeAmounts[node.id] }));
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
       if (a.id === pinnedNodeId) return -1;
@@ -132,17 +174,6 @@ export default function MapScreen({ navigation }) {
     );
     return distA - distB;
   });
-
-  // Callbacks para NodeCard
-  const onMineResource = (nodeId) => {
-    console.log("Mining resource on node", nodeId);
-    // TODO: lógica de minería
-  };
-
-  const onPlaceMachine = (machineType, nodeId) => {
-    console.log("Placing machine", machineType, "on node", nodeId);
-    // TODO: lógica de colocación de máquinas
-  };
 
   const renderTiles = () => {
     const rows = [];
@@ -294,11 +325,11 @@ export default function MapScreen({ navigation }) {
             node={item}
             inventory={inventory}
             placedMachines={placedMachines}
-            onMineResource={onMineResource}
-            onPlaceMachine={onPlaceMachine}
             styles={styles}
             playerPosition={playerMapPosition}
             discoveryRadius={DISCOVERY_RADIUS_PX}
+            onDepleteNode={handleDepleteNode}
+            placeMachine={placeMachine}
           />
         )}
         style={styles.nodeList}
