@@ -60,13 +60,17 @@ export default function MapScreen({ navigation }) {
       // Show toast for the first new node
       const nodeId = newlyDiscovered[0];
       const node = allResourceNodes.find((n) => n.id === nodeId);
+      
+      
       if (node) {
         // Format display name: e.g. 'Limestone Node' instead of 'limestone_node'
         let displayName = node.name || node.type;
+        let nodeX= node.x;
+        let nodeY = node.y;
         if (!displayName.toLowerCase().includes('node')) {
           displayName += ' Node';
         }
-        setToastMessage(`Found new node: ${displayName}`);
+        setToastMessage(`Found new node: ${displayName} at (${nodeX}, ${nodeY})`);
         setToastVisible(true);
       }
     }
