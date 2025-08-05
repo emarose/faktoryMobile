@@ -5,14 +5,7 @@ import { useState, useEffect } from "react";
 const CHUNK_SIZE = 11;      // Número de tiles por chunk (ancho y alto)
 const TILE_SIZE = 30;       // Tamaño en px de cada tile
 
-export default function useWorldMapExploration(nodes, discoveryRadiusPx, discoveredNodes, setDiscoveredNodes) {
-  // Posición inicial: centro del chunk 0,0
-  const initialPos = {
-    x: Math.floor(CHUNK_SIZE / 2),  
-    y: Math.floor(CHUNK_SIZE / 2),
-  };
-
-  const [playerMapPosition, setPlayerMapPosition] = useState(initialPos);
+export default function useWorldMapExploration(nodes, discoveryRadiusPx, discoveredNodes, setDiscoveredNodes, playerMapPosition, setPlayerMapPosition) {
 
   // Convertimos el radio de descubrimiento de px a tiles
   const tileRadius = Math.ceil(discoveryRadiusPx / TILE_SIZE);
@@ -58,7 +51,6 @@ export default function useWorldMapExploration(nodes, discoveryRadiusPx, discove
   }, [playerMapPosition, nodes, tileRadius, setDiscoveredNodes]);
 
   return {
-    playerMapPosition,
     exploreDirection,
   };
 }

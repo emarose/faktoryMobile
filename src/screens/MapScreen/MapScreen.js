@@ -1,6 +1,6 @@
 // MapScreen.js
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
@@ -41,41 +41,59 @@ function generateChunk(cx, cy, resourceNodes) {
 
 export default function MapScreen({ navigation }) {
   const { allResourceNodes } = useMapNodes();
-  const { discoveredNodes, setDiscoveredNodes } = useContext(GameContext);
+  const {
+    discoveredNodes,
+    setDiscoveredNodes,
+    playerMapPosition,
+    setPlayerMapPosition,
+    toastShownNodeIds,
+    setToastShownNodeIds
+  } = useContext(GameContext);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const prevDiscoveredRef = React.useRef({});
-  const {
+
+  const { exploreDirection } = useWorldMapExploration(
+    allResourceNodes,
+    DISCOVERY_RADIUS_PX,
+    discoveredNodes,
+    setDiscoveredNodes,
     playerMapPosition,
-    exploreDirection,
-  } = useWorldMapExploration(allResourceNodes, DISCOVERY_RADIUS_PX, discoveredNodes, setDiscoveredNodes);
+    setPlayerMapPosition
+  );
 
   useEffect(() => {
-    // Show toast for newly discovered node
-    const prevDiscovered = prevDiscoveredRef.current;
+    // Filtra los nodos que han sido descubiertos y para los que no se ha mostrado un toast
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
-      (id) => !prevDiscovered[id]
+      (id) => !toastShownNodeIds.has(id)
     );
+
     if (newlyDiscovered.length > 0) {
-      // Show toast for the first new node
       const nodeId = newlyDiscovered[0];
       const node = allResourceNodes.find((n) => n.id === nodeId);
-      
-      
+
       if (node) {
-        // Format display name: e.g. 'Limestone Node' instead of 'limestone_node'
         let displayName = node.name || node.type;
-        let nodeX= node.x;
-        let nodeY = node.y;
-        if (!displayName.toLowerCase().includes('node')) {
-          displayName += ' Node';
+        if (!displayName.toLowerCase().includes("node")) {
+          displayName += " Node";
         }
-        setToastMessage(`Found new node: ${displayName} at (${nodeX}, ${nodeY})`);
+
+        setToastMessage(
+          `Found new node: ${displayName} at (${node.x}, ${node.y})`
+        );
         setToastVisible(true);
+
+        // Agrega el ID del nodo al estado del contexto
+        setToastShownNodeIds((prev) => new Set(prev).add(nodeId));
+
+        setTimeout(() => setToastVisible(false), 2500);
       }
     }
-    prevDiscoveredRef.current = { ...discoveredNodes };
-  }, [discoveredNodes, allResourceNodes]);
+  }, [
+    discoveredNodes,
+    allResourceNodes,
+    toastShownNodeIds,
+    setToastShownNodeIds,
+  ]);
 
   // Si tu contexto incluye inventario y máquinas:
   const { inventory, placedMachines } = useContext(GameContext);
@@ -96,15 +114,22 @@ export default function MapScreen({ navigation }) {
 
   // Nodos ya descubiertos y ordenados por cercanía al jugador, with ability to pin a node to top
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
-  let displayableNodes = allResourceNodes
-    .filter((node) => discoveredNodes[node.id]);
+  let displayableNodes = allResourceNodes.filter(
+    (node) => discoveredNodes[node.id]
+  );
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
       if (a.id === pinnedNodeId) return -1;
       if (b.id === pinnedNodeId) return 1;
     }
-    const distA = Math.max(Math.abs(playerMapPosition.x - a.x), Math.abs(playerMapPosition.y - a.y));
-    const distB = Math.max(Math.abs(playerMapPosition.x - b.x), Math.abs(playerMapPosition.y - b.y));
+    const distA = Math.max(
+      Math.abs(playerMapPosition.x - a.x),
+      Math.abs(playerMapPosition.y - a.y)
+    );
+    const distB = Math.max(
+      Math.abs(playerMapPosition.x - b.x),
+      Math.abs(playerMapPosition.y - b.y)
+    );
     return distA - distB;
   });
 
@@ -182,7 +207,11 @@ export default function MapScreen({ navigation }) {
 
   return (
     <View style={styles.fullScreenContainer}>
-      <MapToast visible={toastVisible} message={toastMessage} onHide={() => setToastVisible(false)} />
+      <MapToast
+        visible={toastVisible}
+        message={toastMessage}
+        onHide={() => setToastVisible(false)}
+      />
       <Text style={styles.title}>Resource Map</Text>
 
       <View style={styles.mapVisualContainer}>
@@ -209,13 +238,13 @@ export default function MapScreen({ navigation }) {
             style={{
               position: "absolute",
               left:
-                ((playerMapPosition.x % CHUNK_SIZE + CHUNK_SIZE) %
+                (((playerMapPosition.x % CHUNK_SIZE) + CHUNK_SIZE) %
                   CHUNK_SIZE) *
                   TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               top:
-                ((playerMapPosition.y % CHUNK_SIZE + CHUNK_SIZE) %
+                (((playerMapPosition.y % CHUNK_SIZE) + CHUNK_SIZE) %
                   CHUNK_SIZE) *
                   TILE_SIZE +
                 TILE_SIZE / 2 -
@@ -251,7 +280,10 @@ export default function MapScreen({ navigation }) {
         </View>
       </View>
 
-      <PlayerInfoCard playerPosition={playerMapPosition} discoveredCount={displayableNodes.length} />
+      <PlayerInfoCard
+        playerPosition={playerMapPosition}
+        discoveredCount={displayableNodes.length}
+      />
 
       {/* Lista de NodeCard debajo del mapa */}
       <FlatList

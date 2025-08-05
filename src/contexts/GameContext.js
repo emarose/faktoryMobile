@@ -1,4 +1,10 @@
-import React, {useEffect, createContext, useContext, useMemo, useState } from "react";
+import React, {
+  useEffect,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
 import { useProduction } from "../hooks/useProduction";
@@ -22,6 +28,9 @@ export const GameProvider = ({ children }) => {
 
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 0, y: 0 });
   const [discoveredNodes, setDiscoveredNodes] = useState({});
+  // Track all nodeIds for which toast was dismissed
+  const [dismissedNodeIds, setDismissedNodeIds] = useState(new Set());
+  const [toastShownNodeIds, setToastShownNodeIds] = useState(new Set());
 
   const {
     inventory,
@@ -85,7 +94,12 @@ export const GameProvider = ({ children }) => {
         }
       });
     }
-  }, [canCompleteCurrentMilestone, completeCurrentMilestone, showToast, discoveredNodesCount]);
+  }, [
+    canCompleteCurrentMilestone,
+    completeCurrentMilestone,
+    showToast,
+    discoveredNodesCount,
+  ]);
 
   const contextValue = useMemo(
     () => ({
@@ -121,6 +135,8 @@ export const GameProvider = ({ children }) => {
       unlockedMachineNames,
       setMilestones,
       setActiveMilestone,
+      toastShownNodeIds,
+      setToastShownNodeIds,
     }),
     [
       inventory,
@@ -154,6 +170,8 @@ export const GameProvider = ({ children }) => {
       unlockedMachineNames,
       setMilestones,
       setActiveMilestone,
+      toastShownNodeIds,
+      setToastShownNodeIds,
     ]
   );
 
