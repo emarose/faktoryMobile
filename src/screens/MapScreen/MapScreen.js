@@ -53,9 +53,14 @@ export default function MapScreen({ navigation }) {
     inventory,
     addResource,
     removeResources,
+    nodeAmounts,
+    setNodeAmounts,
   } = useContext(GameContext);
+
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [pinnedNodeId, setPinnedNodeId] = useState(null);
+  const [isManualPin, setIsManualPin] = useState(false); // Nuevo estado para control manual/automático
 
   const { exploreDirection } = useWorldMapExploration(
     allResourceNodes,
@@ -63,9 +68,12 @@ export default function MapScreen({ navigation }) {
     discoveredNodes,
     setDiscoveredNodes,
     playerMapPosition,
-    setPlayerMapPosition
+    setPlayerMapPosition,
+    () => handleManualPin
   );
-
+  const handleManualPin = () => {
+    setIsManualPin(false);
+  };
   useEffect(() => {
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
       (id) => !toastShownNodeIds.has(id)
@@ -94,19 +102,10 @@ export default function MapScreen({ navigation }) {
   ]);
 
   // Machines and mining logic
-  const {
-    mineableNodes,
-    placeMachine,
-    placedMachines,
-    setPlacedMachines,
-  } = useMachines(inventory, removeResources, allResourceNodes);
+  const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
+    useMachines(inventory, removeResources, allResourceNodes);
 
-  useProduction(
-    addResource,
-    removeResources,
-    placedMachines,
-    mineableNodes
-  );
+  useProduction(addResource, removeResources, placedMachines, mineableNodes);
 
   const [chunks, setChunks] = useState({});
   useEffect(() => {
@@ -120,41 +119,68 @@ export default function MapScreen({ navigation }) {
     );
   }, [playerMapPosition, allResourceNodes]);
 
-  // Track node depletion amounts in local state
-  const [nodeAmounts, setNodeAmounts] = useState(() => {
-    const amounts = {};
-    allResourceNodes.forEach(node => {
-      amounts[node.id] = typeof node.currentAmount === "number" ? node.currentAmount : node.capacity || 50;
-    });
-    return amounts;
-  });
-
-  // Update nodeAmounts if new nodes are added
+  // Initialize nodeAmounts in context if not present
   useEffect(() => {
-    setNodeAmounts(prev => {
+    setNodeAmounts((prev) => {
       const updated = { ...prev };
-      allResourceNodes.forEach(node => {
+      allResourceNodes.forEach((node) => {
         if (typeof updated[node.id] !== "number") {
-          updated[node.id] = typeof node.currentAmount === "number" ? node.currentAmount : node.capacity || 50;
+          updated[node.id] =
+            typeof node.currentAmount === "number"
+              ? node.currentAmount
+              : node.capacity || 50;
         }
       });
       return updated;
     });
-  }, [allResourceNodes]);
+  }, [allResourceNodes, setNodeAmounts]);
 
   // Node depletion callback for manual mining
   const handleDepleteNode = (nodeId, newAmount) => {
-    setNodeAmounts(prev => ({ ...prev, [nodeId]: Math.max(0, newAmount) }));
-    // Optionally, add resource to inventory when manually mining
-    const node = allResourceNodes.find(n => n.id === nodeId);
-    const nodeDefinition = node && node.type ? require('../../data/items').items[node.type] : null;
+    setNodeAmounts((prev) => ({ ...prev, [nodeId]: Math.max(0, newAmount) }));
+    const node = allResourceNodes.find((n) => n.id === nodeId);
+    const nodeDefinition =
+      node && node.type ? require("../../data/items").items[node.type] : null;
     if (nodeDefinition && nodeDefinition.output) {
       const resourceId = Object.keys(nodeDefinition.output)[0];
       addResource(resourceId, 1, nodeId);
     }
   };
 
-  const [pinnedNodeId, setPinnedNodeId] = useState(null);
+useEffect(() => {
+    // Only auto-pin if user has NOT manually pinned
+    if (isManualPin) return;
+
+    let closestNodeId = null;
+    let minDist = Infinity;
+    // Only auto-pin nodes strictly inside the discovery area (circle)
+    mineableNodes.forEach(node => {
+        if (discoveredNodes[node.id]) {
+            const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
+            const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
+            const euclideanDist = Math.sqrt(dx * dx + dy * dy);
+            // Only consider nodes strictly inside the discovery area
+            if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
+                closestNodeId = node.id;
+                minDist = euclideanDist;
+            }
+        }
+    });
+
+    // If a node just entered the discovery area, auto-pin it
+    console.log("🚀 ~ MapScreen ~ closestNodeId:", closestNodeId)
+    console.log("🚀 ~ MapScreen ~ pinnedNodeId:", pinnedNodeId)
+    if (closestNodeId && pinnedNodeId !== closestNodeId) {
+        setPinnedNodeId(closestNodeId);
+        setIsManualPin(false); // New pin is automatic
+    } else if (!closestNodeId && pinnedNodeId && !isManualPin) {
+        // If no nodes are close and the current pin is not manual, remove it
+        setPinnedNodeId(null);
+    }
+
+}, [playerMapPosition, mineableNodes, discoveredNodes, pinnedNodeId, isManualPin]);
+
+
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
     .filter((node) => discoveredNodes[node.id])
@@ -207,9 +233,13 @@ export default function MapScreen({ navigation }) {
                 height: TILE_SIZE,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: "#555",
+                borderColor: pinnedNodeId !== tile.node.id ? "#555" : "#27ae60",
+                zIndex: 100,
               }}
-              onPress={() => setPinnedNodeId(tile.node.id)}
+              onPress={() => {
+                setPinnedNodeId(tile.node.id);
+                setIsManualPin(true); // ⬅️ Establecer pin manual aquí
+              }}
             />
           );
         } else {
@@ -306,6 +336,7 @@ export default function MapScreen({ navigation }) {
             <MapGridControls
               MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
               exploreDirection={exploreDirection}
+              onMove={() => setIsManualPin(false)} // ⬅️ Resetear el pin manual cuando el jugador se mueve
             />
           </View>
         </View>

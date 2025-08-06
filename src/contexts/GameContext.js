@@ -19,6 +19,8 @@ import { useToast } from "./ToastContext";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
+  // Persistent node depletion state
+  const [nodeAmounts, setNodeAmounts] = useState({});
   const { allResourceNodes } = useMapNodes();
   const [resourceNodes, setResourceNodes] = useState([]);
 
@@ -137,6 +139,8 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
+      nodeAmounts,
+      setNodeAmounts,
     }),
     [
       inventory,
