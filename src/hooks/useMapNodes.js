@@ -28,7 +28,14 @@ export function useMapNodes() {
         y: 7,
         capacity: 50,
       },
-      { id: "coalNode1", name: "Coal Node", type: "coal_node", x: 150, y: 250, capacity: 50 },
+      {
+        id: "coalNode1",
+        name: "Coal Node",
+        type: "coal_node",
+        x: 3,
+        y: 7,
+        capacity: 50,
+      },
       {
         id: "cateriumNode1",
         name: "Caterium Ore Node",

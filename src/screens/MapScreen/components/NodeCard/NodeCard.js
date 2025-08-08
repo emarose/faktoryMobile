@@ -54,10 +54,11 @@ const NodeCard = React.memo(
       canManualMine = chebyshevDist <= discoveryRadiusTiles;
     }
     // Manual mining logic
+    const isDepleted = nodeDepletionAmount === 0;
     const handleManualMine = () => {
-      if (typeof node.currentAmount === "number" && node.currentAmount > 0) {
+      if (!isDepleted && typeof node.currentAmount === "number" && node.currentAmount > 0) {
         if (onDepleteNode) {
-          onDepleteNode(nodeId, node.currentAmount - 1);
+          onDepleteNode(nodeId, node.currentAmount - 1, true);
         }
       }
     };
@@ -101,21 +102,29 @@ const NodeCard = React.memo(
             value={nodeDepletionAmount}
             max={nodeCapacity}
             label={"Node Depletion"}
-            style={{ marginTop: 8, marginBottom: 8 }}
+            style={{ marginTop: 8, marginBottom: 8, opacity: isDepleted ? 0.5 : 1 }}
           />
+        )}
+        {isDepleted && (
+          <Text style={{ color: '#c00', fontWeight: 'bold', textAlign: 'center', marginBottom: 8 }}>
+            Node Depleted
+          </Text>
         )}
         <View style={styles.placementActions}>
           {showManualMineButton && (
             <>
               <TouchableOpacity
-                style={[styles.mineButton, !canManualMine && { opacity: 0.5, backgroundColor: '#aaa' }]}
-                onPress={() => canManualMine && handleManualMine()}
-                disabled={!canManualMine}
+                style={[styles.mineButton, (!canManualMine || isDepleted) && { opacity: 0.5, backgroundColor: '#aaa' }]}
+                onPress={() => canManualMine && !isDepleted && handleManualMine()}
+                disabled={!canManualMine || isDepleted}
               >
                 <Text style={styles.mineButtonText}>Manual Mine</Text>
               </TouchableOpacity>
-              {!canManualMine && (
+              {!canManualMine && !isDepleted && (
                 <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>Move closer to the node to manually mine (within discovery radius)</Text>
+              )}
+              {isDepleted && (
+                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>This node is depleted and cannot be mined.</Text>
               )}
             </>
           )}

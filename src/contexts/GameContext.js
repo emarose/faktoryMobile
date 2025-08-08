@@ -19,6 +19,37 @@ import { useToast } from "./ToastContext";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
+  // Initialize nodeAmounts for all nodes if not present
+  useEffect(() => {
+    setNodeAmounts((prev) => {
+      const updated = { ...prev };
+      allResourceNodes.forEach((node) => {
+        if (typeof updated[node.id] !== "number") {
+          updated[node.id] =
+            typeof node.currentAmount === "number"
+              ? node.currentAmount
+              : node.capacity || 50;
+        }
+      });
+      return updated;
+    });
+  }, [allResourceNodes, setNodeAmounts]);
+
+  // Node depletion callback for mining (manual mining should also add resource)
+  const handleDepleteNode = (nodeId, newAmount, isManual = false) => {
+    setNodeAmounts((prev) => {
+      const updated = { ...prev, [nodeId]: Math.max(0, newAmount) };
+      return updated;
+    });
+    if (isManual) {
+      const node = allResourceNodes.find((n) => n.id === nodeId);
+      const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+      if (nodeDefinition && nodeDefinition.output) {
+        const resourceId = Object.keys(nodeDefinition.output)[0];
+        addResource(resourceId, 1, nodeId);
+      }
+    }
+  };
   // Persistent node depletion state
   const [nodeAmounts, setNodeAmounts] = useState({});
   const { allResourceNodes } = useMapNodes();
@@ -30,8 +61,6 @@ export const GameProvider = ({ children }) => {
 
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
   const [discoveredNodes, setDiscoveredNodes] = useState({});
-  // Track all nodeIds for which toast was dismissed
-  const [dismissedNodeIds, setDismissedNodeIds] = useState(new Set());
   const [toastShownNodeIds, setToastShownNodeIds] = useState(new Set());
 
   const {
@@ -104,7 +133,7 @@ export const GameProvider = ({ children }) => {
   ]);
 
   const contextValue = useMemo(
-    () => ({
+  () => ({
       inventory,
       allResourceNodes,
       ownedMachines,
@@ -139,8 +168,9 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
-      nodeAmounts,
-      setNodeAmounts,
+  nodeAmounts,
+  setNodeAmounts,
+  handleDepleteNode,
     }),
     [
       inventory,

@@ -5,7 +5,9 @@ export const useProduction = (
   addResourceCallback,
   removeResourcesCallback,
   placedMachines,
-  allResourceNodes
+  allResourceNodes,
+  nodeAmounts, // <-- pass nodeAmounts from context
+  onDepleteNode
 ) => {
   const productionLoopRef = useRef(null);
 
@@ -20,36 +22,41 @@ export const useProduction = (
           const node = allResourceNodes.find(
             (n) => n.id === machine.assignedNodeId
           );
-          if (node && items[node.type]?.output) {
+          // Get current depletion from nodeAmounts
+          const currentAmount =
+            nodeAmounts && typeof nodeAmounts[node.id] === "number"
+              ? nodeAmounts[node.id]
+              : typeof node?.capacity === "number"
+              ? node.capacity
+              : 0;
+
+          if (node && items[node.type]?.output && currentAmount > 0) {
             for (const resourceId in items[node.type].output) {
               // --- CAP LOGIC ---
-              // Count miners assigned to this node
               const minersAssigned = placedMachines.filter(
                 (m) => m.type === "miner" && m.assignedNodeId === node.id
               ).length;
               const maxAmount = minersAssigned * 100;
-              // Get current amount from inventory
-              // NOTE: addResourceCallback should not add more than maxAmount
-              // So we need to check current amount and only add up to the cap
-              const currentAmount =
-                typeof node.currentAmount === "number"
-                  ? node.currentAmount
-                  : 0;
-              // If node.currentAmount is not available, you may need to get it from inventory
-              // (Assuming inventory[resourceId]?.currentAmount is available via context)
-              // If not, you may need to pass inventory to this hook or fetch it from context
-
-              // For now, let's assume addResourceCallback will not add more than allowed
-              // So, calculate how much can be added:
               const amountProducedPerTick =
                 items[node.type].output[resourceId] * (machine.efficiency || 1);
-              // Calculate allowed amount to add
               let allowedToAdd = amountProducedPerTick;
-              if (typeof node.currentAmount === "number") {
-                if (node.currentAmount + amountProducedPerTick > maxAmount) {
-                  allowedToAdd = Math.max(0, maxAmount - node.currentAmount);
-                }
+              // Only allow production if node is not depleted
+              if (currentAmount < 1) {
+                allowedToAdd = 0;
               }
+              // Cap production if needed
+              if (currentAmount + amountProducedPerTick > maxAmount) {
+                allowedToAdd = Math.max(0, maxAmount - currentAmount);
+              }
+              // Deplete node by amount produced (decrease nodeAmounts)
+              if (typeof onDepleteNode === "function" && allowedToAdd > 0) {
+                const newNodeAmount = Math.max(0, currentAmount - allowedToAdd);
+                console.log(
+                  `[useProduction] Depleting node ${node.id}: newAmount=${newNodeAmount}`
+                );
+                onDepleteNode(node.id, newNodeAmount);
+              }
+              // Add resource to inventory (not node)
               if (allowedToAdd > 0) {
                 addResourceCallback(resourceId, allowedToAdd, node.id);
               }
@@ -95,9 +102,12 @@ export const useProduction = (
   }, [
     placedMachines,
     allResourceNodes,
+    nodeAmounts,
     addResourceCallback,
     removeResourcesCallback,
+    onDepleteNode, // Ensure depletion stays in sync
   ]); // Dependencies are the stable callbacks and machine/node data
 
   // This hook doesn't directly return state, but manages side effects
+  // Usage: pass handleDepleteNode from MapScreen as onDepleteNode
 };

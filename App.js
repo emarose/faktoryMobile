@@ -10,23 +10,25 @@ import { GameProvider } from "./src/contexts/GameContext";
 import { ToastProvider, useToast } from "./src/contexts/ToastContext";
 import Toast from "./src/components/Toast";
 
-
 function AppContent() {
   const colorScheme = useColorScheme();
   const { visible, message, duration, hideToast } = useToast();
-
 
   return (
     <SafeAreaProvider>
       <GameProvider>
         <StatusBar style="light" />
         <Navigation colorScheme={colorScheme} />
-        <Toast visible={visible} message={message} duration={duration} onHide={hideToast} />
+        <Toast
+          visible={visible}
+          message={message}
+          duration={duration}
+          onHide={hideToast}
+        />
       </GameProvider>
     </SafeAreaProvider>
   );
 }
-
 
 export default function App() {
   return (

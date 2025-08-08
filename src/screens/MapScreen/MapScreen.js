@@ -53,9 +53,12 @@ export default function MapScreen({ navigation }) {
     inventory,
     addResource,
     removeResources,
-    nodeAmounts,
-    setNodeAmounts,
+  nodeAmounts,
+  setNodeAmounts,
+  handleDepleteNode
   } = useContext(GameContext);
+
+  // Use nodeAmounts/setNodeAmounts from GameContext
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -105,7 +108,7 @@ export default function MapScreen({ navigation }) {
   const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
     useMachines(inventory, removeResources, allResourceNodes);
 
-  useProduction(addResource, removeResources, placedMachines, mineableNodes);
+  useProduction(addResource, removeResources, placedMachines, mineableNodes, nodeAmounts, handleDepleteNode);
 
   const [chunks, setChunks] = useState({});
   useEffect(() => {
@@ -119,72 +122,53 @@ export default function MapScreen({ navigation }) {
     );
   }, [playerMapPosition, allResourceNodes]);
 
-  // Initialize nodeAmounts in context if not present
+
+
   useEffect(() => {
-    setNodeAmounts((prev) => {
-      const updated = { ...prev };
-      allResourceNodes.forEach((node) => {
-        if (typeof updated[node.id] !== "number") {
-          updated[node.id] =
-            typeof node.currentAmount === "number"
-              ? node.currentAmount
-              : node.capacity || 50;
-        }
-      });
-      return updated;
-    });
-  }, [allResourceNodes, setNodeAmounts]);
-
-  // Node depletion callback for manual mining
-  const handleDepleteNode = (nodeId, newAmount) => {
-    setNodeAmounts((prev) => ({ ...prev, [nodeId]: Math.max(0, newAmount) }));
-    const node = allResourceNodes.find((n) => n.id === nodeId);
-    const nodeDefinition =
-      node && node.type ? require("../../data/items").items[node.type] : null;
-    if (nodeDefinition && nodeDefinition.output) {
-      const resourceId = Object.keys(nodeDefinition.output)[0];
-      addResource(resourceId, 1, nodeId);
-    }
-  };
-
-useEffect(() => {
     // Only auto-pin if user has NOT manually pinned
     if (isManualPin) return;
 
     let closestNodeId = null;
     let minDist = Infinity;
     // Only auto-pin nodes strictly inside the discovery area (circle)
-    mineableNodes.forEach(node => {
-        if (discoveredNodes[node.id]) {
-            const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
-            const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
-            const euclideanDist = Math.sqrt(dx * dx + dy * dy);
-            // Only consider nodes strictly inside the discovery area
-            if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
-                closestNodeId = node.id;
-                minDist = euclideanDist;
-            }
+    mineableNodes.forEach((node) => {
+      if (discoveredNodes[node.id]) {
+        const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
+        const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
+        const euclideanDist = Math.sqrt(dx * dx + dy * dy);
+        // Only consider nodes strictly inside the discovery area
+        if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
+          closestNodeId = node.id;
+          minDist = euclideanDist;
         }
+      }
     });
 
     // If a node just entered the discovery area, auto-pin it
-    console.log("🚀 ~ MapScreen ~ closestNodeId:", closestNodeId)
-    console.log("🚀 ~ MapScreen ~ pinnedNodeId:", pinnedNodeId)
     if (closestNodeId && pinnedNodeId !== closestNodeId) {
-        setPinnedNodeId(closestNodeId);
-        setIsManualPin(false); // New pin is automatic
+      setPinnedNodeId(closestNodeId);
+      setIsManualPin(false); // New pin is automatic
     } else if (!closestNodeId && pinnedNodeId && !isManualPin) {
-        // If no nodes are close and the current pin is not manual, remove it
-        setPinnedNodeId(null);
+      // If no nodes are close and the current pin is not manual, remove it
+      setPinnedNodeId(null);
     }
-
-}, [playerMapPosition, mineableNodes, discoveredNodes, pinnedNodeId, isManualPin]);
-
+  }, [
+    playerMapPosition,
+    mineableNodes,
+    discoveredNodes,
+    pinnedNodeId,
+    isManualPin,
+  ]);
 
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
     .filter((node) => discoveredNodes[node.id])
-    .map((node) => ({ ...node, currentAmount: nodeAmounts[node.id] }));
+    .map((node) => ({
+      ...node,
+      currentAmount: typeof nodeAmounts[node.id] === 'number'
+        ? nodeAmounts[node.id]
+        : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 50)
+    }));
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
       if (a.id === pinnedNodeId) return -1;
@@ -354,6 +338,7 @@ useEffect(() => {
         renderItem={({ item }) => (
           <NodeCard
             node={item}
+            nodeDepletionAmount={item.currentAmount}
             inventory={inventory}
             placedMachines={placedMachines}
             styles={styles}
