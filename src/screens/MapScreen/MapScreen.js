@@ -1,14 +1,5 @@
-// MapScreen.js
-
-import React, { useState, useEffect, useContext, useRef } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
-  Dimensions,
-} from "react-native";
+import { useState, useEffect, useContext } from "react";
+import { View, Text, FlatList, Pressable } from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
@@ -42,7 +33,6 @@ function generateChunk(cx, cy, resourceNodes) {
 }
 
 export default function MapScreen({ navigation }) {
-  const { allResourceNodes } = useMapNodes();
   const {
     discoveredNodes,
     setDiscoveredNodes,
@@ -53,17 +43,16 @@ export default function MapScreen({ navigation }) {
     inventory,
     addResource,
     removeResources,
-  nodeAmounts,
-  setNodeAmounts,
-  handleDepleteNode
+    nodeAmounts,
+    setNodeAmounts,
+    handleDepleteNode,
   } = useContext(GameContext);
-
-  // Use nodeAmounts/setNodeAmounts from GameContext
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
-  const [isManualPin, setIsManualPin] = useState(false); // Nuevo estado para control manual/automático
+  const [isManualPin, setIsManualPin] = useState(false);
+  const { allResourceNodes, NODE_TYPES_MAP } = useMapNodes(playerMapPosition);
 
   const { exploreDirection } = useWorldMapExploration(
     allResourceNodes,
@@ -77,6 +66,7 @@ export default function MapScreen({ navigation }) {
   const handleManualPin = () => {
     setIsManualPin(false);
   };
+
   useEffect(() => {
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
       (id) => !toastShownNodeIds.has(id)
@@ -84,7 +74,7 @@ export default function MapScreen({ navigation }) {
     if (newlyDiscovered.length > 0) {
       const nodeId = newlyDiscovered[0];
       const node = allResourceNodes.find((n) => n.id === nodeId);
-      if (node) {
+      if (node && typeof node.x === 'number' && typeof node.y === 'number') {
         let displayName = node.name || node.type;
         if (!displayName.toLowerCase().includes("node")) {
           displayName += " Node";
@@ -108,7 +98,14 @@ export default function MapScreen({ navigation }) {
   const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
     useMachines(inventory, removeResources, allResourceNodes);
 
-  useProduction(addResource, removeResources, placedMachines, mineableNodes, nodeAmounts, handleDepleteNode);
+  useProduction(
+    addResource,
+    removeResources,
+    placedMachines,
+    mineableNodes,
+    nodeAmounts,
+    handleDepleteNode
+  );
 
   const [chunks, setChunks] = useState({});
   useEffect(() => {
@@ -122,8 +119,6 @@ export default function MapScreen({ navigation }) {
     );
   }, [playerMapPosition, allResourceNodes]);
 
-
-
   useEffect(() => {
     // Only auto-pin if user has NOT manually pinned
     if (isManualPin) return;
@@ -133,13 +128,15 @@ export default function MapScreen({ navigation }) {
     // Only auto-pin nodes strictly inside the discovery area (circle)
     mineableNodes.forEach((node) => {
       if (discoveredNodes[node.id]) {
-        const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
-        const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
-        const euclideanDist = Math.sqrt(dx * dx + dy * dy);
-        // Only consider nodes strictly inside the discovery area
-        if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
-          closestNodeId = node.id;
-          minDist = euclideanDist;
+        if (node && typeof node.x === 'number' && typeof node.y === 'number') {
+          const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
+          const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
+          const euclideanDist = Math.sqrt(dx * dx + dy * dy);
+          // Only consider nodes strictly inside the discovery area
+          if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
+            closestNodeId = node.id;
+            minDist = euclideanDist;
+          }
         }
       }
     });
@@ -165,9 +162,12 @@ export default function MapScreen({ navigation }) {
     .filter((node) => discoveredNodes[node.id])
     .map((node) => ({
       ...node,
-      currentAmount: typeof nodeAmounts[node.id] === 'number'
-        ? nodeAmounts[node.id]
-        : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 50)
+      currentAmount:
+        typeof nodeAmounts[node.id] === "number"
+          ? nodeAmounts[node.id]
+          : typeof node.currentAmount === "number"
+          ? node.currentAmount
+          : node.capacity || 50,
     }));
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
@@ -222,7 +222,7 @@ export default function MapScreen({ navigation }) {
               }}
               onPress={() => {
                 setPinnedNodeId(tile.node.id);
-                setIsManualPin(true); // ⬅️ Establecer pin manual aquí
+                setIsManualPin(true);
               }}
             />
           );
@@ -320,7 +320,7 @@ export default function MapScreen({ navigation }) {
             <MapGridControls
               MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
               exploreDirection={exploreDirection}
-              onMove={() => setIsManualPin(false)} // ⬅️ Resetear el pin manual cuando el jugador se mueve
+              onMove={() => setIsManualPin(false)}
             />
           </View>
         </View>
