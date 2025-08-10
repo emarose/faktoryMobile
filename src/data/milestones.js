@@ -13,7 +13,7 @@ const milestones = [
         description: "Unlocks Smelter and Miner.",
         unlocked: false,
         unlocks: ["Smelter", "Miner"],
-        requirements: { discoveredNodes: 1 }, // TODO: Implement discovered nodes tracking
+        requirements: { discoveredNodes: 1 }, 
     },
     {
         id: "milestone2",

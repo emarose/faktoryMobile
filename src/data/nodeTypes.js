@@ -1,10 +1,10 @@
 // Centralized node type definitions for resource nodes
 
 export const NODE_TYPES_MAP = [
-  { type: "ironOre_node", name: "Iron Ore", color: "#A0522D" },
-  { type: "copperOre_node", name: "Copper Ore", color: "#B87333" },
-  { type: "limestone_node", name: "Limestone", color: "#D3D3D3" },
-  { type: "coal_node", name: "Coal", color: "#222222" },
+  { type: "ironOre_node", name: "Iron Ore", color: "#c4bfbdff" },
+  { type: "copperOre_node", name: "Copper Ore", color: "#b88333ff" },
+  { type: "limestone_node", name: "Limestone", color: "#e7cfb4ff" },
+  { type: "coal_node", name: "Coal", color: "#424040ff" },
   { type: "cateriumOre_node", name: "Caterium Ore", color: "#DAA520" },
   { type: "rawQuartz_node", name: "Raw Quartz", color: "#ADD8E6" },
   { type: "sulfur_node", name: "Sulfur", color: "#FFFF00" },

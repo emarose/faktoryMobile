@@ -14,7 +14,7 @@ import useCrafting from "../hooks/useCrafting";
 import useProductionRate from "../hooks/useProductionRate";
 import { useMapNodes } from "../hooks/useMapNodes";
 import useMilestone from "../hooks/useMilestone";
-import { useToast } from "./ToastContext";
+import { useToast } from "../hooks/useToastMessage";
 
 export const GameContext = createContext();
 
@@ -35,7 +35,7 @@ export const GameProvider = ({ children }) => {
     });
   }, [allResourceNodes, setNodeAmounts]);
 
-  // Node depletion callback for mining (manual mining should also add resource)
+  // Node depletion callback for mining
   const handleDepleteNode = (nodeId, newAmount, isManual = false) => {
     setNodeAmounts((prev) => {
       const updated = { ...prev, [nodeId]: Math.max(0, newAmount) };
@@ -50,7 +50,6 @@ export const GameProvider = ({ children }) => {
       }
     }
   };
-  // Persistent node depletion state
   const [nodeAmounts, setNodeAmounts] = useState({});
   const { allResourceNodes } = useMapNodes();
   const [resourceNodes, setResourceNodes] = useState([]);

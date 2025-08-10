@@ -7,7 +7,7 @@ import Navigation from "./src/navigation";
 import { useColorScheme } from "react-native";
 import { GameProvider } from "./src/contexts/GameContext";
 
-import { ToastProvider, useToast } from "./src/contexts/ToastContext";
+import { useToast } from "./src/hooks/useToastMessage";
 import Toast from "./src/components/Toast";
 
 function AppContent() {
@@ -31,11 +31,5 @@ function AppContent() {
 }
 
 export default function App() {
-  return (
-    <ToastProvider>
-      <GameProvider>
-        <AppContent />
-      </GameProvider>
-    </ToastProvider>
-  );
+  return <AppContent />;
 }
