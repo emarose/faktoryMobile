@@ -5,11 +5,22 @@ import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
 
 const NodeCard = React.memo(
-  ({ node, inventory, placedMachines, styles, playerPosition, discoveryRadius, onDepleteNode, placeMachine }) => {
+  ({
+    node,
+    inventory,
+    placedMachines,
+    styles,
+    playerPosition,
+    discoveryRadius,
+    onDepleteNode,
+    placeMachine,
+  }) => {
     const { id: nodeId, name, x, y, type: nodeType } = node;
     const nodeDefinition = items[nodeType];
     if (!nodeDefinition) {
-      console.warn(`Definition for node type ${nodeType} not found in items.js`);
+      console.warn(
+        `Definition for node type ${nodeType} not found in items.js`
+      );
       return null;
     }
     const { manualMineable, machineRequired, output } = nodeDefinition;
@@ -30,7 +41,8 @@ const NodeCard = React.memo(
       0
     );
     const minerCountInInventory = inventory.miner?.currentAmount || 0;
-    const oilExtractorCountInInventory = inventory.oilExtractor?.currentAmount || 0;
+    const oilExtractorCountInInventory =
+      inventory.oilExtractor?.currentAmount || 0;
     // Miner can be placed on nodes that are manually mineable OR require a miner
     const canPlaceMiner =
       minerCountInInventory > 0 &&
@@ -42,23 +54,42 @@ const NodeCard = React.memo(
       assignedMachineCount === 0;
     const showManualMineButton = manualMineable;
     // Get node depletion amount if available
-    const nodeDepletionAmount = typeof node.currentAmount !== "undefined" ? node.currentAmount : null;
-    const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 50;
+    const nodeCapacity =
+      typeof node.capacity !== "undefined" ? node.capacity : 50;
+    const nodeDepletionAmount =
+      typeof node.currentAmount === "number"
+        ? node.currentAmount
+        : nodeCapacity;
     // Calculate if player is within discovery radius (in grid units)
     let canManualMine = false;
-    if (playerPosition && typeof playerPosition.x === 'number' && typeof playerPosition.y === 'number') {
+    if (
+      playerPosition &&
+      typeof playerPosition.x === "number" &&
+      typeof playerPosition.y === "number"
+    ) {
       // Use Chebyshev (chessboard) distance for grid adjacency, so corners are included
-      const tileSize = typeof global.TILE_SIZE === 'number' ? global.TILE_SIZE : 30;
-      const discoveryRadiusTiles = Math.max(1, Math.floor((discoveryRadius || 0) / tileSize));
-      const chebyshevDist = Math.max(Math.abs(playerPosition.x - x), Math.abs(playerPosition.y - y));
+      const tileSize =
+        typeof global.TILE_SIZE === "number" ? global.TILE_SIZE : 30;
+      const discoveryRadiusTiles = Math.max(
+        1,
+        Math.floor((discoveryRadius || 0) / tileSize)
+      );
+      const chebyshevDist = Math.max(
+        Math.abs(playerPosition.x - x),
+        Math.abs(playerPosition.y - y)
+      );
       canManualMine = chebyshevDist <= discoveryRadiusTiles;
     }
     // Manual mining logic
     const isDepleted = nodeDepletionAmount === 0;
     const handleManualMine = () => {
-      if (!isDepleted && typeof node.currentAmount === "number" && node.currentAmount > 0) {
+      if (
+        !isDepleted &&
+        typeof node.currentAmount === "number" &&
+        node.currentAmount > 0
+      ) {
         if (onDepleteNode) {
-          onDepleteNode(nodeId, node.currentAmount - 1, true);
+          onDepleteNode(node, node.currentAmount - 1, true);
         }
       }
     };
@@ -92,7 +123,8 @@ const NodeCard = React.memo(
               Machines Assigned: {assignedMachineCount}
             </Text>
             <Text style={styles.automatedRate}>
-              Current Yield: +{automatedProductionRate.toFixed(1)}/s {producedItemName}
+              Current Yield: +{automatedProductionRate.toFixed(1)}/s{" "}
+              {producedItemName}
             </Text>
           </View>
         )}
@@ -102,11 +134,22 @@ const NodeCard = React.memo(
             value={nodeDepletionAmount}
             max={nodeCapacity}
             label={"Node Depletion"}
-            style={{ marginTop: 8, marginBottom: 8, opacity: isDepleted ? 0.5 : 1 }}
+            style={{
+              marginTop: 8,
+              marginBottom: 8,
+              opacity: isDepleted ? 0.5 : 1,
+            }}
           />
         )}
         {isDepleted && (
-          <Text style={{ color: '#c00', fontWeight: 'bold', textAlign: 'center', marginBottom: 8 }}>
+          <Text
+            style={{
+              color: "#c00",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: 8,
+            }}
+          >
             Node Depleted
           </Text>
         )}
@@ -114,17 +157,40 @@ const NodeCard = React.memo(
           {showManualMineButton && (
             <>
               <TouchableOpacity
-                style={[styles.mineButton, (!canManualMine || isDepleted) && { opacity: 0.5, backgroundColor: '#aaa' }]}
-                onPress={() => canManualMine && !isDepleted && handleManualMine()}
+                style={[
+                  styles.mineButton,
+                  (!canManualMine || isDepleted) && {
+                    opacity: 0.5,
+                    backgroundColor: "#aaa",
+                  },
+                ]}
+                onPress={() =>
+                  canManualMine && !isDepleted && handleManualMine()
+                }
                 disabled={!canManualMine || isDepleted}
               >
                 <Text style={styles.mineButtonText}>Manual Mine</Text>
               </TouchableOpacity>
               {!canManualMine && !isDepleted && (
-                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>Move closer to the node to manually mine (within discovery radius)</Text>
+                <Text
+                  style={[
+                    styles.mineButtonText,
+                    { color: "#c00", marginTop: 4, textAlign: "center" },
+                  ]}
+                >
+                  Move closer to the node to manually mine (within discovery
+                  radius)
+                </Text>
               )}
               {isDepleted && (
-                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>This node is depleted and cannot be mined.</Text>
+                <Text
+                  style={[
+                    styles.mineButtonText,
+                    { color: "#c00", marginTop: 4, textAlign: "center" },
+                  ]}
+                >
+                  This node is depleted and cannot be mined.
+                </Text>
               )}
             </>
           )}
@@ -153,12 +219,14 @@ const NodeCard = React.memo(
             !canPlaceMiner &&
             !canPlaceOilExtractor && (
               <Text style={styles.noMachineText}>
-                Need {items[machineRequired]?.name || machineRequired} to automate this node
+                Need {items[machineRequired]?.name || machineRequired} to
+                automate this node
               </Text>
             )}
           {machineRequired && assignedMachineCount > 0 && (
             <Text style={styles.alreadyAssignedText}>
-              {items[machineRequired]?.name || machineRequired} already assigned to this node.
+              {items[machineRequired]?.name || machineRequired} already assigned
+              to this node.
             </Text>
           )}
         </View>

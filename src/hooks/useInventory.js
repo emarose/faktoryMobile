@@ -55,7 +55,7 @@ export const useInventory = () => {
     };
   });
 
-  const addResource = useCallback((resourceId, amount) => {
+  const addResource = useCallback((resourceId, amount, nodeId) => {
     setInventoryState((prevInventory) => {
       const newItems = { ...prevInventory.items };
       // Ensure the item exists before trying to update it

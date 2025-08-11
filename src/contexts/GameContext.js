@@ -36,17 +36,22 @@ export const GameProvider = ({ children }) => {
   }, [allResourceNodes, setNodeAmounts]);
 
   // Node depletion callback for mining
-  const handleDepleteNode = (nodeId, newAmount, isManual = false) => {
+  const handleDepleteNode = (node, newAmount, isManual = false) => {
+    if (!node || !node.id) {
+      console.warn("handleDepleteNode called with invalid node", node);
+      return;
+    }
     setNodeAmounts((prev) => {
-      const updated = { ...prev, [nodeId]: Math.max(0, newAmount) };
+      const updated = { ...prev, [node.id]: Math.max(0, newAmount) };
       return updated;
     });
-    if (isManual) {
-      const node = allResourceNodes.find((n) => n.id === nodeId);
-      const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+    if (isManual && node) {
+      const nodeDefinition = node.type
+        ? require("../data/items").items[node.type]
+        : null;
       if (nodeDefinition && nodeDefinition.output) {
         const resourceId = Object.keys(nodeDefinition.output)[0];
-        addResource(resourceId, 1, nodeId);
+        addResource(resourceId, 1, node.id);
       }
     }
   };
@@ -132,7 +137,7 @@ export const GameProvider = ({ children }) => {
   ]);
 
   const contextValue = useMemo(
-  () => ({
+    () => ({
       inventory,
       allResourceNodes,
       ownedMachines,
@@ -167,9 +172,9 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
-  nodeAmounts,
-  setNodeAmounts,
-  handleDepleteNode,
+      nodeAmounts,
+      setNodeAmounts,
+      handleDepleteNode,
     }),
     [
       inventory,

@@ -52,7 +52,7 @@ export default function MapScreen({ navigation }) {
   const [toastMessage, setToastMessage] = useState("");
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
   const [isManualPin, setIsManualPin] = useState(false);
-  const { allResourceNodes, NODE_TYPES_MAP } = useMapNodes(playerMapPosition);
+  const { allResourceNodes } = useMapNodes(playerMapPosition);
 
   const { exploreDirection } = useWorldMapExploration(
     allResourceNodes,
@@ -104,7 +104,6 @@ export default function MapScreen({ navigation }) {
     placedMachines,
     mineableNodes,
     nodeAmounts,
-    handleDepleteNode
   );
 
   const [chunks, setChunks] = useState({});

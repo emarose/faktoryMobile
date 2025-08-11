@@ -6,7 +6,7 @@ export const useProduction = (
   removeResourcesCallback,
   placedMachines,
   allResourceNodes,
-  nodeAmounts, // <-- pass nodeAmounts from context
+  nodeAmounts,
   onDepleteNode
 ) => {
   const productionLoopRef = useRef(null);
@@ -64,7 +64,7 @@ export const useProduction = (
           }
         }
 
-        // Smelter production logic (example)
+        // Smelter production logic 
         if (machine.type === "smelter" && machine.recipeId) {
           const recipe = items[machine.recipeId];
           if (
@@ -105,9 +105,6 @@ export const useProduction = (
     nodeAmounts,
     addResourceCallback,
     removeResourcesCallback,
-    onDepleteNode, // Ensure depletion stays in sync
-  ]); // Dependencies are the stable callbacks and machine/node data
-
-  // This hook doesn't directly return state, but manages side effects
-  // Usage: pass handleDepleteNode from MapScreen as onDepleteNode
+    onDepleteNode,
+  ]);
 };
