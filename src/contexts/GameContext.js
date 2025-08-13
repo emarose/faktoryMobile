@@ -14,7 +14,7 @@ import useCrafting from "../hooks/useCrafting";
 import useProductionRate from "../hooks/useProductionRate";
 import { useMapNodes } from "../hooks/useMapNodes";
 import useMilestone from "../hooks/useMilestone";
-import { useToast } from "../hooks/useToastMessage";
+import { useToastContext } from "./ToastContext";
 
 export const GameContext = createContext();
 
@@ -102,7 +102,7 @@ export const GameProvider = ({ children }) => {
   );
 
   const { getProductionRate } = useProductionRate(placedMachines);
-  const { showToast } = useToast();
+  const { showToast } = useToastContext();
   const discoveredNodesCount = Object.keys(discoveredNodes).length;
   const {
     milestones,

@@ -15,7 +15,7 @@ export function useMilestone(inventory, discoveredCount) {
     ? Object.entries(currentMilestone.requirements || {}).every(
         ([itemId, requiredAmount]) => {
           if (itemId === "discoveredNodes") {
-            return discoveredCount === 1;
+            return discoveredCount >= requiredAmount;
           }
           return (inventory[itemId]?.currentAmount || 0) >= requiredAmount;
         }

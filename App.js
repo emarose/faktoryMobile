@@ -7,13 +7,13 @@ import Navigation from "./src/navigation";
 import { useColorScheme } from "react-native";
 import { GameProvider } from "./src/contexts/GameContext";
 
-import { useToast } from "./src/hooks/useToastMessage";
+import { ToastProvider, useToastContext } from "./src/contexts/ToastContext";
 import Toast from "./src/components/Toast";
+
 
 function AppContent() {
   const colorScheme = useColorScheme();
-  const { visible, message, duration, hideToast } = useToast();
-
+  const { visible, message, duration, hideToast } = useToastContext();
   return (
     <SafeAreaProvider>
       <GameProvider>
@@ -31,5 +31,9 @@ function AppContent() {
 }
 
 export default function App() {
-  return <AppContent />;
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
+  );
 }

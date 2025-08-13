@@ -1,37 +1,29 @@
-# Navigation Example
+En este juego, la progresión es el motor principal. Empiezas como un explorador en un vasto mundo cuadriculado, moviéndote libremente para descubrir los valiosos Nodos de Recursos. Cada nodo, identificado por un color único, contiene un mineral que puedes extraer manualmente al principio.
 
-<p>
-  <!-- iOS -->
-  <a href="https://itunes.apple.com/app/apple-store/id982107779">
-    <img alt="Supports Expo iOS" longdesc="Supports Expo iOS" src="https://img.shields.io/badge/iOS-4630EB.svg?style=flat-square&logo=APPLE&labelColor=999999&logoColor=fff" />
-  </a>
-  <!-- Android -->
-  <a href="https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=blankexample">
-    <img alt="Supports Expo Android" longdesc="Supports Expo Android" src="https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff" />
-  </a>
-  <!-- Web -->
-  <a href="https://docs.expo.dev/workflow/web/">
-    <img alt="Supports Expo Web" longdesc="Supports Expo Web" src="https://img.shields.io/badge/web-4630EB.svg?style=flat-square&logo=GOOGLE-CHROME&labelColor=4285F4&logoColor=fff" />
-  </a>
-</p>
+Tu primera gran meta será descubrir y minar suficientes recursos para desbloquear la pantalla de 'Constructor de Máquinas'. Aquí es donde el juego realmente evoluciona. Podrás construir Miners, tus primeros pasos hacia la automatización. Colocar un Miner en un nodo transformará la extracción manual en una producción pasiva, permitiéndote generar recursos sin esfuerzo.
 
-## 🚀 How to use
+Pero la automatización no es ilimitada. Los nodos tienen una capacidad finita, agotándose con el tiempo. Esto te obliga a tomar decisiones estratégicas: ¿exploras para encontrar nuevos nodos, o inviertes en mejorar la eficiencia de tus máquinas existentes para maximizar la producción de los recursos que ya tienes? Este ciclo de exploración, automatización y optimización es el corazón del juego
 
-- Install packages with `yarn` or `npm install`.
-- Run `yarn start` or `npm run start` to start the bundler.
-- Open the project in a React runtime to try it:
-  - iOS: [Client iOS](https://itunes.apple.com/app/apple-store/id982107779)
-  - Android: [Client Android](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=blankexample)
-  - Web: Any web browser
-- When it's time to customize your runtime, refer to the ["Adding custom native code"](https://docs.expo.dev/workflow/customizing/) guide!
+## Project Structure
 
-## Publishing
+- `/src/screens`: Main screens for gameplay and UI.
+- `/src/components`: Reusable UI components.
+- `/src/hooks`: Custom React hooks for game logic.
+- `/src/data`: Static data for nodes, items, milestones, etc.
+- `/src/contexts`: Global state management.
 
-- Deploy the native app to the App store and Play store using this guide: [Deployment](https://docs.expo.dev/distribution/app-stores/).
-- Deploy the website using this guide: [Web deployment](https://docs.expo.dev/distribution/publishing-websites/).
+## Features
 
-## 📝 Notes
+- Grid-based world exploration
+- Manual and automated mining
+- Machine building and upgrades
+- Inventory management
+- Milestone progression
 
-- Learn more about [Universal React](https://docs.expo.dev/).
-- See what API and components are [available in the React runtimes](https://docs.expo.dev/versions/latest/).
-- Find out more about developing apps and websites: [Official guides](https://docs.expo.dev/guides/).
+## Controls
+
+- Move with arrow buttons on the map screen.
+- Tap nodes to mine or place machines.
+
+The screens the player will be interacting with are:
+[FACTORY] - This is the player "home", where he can see a clear state of machines built, inventory and items beign produced. No real interaction can be made here but its where the player will be navigating to and from to connect to other sections
