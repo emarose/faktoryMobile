@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect, useMemo } from "react";
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
@@ -8,14 +9,15 @@ import { useNavigation } from "@react-navigation/native";
 import ProgressBar from "../../components/ProgressBar";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 
-import { useEffect } from "react";
-
 const DeployedMachinesScreen = () => {
   const {
     placedMachines,
     ownedMachines,
     allResourceNodes = [],
+    discoveredNodes = {},
+    handleDepleteNode,
     inventory,
+    nodeAmounts,
   } = useGame();
   const navigation = useNavigation();
 
@@ -24,35 +26,30 @@ const DeployedMachinesScreen = () => {
     ...ownedMachines.filter((m) => !placedMachines.some((p) => p.id === m.id)),
   ];
 
-  // Helper to get node info
+  // Helper to get node info (only discovered nodes, with up-to-date depletion)
   const getNodeInfo = (machine) => {
-    // Prefer assignedNodeId for miners/pumps
-    const nodeId =
-      machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
+    const nodeId = machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
     if (!nodeId) return null;
-    const node = allResourceNodes.find((n) => n.id === nodeId);
-    return node ? node : null;
+    const baseNode = allResourceNodes.find((n) => n.id === nodeId && discoveredNodes[n.id]);
+    if (!baseNode) return null;
+    // Clone node and inject currentAmount from nodeAmounts
+    const currentAmount = typeof nodeAmounts?.[nodeId] === 'number'
+      ? nodeAmounts[nodeId]
+      : (typeof baseNode.currentAmount === 'number' ? baseNode.currentAmount : (baseNode.capacity || 50));
+    return { ...baseNode, currentAmount };
   };
 
-  // Helper to get machine state
+  // Helper to get machine state (depletion aware)
   const getMachineState = (machine) => {
     const node = getNodeInfo(machine);
     if (machine.type === "miner" || machine.type === "pump") {
       if (node) {
-        if (node.depleted) return `Depleted: ${node.name}`;
-        if (node.currentAmount !== undefined && node.currentAmount < 1000) {
+        if (typeof node.currentAmount === "number" && node.currentAmount <= 0) return `Depleted: ${node.name}`;
+        if (typeof node.currentAmount === "number" && node.currentAmount < (node.capacity || 50)) {
           return `Extracting ${node.name}`;
         }
-        if (node.currentAmount >= 1000) {
+        if (typeof node.currentAmount === "number" && node.currentAmount >= (node.capacity || 50)) {
           return `Idle (Reached Cap)`;
-        }
-      }
-      if (machine.assignedNodeId) {
-        const assignedNode = allResourceNodes.find(
-          (n) => n.id === machine.assignedNodeId
-        );
-        if (assignedNode) {
-          return `Extracting ${assignedNode.name}`;
         }
       }
       return "Idle (Not placed)";
@@ -97,22 +94,9 @@ const DeployedMachinesScreen = () => {
                 const recipe = machine.currentRecipeId
                   ? items[machine.currentRecipeId]
                   : null;
-                let currentAmount = 0;
-                let cap = RESOURCE_CAP;
-                if (
-                  machine.type === "miner" &&
-                  node &&
-                  items[node.type]?.output
-                ) {
-                  const outputResourceId = Object.keys(
-                    items[node.type].output
-                  )[0];
-                  currentAmount =
-                    (outputResourceId &&
-                      inventory[outputResourceId]?.currentAmount) ||
-                    0;
-                  cap = RESOURCE_CAP;
-                }
+                // Use node depletion/capacity for progress bar
+                let currentAmount = node && typeof node.currentAmount === "number" ? node.currentAmount : 0;
+                let cap = node && typeof node.capacity === "number" ? node.capacity : 50;
                 return (
                   <TouchableOpacity
                     key={machine.id}
@@ -132,7 +116,7 @@ const DeployedMachinesScreen = () => {
                       })
                     }
                   >
-                    {console.log("machine",machine)}
+                    {/* No logs in render to avoid infinite renders */}
                     <View style={styles.machineInfo}>
                       <Text style={[styles.machineName, { color: "#4CAF50" }]}>
                         {items[machine.type]?.name || machine.type}
@@ -165,15 +149,14 @@ const DeployedMachinesScreen = () => {
                           Level: {machine.level}
                         </Text>
                       )}
-                      {(machine.type === "miner" || machine.type === "pump") &&
-                        node && (
-                          <ProgressBar
-                            value={currentAmount}
-                            max={RESOURCE_CAP}
-                            label={"Node Progress"}
-                            style={{ marginTop: 8 }}
-                          />
-                        )}
+                      {machine.type === "miner" && node && (
+                        <ProgressBar
+                          value={currentAmount}
+                          max={cap}
+                          label={"Node Depletion"}
+                          style={{ marginTop: 8 }}
+                        />
+                      )}
                     </View>
                   </TouchableOpacity>
                 );

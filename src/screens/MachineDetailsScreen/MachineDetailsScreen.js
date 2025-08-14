@@ -6,6 +6,7 @@ import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
 import { Picker } from '@react-native-picker/picker';
+import ProgressBar from "../../components/ProgressBar";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -27,7 +28,7 @@ function normalizeOutputs(outputs) {
 
 const MachineDetailsScreen = ({ route }) => {
   const { machine, node, recipe } = route.params;
-  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford } = useGame();
+  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford, handleDepleteNode } = useGame();
   // Use useCrafting hook for crafting logic
   // TODO: ownedMachines must also contemplate not placed machines since later ownedMachines will have some machines that will not need placememnt
   //const ownedMachines = useMemo(() => placedMachines.map(m => m.type), [placedMachines]);
@@ -79,13 +80,14 @@ const MachineDetailsScreen = ({ route }) => {
     : null;
 
   const handleAssignNode = (nodeId) => {
-    // If this is a miner, use placeMachine logic to ensure correct setup
+    // Only allow assignment to discovered and non-depleted nodes
+    const node = allResourceNodes.find(n => n.id === nodeId);
+    if (!node || !discoveredNodes[nodeId] || node.currentAmount <= 0) {
+      return;
+    }
     if (liveMachine.type === "miner") {
-      // Remove the old miner and place a new one on the selected node
       setPlacedMachines((prevPlaced) => prevPlaced.filter(m => m.id !== liveMachine.id));
-      // Use the same id for continuity, or generate a new one if needed
       setTimeout(() => {
-        // Use the same id and efficiency if possible
         setPlacedMachines((prevPlaced) => [
           ...prevPlaced,
           {
@@ -97,7 +99,6 @@ const MachineDetailsScreen = ({ route }) => {
         ]);
       }, 0);
     } else {
-      // For other machines, just update the assignedNodeId
       setPlacedMachines((prevPlaced) =>
         prevPlaced.map((m) =>
           m.id === machine.id ? { ...m, assignedNodeId: nodeId } : m
@@ -116,10 +117,11 @@ const MachineDetailsScreen = ({ route }) => {
         <Text style={styles.detailsText}><Text style={{ fontWeight: 'bold' }}>Type:</Text> {liveMachine.type}</Text>
         {liveMachine.type === "miner" || liveMachine.type === "pump" ? (
           (() => {
-            const discoveredNodeOptions = allResourceNodes.filter((node) => discoveredNodes[node.id]);
+            // Only allow discovered and non-depleted nodes
+            const discoveredNodeOptions = allResourceNodes.filter((node) => discoveredNodes[node.id] && (typeof node.currentAmount !== 'number' || node.currentAmount > 0));
             if (discoveredNodeOptions.length === 0) {
               return (
-                <Text style={[styles.detailsText, { color: '#ff9800', marginTop: 16 }]}>You must explore the world map before you can assign this machine to a resource node.</Text>
+                <Text style={[styles.detailsText, { color: '#ff9800', marginTop: 16 }]}>You must explore the world map and discover a non-depleted node before you can assign this machine.</Text>
               );
             }
             return (
@@ -136,7 +138,23 @@ const MachineDetailsScreen = ({ route }) => {
                   ))}
                 </Picker>
                 {assignedNode && (
-                  <Text style={[styles.detailsText, { color: '#4CAF50', fontWeight: 'bold' }]}>Miner assigned to: {assignedNode.name}</Text>
+                  <>
+                    <Text style={[styles.detailsText, { color: '#4CAF50', fontWeight: 'bold' }]}>Miner assigned to: {assignedNode.name}</Text>
+                    {/* Show depletion progress */}
+                    {typeof assignedNode.currentAmount === 'number' && (
+                      <ProgressBar
+                        value={assignedNode.currentAmount}
+                        max={typeof assignedNode.capacity === 'number' ? assignedNode.capacity : 50}
+                        label={"Node Depletion"}
+                        style={{ marginTop: 8, marginBottom: 8 }}
+                      />
+                    )}
+                    {typeof assignedNode.currentAmount === 'number' && assignedNode.currentAmount <= 0 && (
+                      <Text style={{ color: '#c00', fontWeight: 'bold', textAlign: 'center', marginBottom: 8 }}>
+                        Node Depleted
+                      </Text>
+                    )}
+                  </>
                 )}
               </View>
             );

@@ -1,3 +1,5 @@
+
+
 import React, {
   useEffect,
   createContext,
@@ -115,6 +117,29 @@ export const GameProvider = ({ children }) => {
     setActiveMilestone,
   } = useMilestone(inventory, discoveredNodesCount);
 
+  // Automatic mining effect for assigned miners (must be after placedMachines and allResourceNodes are defined)
+  useEffect(() => {
+    if (!placedMachines || !allResourceNodes) return;
+    const interval = setInterval(() => {
+      if (!Array.isArray(placedMachines) || !Array.isArray(allResourceNodes)) return;
+      placedMachines.forEach((machine) => {
+        if (machine.type !== "miner" || !machine.assignedNodeId) return;
+        const node = allResourceNodes.find((n) => n.id === machine.assignedNodeId);
+        if (!node) return;
+        const nodeCap = typeof node.capacity === "number" ? node.capacity : 50;
+        const nodeAmount = nodeAmounts[node.id] ?? nodeCap;
+        if (nodeAmount <= 0) return; // Node depleted
+        const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+        if (!nodeDefinition || !nodeDefinition.output) return;
+        const resourceId = Object.keys(nodeDefinition.output)[0];
+        const outputAmount = nodeDefinition.output[resourceId] * (machine.efficiency || 1);
+        handleDepleteNode(node.id, nodeAmount - 1, false);
+        addResource(resourceId, outputAmount, node.id);
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [Array.isArray(placedMachines) ? placedMachines.length : 0, Array.isArray(allResourceNodes) ? allResourceNodes.length : 0, nodeAmounts]);
+
   useEffect(() => {
     if (canCompleteCurrentMilestone) {
       Promise.resolve().then(() => {
@@ -132,7 +157,7 @@ export const GameProvider = ({ children }) => {
   ]);
 
   const contextValue = useMemo(
-  () => ({
+    () => ({
       inventory,
       allResourceNodes,
       ownedMachines,
@@ -167,9 +192,9 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
-  nodeAmounts,
-  setNodeAmounts,
-  handleDepleteNode,
+      nodeAmounts,
+      setNodeAmounts,
+      handleDepleteNode,
     }),
     [
       inventory,
