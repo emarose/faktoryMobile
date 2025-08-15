@@ -1,4 +1,3 @@
-// MapScreen.js
 
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
@@ -20,6 +20,7 @@ import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
 import PlayerInfoCard from "./components/PlayerInfoCard/PlayerInfoCard";
 import MapToast from "./components/MapToast/MapToast";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
@@ -53,17 +54,15 @@ export default function MapScreen({ navigation }) {
     inventory,
     addResource,
     removeResources,
-  nodeAmounts,
-  setNodeAmounts,
-  handleDepleteNode
+    nodeAmounts,
+    setNodeAmounts,
+    handleDepleteNode
   } = useContext(GameContext);
-
-  // Use nodeAmounts/setNodeAmounts from GameContext
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
-  const [isManualPin, setIsManualPin] = useState(false); // Nuevo estado para control manual/automático
+  const [isManualPin, setIsManualPin] = useState(false);
 
   const { exploreDirection } = useWorldMapExploration(
     allResourceNodes,
@@ -125,7 +124,6 @@ export default function MapScreen({ navigation }) {
 
 
   useEffect(() => {
-    // Only auto-pin if user has NOT manually pinned
     if (isManualPin) return;
 
     let closestNodeId = null;
@@ -169,6 +167,7 @@ export default function MapScreen({ navigation }) {
         ? nodeAmounts[node.id]
         : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 50)
     }));
+
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
       if (a.id === pinnedNodeId) return -1;
@@ -201,14 +200,33 @@ export default function MapScreen({ navigation }) {
         const gy = cy * CHUNK_SIZE + y;
         const tile = chunk.tiles[y][x];
         const isPlayer = gx === px && gy === py;
-        let color = isPlayer ? PLAYER_COLOR : "#222";
-
+        let color = "#222";
         const discovered = tile.node && discoveredNodes[tile.node.id];
         if (discovered) {
           color = getNodeColor(tile.node.type);
         }
 
-        if (tile.node && discovered) {
+        // Player tile: center MaterialIcons my-location, same background as others
+        if (isPlayer) {
+          cols.push(
+            <View
+              key={`${gx}-${gy}`}
+              style={{
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                backgroundColor: color,
+                borderWidth: 1,
+                borderColor: '#555',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                zIndex: 200,
+              }}
+            >
+              <MaterialIcons name="my-location" size={22} color="#FFD700" style={{ opacity: 0.85 }} />
+            </View>
+          );
+        } else if (tile.node && discovered) {
           cols.push(
             <Pressable
               key={`${gx}-${gy}`}
@@ -222,7 +240,7 @@ export default function MapScreen({ navigation }) {
               }}
               onPress={() => {
                 setPinnedNodeId(tile.node.id);
-                setIsManualPin(true); // ⬅️ Establecer pin manual aquí
+                setIsManualPin(true);
               }}
             />
           );
@@ -251,14 +269,24 @@ export default function MapScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.fullScreenContainer}>
+    <ScrollView style={styles.fullScreenContainer} contentContainerStyle={{ flexGrow: 1 }}>
       <MapToast
         visible={toastVisible}
         message={toastMessage}
         onHide={() => setToastVisible(false)}
       />
-      <Text style={styles.title}>Resource Map</Text>
-
+      {/* Row of icon-buttons (placeholder) */}
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
+        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
+          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 1</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
+          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 2</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
+          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 3</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.mapVisualContainer}>
         <View
           style={{
@@ -285,13 +313,13 @@ export default function MapScreen({ navigation }) {
               left:
                 (((playerMapPosition.x % CHUNK_SIZE) + CHUNK_SIZE) %
                   CHUNK_SIZE) *
-                  TILE_SIZE +
+                TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               top:
                 (((playerMapPosition.y % CHUNK_SIZE) + CHUNK_SIZE) %
                   CHUNK_SIZE) *
-                  TILE_SIZE +
+                TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               width: DISCOVERY_RADIUS_PX * 2,
@@ -299,7 +327,7 @@ export default function MapScreen({ navigation }) {
               borderRadius: DISCOVERY_RADIUS_PX,
               borderWidth: 2,
               borderColor: "#27ae60",
-              opacity: 0.2,
+              opacity: 0.15,
               backgroundColor: "#27ae60",
               zIndex: 2,
             }}
@@ -320,37 +348,35 @@ export default function MapScreen({ navigation }) {
             <MapGridControls
               MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
               exploreDirection={exploreDirection}
-              onMove={() => setIsManualPin(false)} // ⬅️ Resetear el pin manual cuando el jugador se mueve
+              onMove={() => setIsManualPin(false)}
             />
           </View>
         </View>
+
+
+        <View style={{
+          zIndex: 300, flexDirection: 'row', alignItems: 'center', marginTop: 8, alignSelf: "flex-end"
+        }}>
+          <MaterialIcons name="my-location" size={18} color="#FFD700" style={{ opacity: 0.85, marginRight: 4 }} />
+          <Text style={{ fontSize: 13, color: '#e0e0e0', fontWeight: 'bold' }}>({playerMapPosition.x}, {playerMapPosition.y})</Text>
+        </View>
       </View>
 
-      <PlayerInfoCard
-        playerPosition={playerMapPosition}
-        discoveredCount={displayableNodes.length}
-      />
-
       {/* Lista de NodeCard debajo del mapa */}
-      <FlatList
-        data={displayableNodes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <NodeCard
-            node={item}
-            nodeDepletionAmount={item.currentAmount}
-            inventory={inventory}
-            placedMachines={placedMachines}
-            styles={styles}
-            playerPosition={playerMapPosition}
-            discoveryRadius={DISCOVERY_RADIUS_PX}
-            onDepleteNode={handleDepleteNode}
-            placeMachine={placeMachine}
-          />
-        )}
-        style={styles.nodeList}
-        contentContainerStyle={{ paddingBottom: 20 }}
-      />
-    </View>
+      {displayableNodes.map((item) => (
+        <NodeCard
+          key={item.id}
+          node={item}
+          nodeDepletionAmount={item.currentAmount}
+          inventory={inventory}
+          placedMachines={placedMachines}
+          styles={styles}
+          playerPosition={playerMapPosition}
+
+          placeMachine={placeMachine}
+        />
+      ))}
+      <View style={{ height: 20 }} />
+    </ScrollView>
   );
 }
