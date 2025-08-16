@@ -97,6 +97,8 @@ const DeployedMachinesScreen = () => {
                 // Use node depletion/capacity for progress bar
                 let currentAmount = node && typeof node.currentAmount === "number" ? node.currentAmount : 0;
                 let cap = node && typeof node.capacity === "number" ? node.capacity : 50;
+                // For consistency, show amountProducedPerTick = 1 for miners
+                const amountProducedPerTick = machine.type === "miner" ? 1 : null;
                 return (
                   <TouchableOpacity
                     key={machine.id}

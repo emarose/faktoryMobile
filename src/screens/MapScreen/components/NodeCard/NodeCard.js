@@ -42,7 +42,8 @@ const NodeCard = React.memo(
       assignedMachineCount === 0;
     const showManualMineButton = manualMineable;
     // Get node depletion amount if available
-    const nodeDepletionAmount = typeof node.currentAmount !== "undefined" ? node.currentAmount : null;
+    // Use nodeDepletionAmount from props for all depletion logic
+    const nodeDepletionAmount = typeof node.nodeDepletionAmount !== "undefined" ? node.nodeDepletionAmount : (typeof node.currentAmount !== "undefined" ? node.currentAmount : null);
     const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 50;
     // Calculate if player is within discovery radius (in grid units)
     let canManualMine = false;
@@ -56,9 +57,15 @@ const NodeCard = React.memo(
     // Manual mining logic
     const isDepleted = nodeDepletionAmount === 0;
     const handleManualMine = () => {
-      if (!isDepleted && typeof node.currentAmount === "number" && node.currentAmount > 0) {
+      console.log(`Attempting to manually mine node ${nodeId}`);
+      console.log(nodeDepletionAmount);
+
+      if (!isDepleted && typeof nodeDepletionAmount === "number" && nodeDepletionAmount > 0) {
+        console.log(`Current node depletion amount: ${nodeDepletionAmount}`);
+
         if (onDepleteNode) {
-          onDepleteNode(nodeId, node.currentAmount - 1, true);
+          console.log(`Depleting node ${nodeId}: ${nodeDepletionAmount} -> ${nodeDepletionAmount - 1}`);
+          onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
         }
       }
     };

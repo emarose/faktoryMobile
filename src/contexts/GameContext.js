@@ -78,7 +78,15 @@ export const GameProvider = ({ children }) => {
   const { placedMachines, setPlacedMachines, mineableNodes, placeMachine } =
     useMachines(inventory, removeResources, allResourceNodes);
 
-  useProduction(addResource, removeResources, placedMachines, allResourceNodes);
+  // Depletion/production global: siempre activo
+  useProduction(
+    addResource,
+    removeResources,
+    placedMachines,
+    allResourceNodes,
+    nodeAmounts,
+    handleDepleteNode
+  );
 
   const { buildItem } = useBuilding(
     addResource,

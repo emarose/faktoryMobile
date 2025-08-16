@@ -41,18 +41,28 @@ export default function useWorldMapExploration(
     });
   };
 
-  // Discover nodes
+  // Discover nodes (safe: only update if new nodes are found)
   useEffect(() => {
     if (!setDiscoveredNodes) return;
-    nodes.forEach((node) => {
+    const toDiscover = nodes.filter((node) => {
       const dx = node.x - playerMapPosition.x;
       const dy = node.y - playerMapPosition.y;
-      if (dx * dx + dy * dy <= tileRadius * tileRadius) {
-        setDiscoveredNodes((prev) =>
-          prev[node.id] ? prev : { ...prev, [node.id]: true }
-        );
-      }
+      return dx * dx + dy * dy <= (tileRadius - 1) * (tileRadius - 1);
     });
+    // Only update if there are undiscovered nodes in range
+    if (toDiscover.length > 0) {
+      setDiscoveredNodes((prev) => {
+        let changed = false;
+        const updated = { ...prev };
+        toDiscover.forEach((node) => {
+          if (!updated[node.id]) {
+            updated[node.id] = true;
+            changed = true;
+          }
+        });
+        return changed ? updated : prev;
+      });
+    }
   }, [playerMapPosition, nodes, tileRadius, setDiscoveredNodes]);
 
   // Auto-pin logic (always overrides manual pin)

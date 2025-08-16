@@ -107,7 +107,7 @@ export default function MapScreen({ navigation }) {
   const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
     useMachines(inventory, removeResources, allResourceNodes);
 
-  useProduction(addResource, removeResources, placedMachines, mineableNodes, nodeAmounts, handleDepleteNode);
+  // useProduction ahora se ejecuta globalmente en GameProvider
 
   const [chunks, setChunks] = useState({});
   useEffect(() => {
@@ -372,7 +372,7 @@ export default function MapScreen({ navigation }) {
           placedMachines={placedMachines}
           styles={styles}
           playerPosition={playerMapPosition}
-
+          onDepleteNode={handleDepleteNode}
           placeMachine={placeMachine}
         />
       ))}

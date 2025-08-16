@@ -37,8 +37,8 @@ export const useProduction = (
                 (m) => m.type === "miner" && m.assignedNodeId === node.id
               ).length;
               const maxAmount = minersAssigned * 100;
-              const amountProducedPerTick =
-                items[node.type].output[resourceId] * (machine.efficiency || 1);
+              // Always produce 1 per tick for miners for consistency
+              const amountProducedPerTick = 1;
               let allowedToAdd = amountProducedPerTick;
               // Only allow production if node is not depleted
               if (currentAmount < 1) {
