@@ -31,8 +31,8 @@ const PLAYER_COLOR = "#FF0000";
 // La generación de nodos ahora es procedural y se maneja en useGeneratedMapNodes
 
 export default function MapScreen({ navigation }) {
-  // allResourceNodes ya viene del contexto, no se debe volver a calcular aquí
-  const { allResourceNodes } = useContext(GameContext);
+  // allResourceNodes y regenerateSeed vienen del contexto
+  const { allResourceNodes, regenerateSeed } = useContext(GameContext);
   const {
     discoveredNodes,
     setDiscoveredNodes,
@@ -130,7 +130,7 @@ export default function MapScreen({ navigation }) {
       ...node,
       currentAmount: typeof nodeAmounts[node.id] === 'number'
         ? nodeAmounts[node.id]
-        : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 50)
+  : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 1000)
     }));
 
   displayableNodes = displayableNodes.sort((a, b) => {
@@ -240,15 +240,14 @@ export default function MapScreen({ navigation }) {
       />
       {/* Row of icon-buttons (placeholder) */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
-        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
-          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 1</Text>
+        {/* Botón momentáneo para regenerar el seed del mundo */}
+        <TouchableOpacity
+          style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }}
+          onPress={regenerateSeed}
+        >
+          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Cambiar Seed Mundo</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
-          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }} onPress={() => { }}>
-          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Botón 3</Text>
-        </TouchableOpacity>
+        {/* ...otros botones si los necesitas... */}
       </View>
       <View style={styles.mapVisualContainer}>
         <View

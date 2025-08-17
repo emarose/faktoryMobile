@@ -111,6 +111,7 @@ export const useMachines = (
             type: "miner",
             assignedNodeId: targetNodeId,
             efficiency: machineTypeData.efficiency || 1,
+            isIdle: false,
           },
         ]);
         console.log(`Miner placed on ${node.name} (${targetNodeId})!`);
@@ -131,11 +132,27 @@ export const useMachines = (
     [inventory, removeResourcesCallback, placedMachines, allResourceNodes]
   );
 
+  // Función para pausar un miner
+  const pauseMiner = useCallback((minerId) => {
+    setPlacedMachines((prev) => prev.map(m =>
+      m.id === minerId ? { ...m, isIdle: true } : m
+    ));
+  }, []);
+
+  // Función para reanudar un miner
+  const resumeMiner = useCallback((minerId) => {
+    setPlacedMachines((prev) => prev.map(m =>
+      m.id === minerId ? { ...m, isIdle: false } : m
+    ));
+  }, []);
+
   return {
     placedMachines,
     setPlacedMachines,
     mineableNodes,
     placeMachine,
+    pauseMiner,
+    resumeMiner,
     // Add functions for updating machine recipes, removing machines, etc.
   };
 };

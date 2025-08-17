@@ -28,7 +28,7 @@ export const useProduction = (
               ? nodeAmounts[node.id]
               : typeof node?.capacity === "number"
               ? node.capacity
-              : 0;
+              : 1000;
 
           if (node && items[node.type]?.output && currentAmount > 0) {
             for (const resourceId in items[node.type].output) {
@@ -36,7 +36,7 @@ export const useProduction = (
               const minersAssigned = placedMachines.filter(
                 (m) => m.type === "miner" && m.assignedNodeId === node.id
               ).length;
-              const maxAmount = minersAssigned * 100;
+              const maxAmount = minersAssigned * 1000;
               // Always produce 1 per tick for miners for consistency
               const amountProducedPerTick = 1;
               let allowedToAdd = amountProducedPerTick;

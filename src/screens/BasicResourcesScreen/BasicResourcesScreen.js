@@ -1,74 +1,70 @@
-
-import React from "react";
-import { Text, ScrollView } from "react-native";
+import React, { useState, useMemo } from "react";
+import { Text, View } from "react-native";
 import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
+import useBasicResources from "../../hooks/useBasicResources";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ResourceDisplay from "./components/ResourceDisplay/ResourceDisplay";
+import ResourceVisualCard from "./components/ResourceVisualCard/ResourceVisualCard";
+import ResourceAnalysisChart from "./components/ResourceAnalysisChart";
 import RESOURCE_CAP from "../../constants/ResourceCap";
-import useWorldMapExploration from "../../hooks/useWorldMapExploration";
+// TODO: Replace with actual icons for each resource
+import { Image } from "react-native";
 
 const BasicResourcesScreen = () => {
-  const {
-    mineableNodes = [],
-    mineResource,
-    resourceNodes = [],
-    discoveredNodes = {},
-    setDiscoveredNodes,
-    playerMapPosition,
-    setPlayerMapPosition,
-  } = useGame();
+  // Hook para obtener los recursos básicos reales del inventario
+  const basicResources = useBasicResources();
+  const resourceList = basicResources.map((res) => ({
+    key: res.id,
+    name: res.name,
+    icon: res.icon,
+    amount: res.currentAmount,
+  }));
 
-  // Use resourceNodes if available, otherwise fallback to mineableNodes
-  const explorationNodes = Array.isArray(resourceNodes) && resourceNodes.length > 0 ? resourceNodes : mineableNodes;
-  const discoveryRadiusPx = 120; // Adjust as needed
-  const {
-    discoveredNodes: discoveredFromExploration = {},
-  } = useWorldMapExploration(
-    explorationNodes,
-    discoveryRadiusPx,
-    discoveredNodes,
-    setDiscoveredNodes,
-    playerMapPosition,
-    setPlayerMapPosition
+  // Selected resource state
+  const [selectedResource, setSelectedResource] = useState(
+    resourceList[0]?.key || null
   );
 
-  // Use the most up-to-date discovered map
-  const discoveredMap = (discoveredFromExploration && typeof discoveredFromExploration === 'object')
-    ? discoveredFromExploration
-    : (discoveredNodes || {});
-
-  // Only show mineable nodes that have been discovered
-  const discoveredMineableNodes = Array.isArray(mineableNodes)
-    ? mineableNodes.filter((node) => discoveredMap && discoveredMap[node.id])
-    : [];
+  // Simulated time-based data for chart (replace with real data if available)
+  const chartData = useMemo(() => {
+    if (!selectedResource) return [];
+    // Example: last 10 ticks of resource amount (simulated)
+    // El valor actual debe estar al final (derecha), el pasado al inicio (izquierda)
+    const res = basicResources.find((r) => r.id === selectedResource);
+    const base = res?.currentAmount || 0;
+    const arr = Array.from({ length: 10 }, (_, i) => Math.max(0, base - (9 - i) * 5));
+    return arr;
+  }, [selectedResource, basicResources]);
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Basic Resources</Text>
-      <ScrollView style={styles.scrollViewContent}>
-        {discoveredMineableNodes.length > 0 ? (
-          discoveredMineableNodes.map((node) => (
-            <ResourceDisplay
-              key={node.id}
-              id={node.id}
-              name={node.name}
-              description={node.description}
-              currentAmount={node.currentAmount}
-              productionRate={node.productionRate}
-              outputItemName={node.outputItemName}
-              hasMiner={node.hasMiner}
-              canManualMine={node.canManualMine}
-              onMinePress={() => mineResource(node.id)}
-              cap={RESOURCE_CAP}
-            />
-          ))
-        ) : (
-          <Text style={styles.noResourcesText}>
-            No discovered mineable resources to display.
-          </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {resourceList.map((res) => (
+          <ResourceVisualCard
+            key={res.key}
+            name={res.name}
+            icon={res.icon}
+            amount={res.amount}
+            selected={selectedResource === res.key}
+            onPress={() => setSelectedResource(res.key)}
+          />
+        ))}
+      </View>
+      <View style={{ marginTop: 24 }}>
+        {selectedResource && (
+          <ResourceAnalysisChart
+            data={chartData}
+            label={`Resource over time: ${selectedResource}`}
+          />
         )}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

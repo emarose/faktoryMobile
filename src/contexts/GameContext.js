@@ -27,7 +27,7 @@ export const GameProvider = ({ children }) => {
           updated[node.id] =
             typeof node.currentAmount === "number"
               ? node.currentAmount
-              : node.capacity || 50;
+              : node.capacity || 1000;
         }
       });
       return updated;
@@ -52,7 +52,17 @@ export const GameProvider = ({ children }) => {
   const [nodeAmounts, setNodeAmounts] = useState({});
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
   // allResourceNodes ahora depende de la posición del jugador
-  const { allResourceNodes } = useMapNodes(playerMapPosition);
+  const { allResourceNodes, regenerateSeed: baseRegenerateSeed } = useMapNodes(playerMapPosition);
+
+  // Función extendida para regenerar el seed y limpiar el estado relacionado
+  const regenerateSeed = () => {
+    baseRegenerateSeed();
+    setNodeAmounts({});
+    setDiscoveredNodes({});
+    setToastShownNodeIds(new Set());
+    // Opcional: podrías resetear la posición del jugador si quieres
+    // setPlayerMapPosition({ x: 5, y: 5 });
+  };
   const [resourceNodes, setResourceNodes] = useState([]);
 
   useEffect(() => {
@@ -74,7 +84,7 @@ export const GameProvider = ({ children }) => {
     addMachine,
   } = useInventory(placedMachines, allResourceNodes);
 
-  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine } =
+  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine, pauseMiner, resumeMiner } =
     useMachines(inventory, removeResources, allResourceNodes);
 
   // Depletion/production global: siempre activo
@@ -131,9 +141,10 @@ export const GameProvider = ({ children }) => {
       if (!Array.isArray(placedMachines) || !Array.isArray(allResourceNodes)) return;
       placedMachines.forEach((machine) => {
         if (machine.type !== "miner" || !machine.assignedNodeId) return;
+        if (machine.isIdle) return; // No producir si está en idle
         const node = allResourceNodes.find((n) => n.id === machine.assignedNodeId);
         if (!node) return;
-        const nodeCap = typeof node.capacity === "number" ? node.capacity : 50;
+        const nodeCap = typeof node.capacity === "number" ? node.capacity : 1000;
         const nodeAmount = nodeAmounts[node.id] ?? nodeCap;
         if (nodeAmount <= 0) return; // Node depleted
         const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
@@ -232,13 +243,16 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
-      nodeAmounts,
-      setNodeAmounts,
+  nodeAmounts,
+  setNodeAmounts,
   handleDepleteNode,
   craftingQueue,
   setCraftingQueue,
   addToCraftingQueue,
   updateCraftingQueue,
+  pauseMiner,
+  resumeMiner,
+  regenerateSeed,
     }),
     [
       inventory,

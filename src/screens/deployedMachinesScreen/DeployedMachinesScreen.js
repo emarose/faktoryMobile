@@ -1,5 +1,3 @@
-
-import React, { useEffect, useMemo } from "react";
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
@@ -18,6 +16,8 @@ const DeployedMachinesScreen = () => {
     handleDepleteNode,
     inventory,
     nodeAmounts,
+    pauseMiner,
+    resumeMiner,
   } = useGame();
   const navigation = useNavigation();
 
@@ -28,14 +28,20 @@ const DeployedMachinesScreen = () => {
 
   // Helper to get node info (only discovered nodes, with up-to-date depletion)
   const getNodeInfo = (machine) => {
-    const nodeId = machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
+    const nodeId =
+      machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
     if (!nodeId) return null;
-    const baseNode = allResourceNodes.find((n) => n.id === nodeId && discoveredNodes[n.id]);
+    const baseNode = allResourceNodes.find(
+      (n) => n.id === nodeId && discoveredNodes[n.id]
+    );
     if (!baseNode) return null;
     // Clone node and inject currentAmount from nodeAmounts
-    const currentAmount = typeof nodeAmounts?.[nodeId] === 'number'
-      ? nodeAmounts[nodeId]
-      : (typeof baseNode.currentAmount === 'number' ? baseNode.currentAmount : (baseNode.capacity || 50));
+    const currentAmount =
+      typeof nodeAmounts?.[nodeId] === "number"
+        ? nodeAmounts[nodeId]
+        : typeof baseNode.currentAmount === "number"
+        ? baseNode.currentAmount
+        : baseNode.capacity || 50;
     return { ...baseNode, currentAmount };
   };
 
@@ -44,11 +50,18 @@ const DeployedMachinesScreen = () => {
     const node = getNodeInfo(machine);
     if (machine.type === "miner" || machine.type === "pump") {
       if (node) {
-        if (typeof node.currentAmount === "number" && node.currentAmount <= 0) return `Depleted: ${node.name}`;
-        if (typeof node.currentAmount === "number" && node.currentAmount < (node.capacity || 50)) {
+        if (typeof node.currentAmount === "number" && node.currentAmount <= 0)
+          return `Depleted: ${node.name}`;
+        if (
+          typeof node.currentAmount === "number" &&
+          node.currentAmount < (node.capacity || 50)
+        ) {
           return `Extracting ${node.name}`;
         }
-        if (typeof node.currentAmount === "number" && node.currentAmount >= (node.capacity || 50)) {
+        if (
+          typeof node.currentAmount === "number" &&
+          node.currentAmount >= (node.capacity || 50)
+        ) {
           return `Idle (Reached Cap)`;
         }
       }
@@ -69,18 +82,7 @@ const DeployedMachinesScreen = () => {
     acc[typeName].push(machine);
     return acc;
   }, {});
-  useEffect(() => {
-    console.log("allMachines:", allMachines);
-    console.log(
-      "🚀 ~ DeployedMachinesScreen ~ placedMachines:",
-      placedMachines
-    );
-    console.log(
-      "🚀 ~ DeployedMachinesScreen ~ allResourceNodes:",
-      allResourceNodes
-    );
-    console.log("🚀 ~ DeployedMachinesScreen ~ ownedMachines:", ownedMachines);
-  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Machines Overview</Text>
@@ -95,10 +97,17 @@ const DeployedMachinesScreen = () => {
                   ? items[machine.currentRecipeId]
                   : null;
                 // Use node depletion/capacity for progress bar
-                let currentAmount = node && typeof node.currentAmount === "number" ? node.currentAmount : 0;
-                let cap = node && typeof node.capacity === "number" ? node.capacity : 50;
+                let currentAmount =
+                  node && typeof node.currentAmount === "number"
+                    ? node.currentAmount
+                    : 0;
+                let cap =
+                  node && typeof node.capacity === "number"
+                    ? node.capacity
+                    : 50;
                 // For consistency, show amountProducedPerTick = 1 for miners
-                const amountProducedPerTick = machine.type === "miner" ? 1 : null;
+                const amountProducedPerTick =
+                  machine.type === "miner" ? 1 : null;
                 return (
                   <TouchableOpacity
                     key={machine.id}
@@ -152,12 +161,35 @@ const DeployedMachinesScreen = () => {
                         </Text>
                       )}
                       {machine.type === "miner" && node && (
-                        <ProgressBar
-                          value={currentAmount}
-                          max={cap}
-                          label={"Node Depletion"}
-                          style={{ marginTop: 8 }}
-                        />
+                        <>
+                          <ProgressBar
+                            value={currentAmount}
+                            max={cap}
+                            label={"Node Depletion"}
+                            style={{ marginTop: 8 }}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              marginTop: 10,
+                              backgroundColor: machine.isIdle
+                                ? "#007bff"
+                                : "#d9534f",
+                              paddingVertical: 8,
+                              paddingHorizontal: 16,
+                              borderRadius: 5,
+                              alignSelf: "flex-start",
+                            }}
+                            onPress={() =>
+                              machine.isIdle
+                                ? resumeMiner(machine.id)
+                                : pauseMiner(machine.id)
+                            }
+                          >
+                            <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                              {machine.isIdle ? "Reanudar" : "Detener"}
+                            </Text>
+                          </TouchableOpacity>
+                        </>
                       )}
                     </View>
                   </TouchableOpacity>

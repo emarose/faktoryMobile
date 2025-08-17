@@ -37,7 +37,7 @@ const milestones = [
         description: "Unlocks power generation and conveyor belts.",
         unlocked: false,
         unlocks: ["Biomass Burner", "Conveyor Belt", "Splitter"],
-        requirements: { "Biomass": 100 },
+    requirements: { "Biomass": 1000 },
     },
 ];
 

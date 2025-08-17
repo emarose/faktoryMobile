@@ -159,7 +159,7 @@ const MachineDetailsScreen = ({ route }) => {
                     {typeof assignedNode.currentAmount === 'number' && (
                       <ProgressBar
                         value={assignedNode.currentAmount}
-                        max={typeof assignedNode.capacity === 'number' ? assignedNode.capacity : 50}
+                        max={typeof assignedNode.capacity === 'number' ? assignedNode.capacity : 1000}
                         label={"Node Depletion"}
                         style={{ marginTop: 8, marginBottom: 8 }}
                       />
