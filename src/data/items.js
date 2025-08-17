@@ -179,7 +179,7 @@ export const items = {
     output: {
       ironIngot: 1,
     },
-    processingTime: 0.5,
+    processingTime: 1,
     fuelConsumption: 0.1,
   },
   copperIngot: {
