@@ -14,7 +14,7 @@ import { useBuilding } from "../hooks/useBuilding";
 import { useMining } from "../hooks/useMining";
 import useCrafting from "../hooks/useCrafting";
 import useProductionRate from "../hooks/useProductionRate";
-import { useMapNodes } from "../hooks/useMapNodes";
+import { useMapNodes } from "../hooks/useGeneratedMapNodes";
 import useMilestone from "../hooks/useMilestone";
 import { useToastContext } from "./ToastContext";
 
@@ -53,14 +53,16 @@ export const GameProvider = ({ children }) => {
     }
   };
   const [nodeAmounts, setNodeAmounts] = useState({});
-  const { allResourceNodes } = useMapNodes();
+  const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
+  // allResourceNodes ahora depende de la posición del jugador
+  const { allResourceNodes } = useMapNodes(playerMapPosition);
   const [resourceNodes, setResourceNodes] = useState([]);
 
   useEffect(() => {
     setResourceNodes(allResourceNodes);
   }, [allResourceNodes]);
 
-  const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
+  // (ya definido arriba)
   const [discoveredNodes, setDiscoveredNodes] = useState({});
   const [toastShownNodeIds, setToastShownNodeIds] = useState(new Set());
 

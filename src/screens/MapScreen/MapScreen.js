@@ -12,7 +12,7 @@ import {
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
-import { useMapNodes } from "../../hooks/useMapNodes";
+// import eliminado: useMapNodes ahora solo desde GameContext
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { useMachines } from "../../hooks/useMachines";
 import { useProduction } from "../../hooks/useProduction";
@@ -28,22 +28,11 @@ const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
 const PLAYER_COLOR = "#FF0000";
 
-function generateChunk(cx, cy, resourceNodes) {
-  const tiles = [];
-  for (let y = 0; y < CHUNK_SIZE; y++) {
-    tiles[y] = [];
-    for (let x = 0; x < CHUNK_SIZE; x++) {
-      const gx = cx * CHUNK_SIZE + x;
-      const gy = cy * CHUNK_SIZE + y;
-      const node = resourceNodes.find((n) => n.x === gx && n.y === gy);
-      tiles[y][x] = { node: node || null };
-    }
-  }
-  return { cx, cy, tiles };
-}
+// La generación de nodos ahora es procedural y se maneja en useGeneratedMapNodes
 
 export default function MapScreen({ navigation }) {
-  const { allResourceNodes } = useMapNodes();
+  // allResourceNodes ya viene del contexto, no se debe volver a calcular aquí
+  const { allResourceNodes } = useContext(GameContext);
   const {
     discoveredNodes,
     setDiscoveredNodes,
@@ -109,54 +98,30 @@ export default function MapScreen({ navigation }) {
 
   // useProduction ahora se ejecuta globalmente en GameProvider
 
-  const [chunks, setChunks] = useState({});
-  useEffect(() => {
-    const cx = Math.floor(playerMapPosition.x / CHUNK_SIZE);
-    const cy = Math.floor(playerMapPosition.y / CHUNK_SIZE);
-    const key = `${cx},${cy}`;
-    setChunks((prev) =>
-      prev[key]
-        ? prev
-        : { ...prev, [key]: generateChunk(cx, cy, allResourceNodes) }
-    );
-  }, [playerMapPosition, allResourceNodes]);
 
-
-
+  // Auto-pin logic (sin chunks)
   useEffect(() => {
     if (isManualPin) return;
-
     let closestNodeId = null;
     let minDist = Infinity;
-    // Only auto-pin nodes strictly inside the discovery area (circle)
     mineableNodes.forEach((node) => {
       if (discoveredNodes[node.id]) {
         const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
         const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
         const euclideanDist = Math.sqrt(dx * dx + dy * dy);
-        // Only consider nodes strictly inside the discovery area
         if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
           closestNodeId = node.id;
           minDist = euclideanDist;
         }
       }
     });
-
-    // If a node just entered the discovery area, auto-pin it
     if (closestNodeId && pinnedNodeId !== closestNodeId) {
       setPinnedNodeId(closestNodeId);
-      setIsManualPin(false); // New pin is automatic
+      setIsManualPin(false);
     } else if (!closestNodeId && pinnedNodeId && !isManualPin) {
-      // If no nodes are close and the current pin is not manual, remove it
       setPinnedNodeId(null);
     }
-  }, [
-    playerMapPosition,
-    mineableNodes,
-    discoveredNodes,
-    pinnedNodeId,
-    isManualPin,
-  ]);
+  }, [playerMapPosition, mineableNodes, discoveredNodes, pinnedNodeId, isManualPin]);
 
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
@@ -184,29 +149,27 @@ export default function MapScreen({ navigation }) {
     return distA - distB;
   });
 
+  // Render tiles proceduralmente usando allResourceNodes y la posición del jugador
   const renderTiles = () => {
     const rows = [];
     const px = playerMapPosition.x;
     const py = playerMapPosition.y;
     const cx = Math.floor(px / CHUNK_SIZE);
     const cy = Math.floor(py / CHUNK_SIZE);
-    const chunk = chunks[`${cx},${cy}`];
-    if (!chunk) return rows;
-
+    // Para cada tile visible en la grilla
     for (let y = 0; y < CHUNK_SIZE; y++) {
       const cols = [];
       for (let x = 0; x < CHUNK_SIZE; x++) {
         const gx = cx * CHUNK_SIZE + x;
         const gy = cy * CHUNK_SIZE + y;
-        const tile = chunk.tiles[y][x];
+        const node = allResourceNodes.find((n) => n.x === gx && n.y === gy);
         const isPlayer = gx === px && gy === py;
         let color = "#222";
-        const discovered = tile.node && discoveredNodes[tile.node.id];
-        if (discovered) {
-          color = getNodeColor(tile.node.type);
+        let discovered = false;
+        if (node && discoveredNodes[node.id]) {
+          color = getNodeColor(node.type);
+          discovered = true;
         }
-
-        // Player tile: center MaterialIcons my-location, same background as others
         if (isPlayer) {
           cols.push(
             <View
@@ -226,7 +189,7 @@ export default function MapScreen({ navigation }) {
               <MaterialIcons name="my-location" size={22} color="#FFD700" style={{ opacity: 0.85 }} />
             </View>
           );
-        } else if (tile.node && discovered) {
+        } else if (node && discovered) {
           cols.push(
             <Pressable
               key={`${gx}-${gy}`}
@@ -235,11 +198,11 @@ export default function MapScreen({ navigation }) {
                 height: TILE_SIZE,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: pinnedNodeId !== tile.node.id ? "#555" : "#27ae60",
+                borderColor: pinnedNodeId !== node.id ? "#555" : "#27ae60",
                 zIndex: 100,
               }}
               onPress={() => {
-                setPinnedNodeId(tile.node.id);
+                setPinnedNodeId(node.id);
                 setIsManualPin(true);
               }}
             />

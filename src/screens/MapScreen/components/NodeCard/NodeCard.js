@@ -31,11 +31,17 @@ const NodeCard = React.memo(
     );
     const minerCountInInventory = inventory.miner?.currentAmount || 0;
     const oilExtractorCountInInventory = inventory.oilExtractor?.currentAmount || 0;
-    // Miner can be placed on nodes that are manually mineable OR require a miner
+    // Miners idle: los que no están asignados a ningún nodo
+    const idleMiners = placedMachines.filter(
+      (m) => m.type === "miner" && !m.assignedNodeId
+    ).length;
+    // Mostrar botón solo si hay miners, hay al menos uno idle, el nodo no está depleted, y no hay ya uno asignado aquí
     const canPlaceMiner =
       minerCountInInventory > 0 &&
+      idleMiners > 0 &&
       (machineRequired === "miner" || manualMineable) &&
-      assignedMachineCount === 0;
+      assignedMachineCount === 0 &&
+      !isDepleted;
     const canPlaceOilExtractor =
       oilExtractorCountInInventory > 0 &&
       machineRequired === "oilExtractor" &&
@@ -130,9 +136,7 @@ const NodeCard = React.memo(
               {!canManualMine && !isDepleted && (
                 <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>Move closer to the node to manually mine (within discovery radius)</Text>
               )}
-              {isDepleted && (
-                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>This node is depleted and cannot be mined.</Text>
-              )}
+              {/* Mensaje de nodo depleted eliminado por requerimiento */}
             </>
           )}
           {canPlaceMiner && (

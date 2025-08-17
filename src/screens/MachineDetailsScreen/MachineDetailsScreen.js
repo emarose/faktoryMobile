@@ -29,9 +29,6 @@ function normalizeOutputs(outputs) {
 const MachineDetailsScreen = ({ route }) => {
   const { machine, node, recipe } = route.params;
   const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford, handleDepleteNode } = useGame();
-  // Use useCrafting hook for crafting logic
-  // TODO: ownedMachines must also contemplate not placed machines since later ownedMachines will have some machines that will not need placememnt
-  //const ownedMachines = useMemo(() => placedMachines.map(m => m.type), [placedMachines]);
   const ownedMachines = useMemo(
     () => (contextOwnedMachines || []).map(m => m.type),
     [contextOwnedMachines]
@@ -54,6 +51,7 @@ const MachineDetailsScreen = ({ route }) => {
       .map(item => ({
         id: item.id,
         name: item.name,
+        machine: item.machine,
         inputs: normalizeInputs(item.inputs),
         outputs: normalizeOutputs(item.output || item.outputs),
         processingTime: item.processingTime,
@@ -67,6 +65,7 @@ const MachineDetailsScreen = ({ route }) => {
     if (!found) return null;
     return {
       ...found,
+      machine: found.machine,
       inputs: normalizeInputs(found.inputs),
       outputs: normalizeOutputs(found.outputs),
     };
@@ -233,7 +232,7 @@ const MachineDetailsScreen = ({ route }) => {
                       }}
                     >
                       <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                        Craft {amount} {output ? output.item : ''}
+                        Craft {amount} {output ? (items[output.item]?.name || output.item) : ''}
                       </Text>
                     </TouchableOpacity>
                     {!canCraft && (

@@ -44,24 +44,33 @@ const useCrafting = (inventoryItems, ownedMachines, addResource, removeResources
       return false;
     }
     // Check if enough resources for the requested amount
-    const totalInputs = normalizeInputs(recipe.inputs).map(input => ({
+    const totalInputsArr = normalizeInputs(recipe.inputs).map(input => ({
       item: input.item,
       amount: input.amount * amount
     }));
-    if (!canAfford(totalInputs)) {
-      console.warn(`Cannot craft ${recipe.name}: Not enough resources. Needs:`, totalInputs, 'Has:', inventoryItems);
+    // Convert array to object { [itemId]: cantidad }
+    const totalInputsObj = {};
+    totalInputsArr.forEach(input => {
+      totalInputsObj[input.item] = (totalInputsObj[input.item] || 0) + input.amount;
+    });
+    console.log('[craftItem] totalInputsObj:', totalInputsObj);
+    console.log('[craftItem] inventoryItems:', inventoryItems);
+    if (!canAfford(totalInputsObj)) {
+      console.warn(`Cannot craft ${recipe.name}: Not enough resources. Needs:`, totalInputsObj, 'Has:', inventoryItems);
       return false;
     }
     // Remove resources
-    console.log(`Crafting ${recipe.name} x${amount} with inputs:`, totalInputs);
-    const resourcesRemoved = removeResources(totalInputs);
+    console.log(`Crafting ${recipe.name} x${amount} with inputs:`, totalInputsObj);
+    const resourcesRemoved = removeResources(totalInputsObj);
     if (resourcesRemoved) {
       // Add output(s)
-      if (recipe.output) {
-        // Single output
-        addResource(recipe.output, (recipe.outputAmount || 1) * amount);
+      if (recipe.output && typeof recipe.output === 'object') {
+        // Puede ser un objeto con varias salidas
+        Object.entries(recipe.output).forEach(([item, qty]) => {
+          addResource(item, (qty || 1) * amount);
+        });
       } else if (recipe.outputs && Array.isArray(recipe.outputs)) {
-        // Multiple outputs
+        // Multiple outputs (array)
         recipe.outputs.forEach(output => {
           addResource(output.item, (output.amount || 1) * amount);
         });
