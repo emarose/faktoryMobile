@@ -1,5 +1,3 @@
-
-
 import React, {
   useEffect,
   createContext,
@@ -21,7 +19,6 @@ import { useToastContext } from "./ToastContext";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  // Initialize nodeAmounts for all nodes if not present
   useEffect(() => {
     setNodeAmounts((prev) => {
       const updated = { ...prev };
@@ -166,6 +163,39 @@ export const GameProvider = ({ children }) => {
     discoveredNodesCount,
   ]);
 
+  // Cola de crafting global
+  const [craftingQueue, setCraftingQueue] = useState([]);
+
+  const addToCraftingQueue = ({ machineId, recipeId, amount, processingTime, itemName }) => {
+    const now = Date.now();
+    const queue = [];
+    for (let i = 0; i < amount; i++) {
+      const lastEnd = queue.length > 0 ? queue[queue.length - 1].endsAt : (craftingQueue.length > 0 ? craftingQueue[craftingQueue.length - 1].endsAt : now);
+      const start = i === 0 && craftingQueue.length === 0 ? now : lastEnd;
+      queue.push({
+        id: `${machineId}_${recipeId}_${now}_${i}`,
+        machineId,
+        recipeId,
+        itemName,
+        startedAt: start,
+        endsAt: start + processingTime * 1000,
+        processingTime,
+        status: 'pending',
+      });
+    }
+    setCraftingQueue(prev => [...prev, ...queue]);
+  };
+
+  const updateCraftingQueue = () => {
+    const now = Date.now();
+    setCraftingQueue(prev => prev.map(proc => {
+      if (proc.status === 'pending' && now >= proc.endsAt) {
+        return { ...proc, status: 'done' };
+      }
+      return proc;
+    }));
+  };
+
   const contextValue = useMemo(
     () => ({
       inventory,
@@ -204,7 +234,11 @@ export const GameProvider = ({ children }) => {
       setToastShownNodeIds,
       nodeAmounts,
       setNodeAmounts,
-      handleDepleteNode,
+  handleDepleteNode,
+  craftingQueue,
+  setCraftingQueue,
+  addToCraftingQueue,
+  updateCraftingQueue,
     }),
     [
       inventory,

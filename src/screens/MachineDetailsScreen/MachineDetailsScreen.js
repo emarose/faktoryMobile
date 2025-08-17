@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import MiniToast from "./MiniToast";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,7 +29,7 @@ function normalizeOutputs(outputs) {
 
 const MachineDetailsScreen = ({ route }) => {
   const { machine, node, recipe } = route.params;
-  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford, handleDepleteNode } = useGame();
+  const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford, handleDepleteNode, craftingQueue, addToCraftingQueue, updateCraftingQueue } = useGame();
   const ownedMachines = useMemo(
     () => (contextOwnedMachines || []).map(m => m.type),
     [contextOwnedMachines]
@@ -72,23 +72,21 @@ const MachineDetailsScreen = ({ route }) => {
     };
   }, [availableRecipes, selectedRecipeId]);
   const [productAmount, setProductAmount] = useState("1");
-  // Progress state for crafting
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressInterval = useRef(null);
   // Mini toast state
   const [miniToastVisible, setMiniToastVisible] = useState(false);
   const [miniToastMsg, setMiniToastMsg] = useState("");
   const miniToastTimeout = useRef(null);
   const showMiniToast = (msg) => {
-    setMiniToastVisible(false); // reset to trigger re-mount
-    setTimeout(() => {
-      setMiniToastMsg(msg);
-      setMiniToastVisible(true);
-      if (miniToastTimeout.current) clearTimeout(miniToastTimeout.current);
-      miniToastTimeout.current = setTimeout(() => setMiniToastVisible(false), 700);
-    }, 10); // short delay to force re-render
+    setMiniToastMsg(msg);
+    setMiniToastVisible(true);
+    if (miniToastTimeout.current) clearTimeout(miniToastTimeout.current);
+    miniToastTimeout.current = setTimeout(() => setMiniToastVisible(false), 700);
   };
+
+  // Progress state for crafting
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const progressInterval = useRef(null);
 
   // Find the latest machine data from context
   const liveMachine = placedMachines.find(m => m.id === machine.id) || machine;
@@ -241,7 +239,7 @@ const MachineDetailsScreen = ({ route }) => {
                     ) : (
                       inputs.map(input => (
                         <Text key={input.item} style={{ color: '#fff', fontSize: 14, marginBottom: 2 }}>
-                          {input.amount * amount} x {items[input.item]?.name || input.item} 
+                          {input.amount * amount} x {items[input.item]?.name || input.item}
                           <Text style={{ color: '#aaa', fontSize: 13 }}>
                             (You have: {inventory[input.item]?.currentAmount || 0})
                           </Text>
