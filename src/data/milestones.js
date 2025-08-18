@@ -4,7 +4,7 @@ const milestones = [
     name: "Manual Mining & Exploration",
     description:
       "Begin your journey! Explore the world map and manually mine resources to gather your first materials. Discover new nodes to unlock further progress.",
-    requirementsDescription: "Start exploring the world map and manually mining resource nodes!",
+    requirementsDescription: null,
     unlocked: true,
     unlocks: [],
     requirements: {}, 
