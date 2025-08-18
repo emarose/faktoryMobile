@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { GameContext } from "../../contexts/GameContext";
+import milestones from "../../data/milestones";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -16,6 +17,8 @@ import { items } from "../../data/items";
 export default function FactoryScreen() {
   const navigation = useNavigation();
   const { currentMilestone } = useContext(GameContext);
+  // Busca el milestone completo para acceder a requirementsDescription
+  const milestoneFull = currentMilestone ? milestones.find(m => m.id === currentMilestone.id) : null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -60,35 +63,11 @@ export default function FactoryScreen() {
               >
                 {currentMilestone.name}
               </Text>
-              <Text style={{ color: "#bfbfbf", marginBottom: 6 }}>
-                {currentMilestone.description}
-              </Text>
-              {currentMilestone.requirements &&
-                Object.keys(currentMilestone.requirements).length > 0 && (
-                  <View style={{ marginTop: 8, backgroundColor: "#1a1a2a", borderRadius: 8, padding: 10, width: "100%" }}>
-                    <Text
-                      style={{ fontSize: 15, color: "#a0d911", fontWeight: "bold", marginBottom: 4 }}
-                    >
-                      Requirements:
-                    </Text>
-                    {Object.entries(currentMilestone.requirements).map(
-                      ([req, val]) => {
-                        // Show checkmark if requirement is met (for demo, always false; replace with real logic if available)
-                        const met = false; // TODO: Replace with real check if you have inventory context
-                        return (
-                          <View key={req} style={{ flexDirection: "row", alignItems: "center", marginBottom: 2 }}>
-                            <Text
-                              style={{ color: met ? "#a0d911" : "#ffd700", fontSize: 14, marginRight: 6 }}
-                            >
-                              {met ? "✔ " : "• "}
-                              {items[req]?.name || req}: {val} {req === "discoveredNodes" ? "(nodes)" : ""}
-                            </Text>
-                          </View>
-                        );
-                      }
-                    )}
-                  </View>
-                )}
+              {milestoneFull?.requirementsDescription && (
+                <Text style={{ color: "#ffd700", marginBottom: 6, fontSize: 15 }}>
+                  {milestoneFull.requirementsDescription}
+                </Text>
+              )}
             </>
           ) : (
             <Text style={{ color: "#bfbfbf" }}>
