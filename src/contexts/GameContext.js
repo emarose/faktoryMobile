@@ -19,7 +19,7 @@ import { useToastContext } from "./ToastContext";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  // Inicializa nodeAmounts solo cuando cambian realmente los nodos, nunca en el primer render
+  // Inicializa nodeAmounts de forma síncrona cuando cambian los nodos
   const didMountNodes = React.useRef(false);
   useEffect(() => {
     if (!didMountNodes.current) {
@@ -27,17 +27,15 @@ export const GameProvider = ({ children }) => {
       return;
     }
     if (!allResourceNodes || allResourceNodes.length === 0) return;
-    setTimeout(() => {
-      setNodeAmounts(() => {
-        const newAmounts = {};
-        allResourceNodes.forEach((node) => {
-          newAmounts[node.id] = typeof node.currentAmount === "number"
-            ? node.currentAmount
-            : node.capacity || 1000;
-        });
-        return newAmounts;
+    setNodeAmounts(() => {
+      const newAmounts = {};
+      allResourceNodes.forEach((node) => {
+        newAmounts[node.id] = typeof node.currentAmount === "number"
+          ? node.currentAmount
+          : node.capacity || 1000;
       });
-    }, 0);
+      return newAmounts;
+    });
   }, [allResourceNodes]);
 
   // Node depletion callback for mining
@@ -64,14 +62,11 @@ export const GameProvider = ({ children }) => {
 
   const resetNodeAmounts = (nodes) => {
     if (!nodes || nodes.length === 0) return;
-    // Usar setTimeout para asegurar que no se llama durante render
-    setTimeout(() => {
-      const newAmounts = {};
-      nodes.forEach((node) => {
-        newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
-      });
-      setNodeAmounts(newAmounts);
-    }, 0);
+    const newAmounts = {};
+    nodes.forEach((node) => {
+      newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
+    });
+    setNodeAmounts(newAmounts);
   };
 
   const regenerateSeed = () => {

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
@@ -12,7 +11,6 @@ import {
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
-// import eliminado: useMapNodes ahora solo desde GameContext
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { useMachines } from "../../hooks/useMachines";
 import { useProduction } from "../../hooks/useProduction";
@@ -32,7 +30,8 @@ const PLAYER_COLOR = "#FF0000";
 
 export default function MapScreen({ navigation }) {
   // allResourceNodes, regenerateSeed y setTestSeed vienen del contexto
-  const { allResourceNodes, regenerateSeed, setTestSeed } = useContext(GameContext);
+  const { allResourceNodes, regenerateSeed, setTestSeed } =
+    useContext(GameContext);
   const {
     discoveredNodes,
     setDiscoveredNodes,
@@ -45,26 +44,51 @@ export default function MapScreen({ navigation }) {
     removeResources,
     nodeAmounts,
     setNodeAmounts,
-    handleDepleteNode
+    handleDepleteNode,
   } = useContext(GameContext);
+
+  // Estado local optimista para la posición visual del jugador
+  const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
+  // Lock: solo permite un movimiento visual a la vez
+  const [moveLocked, setMoveLocked] = useState(false);
+
+  // Sincroniza el estado local con el global cuando cambia el global (por ejemplo, por teletransporte, seed, etc.)
+  useEffect(() => {
+    setVisualPlayerPos(playerMapPosition);
+    setMoveLocked(false); // Desbloquea el movimiento cuando el global se sincroniza
+  }, [playerMapPosition]);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
   const [isManualPin, setIsManualPin] = useState(false);
 
+  // Movimiento optimista: solo permite un movimiento visual a la vez
+  const handleExploreDirection = (dir) => {
+    if (moveLocked) return; // No permite otro movimiento hasta que el global se sincronice
+    let { x, y } = visualPlayerPos;
+    if (dir === "up") y -= 1;
+    if (dir === "down") y += 1;
+    if (dir === "left") x -= 1;
+    if (dir === "right") x += 1;
+    setVisualPlayerPos({ x, y });
+    setMoveLocked(true);
+    setTimeout(() => setPlayerMapPosition({ x, y }), 0);
+  };
+
   const { exploreDirection } = useWorldMapExploration(
     allResourceNodes,
     DISCOVERY_RADIUS_PX,
     discoveredNodes,
     setDiscoveredNodes,
-    playerMapPosition,
+    visualPlayerPos,
     setPlayerMapPosition,
     () => handleManualPin
   );
   const handleManualPin = () => {
     setIsManualPin(false);
   };
+
   useEffect(() => {
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
       (id) => !toastShownNodeIds.has(id)
@@ -98,7 +122,6 @@ export default function MapScreen({ navigation }) {
 
   // useProduction ahora se ejecuta globalmente en GameProvider
 
-
   // Auto-pin logic (sin chunks)
   useEffect(() => {
     if (isManualPin) return;
@@ -121,20 +144,23 @@ export default function MapScreen({ navigation }) {
     } else if (!closestNodeId && pinnedNodeId && !isManualPin) {
       setPinnedNodeId(null);
     }
-  }, [playerMapPosition, mineableNodes, discoveredNodes, pinnedNodeId, isManualPin]);
+  }, [
+    playerMapPosition,
+    mineableNodes,
+    discoveredNodes,
+    pinnedNodeId,
+    isManualPin,
+  ]);
 
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
     .filter((node) => discoveredNodes[node.id])
     .map((node) => {
-      const cap = typeof node.capacity === 'number' ? node.capacity : 1000;
+      const cap = typeof node.capacity === "number" ? node.capacity : 1000;
       const amt = nodeAmounts[node.id];
       return {
         ...node,
-        currentAmount:
-          typeof amt === 'number' && amt >= 0
-            ? amt
-            : cap
+        currentAmount: typeof amt === "number" && amt >= 0 ? amt : cap,
       };
     });
 
@@ -154,11 +180,11 @@ export default function MapScreen({ navigation }) {
     return distA - distB;
   });
 
-  // Render tiles proceduralmente usando allResourceNodes y la posición del jugador
+  // Render tiles proceduralmente usando allResourceNodes y la posición visual del jugador
   const renderTiles = () => {
     const rows = [];
-    const px = playerMapPosition.x;
-    const py = playerMapPosition.y;
+    const px = visualPlayerPos.x;
+    const py = visualPlayerPos.y;
     const cx = Math.floor(px / CHUNK_SIZE);
     const cy = Math.floor(py / CHUNK_SIZE);
     // Para cada tile visible en la grilla
@@ -184,14 +210,19 @@ export default function MapScreen({ navigation }) {
                 height: TILE_SIZE,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: '#555',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative',
+                borderColor: "#555",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
                 zIndex: 200,
               }}
             >
-              <MaterialIcons name="my-location" size={22} color="#FFD700" style={{ opacity: 0.85 }} />
+              <MaterialIcons
+                name="my-location"
+                size={22}
+                color="#FFD700"
+                style={{ opacity: 0.85 }}
+              />
             </View>
           );
         } else if (node && discovered) {
@@ -237,27 +268,57 @@ export default function MapScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.fullScreenContainer} contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView
+      style={styles.fullScreenContainer}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       <MapToast
         visible={toastVisible}
         message={toastMessage}
         onHide={() => setToastVisible(false)}
       />
       {/* Row of icon-buttons (placeholder) */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginVertical: 8 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          marginVertical: 8,
+        }}
+      >
         {/* Botón momentáneo para regenerar el seed del mundo */}
         <TouchableOpacity
-          style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#FFD700' }}
+          style={{
+            marginHorizontal: 8,
+            backgroundColor: "#23233a",
+            borderRadius: 16,
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderWidth: 2,
+            borderColor: "#FFD700",
+          }}
           onPress={regenerateSeed}
         >
-          <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Cambiar Seed Mundo</Text>
+          <Text style={{ color: "#FFD700", fontWeight: "bold" }}>
+            Cambiar Seed Mundo
+          </Text>
         </TouchableOpacity>
         {/* Botón para activar el seed de test */}
         <TouchableOpacity
-          style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#00BFFF' }}
+          style={{
+            marginHorizontal: 8,
+            backgroundColor: "#23233a",
+            borderRadius: 16,
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderWidth: 2,
+            borderColor: "#00BFFF",
+          }}
           onPress={setTestSeed}
         >
-          <Text style={{ color: '#00BFFF', fontWeight: 'bold' }}>Seed Test</Text>
+          <Text style={{ color: "#00BFFF", fontWeight: "bold" }}>
+            Seed Test
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.mapVisualContainer}>
@@ -284,15 +345,13 @@ export default function MapScreen({ navigation }) {
             style={{
               position: "absolute",
               left:
-                (((playerMapPosition.x % CHUNK_SIZE) + CHUNK_SIZE) %
-                  CHUNK_SIZE) *
-                TILE_SIZE +
+                (((visualPlayerPos.x % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
+                  TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               top:
-                (((playerMapPosition.y % CHUNK_SIZE) + CHUNK_SIZE) %
-                  CHUNK_SIZE) *
-                TILE_SIZE +
+                (((visualPlayerPos.y % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
+                  TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               width: DISCOVERY_RADIUS_PX * 2,
@@ -320,18 +379,30 @@ export default function MapScreen({ navigation }) {
           >
             <MapGridControls
               MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-              exploreDirection={exploreDirection}
+              exploreDirection={handleExploreDirection}
               onMove={() => setIsManualPin(false)}
             />
           </View>
         </View>
 
-
-        <View style={{
-          zIndex: 300, flexDirection: 'row', alignItems: 'center', marginTop: 8, alignSelf: "flex-end"
-        }}>
-          <MaterialIcons name="my-location" size={18} color="#FFD700" style={{ opacity: 0.85, marginRight: 4 }} />
-          <Text style={{ fontSize: 13, color: '#e0e0e0', fontWeight: 'bold' }}>({playerMapPosition.x}, {playerMapPosition.y})</Text>
+        <View
+          style={{
+            zIndex: 300,
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 8,
+            alignSelf: "flex-end",
+          }}
+        >
+          <MaterialIcons
+            name="my-location"
+            size={18}
+            color="#FFD700"
+            style={{ opacity: 0.85, marginRight: 4 }}
+          />
+          <Text style={{ fontSize: 13, color: "#e0e0e0", fontWeight: "bold" }}>
+            ({visualPlayerPos.x}, {visualPlayerPos.y})
+          </Text>
         </View>
       </View>
 
