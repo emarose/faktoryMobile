@@ -1,11 +1,12 @@
 // MapScreen/components/NodeCard.js
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
 
 const NodeCard = React.memo(
-  ({ node, inventory, placedMachines, styles, playerPosition, discoveryRadius, onDepleteNode, placeMachine }) => {
+  ({ node, inventory, placedMachines, styles, playerPosition, discoveryRadius, onDepleteNode, placeMachine, isExpanded: isExpandedProp }) => {
     const { id: nodeId, name, x, y, type: nodeType } = node;
     const nodeDefinition = items[nodeType];
     if (!nodeDefinition) {
@@ -85,98 +86,102 @@ const NodeCard = React.memo(
         placeMachine(machineType, nodeId);
       }
     };
+    // Estado local para expansión
+    const [isExpanded, setIsExpanded] = React.useState(!!isExpandedProp);
+
+    // Icono y label para minado manual
+    const mineIcon = (
+      <TouchableOpacity
+        style={{ marginLeft: 2, padding: 6, opacity: (!canManualMine || isDepleted) ? 0.4 : 1, flexDirection: 'row', alignItems: 'center' }}
+        onPress={() => canManualMine && !isDepleted && handleManualMine()}
+        disabled={!canManualMine || isDepleted}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <Icon name="industry" size={20} color="#FFD700" />
+        {isExpanded && <Text style={{ color: '#FFD700', fontSize: 13, marginLeft: 4 }}>Mine</Text>}
+      </TouchableOpacity>
+    );
+
     return (
-      <View style={styles.nodeCard}>
-        <Text style={styles.nodeName}>{name}</Text>
-        <Text style={styles.nodeDescription}>
-          ({x}, {y}) - Produces: {producedItemName}
-        </Text>
-        {manualMineable && (
-          <Text style={styles.nodeCapability}>Manually Mineable</Text>
-        )}
-        {machineRequired && (
-          <Text style={styles.nodeCapability}>
-            Automated Extraction: Requires{" "}
-            <Text style={styles.requiredMachineText}>
-              {items[machineRequired]?.name || machineRequired}
+      <TouchableOpacity
+        activeOpacity={0.93}
+        onPress={() => setIsExpanded((v) => !v)}
+        style={[
+          styles.nodeCard,
+          {
+            flexDirection: 'column',
+            paddingVertical: isExpanded ? 12 : 6,
+            paddingHorizontal: isExpanded ? 16 : 8,
+            marginVertical: isExpanded ? 6 : 2,
+            backgroundColor: isExpanded ? '#23233a' : '#181825',
+            borderWidth: isExpanded ? 2 : 1,
+            borderColor: isExpanded ? '#FFD700' : '#333',
+          },
+        ]}
+      >
+        {/* Fila principal */}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={[styles.nodeName, { fontSize: isExpanded ? 17 : 14, fontWeight: isExpanded ? 'bold' : 'normal' }]} numberOfLines={1}>{name}</Text>
+            <Text style={[styles.nodeDescription, { fontSize: isExpanded ? 13 : 11, color: '#aaa' }]} numberOfLines={1}>
+              ({x}, {y}) • {producedItemName}
             </Text>
-          </Text>
-        )}
-        {assignedMachineCount > 0 && (
-          <View style={styles.assignedInfo}>
-            <Text style={styles.assignedCount}>
-              Machines Assigned: {assignedMachineCount}
-            </Text>
-            <Text style={styles.automatedRate}>
-              Current Yield: +{automatedProductionRate.toFixed(1)}/s {producedItemName}
-            </Text>
-          </View>
-        )}
-        {/* Node depletion progress bar */}
-        {nodeDepletionAmount !== null && (
-          <ProgressBar
-            value={nodeDepletionAmount}
-            max={nodeCapacity}
-            label={"Node Depletion"}
-            style={{ marginTop: 8, marginBottom: 8, opacity: isDepleted ? 0.5 : 1 }}
-          />
-        )}
-        {isDepleted && (
-          <Text style={{ color: '#c00', fontWeight: 'bold', textAlign: 'center', marginBottom: 8 }}>
-            Node Depleted
-          </Text>
-        )}
-        <View style={styles.placementActions}>
-          {showManualMineButton && (
-            <>
-              <TouchableOpacity
-                style={[styles.mineButton, (!canManualMine || isDepleted) && { opacity: 0.5, backgroundColor: '#aaa' }]}
-                onPress={() => canManualMine && !isDepleted && handleManualMine()}
-                disabled={!canManualMine || isDepleted}
-              >
-                <Text style={styles.mineButtonText}>Manual Mine</Text>
-              </TouchableOpacity>
-              {!canManualMine && !isDepleted && (
-                <Text style={[styles.mineButtonText, { color: '#c00', marginTop: 4, textAlign: 'center' }]}>Move closer to the node to manually mine (within discovery radius)</Text>
-              )}
-              {/* Mensaje de nodo depleted eliminado por requerimiento */}
-            </>
-          )}
-          {canPlaceMiner && (
-            <TouchableOpacity
-              style={styles.placeButton}
-              onPress={() => handlePlaceMachine("miner", nodeId)}
-            >
-              <Text style={styles.placeButtonText}>
-                Place Miner ({minerCountInInventory} available)
-              </Text>
-            </TouchableOpacity>
-          )}
-          {machineRequired === "oilExtractor" && canPlaceOilExtractor && (
-            <TouchableOpacity
-              style={styles.placeButton}
-              onPress={() => handlePlaceMachine("oilExtractor", nodeId)}
-            >
-              <Text style={styles.placeButtonText}>
-                Place Oil Extractor ({oilExtractorCountInInventory} available)
-              </Text>
-            </TouchableOpacity>
-          )}
-          {machineRequired &&
-            assignedMachineCount === 0 &&
-            !canPlaceMiner &&
-            !canPlaceOilExtractor && (
-              <Text style={styles.noMachineText}>
-                Need {items[machineRequired]?.name || machineRequired} to automate this node
-              </Text>
+            {assignedMachineCount > 0 && (
+              <Text style={[styles.automatedRate, { fontSize: isExpanded ? 13 : 11, color: '#27ae60' }]}>+{automatedProductionRate.toFixed(1)}/s</Text>
             )}
-          {machineRequired && assignedMachineCount > 0 && (
-            <Text style={styles.alreadyAssignedText}>
-              {items[machineRequired]?.name || machineRequired} already assigned to this node.
-            </Text>
-          )}
+          </View>
+          {/* Acciones a la derecha */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 8 }}>
+            {showManualMineButton && mineIcon}
+            {canPlaceMiner && (
+              <TouchableOpacity
+                style={{ marginLeft: 8, padding: 6, backgroundColor: '#232', borderRadius: 6, flexDirection: 'row', alignItems: 'center' }}
+                onPress={() => handlePlaceMachine("miner", nodeId)}
+              >
+                <Icon name="cogs" size={18} color="#fff" />
+                {isExpanded && <Text style={{ color: '#fff', fontSize: 13, marginLeft: 4 }}>Miner</Text>}
+              </TouchableOpacity>
+            )}
+            {machineRequired === "oilExtractor" && canPlaceOilExtractor && (
+              <TouchableOpacity
+                style={{ marginLeft: 8, padding: 6, backgroundColor: '#234', borderRadius: 6, flexDirection: 'row', alignItems: 'center' }}
+                onPress={() => handlePlaceMachine("oilExtractor", nodeId)}
+              >
+                <Icon name="tint" size={18} color="#fff" />
+                {isExpanded && <Text style={{ color: '#fff', fontSize: 13, marginLeft: 4 }}>Extractor</Text>}
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-      </View>
+        {/* Detalles y barra solo si expandido */}
+        {isExpanded && (
+          <>
+            {nodeDepletionAmount !== null && (
+              <ProgressBar
+                value={nodeDepletionAmount}
+                max={nodeCapacity}
+                label={null}
+                style={{ marginTop: 6, marginBottom: 4, height: 10, opacity: isDepleted ? 0.5 : 1 }}
+              />
+            )}
+            {isDepleted && (
+              <Text style={{ color: '#c00', fontWeight: 'bold', fontSize: 13, marginBottom: 2 }}>Depleted</Text>
+            )}
+            {!isDepleted && showManualMineButton && !canManualMine && (
+              <Text style={{ color: '#c00', fontSize: 12, marginTop: 2 }}>Move closer to mine</Text>
+            )}
+            {manualMineable && (
+              <Text style={[styles.nodeCapability, { fontSize: 11, color: '#FFD700', marginTop: 2 }]}>Manually Mineable</Text>
+            )}
+            {machineRequired && (
+              <Text style={[styles.nodeCapability, { fontSize: 11, color: '#00BFFF', marginTop: 2 }]}>Requires: {items[machineRequired]?.name || machineRequired}</Text>
+            )}
+            {assignedMachineCount > 0 && (
+              <Text style={[styles.assignedCount, { fontSize: 11, color: '#27ae60', marginTop: 2 }]}>Machines: {assignedMachineCount}</Text>
+            )}
+          </>
+        )}
+      </TouchableOpacity>
     );
   }
 );

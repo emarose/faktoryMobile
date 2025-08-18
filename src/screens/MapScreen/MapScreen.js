@@ -26,10 +26,7 @@ const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
 const PLAYER_COLOR = "#FF0000";
 
-// La generación de nodos ahora es procedural y se maneja en useGeneratedMapNodes
-
 export default function MapScreen({ navigation }) {
-  // allResourceNodes, regenerateSeed y setTestSeed vienen del contexto
   const { allResourceNodes, regenerateSeed, setTestSeed } =
     useContext(GameContext);
   const {
@@ -407,7 +404,21 @@ export default function MapScreen({ navigation }) {
       </View>
 
       {/* Lista de NodeCard debajo del mapa */}
-      {displayableNodes.map((item) => (
+      {displayableNodes.length > 0 && (
+        <NodeCard
+          key={displayableNodes[0].id}
+          node={displayableNodes[0]}
+          nodeDepletionAmount={displayableNodes[0].currentAmount}
+          inventory={inventory}
+          placedMachines={placedMachines}
+          styles={styles}
+          playerPosition={playerMapPosition}
+          onDepleteNode={handleDepleteNode}
+          placeMachine={placeMachine}
+          isExpanded={true}
+        />
+      )}
+      {displayableNodes.slice(1).map((item) => (
         <NodeCard
           key={item.id}
           node={item}
@@ -418,6 +429,7 @@ export default function MapScreen({ navigation }) {
           playerPosition={playerMapPosition}
           onDepleteNode={handleDepleteNode}
           placeMachine={placeMachine}
+          isExpanded={false}
         />
       ))}
       <View style={{ height: 20 }} />
