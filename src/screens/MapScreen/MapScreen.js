@@ -31,8 +31,8 @@ const PLAYER_COLOR = "#FF0000";
 // La generación de nodos ahora es procedural y se maneja en useGeneratedMapNodes
 
 export default function MapScreen({ navigation }) {
-  // allResourceNodes y regenerateSeed vienen del contexto
-  const { allResourceNodes, regenerateSeed } = useContext(GameContext);
+  // allResourceNodes, regenerateSeed y setTestSeed vienen del contexto
+  const { allResourceNodes, regenerateSeed, setTestSeed } = useContext(GameContext);
   const {
     discoveredNodes,
     setDiscoveredNodes,
@@ -126,12 +126,17 @@ export default function MapScreen({ navigation }) {
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
     .filter((node) => discoveredNodes[node.id])
-    .map((node) => ({
-      ...node,
-      currentAmount: typeof nodeAmounts[node.id] === 'number'
-        ? nodeAmounts[node.id]
-  : (typeof node.currentAmount === 'number' ? node.currentAmount : node.capacity || 1000)
-    }));
+    .map((node) => {
+      const cap = typeof node.capacity === 'number' ? node.capacity : 1000;
+      const amt = nodeAmounts[node.id];
+      return {
+        ...node,
+        currentAmount:
+          typeof amt === 'number' && amt >= 0
+            ? amt
+            : cap
+      };
+    });
 
   displayableNodes = displayableNodes.sort((a, b) => {
     if (pinnedNodeId) {
@@ -247,7 +252,13 @@ export default function MapScreen({ navigation }) {
         >
           <Text style={{ color: '#FFD700', fontWeight: 'bold' }}>Cambiar Seed Mundo</Text>
         </TouchableOpacity>
-        {/* ...otros botones si los necesitas... */}
+        {/* Botón para activar el seed de test */}
+        <TouchableOpacity
+          style={{ marginHorizontal: 8, backgroundColor: '#23233a', borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16, borderWidth: 2, borderColor: '#00BFFF' }}
+          onPress={setTestSeed}
+        >
+          <Text style={{ color: '#00BFFF', fontWeight: 'bold' }}>Seed Test</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.mapVisualContainer}>
         <View

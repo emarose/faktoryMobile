@@ -52,16 +52,34 @@ export const GameProvider = ({ children }) => {
   const [nodeAmounts, setNodeAmounts] = useState({});
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
   // allResourceNodes ahora depende de la posición del jugador
-  const { allResourceNodes, regenerateSeed: baseRegenerateSeed } = useMapNodes(playerMapPosition);
+  const { allResourceNodes, regenerateSeed: baseRegenerateSeed, setTestSeed: baseSetTestSeed } = useMapNodes(playerMapPosition);
 
   // Función extendida para regenerar el seed y limpiar el estado relacionado
+
+  const resetNodeAmounts = (nodes) => {
+    const newAmounts = {};
+    nodes.forEach((node) => {
+      newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
+    });
+    setNodeAmounts(newAmounts);
+  };
+
   const regenerateSeed = () => {
     baseRegenerateSeed();
-    setNodeAmounts({});
     setDiscoveredNodes({});
     setToastShownNodeIds(new Set());
-    // Opcional: podrías resetear la posición del jugador si quieres
     // setPlayerMapPosition({ x: 5, y: 5 });
+    // Reinicializar nodeAmounts tras cambio de seed
+    setTimeout(() => resetNodeAmounts(allResourceNodes), 0);
+  };
+
+  // Función para activar el seed de test y limpiar el estado relacionado
+  const setTestSeed = () => {
+    baseSetTestSeed();
+    setDiscoveredNodes({});
+    setToastShownNodeIds(new Set());
+    // setPlayerMapPosition({ x: 5, y: 5 });
+    setTimeout(() => resetNodeAmounts(allResourceNodes), 0);
   };
   const [resourceNodes, setResourceNodes] = useState([]);
 
@@ -253,6 +271,7 @@ export const GameProvider = ({ children }) => {
   pauseMiner,
   resumeMiner,
   regenerateSeed,
+  setTestSeed,
     }),
     [
       inventory,

@@ -17,24 +17,68 @@ function mulberry32(a) {
 
 function generateNodesForChunk(cx, cy, seed) {
   const nodes = [];
-  // Para cada chunk, creamos un generador único usando el seed global y la posición del chunk
+  // TEST SEED: fuerza todos los tipos de nodos en la primera fila del chunk central
+  const TEST_SEED = 123456789;
+  if (seed === TEST_SEED && cx === 0 && cy === 0) {
+    const types = Object.entries(NODE_SPAWN_RATES);
+    for (let x = 0; x < types.length && x < CHUNK_SIZE; x++) {
+      const [type, data] = types[x];
+      nodes.push({
+        id: `${type}_${x}_0`,
+        name: data.name,
+        type: type,
+        x: x,
+        y: 0,
+        capacity: data.capacity,
+      });
+    }
+    // El resto del chunk se genera normalmente (sin nodos extra en la primera fila)
+    for (let x = 0; x < CHUNK_SIZE; x++) {
+      for (let y = 1; y < CHUNK_SIZE; y++) {
+        const globalX = cx * CHUNK_SIZE + x;
+        const globalY = cy * CHUNK_SIZE + y;
+        const chunkSeed = ((seed & 0xFFFFF) ^ (cx * 73856093) ^ (cy * 19349663)) >>> 0;
+        const cellSeed = (chunkSeed ^ (x * 83492791) ^ (y * 1234567)) >>> 0;
+        const rand = mulberry32(cellSeed);
+        const randValue = rand();
+        const spawnChance = 0.05;
+        if (randValue < spawnChance) {
+          const totalRatio = Object.values(NODE_SPAWN_RATES).reduce((sum, rate) => sum + rate.ratio, 0);
+          let currentRatio = 0;
+          const typeRand = rand();
+          for (const [type, data] of Object.entries(NODE_SPAWN_RATES)) {
+            currentRatio += data.ratio;
+            if (typeRand < currentRatio / totalRatio) {
+              nodes.push({
+                id: `${type}_${globalX}_${globalY}`,
+                name: data.name,
+                type: type,
+                x: globalX,
+                y: globalY,
+                capacity: data.capacity,
+              });
+              break;
+            }
+          }
+        }
+      }
+    }
+    return nodes;
+  }
+  // Procedural normal para otros casos
   const chunkSeed = ((seed & 0xFFFFF) ^ (cx * 73856093) ^ (cy * 19349663)) >>> 0;
-  // Iteramos sobre cada celda del chunk
   for (let x = 0; x < CHUNK_SIZE; x++) {
     for (let y = 0; y < CHUNK_SIZE; y++) {
       const globalX = cx * CHUNK_SIZE + x;
       const globalY = cy * CHUNK_SIZE + y;
-      // Generador único para cada celda
       const cellSeed = (chunkSeed ^ (x * 83492791) ^ (y * 1234567)) >>> 0;
       const rand = mulberry32(cellSeed);
       const randValue = rand();
-      // Generamos un número aleatorio que determina si aparece un nodo
-      const spawnChance = 0.05; // 5% de probabilidad base de que aparezca CUALQUIER nodo
+      const spawnChance = 0.05;
       if (randValue < spawnChance) {
-        // Si un nodo puede aparecer, determinamos qué tipo de nodo será
         const totalRatio = Object.values(NODE_SPAWN_RATES).reduce((sum, rate) => sum + rate.ratio, 0);
         let currentRatio = 0;
-        const typeRand = rand(); // Otro valor aleatorio para el tipo
+        const typeRand = rand();
         for (const [type, data] of Object.entries(NODE_SPAWN_RATES)) {
           currentRatio += data.ratio;
           if (typeRand < currentRatio / totalRatio) {
@@ -83,5 +127,10 @@ export function useMapNodes(playerMapPosition) {
     setSeed(Math.floor(Math.random() * 1e9));
   }, []);
 
-  return { allResourceNodes, NODE_TYPES_MAP, regenerateSeed };
+  // Función para setear un seed de test fijo
+  const setTestSeed = useCallback(() => {
+    setSeed(123456789); // Puedes ajustar este valor si quieres otro patrón
+  }, []);
+
+  return { allResourceNodes, NODE_TYPES_MAP, regenerateSeed, setTestSeed };
 }

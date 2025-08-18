@@ -49,8 +49,11 @@ const NodeCard = React.memo(
     const showManualMineButton = manualMineable;
     // Get node depletion amount if available
     // Use nodeDepletionAmount from props for all depletion logic
-    const nodeDepletionAmount = typeof node.nodeDepletionAmount !== "undefined" ? node.nodeDepletionAmount : (typeof node.currentAmount !== "undefined" ? node.currentAmount : null);
-  const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 1000;
+    // Si no hay currentAmount, usar siempre la capacidad máxima
+    const nodeCapacity = typeof node.capacity !== "undefined" ? node.capacity : 1000;
+    const nodeDepletionAmount = typeof node.nodeDepletionAmount !== "undefined"
+      ? node.nodeDepletionAmount
+      : (typeof node.currentAmount !== "undefined" ? node.currentAmount : nodeCapacity);
     // Calculate if player is within discovery radius (in grid units)
     let canManualMine = false;
     if (playerPosition && typeof playerPosition.x === 'number' && typeof playerPosition.y === 'number') {
