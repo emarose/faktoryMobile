@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import milestonesData from "../data/milestones";
 
 export function useMilestone(inventory, discoveredCount) {
@@ -22,7 +22,6 @@ export function useMilestone(inventory, discoveredCount) {
       )
     : false;
 
-  // Complete milestone if requirements met
   const completeCurrentMilestone = () => {
     if (!currentMilestone || !canCompleteCurrentMilestone) return null;
     setMilestones((prev) =>
@@ -34,12 +33,6 @@ export function useMilestone(inventory, discoveredCount) {
     return `Milestone reached: ${currentMilestone.name}`;
   };
 
-  // Auto-complete milestone when requirements met
-  useEffect(() => {
-    if (canCompleteCurrentMilestone) {
-      Promise.resolve().then(() => completeCurrentMilestone());
-    }
-  }, [canCompleteCurrentMilestone]);
 
   return {
     milestones,

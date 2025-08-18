@@ -1,6 +1,6 @@
 // /hooks/useMapNodes.js
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { NODE_TYPES_MAP } from "../data/nodeTypes";
 import { NODE_SPAWN_RATES, CHUNK_SIZE } from "../data/nodeGeneration";
 
@@ -104,7 +104,7 @@ export function useMapNodes(playerMapPosition) {
   // Usar un seed entero grande para mayor variabilidad
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 1e9));
 
-  useMemo(() => {
+  useEffect(() => {
     if (!playerMapPosition || typeof playerMapPosition.x !== 'number' || typeof playerMapPosition.y !== 'number') {
       setAllResourceNodes([]);
       return;

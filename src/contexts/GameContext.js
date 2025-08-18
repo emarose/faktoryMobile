@@ -19,20 +19,26 @@ import { useToastContext } from "./ToastContext";
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
+  // Inicializa nodeAmounts solo cuando cambian realmente los nodos, nunca en el primer render
+  const didMountNodes = React.useRef(false);
   useEffect(() => {
-    setNodeAmounts((prev) => {
-      const updated = { ...prev };
-      allResourceNodes.forEach((node) => {
-        if (typeof updated[node.id] !== "number") {
-          updated[node.id] =
-            typeof node.currentAmount === "number"
-              ? node.currentAmount
-              : node.capacity || 1000;
-        }
+    if (!didMountNodes.current) {
+      didMountNodes.current = true;
+      return;
+    }
+    if (!allResourceNodes || allResourceNodes.length === 0) return;
+    setTimeout(() => {
+      setNodeAmounts(() => {
+        const newAmounts = {};
+        allResourceNodes.forEach((node) => {
+          newAmounts[node.id] = typeof node.currentAmount === "number"
+            ? node.currentAmount
+            : node.capacity || 1000;
+        });
+        return newAmounts;
       });
-      return updated;
-    });
-  }, [allResourceNodes, setNodeAmounts]);
+    }, 0);
+  }, [allResourceNodes]);
 
   // Node depletion callback for mining
   const handleDepleteNode = (nodeId, newAmount, isManual = false) => {
@@ -57,11 +63,15 @@ export const GameProvider = ({ children }) => {
   // Función extendida para regenerar el seed y limpiar el estado relacionado
 
   const resetNodeAmounts = (nodes) => {
-    const newAmounts = {};
-    nodes.forEach((node) => {
-      newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
-    });
-    setNodeAmounts(newAmounts);
+    if (!nodes || nodes.length === 0) return;
+    // Usar setTimeout para asegurar que no se llama durante render
+    setTimeout(() => {
+      const newAmounts = {};
+      nodes.forEach((node) => {
+        newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
+      });
+      setNodeAmounts(newAmounts);
+    }, 0);
   };
 
   const regenerateSeed = () => {
@@ -70,7 +80,7 @@ export const GameProvider = ({ children }) => {
     setToastShownNodeIds(new Set());
     // setPlayerMapPosition({ x: 5, y: 5 });
     // Reinicializar nodeAmounts tras cambio de seed
-    setTimeout(() => resetNodeAmounts(allResourceNodes), 0);
+    resetNodeAmounts(allResourceNodes);
   };
 
   // Función para activar el seed de test y limpiar el estado relacionado
@@ -79,7 +89,7 @@ export const GameProvider = ({ children }) => {
     setDiscoveredNodes({});
     setToastShownNodeIds(new Set());
     // setPlayerMapPosition({ x: 5, y: 5 });
-    setTimeout(() => resetNodeAmounts(allResourceNodes), 0);
+    resetNodeAmounts(allResourceNodes);
   };
   const [resourceNodes, setResourceNodes] = useState([]);
 
