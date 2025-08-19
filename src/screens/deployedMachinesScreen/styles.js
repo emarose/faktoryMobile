@@ -77,6 +77,43 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
+  // card
+   selectorButton: {
+    backgroundColor: "#2c2c44",
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#5dd39e",
+  },
+  selectorText: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "#1b1b2f",
+    borderRadius: 16,
+    width: "80%",
+    maxHeight: "60%",
+    padding: 10,
+    borderWidth: 2,
+    borderColor: "#5dd39e",
+  },
+  option: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#333",
+  },
+  optionText: {
+    color: "#fff",
+    fontSize: 16,
+  },
 });
 
 export default styles;

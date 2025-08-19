@@ -158,11 +158,17 @@ export const GameProvider = ({ children }) => {
   } = useMilestone(inventory, discoveredNodesCount);
 
   // Automatic mining effect for assigned miners (must be after placedMachines and allResourceNodes are defined)
+  const placedMachinesRef = React.useRef(placedMachines);
+  useEffect(() => {
+    placedMachinesRef.current = placedMachines;
+  }, [placedMachines]);
+
   useEffect(() => {
     if (!placedMachines || !allResourceNodes) return;
     const interval = setInterval(() => {
-      if (!Array.isArray(placedMachines) || !Array.isArray(allResourceNodes)) return;
-      placedMachines.forEach((machine) => {
+      const machines = placedMachinesRef.current;
+      if (!Array.isArray(machines) || !Array.isArray(allResourceNodes)) return;
+      machines.forEach((machine) => {
         if (machine.type !== "miner" || !machine.assignedNodeId) return;
         if (machine.isIdle) return; // No producir si está en idle
         const node = allResourceNodes.find((n) => n.id === machine.assignedNodeId);
@@ -179,7 +185,10 @@ export const GameProvider = ({ children }) => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [Array.isArray(placedMachines) ? placedMachines.length : 0, Array.isArray(allResourceNodes) ? allResourceNodes.length : 0, nodeAmounts]);
+  }, [
+    allResourceNodes.length,
+    JSON.stringify(nodeAmounts)
+  ]);
 
   useEffect(() => {
     if (canCompleteCurrentMilestone) {

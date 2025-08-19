@@ -6,7 +6,7 @@ export const useProduction = (
   removeResourcesCallback,
   placedMachines,
   allResourceNodes,
-  nodeAmounts, // <-- pass nodeAmounts from context
+  nodeAmounts,
   onDepleteNode
 ) => {
   const productionLoopRef = useRef(null);
@@ -19,6 +19,8 @@ export const useProduction = (
       placedMachines.forEach((machine) => {
         // Miner production logic
         if (machine.type === "miner" && machine.assignedNodeId) {
+          // Respeta el flag isIdle
+          if (machine.isIdle) return; // No producir si está en pausa
           const node = allResourceNodes.find(
             (n) => n.id === machine.assignedNodeId
           );
@@ -51,9 +53,6 @@ export const useProduction = (
               // Deplete node by amount produced (decrease nodeAmounts)
               if (typeof onDepleteNode === "function" && allowedToAdd > 0) {
                 const newNodeAmount = Math.max(0, currentAmount - allowedToAdd);
-                console.log(
-                  `[useProduction] Depleting node ${node.id}: newAmount=${newNodeAmount}`
-                );
                 onDepleteNode(node.id, newNodeAmount);
               }
               // Add resource to inventory (not node)

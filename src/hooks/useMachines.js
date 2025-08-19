@@ -104,10 +104,12 @@ export const useMachines = (
           return false;
         }
 
+        // Genera un id único y consistente para el miner
+        const uniqueMinerId = `miner-${targetNodeId}-${Date.now()}-${Math.floor(Math.random()*10000)}`;
         setPlacedMachines((prevPlaced) => [
           ...prevPlaced,
           {
-            id: `miner-${Date.now()}`,
+            id: uniqueMinerId,
             type: "miner",
             assignedNodeId: targetNodeId,
             efficiency: machineTypeData.efficiency || 1,
@@ -120,9 +122,10 @@ export const useMachines = (
         setPlacedMachines((prevPlaced) => [
           ...prevPlaced,
           {
-            id: `${machineTypeData.id}-${Date.now()}`,
+            id: `${machineTypeData.id}-${Date.now()}-${Math.floor(Math.random()*10000)}`,
             type: machineTypeData.id,
             recipeId: recipeId, // Allow assigning a default recipe or null
+            isIdle: false,
           },
         ]);
         console.log(`${machineTypeData.name} placed!`);
@@ -132,18 +135,32 @@ export const useMachines = (
     [inventory, removeResourcesCallback, placedMachines, allResourceNodes]
   );
 
-  // Función para pausar un miner
+
+  // Función para pausar un miner (siempre inmutable y seguro)
   const pauseMiner = useCallback((minerId) => {
-    setPlacedMachines((prev) => prev.map(m =>
-      m.id === minerId ? { ...m, isIdle: true } : m
-    ));
+    setPlacedMachines((prev) => prev.map(m => {
+      if (m.id === minerId) {
+        return { ...m, isIdle: true };
+      }
+      // Si el miner no tiene isIdle, lo agrega por robustez
+      if (m.type === "miner" && typeof m.isIdle === 'undefined') {
+        return { ...m, isIdle: false };
+      }
+      return m;
+    }));
   }, []);
 
-  // Función para reanudar un miner
+  // Función para reanudar un miner (siempre inmutable y seguro)
   const resumeMiner = useCallback((minerId) => {
-    setPlacedMachines((prev) => prev.map(m =>
-      m.id === minerId ? { ...m, isIdle: false } : m
-    ));
+    setPlacedMachines((prev) => prev.map(m => {
+      if (m.id === minerId) {
+        return { ...m, isIdle: false };
+      }
+      if (m.type === "miner" && typeof m.isIdle === 'undefined') {
+        return { ...m, isIdle: false };
+      }
+      return m;
+    }));
   }, []);
 
   return {

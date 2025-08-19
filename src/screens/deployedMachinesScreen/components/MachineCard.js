@@ -15,7 +15,6 @@ function getMachineIcon(type) {
           name="robot-industrial"
           size={28}
           color="#4CAF50"
-          style={{ marginRight: 8 }}
         />
       );
     case "refinery":
@@ -24,49 +23,28 @@ function getMachineIcon(type) {
           name="chemical-weapon"
           size={28}
           color="#ff4081"
-          style={{ marginRight: 8 }}
         />
       );
     case "foundry":
       return (
-        <MaterialCommunityIcons
-          name="furnace"
-          size={28}
-          color="#ffb300"
-          style={{ marginRight: 8 }}
-        />
+        <MaterialCommunityIcons name="furnace" size={28} color="#ffb300" />
       );
     default:
-      return (
-        <MaterialIcons
-          name="build"
-          size={28}
-          color="#aaa"
-          style={{ marginRight: 8 }}
-        />
-      );
+      return <MaterialIcons name="build" size={28} color="#aaa" />;
   }
 }
 
-const MachineCard = ({
-  machine,
-  node,
-  recipe,
-  onPress,
-  onPauseResume,
-  resourceCap,
-}) => {
+const MachineCard = ({ machine, node, onPress }) => {
   const isMiner = machine.type === "miner";
   const isIdle = machine.isIdle;
-  // Siempre obtener el estado más reciente del machine desde el contexto
   const {
     allResourceNodes = [],
     discoveredNodes = {},
     setPlacedMachines,
     placedMachines,
   } = useGame();
-  // Find all discovered and non-depleted nodes
-  const liveMachine = placedMachines.find(m => m.id === machine.id) || machine;
+  const liveMachine =
+    placedMachines.find((m) => m.id === machine.id) || machine;
   const discoveredNodeOptions = useMemo(
     () =>
       allResourceNodes.filter(
@@ -77,8 +55,9 @@ const MachineCard = ({
     [allResourceNodes, discoveredNodes]
   );
 
-  // Usa SIEMPRE el prop node para la progressBar y datos dinámicos
-  const nodeCapacity = node && typeof node.capacity === "number" ? node.capacity : 1000;
+  const nodeCapacity =
+    node && typeof node.capacity === "number" ? node.capacity : 1000;
+
   const nodeDepletionAmount =
     node && typeof node.nodeDepletionAmount !== "undefined"
       ? node.nodeDepletionAmount
@@ -86,21 +65,21 @@ const MachineCard = ({
       ? node.currentAmount
       : nodeCapacity;
 
-  // Lógica de asignación igual a MachineDetailsScreen
   const handleAssignNode = (nodeId) => {
     const node = allResourceNodes.find((n) => n.id === nodeId);
     if (!node || !discoveredNodes[nodeId] || node.currentAmount <= 0) {
       return;
     }
     if (liveMachine.type === "miner") {
-      setPlacedMachines((prevPlaced) => prevPlaced.filter(m => m.id !== liveMachine.id));
+      setPlacedMachines((prevPlaced) =>
+        prevPlaced.filter((m) => m.id !== liveMachine.id)
+      );
       setTimeout(() => {
         setPlacedMachines((prevPlaced) => [
           ...prevPlaced,
           {
             ...liveMachine,
             assignedNodeId: nodeId,
-            // Mantén otros props relevantes
           },
         ]);
       }, 0);
@@ -113,6 +92,14 @@ const MachineCard = ({
     }
   };
 
+  const handlePauseResume = () => {
+    setPlacedMachines((prevPlaced) =>
+      prevPlaced.map((m) =>
+        m.id === liveMachine.id ? { ...m, isIdle: !m.isIdle } : m
+      )
+    );
+  };
+
   return (
     <View
       style={[
@@ -123,7 +110,6 @@ const MachineCard = ({
       ]}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        {getMachineIcon(machine.type)}
         <View style={styles.machineInfo}>
           <View
             style={{
@@ -131,37 +117,59 @@ const MachineCard = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              marginBottom: 8,
             }}
           >
-            <Text style={[styles.machineName, { color: "#4CAF50" }]}>
-              {machine.displayName || machine.name || machine.type}
-            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 16,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#2c2c44",
+                  padding: 8,
+                  borderRadius: 32,
+                  borderWidth: 1,
+                  borderColor: "#444455",
+                }}
+              >
+                {getMachineIcon(machine.type)}
+              </View>
+              <Text style={[styles.machineName, { color: "#4CAF50" }]}>
+                {machine.displayName || machine.name || machine.type}
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={onPress}
               style={{ padding: 8, alignSelf: "flex-start" }}
               activeOpacity={0.7}
             >
-              <MaterialIcons name="loupe" size={26} color="#bbb" />
+              <MaterialIcons name="loupe" size={28} color="#bbb" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.machineStatus}>{machine.statusText}</Text>
           {isMiner && (
-            <View style={{ marginTop: 6, marginBottom: 6 }}>
-              <Text style={{ color: "#fff", fontSize: 14, marginBottom: 2 }}>
-                Assign to Node:
-              </Text>
+            <View style={{ marginVertical: 12 }}>
               <Picker
+                mode="dialog"
                 selectedValue={liveMachine.assignedNodeId || null}
                 style={{
-                  height: 40,
+                  height: 30,
                   width: "100%",
-                  backgroundColor: "#23233a",
+                  backgroundColor: "#2c2c44",
                   color: "#fff",
-                  marginBottom: 4,
+                  borderRadius: 16,
+                  paddingHorizontal: 10,
+                  fontSize: 16,
                 }}
+                dropdownIconColor="#fff"
                 onValueChange={(itemValue) => handleAssignNode(itemValue)}
               >
-                <Picker.Item label="Select a node..." value={null} />
+                <Picker.Item label="Assign resource node" value={null} />
                 {discoveredNodeOptions.map((n) => (
                   <Picker.Item key={n.id} label={n.name} value={n.id} />
                 ))}
@@ -175,18 +183,17 @@ const MachineCard = ({
           )}
           {/* Node info and depletion/progress bar for any assigned node */}
           {node && (
-            <View style={styles.nodeDetails}>
-              <Text style={styles.nodeName}>@ {node.name}</Text>
-              <Text style={styles.nodeId}>Node ID: {node.id}</Text>
-              <Text style={styles.nodeAmount}>
-                Amount: {nodeDepletionAmount} / {nodeCapacity}
-              </Text>
+            <View style={{ marginTop: 32 }}>
               <ProgressBar
                 value={nodeDepletionAmount}
                 max={nodeCapacity}
-                label={"Node Depletion"}
+                label={""}
                 style={{ marginTop: 8, marginBottom: 8 }}
               />
+              <Text style={styles.machineStatus}>
+                {isIdle ? "Miner is on hold" : machine.statusText}
+              </Text>
+
               {nodeDepletionAmount <= 0 && (
                 <Text
                   style={{
@@ -202,13 +209,6 @@ const MachineCard = ({
             </View>
           )}
 
-          {/*   {recipe && (
-            <Text style={styles.recipeName}>Recipe: {recipe.name}</Text>
-          )}
-          {machine.level && (
-            <Text style={styles.machineLevel}>Level: {machine.level}</Text>
-          )} */}
-
           {isMiner && node && (
             <TouchableOpacity
               style={{
@@ -219,10 +219,10 @@ const MachineCard = ({
                 borderRadius: 5,
                 alignSelf: "flex-start",
               }}
-              onPress={onPauseResume}
+              onPress={handlePauseResume}
             >
               <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                {isIdle ? "Reanudar" : "Detener"}
+                {isIdle ? "Resume mining" : "Stop Miner"}
               </Text>
             </TouchableOpacity>
           )}
