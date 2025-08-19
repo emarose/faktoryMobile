@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   Pressable,
-  Dimensions,
   ScrollView,
 } from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
@@ -13,10 +11,8 @@ import styles from "./styles";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { useMachines } from "../../hooks/useMachines";
-import { useProduction } from "../../hooks/useProduction";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
-import PlayerInfoCard from "./components/PlayerInfoCard/PlayerInfoCard";
 import MapToast from "./components/MapToast/MapToast";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -24,7 +20,6 @@ const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
-const PLAYER_COLOR = "#FF0000";
 
 export default function MapScreen({ navigation }) {
   const { allResourceNodes, regenerateSeed, setTestSeed } =
@@ -37,32 +32,26 @@ export default function MapScreen({ navigation }) {
     toastShownNodeIds,
     setToastShownNodeIds,
     inventory,
-    addResource,
     removeResources,
     nodeAmounts,
-    setNodeAmounts,
     handleDepleteNode,
   } = useContext(GameContext);
 
-  // Estado local optimista para la posición visual del jugador
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
-  // Lock: solo permite un movimiento visual a la vez
   const [moveLocked, setMoveLocked] = useState(false);
 
-  // Sincroniza el estado local con el global cuando cambia el global (por ejemplo, por teletransporte, seed, etc.)
   useEffect(() => {
     setVisualPlayerPos(playerMapPosition);
-    setMoveLocked(false); // Desbloquea el movimiento cuando el global se sincroniza
+    setMoveLocked(false);
   }, [playerMapPosition]);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [pinnedNodeId, setPinnedNodeId] = useState(null);
-  const [isManualPin, setIsManualPin] = useState(false);
+  const [manualPinnedNodeId, setManualPinnedNodeId] = useState(null);
+  const [isManualPinActive, setIsManualPinActive] = useState(false);
 
-  // Movimiento optimista: solo permite un movimiento visual a la vez
   const handleExploreDirection = (dir) => {
-    if (moveLocked) return; // No permite otro movimiento hasta que el global se sincronice
+    if (moveLocked) return;
     let { x, y } = visualPlayerPos;
     if (dir === "up") y -= 1;
     if (dir === "down") y += 1;
@@ -70,6 +59,8 @@ export default function MapScreen({ navigation }) {
     if (dir === "right") x += 1;
     setVisualPlayerPos({ x, y });
     setMoveLocked(true);
+    setIsManualPinActive(false);
+    setManualPinnedNodeId(null);
     setTimeout(() => setPlayerMapPosition({ x, y }), 0);
   };
 
@@ -117,37 +108,22 @@ export default function MapScreen({ navigation }) {
   const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
     useMachines(inventory, removeResources, allResourceNodes);
 
-  // useProduction ahora se ejecuta globalmente en GameProvider
-
-  // Auto-pin logic (sin chunks)
-  useEffect(() => {
-    if (isManualPin) return;
-    let closestNodeId = null;
-    let minDist = Infinity;
-    mineableNodes.forEach((node) => {
-      if (discoveredNodes[node.id]) {
-        const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
-        const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
-        const euclideanDist = Math.sqrt(dx * dx + dy * dy);
-        if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
-          closestNodeId = node.id;
-          minDist = euclideanDist;
-        }
+  // Compute closest node for auto-pin
+  let closestNodeId = null;
+  let minDist = Infinity;
+  mineableNodes.forEach((node) => {
+    if (discoveredNodes[node.id]) {
+      const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
+      const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
+      const euclideanDist = Math.sqrt(dx * dx + dy * dy);
+      if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
+        closestNodeId = node.id;
+        minDist = euclideanDist;
       }
-    });
-    if (closestNodeId && pinnedNodeId !== closestNodeId) {
-      setPinnedNodeId(closestNodeId);
-      setIsManualPin(false);
-    } else if (!closestNodeId && pinnedNodeId && !isManualPin) {
-      setPinnedNodeId(null);
     }
-  }, [
-    playerMapPosition,
-    mineableNodes,
-    discoveredNodes,
-    pinnedNodeId,
-    isManualPin,
-  ]);
+  });
+  // Nodo actualmente "pinned" (manual o auto)
+  const pinnedNodeId = isManualPinActive && manualPinnedNodeId ? manualPinnedNodeId : closestNodeId;
 
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
@@ -216,7 +192,7 @@ export default function MapScreen({ navigation }) {
             >
               <MaterialIcons
                 name="my-location"
-                size={22}
+                size={24}
                 color="#FFD700"
                 style={{ opacity: 0.85 }}
               />
@@ -230,13 +206,13 @@ export default function MapScreen({ navigation }) {
                 width: TILE_SIZE,
                 height: TILE_SIZE,
                 backgroundColor: color,
-                borderWidth: 1,
-                borderColor: pinnedNodeId !== node.id ? "#555" : "#27ae60",
+                borderWidth: pinnedNodeId !== node.id ? 1 : 2,
+                borderColor: pinnedNodeId !== node.id ? "#555" : "#FFD700",
                 zIndex: 100,
               }}
               onPress={() => {
-                setPinnedNodeId(node.id);
-                setIsManualPin(true);
+                setManualPinnedNodeId(node.id);
+                setIsManualPinActive(true);
               }}
             />
           );
@@ -404,21 +380,9 @@ export default function MapScreen({ navigation }) {
       </View>
 
       {/* Lista de NodeCard debajo del mapa */}
-      {displayableNodes.length > 0 && (
-        <NodeCard
-          key={displayableNodes[0].id}
-          node={displayableNodes[0]}
-          nodeDepletionAmount={displayableNodes[0].currentAmount}
-          inventory={inventory}
-          placedMachines={placedMachines}
-          styles={styles}
-          playerPosition={playerMapPosition}
-          onDepleteNode={handleDepleteNode}
-          placeMachine={placeMachine}
-          isExpanded={true}
-        />
-      )}
-      {displayableNodes.slice(1).map((item) => (
+      {/* Estado para controlar la card expandida */}
+
+      {displayableNodes.map((item) => (
         <NodeCard
           key={item.id}
           node={item}
@@ -429,7 +393,7 @@ export default function MapScreen({ navigation }) {
           playerPosition={playerMapPosition}
           onDepleteNode={handleDepleteNode}
           placeMachine={placeMachine}
-          isExpanded={false}
+          isExpanded={pinnedNodeId === item.id}
         />
       ))}
       <View style={{ height: 20 }} />
