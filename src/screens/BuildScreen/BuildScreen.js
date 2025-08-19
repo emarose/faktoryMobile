@@ -53,7 +53,7 @@ const BuildScreen = () => {
                     <Text key={inputId} style={styles.requirementText}>
                       - {inventory[inputId]?.name || inputId}: {requiredAmount}{" "}
                       <Text
-                        style={{ color: item.canBuild ? "#a0d911" : "#ff6347" }}
+                        style={{ color: item.missingResources[inputId] ?  "#ff6347" : "#a0d911" }}
                       >
                         ({Math.floor(inventory[inputId]?.currentAmount || 0)} /{" "}
                         {requiredAmount})
