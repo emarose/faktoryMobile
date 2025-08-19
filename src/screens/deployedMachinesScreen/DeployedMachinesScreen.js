@@ -1,11 +1,12 @@
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
-import ProgressBar from "../../components/ProgressBar";
 import RESOURCE_CAP from "../../constants/ResourceCap";
+import MachineCard from "./components/MachineCard";
+import MachineGroup from "./components/MachineGroup";
 
 const DeployedMachinesScreen = () => {
   const {
@@ -26,7 +27,6 @@ const DeployedMachinesScreen = () => {
     ...ownedMachines.filter((m) => !placedMachines.some((p) => p.id === m.id)),
   ];
 
-  // Helper to get node info (only discovered nodes, with up-to-date depletion)
   const getNodeInfo = (machine) => {
     const nodeId =
       machine.assignedNodeId || machine.nodeId || machine.nodeTargetId;
@@ -35,7 +35,6 @@ const DeployedMachinesScreen = () => {
       (n) => n.id === nodeId && discoveredNodes[n.id]
     );
     if (!baseNode) return null;
-    // Clone node and inject currentAmount from nodeAmounts
     const currentAmount =
       typeof nodeAmounts?.[nodeId] === "number"
         ? nodeAmounts[nodeId]
@@ -46,8 +45,7 @@ const DeployedMachinesScreen = () => {
   };
 
   // Helper to get machine state (depletion aware)
-  const getMachineState = (machine) => {
-    const node = getNodeInfo(machine);
+  const getMachineStatusText = (machine, node) => {
     if (machine.type === "miner" || machine.type === "pump") {
       if (node) {
         if (typeof node.currentAmount === "number" && node.currentAmount <= 0)
@@ -85,40 +83,24 @@ const DeployedMachinesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Machines Overview</Text>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {Object.keys(machinesByType).length > 0 ? (
           Object.keys(machinesByType).map((typeName) => (
-            <View key={typeName} style={styles.machineTypeSection}>
-              <Text style={styles.groupTitle}>{typeName}s</Text>
+            <MachineGroup key={typeName} typeName={typeName}>
               {machinesByType[typeName].map((machine) => {
                 const node = getNodeInfo(machine);
                 const recipe = machine.currentRecipeId
                   ? items[machine.currentRecipeId]
                   : null;
-                // Use node depletion/capacity for progress bar
-                let currentAmount =
-                  node && typeof node.currentAmount === "number"
-                    ? node.currentAmount
-                    : 0;
-                let cap =
-                  node && typeof node.capacity === "number"
-                    ? node.capacity
-                    : 50;
-                // For consistency, show amountProducedPerTick = 1 for miners
-                const amountProducedPerTick =
-                  machine.type === "miner" ? 1 : null;
+                const statusText = getMachineStatusText(machine, node);
+                const displayName = items[machine.type]?.name || machine.type;
                 return (
-                  <TouchableOpacity
+                  <MachineCard
                     key={machine.id}
-                    style={[
-                      styles.machineCard,
-                      {
-                        borderColor: "#4CAF50",
-                        borderWidth: 1,
-                        marginBottom: 12,
-                      },
-                    ]}
+                    machine={{ ...machine, statusText, displayName }}
+                    node={node}
+                    recipe={recipe}
+                    resourceCap={RESOURCE_CAP}
                     onPress={() =>
                       navigation.navigate("MachineDetailsScreen", {
                         machine,
@@ -126,76 +108,15 @@ const DeployedMachinesScreen = () => {
                         recipe,
                       })
                     }
-                  >
-                    {/* No logs in render to avoid infinite renders */}
-                    <View style={styles.machineInfo}>
-                      <Text style={[styles.machineName, { color: "#4CAF50" }]}>
-                        {items[machine.type]?.name || machine.type}
-                      </Text>
-                      <Text style={styles.machineStatus}>
-                        {machine.type === "miner" &&
-                        node &&
-                        currentAmount >= cap
-                          ? `Idle (Reached Cap)`
-                          : getMachineState(machine)}
-                      </Text>
-                      {node && (
-                        <View style={styles.nodeDetails}>
-                          <Text style={styles.nodeName}>@ {node.name}</Text>
-                          <Text style={styles.nodeId}>Node ID: {node.id}</Text>
-                          {typeof node.currentAmount !== "undefined" && (
-                            <Text style={styles.nodeAmount}>
-                              Amount: {node.currentAmount} / {RESOURCE_CAP}
-                            </Text>
-                          )}
-                        </View>
-                      )}
-                      {recipe && (
-                        <Text style={styles.recipeName}>
-                          Recipe: {recipe.name}
-                        </Text>
-                      )}
-                      {machine.level && (
-                        <Text style={styles.machineLevel}>
-                          Level: {machine.level}
-                        </Text>
-                      )}
-                      {machine.type === "miner" && node && (
-                        <>
-                          <ProgressBar
-                            value={currentAmount}
-                            max={cap}
-                            label={"Node Depletion"}
-                            style={{ marginTop: 8 }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              marginTop: 10,
-                              backgroundColor: machine.isIdle
-                                ? "#007bff"
-                                : "#d9534f",
-                              paddingVertical: 8,
-                              paddingHorizontal: 16,
-                              borderRadius: 5,
-                              alignSelf: "flex-start",
-                            }}
-                            onPress={() =>
-                              machine.isIdle
-                                ? resumeMiner(machine.id)
-                                : pauseMiner(machine.id)
-                            }
-                          >
-                            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                              {machine.isIdle ? "Reanudar" : "Detener"}
-                            </Text>
-                          </TouchableOpacity>
-                        </>
-                      )}
-                    </View>
-                  </TouchableOpacity>
+                    onPauseResume={() =>
+                      machine.isIdle
+                        ? resumeMiner(machine.id)
+                        : pauseMiner(machine.id)
+                    }
+                  />
                 );
               })}
-            </View>
+            </MachineGroup>
           ))
         ) : (
           <Text style={styles.emptyStateText}>

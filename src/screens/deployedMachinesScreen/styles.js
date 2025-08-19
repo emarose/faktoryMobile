@@ -5,14 +5,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1a1a2a",
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#ffffff",
-    textAlign: "center",
-    paddingVertical: 20,
-    marginTop: 10,
-  },
   scrollViewContent: {
     flexGrow: 1,
     paddingHorizontal: 10,
