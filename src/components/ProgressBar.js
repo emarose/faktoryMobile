@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, Animated } from "react-native";
+import React from "react";
+import { View, Text } from "react-native";
 import * as Progress from "react-native-progress";
 
 const ProgressBar = ({
   value,
   max = 1,
   label,
-  height = 16,
+  height = 20,
   color = "#4CAF50",
   backgroundColor = "#23233a",
   style,
@@ -15,34 +15,20 @@ const ProgressBar = ({
   const progress = Math.max(0, Math.min(1, value / max));
   const progressText = `${Math.floor(value)} / ${max}`;
 
-  // Escala para el latido
-  const scaleAnim = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 1.05, // apenas más grande
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [value]);
-
   return (
-    <View style={[{ marginVertical: 4, justifyContent: "center" }, style]}>
+    <View style={[{ marginVertical: 4 }, style]}>
       {label && (
-        <Text style={{ color: "#fff", fontSize: 12, marginBottom: 2 }}>
+        <Text style={{ color: "#fff", fontSize: 12, marginBottom: 6 }}>
           {label}
         </Text>
       )}
 
-      {/* Barra con animación de escala */}
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <View
+        style={{
+          height: height,
+          justifyContent: "center",
+        }}
+      >
         <Progress.Bar
           progress={progress}
           width={null}
@@ -52,30 +38,20 @@ const ProgressBar = ({
           borderWidth={1}
           borderRadius={8}
           animated={false}
+          style={{ position: "absolute", top: 0, left: 0, right: 0 }}
         />
-      </Animated.View>
-
-      {/* Texto centrado dentro */}
-      <View
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          height,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Animated.Text
+        <Text
           style={{
+            position: "absolute",
+            width: "100%",
+            textAlign: "center",
             color: textColor,
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: "bold",
-            transform: [{ scale: scaleAnim }], // el texto también late
           }}
         >
           {progressText}
-        </Animated.Text>
+        </Text>
       </View>
     </View>
   );

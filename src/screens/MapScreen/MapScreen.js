@@ -14,8 +14,8 @@ import { useMachines } from "../../hooks/useMachines";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
 import MapToast from "./components/MapToast/MapToast";
-import { MaterialIcons } from "@expo/vector-icons";
-
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useMilestone } from "../../hooks/useMilestone";
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
@@ -49,6 +49,7 @@ export default function MapScreen({ navigation }) {
   const [toastMessage, setToastMessage] = useState("");
   const [manualPinnedNodeId, setManualPinnedNodeId] = useState(null);
   const [isManualPinActive, setIsManualPinActive] = useState(false);
+  const { currentMilestone, progress, nextMilestone } = useMilestone();
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
@@ -123,7 +124,10 @@ export default function MapScreen({ navigation }) {
     }
   });
   // Nodo actualmente "pinned" (manual o auto)
-  const pinnedNodeId = isManualPinActive && manualPinnedNodeId ? manualPinnedNodeId : closestNodeId;
+  const pinnedNodeId =
+    isManualPinActive && manualPinnedNodeId
+      ? manualPinnedNodeId
+      : closestNodeId;
 
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
@@ -337,50 +341,78 @@ export default function MapScreen({ navigation }) {
               zIndex: 2,
             }}
           />
-
-          {/* Controles */}
-          <View
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              width: TILE_SIZE * VIEW_SIZE,
-              height: TILE_SIZE * VIEW_SIZE,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <MapGridControls
-              MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-              exploreDirection={handleExploreDirection}
-              onMove={() => setIsManualPin(false)}
-            />
-          </View>
         </View>
 
         <View
           style={{
-            zIndex: 300,
             flexDirection: "row",
-            alignItems: "center",
-            marginTop: 8,
-            alignSelf: "flex-end",
+            width: TILE_SIZE * VIEW_SIZE,
+            minHeight: 90,
+            marginTop: 18,
+            marginBottom: 8,
+            alignSelf: "center",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
           }}
         >
-          <MaterialIcons
-            name="my-location"
-            size={18}
-            color="#FFD700"
-            style={{ opacity: 0.85, marginRight: 4 }}
-          />
-          <Text style={{ fontSize: 13, color: "#e0e0e0", fontWeight: "bold" }}>
-            ({visualPlayerPos.x}, {visualPlayerPos.y})
-          </Text>
+          {/* Izquierda */}
+          <View
+            style={{
+              alignSelf: "flex-start",
+              flexDirection: "column",
+              gap: 8,
+              borderWidth: 1,
+              borderColor: "#444",
+              borderRadius: 8,
+              padding: 8,
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
+              <MaterialIcons
+                name="my-location"
+                size={18}
+                color="#FFD700"
+                style={{ opacity: 0.85 }}
+              />
+              <Text style={{ fontSize: 12, color: "#fff" }}>
+                Current position: {visualPlayerPos.x}, {visualPlayerPos.y})
+              </Text>
+            </View>
+            <View style={{ marginBottom: 8 }}>
+              {currentMilestone || nextMilestone ? (
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+                >
+                  <MaterialCommunityIcons
+                    name="flag-checkered"
+                    size={18}
+                    color="#1abc9c"
+                  />
+                  <Text
+                    style={{ fontSize: 12, color: "#e0e0e0" }}
+                    numberOfLines={1}
+                  >
+                    {currentMilestone.requirementsDescription}
+                  </Text>
+                </View>
+              ) : (
+                <Text style={{ fontSize: 11, color: "#e0e0e0" }}>
+                  No hay misiones pendientes
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
-      </View>
 
-      {/* Lista de NodeCard debajo del mapa */}
-      {/* Estado para controlar la card expandida */}
+        {/* Derecha: D-pad completamente fuera del grid */}
+        <MapGridControls
+          MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
+          exploreDirection={handleExploreDirection}
+          onMove={() => setIsManualPin(false)}
+        />
+      </View>
 
       {displayableNodes.map((item) => (
         <NodeCard

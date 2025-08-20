@@ -14,7 +14,7 @@ const milestones = [
     name: "Starter Tech",
     description:
       "Reach your first milestone by discovering a resource node in the World Map. Unlocks mining and smelting, enabling basic automation of resource gathering and processing.",
-    requirementsDescription: "Discover 1 resource node.",
+    requirementsDescription: "Discover 1 resource node",
     unlocked: false,
     unlocks: ["Smelter", "Miner"],
     requirements: { discoveredNodes: 1 },
