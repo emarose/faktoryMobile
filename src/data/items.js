@@ -174,7 +174,7 @@ export const items = {
     description: "Refined iron bar.",
     machine: "smelter",
     inputs: {
-      ironOre: 1,
+      ironOre: 2,
     },
     output: {
       ironIngot: 1,

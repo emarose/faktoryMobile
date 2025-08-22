@@ -1,13 +1,15 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from "react-native";
 import MiniToast from "./MiniToast";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
+import InventoryStyles from "../InventoryScreen/styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
 import { Picker } from '@react-native-picker/picker';
 import ProgressBar from "../../components/ProgressBar";
+import CraftButton from "./components/CraftButton";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -28,6 +30,10 @@ function normalizeOutputs(outputs) {
 }
 
 const MachineDetailsScreen = ({ route }) => {
+
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [inventoryModalVisible, setInventoryModalVisible] = useState(false);
   const { machine, node, recipe } = route.params;
   const { allResourceNodes = [], setPlacedMachines, placedMachines, discoveredNodes, inventory, ownedMachines: contextOwnedMachines, addResource, removeResources, canAfford, handleDepleteNode, craftingQueue, addToCraftingQueue, updateCraftingQueue } = useGame();
   const ownedMachines = useMemo(
@@ -124,8 +130,133 @@ const MachineDetailsScreen = ({ route }) => {
     console.log(`Assigned node ${nodeId} to machine ${machine.id}`);
   };
 
+  const cancelCrafting = () => {
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
+      progressInterval.current = null;
+    }
+    setIsProcessing(false);
+    setProgress(0);
+  };
+
+  // Crafting logic: always animate per unit, show mini-toast per unit, as before
+  const startCrafting = async (amountToCraft, isMax = false) => {
+    if (!selectedRecipe || isProcessing) return;
+    setIsProcessing(isMax || amountToCraft > 1 ? 'max' : 'single');
+    setProgress(0);
+
+    let crafted = 0;
+    for (let i = 0; i < amountToCraft; i++) {
+      await new Promise(resolve => {
+        let elapsed = 0;
+        const step = 50;
+        const interval = setInterval(() => {
+          elapsed += step / 1000;
+          setProgress(i * selectedRecipe.processingTime + Math.min(elapsed, selectedRecipe.processingTime));
+          if (elapsed >= selectedRecipe.processingTime) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, step);
+        progressInterval.current = interval;
+      });
+      crafted++;
+      showMiniToast(`+1 ${items[selectedRecipe.outputs[0].item]?.name || selectedRecipe.outputs[0].item}`);
+      const success = craftItem(selectedRecipe, 1);
+      if (!success) {
+        alert('Crafting failed.');
+        break;
+      }
+    }
+    cancelCrafting();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* Inventory Modal */}
+      <Modal
+        visible={inventoryModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setInventoryModalVisible(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ backgroundColor: '#1a1a2a', borderRadius: 16, padding: 20, width: '92%', maxHeight: '85%' }}>
+            <Text style={[InventoryStyles.title, { marginTop: 0 }]}>Your Crafted Items</Text>
+            <ScrollView contentContainerStyle={InventoryStyles.scrollViewContent}>
+              {Object.values(inventory).filter(item => {
+                const itemData = items[item.id];
+                return (
+                  item.currentAmount > 0 &&
+                  itemData &&
+                  (itemData.type === "intermediateProduct" || itemData.type === "finalProduct")
+                );
+              }).sort((a, b) => a.name.localeCompare(b.name)).length > 0 ? (
+                <View style={InventoryStyles.inventoryGrid}>
+                  {Object.values(inventory)
+                    .filter(item => {
+                      const itemData = items[item.id];
+                      return (
+                        item.currentAmount > 0 &&
+                        itemData &&
+                        (itemData.type === "intermediateProduct" || itemData.type === "finalProduct")
+                      );
+                    })
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(item => {
+                      const itemDetails = items[item.id] || {};
+                      return (
+                        <TouchableOpacity
+                          key={item.id}
+                          style={InventoryStyles.gridItem}
+                          activeOpacity={0.7}
+                        >
+                          <View style={InventoryStyles.iconContainer}>
+                            {/* <Image source={itemDetails.icon} style={InventoryStyles.itemIcon} /> */}
+                            <Text style={InventoryStyles.iconText}>
+                              {item.name.charAt(0).toUpperCase()}
+                            </Text>
+                          </View>
+                          <Text style={InventoryStyles.itemName}>{item.name}</Text>
+                          <View style={InventoryStyles.amountOverlay}>
+                            <Text style={InventoryStyles.itemAmount}>
+                              {Math.floor(item.currentAmount)}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                </View>
+              ) : (
+                <Text style={InventoryStyles.emptyInventoryText}>
+                  Your inventory of crafted items is empty. Start building and crafting!
+                </Text>
+              )}
+            </ScrollView>
+            <TouchableOpacity
+              style={{ marginTop: 18, alignSelf: 'center', backgroundColor: '#444', borderRadius: 8, paddingVertical: 10, paddingHorizontal: 32 }}
+              onPress={() => setInventoryModalVisible(false)}
+            >
+              <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* Inventory Button */}
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#2980b9',
+          borderRadius: 8,
+          paddingVertical: 12,
+          marginBottom: 12,
+          alignItems: 'center',
+          alignSelf: 'center',
+          width: '60%',
+        }}
+        onPress={() => setInventoryModalVisible(true)}
+      >
+        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Inventory</Text>
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.detailsContent}>
         <Text style={styles.detailsTitle}>{liveMachine.type}</Text>
         <Text style={styles.detailsText}><Text style={{ fontWeight: 'bold' }}>ID:</Text> {liveMachine.id}</Text>
@@ -160,7 +291,6 @@ const MachineDetailsScreen = ({ route }) => {
                       <ProgressBar
                         value={assignedNode.currentAmount}
                         max={typeof assignedNode.capacity === 'number' ? assignedNode.capacity : 1000}
-                        label={"Node Depletion"}
                         style={{ marginTop: 8, marginBottom: 8 }}
                       />
                     )}
@@ -180,43 +310,35 @@ const MachineDetailsScreen = ({ route }) => {
               <Text style={styles.detailsText}>Select Recipe:</Text>
               <Picker
                 selectedValue={selectedRecipeId}
-                style={{ height: 50, width: '100%', backgroundColor: '#23233a', color: '#fff', marginBottom: 10 }}
+                style={styles.picker}
                 onValueChange={(itemValue) => setSelectedRecipeId(itemValue)}
               >
                 {availableRecipes.map((recipe) => (
                   <Picker.Item key={recipe.id} label={recipe.name} value={recipe.id} />
                 ))}
               </Picker>
+
               {selectedRecipe && (() => {
-                // Always treat inputs/outputs as arrays
-                const inputs = Array.isArray(selectedRecipe.inputs) ? selectedRecipe.inputs : (selectedRecipe.inputs ? [selectedRecipe.inputs] : []);
-                const outputs = Array.isArray(selectedRecipe.outputs) ? selectedRecipe.outputs : (selectedRecipe.outputs ? [selectedRecipe.outputs] : []);
+                const inputs = Array.isArray(selectedRecipe.inputs) ? selectedRecipe.inputs : [];
+                const outputs = Array.isArray(selectedRecipe.outputs) ? selectedRecipe.outputs : [];
+                const output = outputs[0];
+                const processingTime = selectedRecipe.processingTime || 1;
+
                 let maxCraftable = Infinity;
                 inputs.forEach(input => {
                   const inv = inventory[input.item]?.currentAmount || 0;
                   const possible = input.amount > 0 ? Math.floor(inv / input.amount) : 0;
                   if (possible < maxCraftable) maxCraftable = possible;
                 });
-                // Output info
-                const output = outputs[0];
-                // Can craft?
+
                 const amount = Math.max(1, parseInt(productAmount) || 1);
                 const canCraft = amount > 0 && amount <= maxCraftable;
-                // ProgressBar logic
-                const processingTime = selectedRecipe.processingTime || 1;
+
                 return (
-                  <View style={{
-                    marginBottom: 20,
-                    backgroundColor: '#23233a',
-                    borderRadius: 12,
-                    padding: 16,
-                    shadowColor: '#000',
-                    shadowOpacity: 0.1,
-                    shadowRadius: 8,
-                    elevation: 2,
-                  }}>
+                  <View style={styles.card}>
+                    {/* Progress Bar */}
                     {isProcessing && (
-                      <View style={{ marginTop: 8, marginBottom: 16, alignSelf: 'stretch' }}>
+                      <View style={styles.progressContainer}>
                         <ProgressBar
                           value={progress}
                           max={isProcessing === 'max' ? (processingTime * maxCraftable) : processingTime}
@@ -224,134 +346,92 @@ const MachineDetailsScreen = ({ route }) => {
                           color="#4CAF50"
                           backgroundColor="#23233a"
                           height={18}
-                          style={{ opacity: 1, borderRadius: 8 }}
+                          style={{ borderRadius: 8 }}
                         />
-                        <Text style={{ color: '#ffe082', fontSize: 14, textAlign: 'center', marginTop: 4, fontWeight: 'bold', letterSpacing: 0.5 }}>
+                        <Text style={styles.progressText}>
                           {isProcessing === 'max'
-                            ? `Processing... ${(progress).toFixed(1)}s / ${(processingTime * maxCraftable).toFixed(1)}s`
-                            : `Processing... ${(progress).toFixed(1)}s / ${processingTime}s`}
+                            ? `Processing... ${progress.toFixed(1)}s / ${(processingTime * maxCraftable).toFixed(1)}s`
+                            : `Processing... ${progress.toFixed(1)}s / ${processingTime}s`}
                         </Text>
+                        <TouchableOpacity onPress={cancelCrafting} style={styles.cancelButton}>
+                          <Text style={styles.cancelText}>Cancel</Text>
+                        </TouchableOpacity>
                       </View>
                     )}
-                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginBottom: 6 }}>Required Resources</Text>
+
+                    {/* Resource Info */}
+                    <Text style={styles.sectionTitle}>Required Resources</Text>
                     {inputs.length === 0 ? (
-                      <Text style={{ color: '#bbb', fontSize: 14, marginBottom: 4 }}>None</Text>
+                      <Text style={styles.subText}>None</Text>
                     ) : (
                       inputs.map(input => (
-                        <Text key={input.item} style={{ color: '#fff', fontSize: 14, marginBottom: 2 }}>
+                        <Text key={input.item} style={styles.resourceText}>
                           {input.amount * amount} x {items[input.item]?.name || input.item}
-                          <Text style={{ color: '#aaa', fontSize: 13 }}>
+                          <Text style={styles.inventoryText}>
                             (You have: {inventory[input.item]?.currentAmount || 0})
                           </Text>
                         </Text>
                       ))
                     )}
-                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginTop: 10, marginBottom: 2 }}>Expected Output</Text>
-                    <Text style={{ color: '#fff', fontSize: 15, marginBottom: 10 }}>
+
+                    {/* Output Info */}
+                    <Text style={styles.sectionTitle}>Expected Output</Text>
+                    <Text style={styles.outputText}>
                       {output ? output.amount * amount : 0} x {output ? (items[output.item]?.name || output.item) : ''}
                     </Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
-                      <TouchableOpacity
-                        style={{
-                          flex: 1,
-                          backgroundColor: canCraft && !isProcessing ? '#27ae60' : '#aaa',
-                          borderRadius: 8,
-                          paddingVertical: 16,
-                          marginRight: 8,
-                          alignItems: 'center',
-                          shadowColor: '#000',
-                          shadowOpacity: 0.08,
-                          shadowRadius: 4,
-                          elevation: 1,
-                        }}
-                        disabled={!!(!canCraft || isProcessing)}
-                        onPress={() => {
-                          if (selectedRecipe && canCraft && !isProcessing) {
-                            setIsProcessing('single');
-                            setProgress(0);
-                            if (progressInterval.current) clearInterval(progressInterval.current);
-                            const interval = setInterval(() => {
-                              setProgress(prev => {
-                                if (prev + 0.1 >= processingTime) {
-                                  clearInterval(interval);
-                                  setIsProcessing(false);
-                                  setProgress(0);
-                                  const success = craftItem(selectedRecipe, 1);
-                                  if (!success) {
-                                    alert('Crafting failed.');
-                                  }
-                                  return processingTime;
-                                }
-                                return prev + 0.1;
-                              });
-                            }, 100);
-                            progressInterval.current = interval;
-                          }
-                        }}
-                      >
-                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, letterSpacing: 0.5 }}>
-                          Craft 1 {output ? (items[output.item]?.name || output.item) : ''}
-                        </Text>
+
+                    {/* Stepper */}
+                    <View style={styles.stepperContainer}>
+                      <TouchableOpacity onPress={() => setProductAmount(Math.max(1, amount - 1))}>
+                        <Text style={styles.stepperButton}>−</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        style={{
-                          flex: 1,
-                          backgroundColor: maxCraftable > 0 && !isProcessing ? '#2980b9' : '#aaa',
-                          borderRadius: 8,
-                          paddingVertical: 16,
-                          marginLeft: 8,
-                          alignItems: 'center',
-                          shadowColor: '#000',
-                          shadowOpacity: 0.08,
-                          shadowRadius: 4,
-                          elevation: 1,
-                        }}
-                        disabled={!!(maxCraftable <= 0 || isProcessing)}
-                        onPress={async () => {
-                          if (selectedRecipe && maxCraftable > 0 && !isProcessing) {
-                            setIsProcessing('max');
-                            setProgress(0);
-                            let crafted = 0;
-                            for (let i = 0; i < maxCraftable; i++) {
-                              // Barra de progreso animada
-                              await new Promise(resolve => {
-                                let elapsed = 0;
-                                const step = 50; // ms
-                                const interval = setInterval(() => {
-                                  elapsed += step / 1000;
-                                  setProgress(i * processingTime + Math.min(elapsed, processingTime));
-                                  if (elapsed >= processingTime) {
-                                    clearInterval(interval);
-                                    resolve();
-                                  }
-                                }, step);
-                              });
-                              crafted++;
-                              showMiniToast(`+1 ${output ? (items[output.item]?.name || output.item) : ''}`);
-                              const success = craftItem(selectedRecipe, 1);
-                              if (crafted >= maxCraftable) {
-                                setIsProcessing(false);
-                                setProgress(0);
-                                if (!success) {
-                                  alert('Crafting failed.');
-                                }
-                              }
-                            }
-                          }
-                        }}
-                      >
-                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, letterSpacing: 0.5 }}>
-                          Craft Max ({maxCraftable}) {output ? (items[output.item]?.name || output.item) : ''}
-                        </Text>
+                      <TextInput
+                        style={styles.stepperInput}
+                        keyboardType="numeric"
+                        value={String(amount)}
+                        onChangeText={(val) => setProductAmount(val)}
+                      />
+                      <TouchableOpacity onPress={() => setProductAmount(Math.min(maxCraftable, amount + 1))}>
+                        <Text style={styles.stepperButton}>+</Text>
                       </TouchableOpacity>
                     </View>
+
+                    {/* Craft Buttons */}
+                    <View style={styles.buttonRow}>
+                      <CraftButton label="Craft 1" onPress={() => startCrafting(1)}/*  disabled={!canCraft || isProcessing}  *//>
+                      <CraftButton label="Craft 5" onPress={() => startCrafting(Math.min(5, maxCraftable))} /* disabled={!canCraft || isProcessing} */ />
+                      <CraftButton label={`Craft Max (${maxCraftable})`} onPress={() => setShowConfirm(true)} /*disabled={maxCraftable <= 0 || isProcessing} */ />
+                    </View>
+
+                    {/* Warning */}
                     {maxCraftable <= 0 && (
-                      <Text style={{ color: '#e53935', marginTop: 4 }}>Not enough resources.</Text>
+                      <Text style={styles.warningText}>Not enough resources.</Text>
                     )}
+
+                    {/* Confirm Modal */}
+                    <Modal visible={showConfirm} transparent animationType="fade">
+                      <View style={styles.modalOverlay}>
+                        <View style={styles.modalContent}>
+                          <Text style={styles.modalText}>
+                            You're about to craft {maxCraftable} items. This will take {(processingTime * maxCraftable).toFixed(1)}s.
+                          </Text>
+                          <View style={styles.modalButtons}>
+                            <TouchableOpacity onPress={() => { setShowConfirm(false); startCrafting(maxCraftable, true); }}>
+                              <Text style={styles.modalConfirm}>Confirm</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setShowConfirm(false)}>
+                              <Text style={styles.modalCancel}>Cancel</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </View>
+                      </View>
+                    </Modal>
                   </View>
                 );
               })()}
+
             </View>
+
           )
         )}
       </ScrollView>
