@@ -277,7 +277,7 @@ export default function MapScreen({ navigation }) {
           onPress={regenerateSeed}
         >
           <Text style={{ color: "#FFD700", fontWeight: "bold" }}>
-            Cambiar Seed Mundo
+            Change seed
           </Text>
         </TouchableOpacity>
         {/* Botón para activar el seed de test */}
@@ -294,7 +294,7 @@ export default function MapScreen({ navigation }) {
           onPress={setTestSeed}
         >
           <Text style={{ color: "#00BFFF", fontWeight: "bold" }}>
-            Seed Test
+            Test Seed
           </Text>
         </TouchableOpacity>
       </View>
@@ -323,12 +323,12 @@ export default function MapScreen({ navigation }) {
               position: "absolute",
               left:
                 (((visualPlayerPos.x % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
-                  TILE_SIZE +
+                TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               top:
                 (((visualPlayerPos.y % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
-                  TILE_SIZE +
+                TILE_SIZE +
                 TILE_SIZE / 2 -
                 DISCOVERY_RADIUS_PX,
               width: DISCOVERY_RADIUS_PX * 2,

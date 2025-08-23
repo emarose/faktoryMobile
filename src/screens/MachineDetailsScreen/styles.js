@@ -34,4 +34,20 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  inventoryButton: {
+    backgroundColor: "#2c2c44",
+    borderRadius: 8,
+    paddingVertical: 12,
+    marginBottom: 12,
+    alignItems: "center",
+    alignSelf: "center",
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 16,
+  },
 });

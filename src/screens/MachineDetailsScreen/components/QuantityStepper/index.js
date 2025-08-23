@@ -1,60 +1,25 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
+import Slider from "@react-native-community/slider";
 import styles from "../../styles";
 
 const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
   return (
-    <View style={styles.stepperContainer}>
-      <TouchableOpacity
-        onPress={() => setAmount(Math.max(1, amount - 1))}
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#2c2c44",
-          borderRadius: 8,
-          justifyContent: "center",
-          alignItems: "center",
-          borderWidth: 1,
-          borderColor: "#444455",
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold" }}>−</Text>
-      </TouchableOpacity>
-      
-      <TextInput
-        style={{
-          width: 60,
-          height: 40,
-          backgroundColor: "#23233a",
-          borderRadius: 8,
-          color: "#fff",
-          textAlign: "center",
-          fontWeight: "bold",
-          borderWidth: 1,
-          borderColor: "#444455",
-        }}
-        keyboardType="numeric"
-        value={String(amount)}
-        onChangeText={(val) => setAmount(val)}
+    <View style={[styles.stepperContainer, { alignItems: "center" }]}>
+      <Text style={{ color: "#fff", fontWeight: "bold", marginBottom: 8 }}>
+        Amount: {amount}
+      </Text>
+      <Slider
+        style={{ width: 180, height: 40 }}
+        minimumValue={1}
+        maximumValue={Math.max(1, maxAmount)}
+        step={1}
+        value={amount}
+        minimumTrackTintColor="#4caf50"
+        maximumTrackTintColor="#444"
+        thumbTintColor="#ffe082"
+        onValueChange={setAmount}
       />
-      
-      <TouchableOpacity
-        onPress={() => setAmount(Math.min(maxAmount, amount + 1))}
-        style={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#2c2c44",
-          borderRadius: 8,
-          justifyContent: "center",
-          alignItems: "center",
-          borderWidth: 1,
-          borderColor: "#444455",
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={{ fontSize: 20, color: "#fff", fontWeight: "bold" }}>+</Text>
-      </TouchableOpacity>
     </View>
   );
 };

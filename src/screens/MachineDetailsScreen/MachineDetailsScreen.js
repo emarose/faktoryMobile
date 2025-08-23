@@ -186,7 +186,7 @@ const MachineDetailsScreen = ({ route }) => {
           elapsed += step / 1000;
           setProgress(
             i * selectedRecipe.processingTime +
-              Math.min(elapsed, selectedRecipe.processingTime)
+            Math.min(elapsed, selectedRecipe.processingTime)
           );
           if (elapsed >= selectedRecipe.processingTime) {
             clearInterval(interval);
@@ -197,9 +197,8 @@ const MachineDetailsScreen = ({ route }) => {
       });
       crafted++;
       showMiniToast(
-        `+1 ${
-          items[selectedRecipe.outputs[0].item]?.name ||
-          selectedRecipe.outputs[0].item
+        `+1 ${items[selectedRecipe.outputs[0].item]?.name ||
+        selectedRecipe.outputs[0].item
         }`
       );
       const success = craftItem(selectedRecipe, 1);
@@ -264,17 +263,7 @@ const MachineDetailsScreen = ({ route }) => {
 
       {/* Inventory Button */}
       <TouchableOpacity
-        style={{
-          backgroundColor: "#2c2c44",
-          borderRadius: 8,
-          paddingVertical: 12,
-          marginBottom: 12,
-          alignItems: "center",
-          alignSelf: "center",
-          width: "100%",
-          borderWidth: 1,
-          borderColor: "#4CAF50",
-        }}
+        style={styles.inventoryButton}
         onPress={() => setInventoryModalVisible(true)}
         activeOpacity={0.85}
       >
