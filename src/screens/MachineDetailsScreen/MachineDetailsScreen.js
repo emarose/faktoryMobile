@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MiniToast from "./MiniToast";
+import MiniToast from "./components/MiniToast";
 import styles from "./styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
@@ -254,11 +254,13 @@ const MachineDetailsScreen = ({ route }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Inventory Modal */}
-      <InventoryModal
-        visible={inventoryModalVisible}
-        inventory={inventory}
-        onClose={() => setInventoryModalVisible(false)}
-      />
+      {inventoryModalVisible && (
+        <InventoryModal
+          visible={inventoryModalVisible}
+          inventory={inventory}
+          onClose={() => setInventoryModalVisible(false)}
+        />
+      )}
 
       {/* Inventory Button */}
       <TouchableOpacity
@@ -269,9 +271,9 @@ const MachineDetailsScreen = ({ route }) => {
           marginBottom: 12,
           alignItems: "center",
           alignSelf: "center",
-          width: "60%",
+          width: "100%",
           borderWidth: 1,
-          borderColor: "#444455",
+          borderColor: "#4CAF50",
         }}
         onPress={() => setInventoryModalVisible(true)}
         activeOpacity={0.85}
@@ -283,12 +285,6 @@ const MachineDetailsScreen = ({ route }) => {
 
       <ScrollView contentContainerStyle={styles.detailsContent}>
         <Text style={styles.detailsTitle}>{liveMachine.type}</Text>
-        <Text style={styles.detailsText}>
-          <Text style={{ fontWeight: "bold" }}>ID:</Text> {liveMachine.id}
-        </Text>
-        <Text style={styles.detailsText}>
-          <Text style={{ fontWeight: "bold" }}>Type:</Text> {liveMachine.type}
-        </Text>
 
         {/* Miner/Pump specific controls */}
         {liveMachine.type === "miner" || liveMachine.type === "pump" ? (

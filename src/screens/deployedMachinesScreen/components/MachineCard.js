@@ -141,7 +141,6 @@ const MachineCard = ({ machine, node, onPress }) => {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-              // marginBottom: 8,
             }}
           >
             <View
