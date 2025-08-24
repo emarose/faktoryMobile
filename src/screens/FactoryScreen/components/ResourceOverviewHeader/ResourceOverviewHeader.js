@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
+import { getNodeColor } from "../../../../data/nodeTypes";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();
@@ -25,7 +26,7 @@ const ResourceOverviewHeader = () => {
             return (
               <View key={item.id} style={styles.resourceItem}>
                 {/* Placeholder for Icon (e.g., an Image component) */}
-                <View style={styles.iconPlaceholder}>
+                <View style={[styles.iconPlaceholder, { backgroundColor: getNodeColor(item.id + '_node') }]}>
                   {/* You can replace this with actual images later, e.g.:
                   <Image source={item.icon} style={styles.iconImage} />
                   Make sure your 'items' data includes an 'icon' property with require('./path/to/image.png') */}
@@ -81,13 +82,12 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 4,
-    backgroundColor: "#5a5a7e",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 5,
   },
   iconText: {
-    color: "#e0e0e0",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },

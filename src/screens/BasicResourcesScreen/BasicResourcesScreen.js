@@ -9,6 +9,7 @@ import ResourceAnalysisChart from "./components/ResourceAnalysisChart";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 // TODO: Replace with actual icons for each resource
 import { Image } from "react-native";
+import { getNodeColor } from "../../data/nodeTypes";
 
 const BasicResourcesScreen = () => {
   // Hook para obtener los recursos básicos reales del inventario

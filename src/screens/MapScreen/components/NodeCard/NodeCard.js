@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
@@ -20,7 +20,7 @@ const NodeCard = React.memo(
     const { id: nodeId, name, x, y, type: nodeType } = node;
 
     const nodeDefinition = items[nodeType];
-
+    const [miningFeedback, setMiningFeedback] = useState(false);
     const { manualMineable, machineRequired, output } = nodeDefinition;
     const producedItemId = output ? Object.keys(output)[0] : null;
     const producedItemName =
@@ -65,8 +65,8 @@ const NodeCard = React.memo(
       typeof node.nodeDepletionAmount !== "undefined"
         ? node.nodeDepletionAmount
         : typeof node.currentAmount !== "undefined"
-        ? node.currentAmount
-        : nodeCapacity;
+          ? node.currentAmount
+          : nodeCapacity;
 
     let canManualMine = false;
 
@@ -88,7 +88,7 @@ const NodeCard = React.memo(
       canManualMine = chebyshevDist <= discoveryRadiusTiles;
     }
     const isDepleted = nodeDepletionAmount === 0;
-   
+
     const handleManualMine = () => {
       if (
         !isDepleted &&
@@ -97,6 +97,9 @@ const NodeCard = React.memo(
       ) {
         if (onDepleteNode) {
           onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
+          setMiningFeedback(true);
+          setTimeout(() => setMiningFeedback(false), 250);
+          // trigger feedback to user momentarily changing the node border color
         }
       }
     };
@@ -131,15 +134,8 @@ const NodeCard = React.memo(
         onPress={onPressExpand}
         style={[
           styles.nodeCard,
-          {
-            flexDirection: "column",
-            paddingVertical: isExpanded ? 12 : 6,
-            paddingHorizontal: isExpanded ? 16 : 8,
-            marginVertical: isExpanded ? 6 : 2,
-            backgroundColor: isExpanded ? "#23233a" : "#181825",
-            borderWidth: isExpanded ? 2 : 1,
-            borderColor: isExpanded ? "#FFD700" : "#333",
-          },
+          isExpanded && styles.selectedCard,
+          miningFeedback && { borderColor: '#FFD700', borderWidth: 4, shadowColor: '#FFD700', shadowOpacity: 0.7, shadowRadius: 10 }
         ]}
       >
         {/* Fila principal */}
@@ -190,7 +186,7 @@ const NodeCard = React.memo(
               showManualMineButton &&
               canManualMine &&
               mineIcon}
-                {!isDepleted && showManualMineButton && !canManualMine && (
+            {!isDepleted && showManualMineButton && !canManualMine && (
               <Text style={{ color: "#c00", fontSize: 12, marginTop: 2 }}>
                 Move closer to mine
               </Text>
@@ -267,7 +263,7 @@ const NodeCard = React.memo(
                 Depleted
               </Text>
             )}
-          
+
 
             {machineRequired && (
               <Text
