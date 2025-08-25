@@ -14,9 +14,7 @@ import RecipeSelector from "./components/RecipeSelector";
 import CraftingProgress from "./components/CraftingProgress";
 import ResourceList from "./components/ResourceList";
 import QuantityStepper from "./components/QuantityStepper";
-import ConfirmModal from "./components/ConfirmModal";
 import CraftButton from "./components/CraftButton";
-import Slider from "@react-native-community/slider";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
@@ -243,29 +241,22 @@ const MachineDetailsScreen = ({ route }) => {
     [allResourceNodes, discoveredNodes]
   );
 
-  const handleConfirmMaxCraft = () => {
-    setShowConfirm(false);
-    startCrafting(maxCraftable, true);
-  };
-
-  const handleSetProductAmount = (val) => {
-    const newAmount = parseInt(val) || 1;
-    setProductAmount(Math.min(maxCraftable, Math.max(1, newAmount)));
-  };
+//TODO: fix CANCEL in progress bar
+// when finished crafting "max" it should reset the craft amount to 1
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Inventory Modal */}
-      {inventoryModalVisible && (
+      {/* {inventoryModalVisible && (
         <InventoryModal
           visible={inventoryModalVisible}
           inventory={inventory}
           onClose={() => setInventoryModalVisible(false)}
         />
-      )}
+      )} */}
 
       {/* Inventory Button */}
-      <TouchableOpacity
+      {/*  <TouchableOpacity
         style={styles.inventoryButton}
         onPress={() => setInventoryModalVisible(true)}
         activeOpacity={0.85}
@@ -274,7 +265,7 @@ const MachineDetailsScreen = ({ route }) => {
           Inventory
         </Text>
       </TouchableOpacity>
-
+ */}
       <ScrollView contentContainerStyle={styles.detailsContent}>
         <Text style={styles.detailsTitle}>{liveMachine.type}</Text>
 
@@ -328,20 +319,22 @@ const MachineDetailsScreen = ({ route }) => {
                     <CraftButton
                       label="Craft 1"
                       onPress={() => setProductAmount(1)}
-                      disabled={isProcessing}
+                      disabled={!!isProcessing}
                       icon="numeric-1-circle"
                     />
                     <CraftButton
                       label="Craft 5"
-                      onPress={() => setProductAmount(Math.min(5, maxCraftable))}
-                      disabled={isProcessing || maxCraftable < 5}
+                      onPress={() =>
+                        setProductAmount(Math.min(5, maxCraftable))
+                      }
+                      disabled={!!isProcessing || maxCraftable < 5}
                       icon="numeric-5-circle"
                       style={maxCraftable < 5 ? { opacity: 0.5 } : {}}
                     />
                     <CraftButton
                       label={`Craft Max (${maxCraftable})`}
                       onPress={() => setProductAmount(maxCraftable)}
-                      disabled={isProcessing}
+                      disabled={!!isProcessing}
                       icon="numeric"
                     />
                   </View>
@@ -350,40 +343,45 @@ const MachineDetailsScreen = ({ route }) => {
                   <TouchableOpacity
                     style={[
                       {
-                        backgroundColor: canCraft && !isProcessing ? '#4CAF50' : '#35354a',
-                        borderRadius: 24,
-                        paddingVertical: 16,
-                        alignItems: 'center',
+                        backgroundColor:
+                          canCraft && !isProcessing ? "#4CAF50" : "#35354a",
+                        borderRadius: 8,
+                        paddingVertical: 8,
+                        alignItems: "center",
                         marginTop: 20,
-                        shadowColor: '#000',
+                        shadowColor: "#000",
                         shadowOffset: { width: 0, height: 4 },
                         shadowOpacity: 0.18,
                         shadowRadius: 8,
                         elevation: 4,
-                        borderWidth: 2,
-                        borderColor: canCraft && !isProcessing ? '#8bc34a' : '#444',
                         opacity: canCraft && !isProcessing ? 1 : 0.6,
-                        flexDirection: 'row',
-                        justifyContent: 'center',
+                        flexDirection: "row",
+                        justifyContent: "center",
                       },
                     ]}
                     onPress={() => startCrafting(amount)}
-                    disabled={!canCraft || isProcessing}
+                    /*   disabled={!canCraft || isProcessing} */
                     activeOpacity={0.85}
                   >
                     <MaterialCommunityIcons
-                      name="play-circle"
+                      name="hammer-screwdriver"
                       size={26}
-                      color={canCraft && !isProcessing ? '#fff' : '#888'}
+                      color={canCraft && !isProcessing ? "#fff" : "#888"}
                       style={{ marginRight: 10 }}
                     />
-                    <Text style={{
-                      color: canCraft && !isProcessing ? '#fff' : '#888',
-                      fontWeight: 'bold',
-                      fontSize: 18,
-                      letterSpacing: 0.5,
-                    }}>
-                      Start Crafting ({amount})
+                    <Text
+                      style={{
+                        color: canCraft && !isProcessing ? "#fff" : "#888",
+                        fontWeight: "bold",
+                        fontSize: 18,
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      Start Crafting {amount}{" "}
+                      {selectedRecipe.outputs[0].item
+                        ? items[selectedRecipe.outputs[0].item]?.name ||
+                          selectedRecipe.outputs[0].item
+                        : ""}
                     </Text>
                   </TouchableOpacity>
 
@@ -393,15 +391,6 @@ const MachineDetailsScreen = ({ route }) => {
                       Not enough resources.
                     </Text>
                   )}
-
-                  {/* Confirm Modal (for legacy max crafting, optional) */}
-                  <ConfirmModal
-                    visible={showConfirm}
-                    maxCraftable={maxCraftable}
-                    processingTime={processingTime}
-                    onConfirm={handleConfirmMaxCraft}
-                    onCancel={() => setShowConfirm(false)}
-                  />
                 </View>
               )}
             </View>

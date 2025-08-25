@@ -23,6 +23,8 @@ export default StyleSheet.create({
     borderColor: "#444455",
   },
   resourceInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   resourceName: {
@@ -31,18 +33,17 @@ export default StyleSheet.create({
     fontWeight: "500",
   },
   resourceErrorBadge: {
-    backgroundColor: '#3a2323',
+    backgroundColor: "#3a2323",
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 10,
     borderWidth: 1,
-    borderColor: '#ff6b6b',
-    alignSelf: 'flex-start',
+    borderColor: "#ff6b6b",
+    alignSelf: "flex-start",
   },
   resourceErrorBadgeText: {
-    color: '#ff6b6b',
+    color: "#ff6b6b",
     fontSize: 12,
-    fontWeight: 'bold',
   },
 });
