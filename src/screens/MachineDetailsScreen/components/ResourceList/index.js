@@ -1,39 +1,52 @@
-import React from "react";
 import { View, Text } from "react-native";
-import styles from "../../styles";
 import { items } from "../../../../data/items";
+import styles from "./styles";
+import RequiredResources from "./components/RequiredResources/RequiredResources";
+import ExpectedOutput from "./components/ExpectedOutput/ExpectedOutput";
 
 const ResourceList = ({ inputs, outputs, amount, inventory }) => {
   const input = Array.isArray(inputs) ? inputs : [];
   const output = Array.isArray(outputs) ? outputs[0] : null;
 
-  return (
-    <View>
-      <Text style={styles.sectionTitle}>
-        Required Resources
-      </Text>
-      {input.length === 0 ? (
-        <Text style={styles.subText}>None</Text>
-      ) : (
-        input.map((input) => (
-          <Text key={input.item} style={styles.resourceText}>
-            {input.amount * amount} x{" "}
-            {items[input.item]?.name || input.item}
-            <Text style={styles.inventoryText}>
-              (You have:{" "}
-              {inventory[input.item]?.currentAmount || 0})
-            </Text>
-          </Text>
-        ))
-      )}
+  // Helper to get appropriate icon based on resource type
+  const getResourceIcon = (itemId) => {
+    const item = items[itemId];
+    if (!item) return "help-circle";
+    if (item.type === "ore" || item.type === "rawMaterial") return "metal";
+    if (item.type === "metal") return "gold";
+    if (item.type === "liquid") return "water";
+    if (item.type === "intermediateProduct") return "cog";
+    if (item.type === "finalProduct") return "package-variant-closed";
+    return "cube";
+  };
 
-      <Text style={styles.sectionTitle}>Expected Output</Text>
-      <Text style={styles.outputText}>
-        {output ? output.amount * amount : 0} x{" "}
-        {output
-          ? items[output.item]?.name || output.item
-          : ""}
+  // Helper to check if we have enough of a resource
+  const hasEnoughResource = (itemId, requiredAmount) => {
+    const available = inventory[itemId]?.currentAmount || 0;
+    return available >= requiredAmount * amount;
+  };
+
+  return (
+    <View style={styles.card}>
+      {/* Required Resources */}
+      <Text style={styles.sectionTitle}>Required Resources</Text>
+      <RequiredResources
+        input={input}
+        amount={amount}
+        inventory={inventory}
+        getResourceIcon={getResourceIcon}
+      />
+
+      {/* Expected Output */}
+      <Text style={[styles.sectionTitle, { marginTop: 12 }]}>
+        Expected Output
       </Text>
+      <ExpectedOutput
+        output={output}
+        amount={amount}
+        inventory={inventory}
+        getResourceIcon={getResourceIcon}
+      />
     </View>
   );
 };

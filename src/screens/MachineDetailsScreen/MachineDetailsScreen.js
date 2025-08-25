@@ -16,6 +16,8 @@ import ResourceList from "./components/ResourceList";
 import QuantityStepper from "./components/QuantityStepper";
 import ConfirmModal from "./components/ConfirmModal";
 import CraftButton from "./components/CraftButton";
+import Slider from "@react-native-community/slider";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -186,7 +188,7 @@ const MachineDetailsScreen = ({ route }) => {
           elapsed += step / 1000;
           setProgress(
             i * selectedRecipe.processingTime +
-            Math.min(elapsed, selectedRecipe.processingTime)
+              Math.min(elapsed, selectedRecipe.processingTime)
           );
           if (elapsed >= selectedRecipe.processingTime) {
             clearInterval(interval);
@@ -197,8 +199,9 @@ const MachineDetailsScreen = ({ route }) => {
       });
       crafted++;
       showMiniToast(
-        `+1 ${items[selectedRecipe.outputs[0].item]?.name ||
-        selectedRecipe.outputs[0].item
+        `+1 ${
+          items[selectedRecipe.outputs[0].item]?.name ||
+          selectedRecipe.outputs[0].item
         }`
       );
       const success = craftItem(selectedRecipe, 1);
@@ -313,33 +316,76 @@ const MachineDetailsScreen = ({ route }) => {
                   />
 
                   {/* Quantity Stepper */}
-                  <QuantityStepper
+                  {/* TODO IMPLEMENT SLIDER */}
+                  {/*   <QuantityStepper
                     amount={amount}
                     setAmount={handleSetProductAmount}
                     maxAmount={maxCraftable}
-                  />
+                  /> */}
 
-                  {/* Craft Buttons */}
+                  {/* Craft Amount Buttons */}
                   <View style={styles.buttonRow}>
                     <CraftButton
                       label="Craft 1"
-                      onPress={() => startCrafting(1)}
-                      disabled={maxCraftable < 1 || isProcessing}
-                      icon="wrench"
+                      onPress={() => setProductAmount(1)}
+                      disabled={isProcessing}
+                      icon="numeric-1-circle"
                     />
                     <CraftButton
                       label="Craft 5"
-                      onPress={() => startCrafting(Math.min(5, maxCraftable))}
-                      disabled={maxCraftable < 1 || isProcessing}
-                      icon="factory"
+                      onPress={() => setProductAmount(Math.min(5, maxCraftable))}
+                      disabled={isProcessing || maxCraftable < 5}
+                      icon="numeric-5-circle"
+                      style={maxCraftable < 5 ? { opacity: 0.5 } : {}}
                     />
                     <CraftButton
                       label={`Craft Max (${maxCraftable})`}
-                      onPress={() => setShowConfirm(true)}
-                      disabled={maxCraftable <= 0 || isProcessing}
-                      icon="package-variant-closed"
+                      onPress={() => setProductAmount(maxCraftable)}
+                      disabled={isProcessing}
+                      icon="numeric"
                     />
                   </View>
+
+                  {/* Start Crafting Button */}
+                  <TouchableOpacity
+                    style={[
+                      {
+                        backgroundColor: canCraft && !isProcessing ? '#4CAF50' : '#35354a',
+                        borderRadius: 24,
+                        paddingVertical: 16,
+                        alignItems: 'center',
+                        marginTop: 20,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.18,
+                        shadowRadius: 8,
+                        elevation: 4,
+                        borderWidth: 2,
+                        borderColor: canCraft && !isProcessing ? '#8bc34a' : '#444',
+                        opacity: canCraft && !isProcessing ? 1 : 0.6,
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                      },
+                    ]}
+                    onPress={() => startCrafting(amount)}
+                    disabled={!canCraft || isProcessing}
+                    activeOpacity={0.85}
+                  >
+                    <MaterialCommunityIcons
+                      name="play-circle"
+                      size={26}
+                      color={canCraft && !isProcessing ? '#fff' : '#888'}
+                      style={{ marginRight: 10 }}
+                    />
+                    <Text style={{
+                      color: canCraft && !isProcessing ? '#fff' : '#888',
+                      fontWeight: 'bold',
+                      fontSize: 18,
+                      letterSpacing: 0.5,
+                    }}>
+                      Start Crafting ({amount})
+                    </Text>
+                  </TouchableOpacity>
 
                   {/* Warning */}
                   {maxCraftable <= 0 && (
@@ -348,7 +394,7 @@ const MachineDetailsScreen = ({ route }) => {
                     </Text>
                   )}
 
-                  {/* Confirm Modal */}
+                  {/* Confirm Modal (for legacy max crafting, optional) */}
                   <ConfirmModal
                     visible={showConfirm}
                     maxCraftable={maxCraftable}

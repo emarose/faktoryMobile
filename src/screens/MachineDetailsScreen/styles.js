@@ -48,6 +48,6 @@ export default StyleSheet.create({
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
+    marginTop: 32,
   },
 });
