@@ -12,8 +12,11 @@ const ProgressBar = ({
   style,
   textColor = "#fff",
 }) => {
-  const progress = Math.max(0, Math.min(1, value / max));
-  const progressText = `${Math.floor(value)} / ${max}`;
+  // coerce to safe numbers to avoid NaN transforms in native Animated views
+  const safeValue = typeof value === 'number' && !isNaN(value) ? value : Number(value) || 0;
+  const safeMax = typeof max === 'number' && !isNaN(max) && Number(max) > 0 ? Number(max) : 1;
+  const progress = Math.max(0, Math.min(1, safeValue / safeMax));
+  const progressText = `${Math.floor(safeValue)} / ${safeMax}`;
 
   return (
     <View style={[{ marginVertical: 4 }, style]}>
@@ -55,6 +58,7 @@ const ProgressBar = ({
       </View>
     </View>
   );
+  
 };
 
 export default ProgressBar;

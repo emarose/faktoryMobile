@@ -49,10 +49,10 @@ const MachineDetailsScreen = ({ route }) => {
     addResource,
     removeResources,
     canAfford,
-    handleDepleteNode,
+    /*     handleDepleteNode,
     craftingQueue,
     addToCraftingQueue,
-    updateCraftingQueue,
+    updateCraftingQueue, */
   } = useGame();
 
   const ownedMachines = useMemo(
@@ -122,6 +122,7 @@ const MachineDetailsScreen = ({ route }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const progressInterval = useRef(null);
+  const [currentCraftAmount, setCurrentCraftAmount] = useState(1);
 
   // Find the latest machine data from context
   const liveMachine =
@@ -174,21 +175,26 @@ const MachineDetailsScreen = ({ route }) => {
   // Crafting logic: always animate per unit, show mini-toast per unit, as before
   const startCrafting = async (amountToCraft, isMax = false) => {
     if (!selectedRecipe || isProcessing) return;
-    setIsProcessing(isMax || amountToCraft > 1 ? "max" : "single");
+    const totalAmount = Number(amountToCraft) || 1;
+    const unitProcessingTime = Number(selectedRecipe.processingTime) || 1;
+    setIsProcessing(isMax || totalAmount > 1 ? "max" : "single");
+    setCurrentCraftAmount(totalAmount);
     setProgress(0);
 
     let crafted = 0;
-    for (let i = 0; i < amountToCraft; i++) {
+    let totalElapsed = 0;
+    const outputAmount = selectedRecipe.outputs[0]?.amount || 1;
+    const outputItem = selectedRecipe.outputs[0]?.item;
+
+    for (let i = 0; i < totalAmount; i++) {
       await new Promise((resolve) => {
         let elapsed = 0;
         const step = 50;
         const interval = setInterval(() => {
           elapsed += step / 1000;
-          setProgress(
-            i * selectedRecipe.processingTime +
-              Math.min(elapsed, selectedRecipe.processingTime)
-          );
-          if (elapsed >= selectedRecipe.processingTime) {
+          totalElapsed += step / 1000;
+          setProgress(totalElapsed);
+          if (elapsed >= unitProcessingTime) {
             clearInterval(interval);
             resolve();
           }
@@ -196,19 +202,18 @@ const MachineDetailsScreen = ({ route }) => {
         progressInterval.current = interval;
       });
       crafted++;
-      showMiniToast(
-        `+1 ${
-          items[selectedRecipe.outputs[0].item]?.name ||
-          selectedRecipe.outputs[0].item
-        }`
-      );
+      // Suma progresiva: suma 1 vez por iteración
       const success = craftItem(selectedRecipe, 1);
       if (!success) {
         alert("Crafting failed.");
         break;
       }
+      showMiniToast(
+        `+${outputAmount} ${items[outputItem]?.name || outputItem}`
+      );
     }
     cancelCrafting();
+    setCurrentCraftAmount(1);
   };
 
   // Calculate max craftable amount
@@ -228,7 +233,7 @@ const MachineDetailsScreen = ({ route }) => {
   const maxCraftable = calculateMaxCraftable();
   const amount = Math.max(1, parseInt(productAmount) || 1);
   const canCraft = amount > 0 && amount <= maxCraftable;
-  const processingTime = selectedRecipe?.processingTime || 1;
+  const processingTime = Number(selectedRecipe?.processingTime) || 1;
 
   // Filter for resource node options
   const discoveredNodeOptions = useMemo(
@@ -241,8 +246,8 @@ const MachineDetailsScreen = ({ route }) => {
     [allResourceNodes, discoveredNodes]
   );
 
-//TODO: fix CANCEL in progress bar
-// when finished crafting "max" it should reset the craft amount to 1
+  //TODO: fix CANCEL in progress bar
+  // when finished crafting "max" it should reset the craft amount to 1
 
   return (
     <SafeAreaView style={styles.container}>
@@ -289,14 +294,30 @@ const MachineDetailsScreen = ({ route }) => {
 
               {selectedRecipe && (
                 <View style={styles.card}>
-                  {/* Progress Bar */}
-                  <CraftingProgress
-                    isProcessing={isProcessing}
-                    progress={progress}
-                    processingTime={processingTime}
-                    maxCraftable={maxCraftable}
-                    onCancel={cancelCrafting}
-                  />
+                  {/* Floating Progress Bar */}
+                  {isProcessing && (
+                    <View
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 10,
+                        alignItems: "center",
+                        width: "100%",
+                      }}
+                      pointerEvents="box-none"
+                    >
+                      <CraftingProgress
+                        isProcessing={isProcessing}
+                        progress={progress}
+                        processingTime={processingTime * currentCraftAmount}
+                        maxCraftable={maxCraftable}
+                        onCancel={cancelCrafting}
+                        totalAmount={currentCraftAmount}
+                      />
+                    </View>
+                  )}
 
                   {/* Resource Lists */}
                   <ResourceList

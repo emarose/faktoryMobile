@@ -1,12 +1,36 @@
-import React, { useMemo, useState, useRef } from "react";
-import { Animated, Easing } from "react-native";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { Animated, Easing, View, Text, TouchableOpacity, TextInput, FlatList, ScrollView } from "react-native";
 // import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import styles from "../styles";
 import ProgressBar from "../../../components/ProgressBar";
 import { useGame } from "../../../contexts/GameContext";
+
+// helper: resource icon mapping (returns MaterialCommunityIcons name)
+function getResourceIcon(resourceType) {
+  if (!resourceType) return 'cube-outline';
+  const t = resourceType.toLowerCase();
+  if (t.includes('iron')) return 'circle-slice-8';
+  if (t.includes('copper')) return 'hexagon-multiple';
+  if (t.includes('coal')) return 'fire';
+  if (t.includes('oil')) return 'oil';
+  if (t.includes('limestone')) return 'square-outline';
+  if (t.includes('uranium')) return 'radioactive';
+  return 'cube-outline';
+}
+
+function getResourceColor(resourceType) {
+  if (!resourceType) return '#4CAF50';
+  const t = resourceType.toLowerCase();
+  if (t.includes('iron')) return '#8B4513';
+  if (t.includes('copper')) return '#CD7F32';
+  if (t.includes('coal')) return '#2F2F2F';
+  if (t.includes('oil')) return '#6a4c93';
+  if (t.includes('limestone')) return '#bfbfbf';
+  if (t.includes('uranium')) return '#00c853';
+  return '#4CAF50';
+}
 
 function getMachineIcon(type) {
   switch (type) {
@@ -75,6 +99,49 @@ const MachineCard = ({ machine, node, onPress }) => {
       ),
     [allResourceNodes, discoveredNodes]
   );
+
+  // UI state for improved selector
+  const [selectedResourceType, setSelectedResourceType] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Group discovered nodes by resource type
+  const groupedNodes = useMemo(() => {
+    const grouped = {};
+    discoveredNodeOptions.forEach(n => {
+      const type = n.type || 'Unknown';
+      if (!grouped[type]) grouped[type] = [];
+      grouped[type].push(n);
+    });
+    // sort each group by percentage remaining desc
+    Object.keys(grouped).forEach(k => {
+      grouped[k].sort((a,b) => ((b.currentAmount||0)/(b.capacity||1)) - ((a.currentAmount||0)/(a.capacity||1)));
+    });
+    return grouped;
+  }, [discoveredNodeOptions]);
+
+  // ensure a default selected type
+  useEffect(() => {
+    if (!selectedResourceType) {
+      const keys = Object.keys(groupedNodes);
+      if (keys.length) setSelectedResourceType(keys[0]);
+    }
+  }, [groupedNodes, selectedResourceType]);
+
+  const filteredNodes = useMemo(() => {
+    if (!selectedResourceType) return [];
+    const nodes = groupedNodes[selectedResourceType] || [];
+    if (!searchQuery.trim()) return nodes;
+    const q = searchQuery.toLowerCase();
+    return nodes.filter(n => (n.name||'').toLowerCase().includes(q) || `${n.x},${n.y}`.includes(q));
+  }, [groupedNodes, selectedResourceType, searchQuery]);
+
+  // small distance helper (used in list)
+  const calculateDistance = (pos1, pos2) => {
+    if (!pos1 || !pos2) return 0;
+    const dx = (pos1.x||0) - (pos2.x||0);
+    const dy = (pos1.y||0) - (pos2.y||0);
+    return Math.round(Math.sqrt(dx*dx + dy*dy));
+  };
 
   const nodeCapacity =
     node && typeof node.capacity === "number" ? node.capacity : 1000;
@@ -219,147 +286,85 @@ const MachineCard = ({ machine, node, onPress }) => {
                     No discovered, non-depleted nodes available.
                   </Text>
                 )}
-              {/* Node selector panel/modal */}
+              {/* Improved Node selector panel/modal */}
               {showNodeSelector && (
                 <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    transform: [
-                      {
-                        translateY: slideAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [300, -69],
-                        }),
-                      },
-                    ],
-                    backgroundColor: "#23243aff",
-                    borderRadius: 18,
-                    padding: 18,
-                    zIndex: 100,
-                    elevation: 20,
-                    shadowColor: "#000",
-                    shadowOpacity: 0.5,
-                    shadowRadius: 16,
-                    shadowOffset: { width: 0, height: 8 },
-                  }}
+                  style={[
+                    {
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      transform: [
+                        { translateY: slideAnim.interpolate({ inputRange: [0,1], outputRange: [300, 0] }) }
+                      ],
+                    },
+                    styles.nodeSelectorModal
+                  ]}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: 8,
-                      gap: 8,
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="select-group"
-                      size={32}
-                      color="#4CAF50"
-                    />
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontWeight: "bold",
-                        fontSize: 18,
-                        textAlign: "center",
-                        letterSpacing: 1,
-                      }}
-                    >
-                      Select a resource node
-                    </Text>
+                  <View style={styles.modalHeader}>
+                    <MaterialCommunityIcons name="select-group" size={22} color="#4CAF50" />
+                    <Text style={styles.modalTitle}>Select resource node</Text>
+                    <TouchableOpacity onPress={closeNodeSelector} style={styles.closeButton}>
+                      <MaterialCommunityIcons name="close" size={20} color="#bbb" />
+                    </TouchableOpacity>
                   </View>
 
-                  {discoveredNodeOptions.length === 0 ? (
-                    <Text
-                      style={{
-                        color: "#ff9800",
-                        fontSize: 15,
-                        textAlign: "center",
-                        marginVertical: 12,
-                      }}
-                    >
-                      <MaterialCommunityIcons
-                        name="emoticon-sad-outline"
-                        size={18}
-                        color="#ff9800"
-                      />{" "}
-                      No available nodes! Explore more to unlock.
-                    </Text>
-                  ) : (
-                    discoveredNodeOptions.map((n) => (
+                  {/* search */}
+                  <View style={styles.searchContainer}>
+                    <MaterialCommunityIcons name="magnify" size={18} color="#bbb" />
+                    <TextInput
+                      value={searchQuery}
+                      onChangeText={setSearchQuery}
+                      placeholder="Search node name or coords"
+                      placeholderTextColor="#9a9a9a"
+                      style={styles.searchInput}
+                    />
+                  </View>
+
+                  {/* resource type tabs */}
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabContainer}>
+                    {Object.entries(groupedNodes).map(([type, nodes]) => (
                       <TouchableOpacity
-                        key={n.id}
-                        style={{
-                          backgroundColor: "#2c2c44",
-                          borderRadius: 10,
-                          padding: 14,
-                          marginVertical: 7,
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          borderWidth: 1,
-                          borderColor: "#4CAF50",
-                        }}
-                        activeOpacity={0.85}
-                        onPress={() => {
-                          handleAssignNode(n.id);
-                          closeNodeSelector();
-                        }}
+                        key={type}
+                        style={[styles.resourceTab, selectedResourceType === type && styles.activeTab]}
+                        onPress={() => { setSelectedResourceType(type); setSearchQuery(''); }}
                       >
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="cube-outline"
-                            size={20}
-                            color="#4CAF50"
-                          />
-                          <Text
-                            style={{
-                              color: "#fff",
-                              fontSize: 15,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {n.name}
-                          </Text>
+                        <MaterialCommunityIcons name={getResourceIcon(type)} size={16} color={selectedResourceType === type ? '#fff' : '#bbb'} />
+                        <Text style={[styles.tabText, selectedResourceType === type && styles.activeTabText]}>{type} ({nodes.length})</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+
+                  {/* list for selected type */}
+                  <FlatList
+                    data={filteredNodes}
+                    keyExtractor={item => item.id}
+                    style={{ maxHeight: 320 }}
+                    renderItem={({ item: n }) => (
+                      <TouchableOpacity
+                        style={styles.nodeItem}
+                        onPress={() => { handleAssignNode(n.id); closeNodeSelector(); }}
+                        activeOpacity={0.85}
+                      >
+                        <View style={styles.nodeIconContainer}>
+                          <MaterialCommunityIcons name={getResourceIcon(n.type)} size={20} color={getResourceColor(n.type)} />
+                        </View>
+                        <View style={styles.nodeInfo}>
+                          <Text style={styles.nodeName}>{n.name}</Text>
+                          <Text style={styles.nodeLocation}>({n.x},{n.y}) • {calculateDistance({x:0,y:0}, n)}m</Text>
+                          <ProgressBar value={n.currentAmount} max={n.capacity} style={styles.nodeProgress} />
+                        </View>
+                        <View style={styles.nodeStats}>
+                          <Text style={styles.nodeCapacity}>{Math.round((n.currentAmount||0)/(n.capacity||1)*100)}%</Text>
+                          <MaterialCommunityIcons name="chevron-right" size={18} color="#4CAF50" />
                         </View>
                       </TouchableOpacity>
-                    ))
-                  )}
-                  <TouchableOpacity
-                    style={{
-                      marginTop: 18,
-                      alignSelf: "center",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                    onPress={closeNodeSelector}
-                  >
-                    <MaterialCommunityIcons
-                      name="close-circle-outline"
-                      size={20}
-                      color="#bbb"
-                    />
-                    <Text
-                      style={{
-                        color: "#bbb",
-                        fontSize: 16,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Cancel
-                    </Text>
-                  </TouchableOpacity>
+                    )}
+                    ListEmptyComponent={() => (
+                      <Text style={styles.emptyText}>{searchQuery ? `No nodes for "${searchQuery}"` : `No ${selectedResourceType || 'nodes'} available`}</Text>
+                    )}
+                  />
                 </Animated.View>
               )}
             </View>

@@ -12,11 +12,11 @@ const ResourceList = ({ inputs, outputs, amount, inventory }) => {
   const getResourceIcon = (itemId) => {
     const item = items[itemId];
     if (!item) return "help-circle";
-    if (item.type === "ore" || item.type === "rawMaterial") return "metal";
-    if (item.type === "metal") return "gold";
-    if (item.type === "liquid") return "water";
-    if (item.type === "intermediateProduct") return "cog";
-    if (item.type === "finalProduct") return "package-variant-closed";
+    console.log(item.type);
+
+    if (item.type === "rawMaterial") return "laravel";
+    if (item.type === "intermediateProduct") return "lightbulb-fluorescent-tube";
+
     return "cube";
   };
 

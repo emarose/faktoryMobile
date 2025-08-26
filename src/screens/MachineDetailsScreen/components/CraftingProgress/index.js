@@ -3,18 +3,17 @@ import { View, Text, TouchableOpacity } from "react-native";
 import ProgressBar from "../../../../components/ProgressBar";
 import styles from "./styles";
 
-const CraftingProgress = ({ isProcessing, progress, processingTime, maxCraftable, onCancel }) => {
+const CraftingProgress = ({ isProcessing, progress, processingTime, onCancel, totalAmount = 1 }) => {
   if (!isProcessing) return null;
-  
+
+  const totalTime = processingTime; // Ya viene multiplicado desde el screen principal
+  console.log("🚀 ~ CraftingProgress ~ totalTime:", totalTime)
+
   return (
     <View style={styles.progressContainer}>
       <ProgressBar
-        value={progress}
-        max={
-          isProcessing === "max"
-            ? processingTime * maxCraftable
-            : processingTime
-        }
+       a value={progress}
+        max={totalTime}
         label={null}
         color="#4CAF50"
         backgroundColor="#23233a"
@@ -22,18 +21,9 @@ const CraftingProgress = ({ isProcessing, progress, processingTime, maxCraftable
         style={{ borderRadius: 8 }}
       />
       <Text style={styles.progressText}>
-        {isProcessing === "max"
-          ? `Processing... ${progress.toFixed(1)}s / ${(
-              processingTime * maxCraftable
-            ).toFixed(1)}s`
-          : `Processing... ${progress.toFixed(
-              1
-            )}s / ${processingTime}s`}
+        {`Processing... ${progress.toFixed(1)}s / ${totalTime.toFixed(1)}s`}
       </Text>
-      <TouchableOpacity
-        onPress={onCancel}
-        style={styles.cancelButton}
-      >
+      <TouchableOpacity onPress={onCancel} style={styles.cancelButton}>
         <Text style={styles.cancelText}>Cancel</Text>
       </TouchableOpacity>
     </View>

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     bottom: 24,
     alignSelf: "center",
     backgroundColor: "#23233a",
-    paddingVertical: 4,
+    paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 10,
     zIndex: 1000,
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   toastText: {
     color: "#FFD700",
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "bold",
     letterSpacing: 0.2,
     textAlign: 'center',

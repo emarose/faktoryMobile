@@ -98,7 +98,7 @@ const NodeCard = React.memo(
         if (onDepleteNode) {
           onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
           setMiningFeedback(true);
-          setTimeout(() => setMiningFeedback(false), 250);
+          setTimeout(() => setMiningFeedback(false), 100);
           // trigger feedback to user momentarily changing the node border color
         }
       }
