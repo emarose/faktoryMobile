@@ -86,41 +86,37 @@ export const useInventory = () => {
 
   const removeResources = useCallback(
     (resourcesToRemove) => {
-      let hasEnough = true;
-      const newItems = { ...inventoryState.items };
+      const hasEnough = Object.entries(resourcesToRemove).every(
+        ([item, amount]) => {
+          const current = inventoryState.items[item]?.currentAmount || 0;
+          const enough = current >= amount;
 
-      for (const resourceId in resourcesToRemove) {
-        // CRITICAL: Check if the resource exists in inventory before trying to access currentAmount
-        if (
-          !newItems[resourceId] ||
-          (newItems[resourceId]?.currentAmount || 0) <
-            resourcesToRemove[resourceId]
-        ) {
-          hasEnough = false;
-          // console.warn(`Not enough or missing resource ${resourceId} to remove ${resourcesToRemove[resourceId]}. Current: ${newItems[resourceId]?.currentAmount || 0}`);
-          return inventoryState; // Return original state if not enough resources or resource missing
+          return enough;
         }
+      );
+
+      if (!hasEnough) {
+        console.warn("Not enough resources to remove:", resourcesToRemove);
+        return false;
       }
 
-      if (hasEnough) {
-        for (const resourceId in resourcesToRemove) {
-          newItems[resourceId] = {
-            ...newItems[resourceId],
-            currentAmount:
-              newItems[resourceId].currentAmount -
-              resourcesToRemove[resourceId],
+      // Remove resources
+      setInventoryState((prev) => {
+        const newItems = { ...prev.items };
+        Object.entries(resourcesToRemove).forEach(([item, amount]) => {
+          const before = newItems[item]?.currentAmount || 0;
+          newItems[item] = {
+            ...newItems[item],
+            currentAmount: Math.max(0, before - amount),
           };
-        }
-        setInventoryState((prevInventory) => ({
-          ...prevInventory,
-          items: newItems,
-        }));
-      }
-      return hasEnough;
+        });
+        return { ...prev, items: newItems };
+      });
+
+      return true;
     },
     [inventoryState]
-  ); // Dependency on inventoryState ensures it uses the latest state for checks
-
+  );
   const addMachine = useCallback((machineType) => {
     setInventoryState((prevInventory) => {
       // Always add a new machine instance with a unique id

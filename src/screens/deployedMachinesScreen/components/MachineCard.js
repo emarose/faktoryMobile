@@ -239,7 +239,7 @@ const MachineCard = ({ machine, node, onPress }) => {
               style={{ padding: 8, alignSelf: "flex-start" }}
               activeOpacity={0.7}
             >
-              <MaterialIcons name="loupe" size={28} color="#bbb" />
+              <MaterialIcons name="loupe" size={32} color="#bbb" />
             </TouchableOpacity>
           </View>
           {isMiner && (

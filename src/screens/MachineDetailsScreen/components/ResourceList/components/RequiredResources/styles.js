@@ -37,7 +37,7 @@ export default StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    marginLeft: 10,
+    marginLeft: 16,
     borderWidth: 1,
     borderColor: "#ff6b6b",
     alignSelf: "flex-start",

@@ -36,7 +36,6 @@ function normalizeOutputs(outputs) {
 }
 
 const MachineDetailsScreen = ({ route }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
   const [inventoryModalVisible, setInventoryModalVisible] = useState(false);
   const { machine, node, recipe } = route.params;
   const {
@@ -49,10 +48,6 @@ const MachineDetailsScreen = ({ route }) => {
     addResource,
     removeResources,
     canAfford,
-    /*     handleDepleteNode,
-    craftingQueue,
-    addToCraftingQueue,
-    updateCraftingQueue, */
   } = useGame();
 
   const ownedMachines = useMemo(
@@ -123,6 +118,7 @@ const MachineDetailsScreen = ({ route }) => {
   const [progress, setProgress] = useState(0);
   const progressInterval = useRef(null);
   const [currentCraftAmount, setCurrentCraftAmount] = useState(1);
+  const [activeCraftButton, setActiveCraftButton] = useState("1");
 
   // Find the latest machine data from context
   const liveMachine =
@@ -160,7 +156,6 @@ const MachineDetailsScreen = ({ route }) => {
       );
     }
     setSelectedNodeId(nodeId);
-    console.log(`Assigned node ${nodeId} to machine ${machine.id}`);
   };
 
   const cancelCrafting = () => {
@@ -177,8 +172,11 @@ const MachineDetailsScreen = ({ route }) => {
     if (!selectedRecipe || isProcessing) return;
     const totalAmount = Number(amountToCraft) || 1;
     const unitProcessingTime = Number(selectedRecipe.processingTime) || 1;
+
     setIsProcessing(isMax || totalAmount > 1 ? "max" : "single");
+
     setCurrentCraftAmount(totalAmount);
+
     setProgress(0);
 
     let crafted = 0;
@@ -187,6 +185,11 @@ const MachineDetailsScreen = ({ route }) => {
     const outputItem = selectedRecipe.outputs[0]?.item;
 
     for (let i = 0; i < totalAmount; i++) {
+      const success = craftItem(selectedRecipe, 1);
+      if (!success) {
+        alert("Crafting failed.");
+        break;
+      }
       await new Promise((resolve) => {
         let elapsed = 0;
         const step = 50;
@@ -202,18 +205,18 @@ const MachineDetailsScreen = ({ route }) => {
         progressInterval.current = interval;
       });
       crafted++;
-      // Suma progresiva: suma 1 vez por iteración
-      const success = craftItem(selectedRecipe, 1);
-      if (!success) {
-        alert("Crafting failed.");
-        break;
-      }
+
       showMiniToast(
         `+${outputAmount} ${items[outputItem]?.name || outputItem}`
       );
     }
     cancelCrafting();
     setCurrentCraftAmount(1);
+
+    if (activeCraftButton === "max") {
+      setActiveCraftButton("1");
+      setProductAmount("1");
+    }
   };
 
   // Calculate max craftable amount
@@ -246,8 +249,10 @@ const MachineDetailsScreen = ({ route }) => {
     [allResourceNodes, discoveredNodes]
   );
 
-  //TODO: fix CANCEL in progress bar
-  // when finished crafting "max" it should reset the craft amount to 1
+  useEffect(() => {
+    setActiveCraftButton("1");
+    setProductAmount("1");
+  }, [selectedRecipeId]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -338,25 +343,32 @@ const MachineDetailsScreen = ({ route }) => {
                   {/* Craft Amount Buttons */}
                   <View style={styles.buttonRow}>
                     <CraftButton
+                      isActive={activeCraftButton === "1"}
                       label="Craft 1"
-                      onPress={() => setProductAmount(1)}
+                      onPress={() => {
+                        setProductAmount(1);
+                        setActiveCraftButton("1");
+                      }}
                       disabled={!!isProcessing}
-                      icon="numeric-1-circle"
                     />
                     <CraftButton
+                      isActive={activeCraftButton === "5"}
                       label="Craft 5"
-                      onPress={() =>
-                        setProductAmount(Math.min(5, maxCraftable))
-                      }
+                      onPress={() => {
+                        setProductAmount(5);
+                        setActiveCraftButton("5");
+                      }}
                       disabled={!!isProcessing || maxCraftable < 5}
-                      icon="numeric-5-circle"
                       style={maxCraftable < 5 ? { opacity: 0.5 } : {}}
                     />
                     <CraftButton
+                      isActive={activeCraftButton === "max"}
                       label={`Craft Max (${maxCraftable})`}
-                      onPress={() => setProductAmount(maxCraftable)}
-                      disabled={!!isProcessing}
-                      icon="numeric"
+                      onPress={() => {
+                        setProductAmount(maxCraftable);
+                        setActiveCraftButton("max");
+                      }}
+                      disabled={!!isProcessing || maxCraftable <= 0}
                     />
                   </View>
 
@@ -381,7 +393,7 @@ const MachineDetailsScreen = ({ route }) => {
                       },
                     ]}
                     onPress={() => startCrafting(amount)}
-                    /*   disabled={!canCraft || isProcessing} */
+                    disabled={!canCraft || isProcessing}
                     activeOpacity={0.85}
                   >
                     <MaterialCommunityIcons
@@ -405,13 +417,6 @@ const MachineDetailsScreen = ({ route }) => {
                         : ""}
                     </Text>
                   </TouchableOpacity>
-
-                  {/* Warning */}
-                  {maxCraftable <= 0 && (
-                    <Text style={styles.warningText}>
-                      Not enough resources.
-                    </Text>
-                  )}
                 </View>
               )}
             </View>

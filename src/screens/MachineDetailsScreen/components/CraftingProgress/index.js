@@ -7,7 +7,6 @@ const CraftingProgress = ({ isProcessing, progress, processingTime, onCancel, to
   if (!isProcessing) return null;
 
   const totalTime = processingTime; // Ya viene multiplicado desde el screen principal
-  console.log("🚀 ~ CraftingProgress ~ totalTime:", totalTime)
 
   return (
     <View style={styles.progressContainer}>

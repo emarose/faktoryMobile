@@ -33,7 +33,7 @@ const ExpectedOutput = ({ output, amount, inventory, getResourceIcon }) => {
           </Text>
           <View style={styles.outputBadge}>
             <Text style={styles.outputBadgeText}>
-              En inventario: {inventory[output.item]?.currentAmount || 0}
+              Inventory: {inventory[output.item]?.currentAmount || 0}
             </Text>
           </View>
         </View>

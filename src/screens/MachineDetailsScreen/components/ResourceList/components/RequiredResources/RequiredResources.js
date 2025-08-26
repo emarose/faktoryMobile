@@ -50,7 +50,7 @@ const RequiredResources = ({ input, amount, inventory, getResourceIcon }) => {
               {!hasEnough && (
                 <View style={styles.resourceErrorBadge}>
                   <Text style={styles.resourceErrorBadgeText}>
-                    Faltan {requiredAmount - currentAmount}
+                  Not enough resources
                   </Text>
                 </View>
               )}
