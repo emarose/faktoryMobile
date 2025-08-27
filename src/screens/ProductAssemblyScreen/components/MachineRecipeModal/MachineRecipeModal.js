@@ -29,20 +29,11 @@ const MachineRecipeModal = ({
 
   useEffect(() => {
     if (isVisible) {
-      console.log(
-        "MODAL DEBUG: MachineRecipeModal is visible. machineId received:",
-        machineId,
-        "machineType:",
-        machineType
-      );
     }
   }, [isVisible, machineId, machineType]);
 
   const recipesForMachine = useMemo(() => {
     if (!machineType) {
-      console.log(
-        "MODAL DEBUG: No machineType provided, returning empty recipes."
-      );
       return [];
     }
     const machineRecipes = [];

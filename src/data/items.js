@@ -179,7 +179,7 @@ export const items = {
     output: {
       ironIngot: 1,
     },
-    processingTime: 2,
+    processingTime: 0.1,
     fuelConsumption: 0.1,
   },
   copperIngot: {
@@ -322,15 +322,15 @@ export const items = {
     id: "concrete",
     name: "Concrete",
     type: "intermediateProduct",
-    description: "Building material made from cement, aggregate, and water.",
-    machine: "constructor",
+    description: "Building material made from limestone, aggregate, and water.",
+    machine: "smelter",
     inputs: {
       limestone: 5,
     },
     output: {
       concrete: 1,
     },
-    processingTime: 1,
+    processingTime: 0.5,
     fuelConsumption: 0.2,
   },
   silica: {
@@ -1127,9 +1127,9 @@ export const items = {
     type: "machine",
     description: "Automates the production of simple parts.",
     inputs: {
-      ironPlates: 15,
-      ironRods: 8,
-      wires: 10,
+      ironIngot: 20,
+      copperIngot: 10,
+      concrete: 5,
     },
     output: {
       constructor: 1,

@@ -32,14 +32,7 @@ export const useBuilding = (
       addResourceCallback(itemId, quantityBuilt);
 
       if (itemToBuild.type === "buildable" || itemToBuild.type === "machine") {
-        console.log(
-          "DEBUG: Intentando añadir máquina. itemToBuild:",
-          itemToBuild
-        );
         addMachine(itemId);
-        console.log(
-          `Máquina construida: ${itemToBuild.name}. Añadida a ownedMachines.`
-        );
       }
 
       console.log(

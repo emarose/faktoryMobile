@@ -34,7 +34,6 @@ export const useMining = (
           addResourceCallback(resourceId, allowedToAdd, node.id);
         }
       }
-      console.log(`Mined from ${node.name}!`);
     },
     [addResourceCallback, allResourceNodes, placedMachines, inventory]
   );

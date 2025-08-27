@@ -23,11 +23,11 @@ const milestones = [
     id: "milestone2",
     name: "Basic Automation",
     description:
-      "Automate your production! Unlock the Constructor and essential recipes to start crafting iron components automatically. Collect enough Iron Ingots to advance.",
-    requirementsDescription: "Collect 30 Iron Ingots.",
+      "Automate your production! Unlock the Constructor and essential recipes to start crafting more advanced iron components. Collect enough Iron Ingots to advance.",
+    requirementsDescription: "Fabricate 20 Iron Ingots.",
     unlocked: false,
-    unlocks: ["Constructor", "Iron Ingot", "Iron Plate", "Iron Rod"],
-    requirements: { ironIngot: 30 },
+    unlocks: ["Constructor"],
+    requirements: { ironIngot: 20 },
   },
   {
     id: "milestone3",
@@ -36,7 +36,7 @@ const milestones = [
       "Expand your factory's capabilities with advanced machines and recipes. Produce Wire and Cable in bulk to unlock the Assembler and new crafting options.",
     requirementsDescription: "Produce 50 Wire and 20 Cable.",
     unlocked: false,
-    unlocks: ["Assembler", "Copper Ingot", "Wire", "Cable"],
+    unlocks: ["Assembler"],
     requirements: { wire: 50, cable: 20 },
   },
   {

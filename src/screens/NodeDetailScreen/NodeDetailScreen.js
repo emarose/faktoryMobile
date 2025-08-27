@@ -11,15 +11,7 @@ export default function NodeDetailScreen({ route }) {
   const inventory = {};
   const placedMachines = [];
 
-  const onMineResource = (nodeId) => {
-    console.log("Mining resource on node", nodeId);
-    // TODO: implementar minería manual
-  };
 
-  const onPlaceMachine = (machineType, nodeId) => {
-    console.log("Placing machine", machineType, "on node", nodeId);
-    // TODO: implementar colocación de máquinas
-  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -28,8 +20,8 @@ export default function NodeDetailScreen({ route }) {
         node={node}
         inventory={inventory}
         placedMachines={placedMachines}
-        onMineResource={onMineResource}
-        onPlaceMachine={onPlaceMachine}
+        //onMineResource={onMineResource}
+        //onPlaceMachine={onPlaceMachine}
         styles={styles}
       />
     </ScrollView>
