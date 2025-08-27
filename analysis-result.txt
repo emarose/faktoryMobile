@@ -1,0 +1,23 @@
+=== Unused files (not imported anywhere) ===
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\components\Toast.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\hooks\useLoadedAssets.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\BasicResourcesScreen\components\ResourceDisplay\ResourceDisplay.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\BasicResourcesScreen\components\ResourceVisualCard\styles.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\InventoryModal\styles.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\NodeDetailsModal\NodeDetailsModal.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\PlayerInfoCard\PlayerInfoCard.js
+
+=== Files with more than 300 lines (excluding styles.js) ===
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\contexts\GameContext.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\data\items.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\MachineDetailsScreen.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\MapScreen.js
+
+=== Files with many inline styles and NO styles.js in the same folder ===
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\components\ProgressBar.js (inline styles: 8)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard.js (inline styles: 40)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\CraftButton\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\NodeSelector\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\QuantityStepper\index.js (inline styles: 30)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 22)
