@@ -82,7 +82,7 @@ function findLargeFiles() {
   return allFiles.filter(file => {
     if (IGNORED_FILES.includes(path.basename(file))) return false;
     const lines = fs.readFileSync(file, 'utf8').split('\n').length;
-    return lines > 300;
+    return lines > 200;
   });
 }
 

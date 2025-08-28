@@ -3,9 +3,9 @@ import { Animated, Easing, View, Text, TouchableOpacity, TextInput, FlatList, Sc
 // import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import styles from "../styles";
-import ProgressBar from "../../../components/ProgressBar";
-import { useGame } from "../../../contexts/GameContext";
+import styles from "../../styles";
+import ProgressBar from "../../../../components/ProgressBar";
+import { useGame } from "../../../../contexts/GameContext";
 
 // helper: resource icon mapping (returns MaterialCommunityIcons name)
 function getResourceIcon(resourceType) {

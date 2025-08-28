@@ -4,7 +4,7 @@ import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 import useBasicResources from "../../hooks/useBasicResources";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ResourceVisualCard from "./components/ResourceVisualCard/ResourceVisualCard";
+import ResourceVisualCard from "./components/ResourceVisualCard";
 import ResourceAnalysisChart from "./components/ResourceAnalysisChart";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 // TODO: Replace with actual icons for each resource
