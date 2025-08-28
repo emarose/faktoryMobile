@@ -6,10 +6,21 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
-import ProgressBar from "../../../../../../components/ProgressBar";
+
+const resourceTypeLabels = {
+  ironOre_node: "Iron Ore",
+  copperOre_node: "Copper Ore",
+  coal_node: "Coal",
+  limestone_node: "Limestone",
+  quartz_node: "Quartz Crystal",
+  crudeOil_node: "Crude Oil",
+  cateriumOre_node: "Caterium Ore",
+};
 
 const NodeSelectorModal = ({
   visible,
@@ -25,154 +36,109 @@ const NodeSelectorModal = ({
   getResourceColor,
   calculateDistance,
 }) => {
+  const resourceTypes = Object.keys(groupedNodes);
+
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.nodeSelectorModal}>
-          <View style={styles.modalHeader}>
-            <MaterialCommunityIcons
-              name="select-group"
-              size={22}
-              color="#4CAF50"
-            />
-            <Text style={styles.modalTitle}>Select resource node</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <MaterialCommunityIcons name="close" size={20} color="#bbb" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.searchContainer}>
-            <MaterialCommunityIcons name="magnify" size={18} color="#bbb" />
-            <TextInput
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholder="Search node name or coords"
-              placeholderTextColor="#9a9a9a"
-              style={styles.searchInput}
-            />
-          </View>
-          {/* Vertical tabs and node list layout */}
-          {/* Chrome-style horizontal tabs and node list layout */}
-          <View style={{ flex: 1, minHeight: 260 }}>
-            {/* Chrome-style Tabs */}
-            <View style={[styles.tabContainer, { flexDirection: 'row', marginBottom: 18, marginTop: 2, overflow: 'visible' }]}> 
-              {Object.entries(groupedNodes).map(([type, nodes], idx, arr) => (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.resourceTab,
-                    selectedResourceType === type && styles.activeTab,
-                    {
-                      borderTopLeftRadius: idx === 0 ? 16 : 8,
-                      borderTopRightRadius: idx === arr.length - 1 ? 16 : 8,
-                      borderBottomLeftRadius: 8,
-                      borderBottomRightRadius: 8,
-                      marginLeft: idx === 0 ? 0 : -12,
-                      zIndex: selectedResourceType === type ? 2 : 1,
-                      elevation: selectedResourceType === type ? 3 : 1,
-                      backgroundColor: selectedResourceType === type ? '#fff' : '#23233a',
-                      borderColor: selectedResourceType === type ? '#4CAF50' : '#444455',
-                      top: selectedResourceType === type ? -8 : 0,
-                      minWidth: 80,
-                      paddingVertical: 10,
-                      paddingHorizontal: 18,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      shadowColor: selectedResourceType === type ? '#000' : 'transparent',
-                      shadowOpacity: selectedResourceType === type ? 0.12 : 0,
-                      shadowRadius: selectedResourceType === type ? 6 : 0,
-                      shadowOffset: selectedResourceType === type ? { width: 0, height: 2 } : undefined,
-                    },
-                  ]}
-                  onPress={() => {
-                    setSelectedResourceType(type);
-                    setSearchQuery("");
-                  }}
-                  activeOpacity={0.85}
-                >
-                  <MaterialCommunityIcons
-                    name={getResourceIcon(type)}
-                    size={16}
-                    color={selectedResourceType === type ? '#4CAF50' : '#bbb'}
-                  />
-                  <Text
-                    style={[
-                      styles.tabText,
-                      selectedResourceType === type && styles.activeTabText,
-                      { color: selectedResourceType === type ? '#222' : '#bbb', marginLeft: 8, fontWeight: 'bold' },
-                    ]}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {type} ({nodes.length})
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            {/* Node List for selected tab */}
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <FlatList
-                data={filteredNodes}
-                keyExtractor={(item) => item.id}
-                style={styles.flatListMaxHeight}
-                renderItem={({ item: n }) => (
-                  <TouchableOpacity
-                    style={styles.nodeItem}
-                    onPress={() => {
-                      handleAssignNode(n.id);
-                      onClose();
-                    }}
-                    activeOpacity={0.85}
-                  >
-                    <View style={styles.nodeIconContainer}>
-                      <MaterialCommunityIcons
-                        name={getResourceIcon(n.type)}
-                        size={20}
-                        color={getResourceColor(n.type)}
-                      />
-                    </View>
-                    <View style={styles.nodeInfo}>
-                      <Text style={styles.nodeName}>{n.name}</Text>
-                      <Text style={styles.nodeLocation}>
-                        ({n.x},{n.y}) • {calculateDistance({ x: 0, y: 0 }, n)}m
-                      </Text>
-                      <ProgressBar
-                        value={n.currentAmount}
-                        max={n.capacity}
-                        style={styles.nodeProgress}
-                      />
-                    </View>
-                    <View style={styles.nodeStats}>
-                      <Text style={styles.nodeCapacity}>
-                        {Math.round(
-                          ((n.currentAmount || 0) / (n.capacity || 1)) * 100
-                        )}
-                        %
-                      </Text>
-                      <MaterialCommunityIcons
-                        name="chevron-right"
-                        size={18}
-                        color="#4CAF50"
-                      />
-                    </View>
-                  </TouchableOpacity>
-                )}
-                ListEmptyComponent={() => (
-                  <Text style={styles.emptyText}>
-                    {searchQuery
-                      ? `No nodes for "${searchQuery}"`
-                      : `No ${selectedResourceType || "nodes"} available`}
-                  </Text>
-                )}
-              />
-            </View>
-          </View>
+    <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
+      <SafeAreaView style={styles.fullScreenContainer}>
+        {/* Header */}
+        <View style={styles.fullHeader}>
+          <Text style={styles.fullTitle}>Select Resource Node</Text>
+          <TouchableOpacity onPress={onClose}>
+            <MaterialCommunityIcons name="close" size={24} color="#bbb" />
+          </TouchableOpacity>
         </View>
-      </View>
+
+        {/* Tabs */}
+  <View style={styles.tabBar}>
+  <ScrollView
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.tabContent}
+  >
+    {resourceTypes.map((type) => {
+      const isActive = selectedResourceType === type;
+      return (
+        <TouchableOpacity
+          key={type}
+          style={[styles.chromeTab, isActive && styles.chromeTabActive]}
+          onPress={() => {
+            setSelectedResourceType(type);
+            setSearchQuery("");
+          }}
+          activeOpacity={0.7}
+        >
+          <MaterialCommunityIcons
+            name={getResourceIcon(type)}
+            size={18}
+            color={isActive ? "#fff" : "#bbb"}
+          />
+          <Text
+            style={[
+              styles.chromeTabLabel,
+              isActive
+                ? styles.chromeTabLabelActive
+                : styles.chromeTabLabelInactive,
+            ]}
+          >
+            {resourceTypeLabels[type] || type}
+          </Text>
+        </TouchableOpacity>
+      );
+    })}
+  </ScrollView>
+</View>
+
+
+        {/* Search */}
+        {/*   <View style={styles.searchBar}>
+          <MaterialCommunityIcons name="magnify" size={18} color="#bbb" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search node name or coords"
+            placeholderTextColor="#9a9a9a"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View> */}
+
+        {/* Node List */}
+        <FlatList
+          data={filteredNodes}
+          keyExtractor={(n) => n.id}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={true}
+          renderItem={({ item: n }) => (
+            <TouchableOpacity
+              style={styles.nodeItem}
+              onPress={() => {
+                handleAssignNode(n.id);
+                onClose();
+              }}
+            >
+              <View style={[styles.nodeIcon, { backgroundColor: getResourceColor(n.type) }]}>
+                <MaterialCommunityIcons name={getResourceIcon(n.type)} size={20} color="#fff" />
+              </View>
+              <View style={styles.nodeInfo}>
+                <Text style={styles.nodeName}>{n.name}</Text>
+                <Text style={styles.nodeLocation}>
+                  ({n.x},{n.y}) • {calculateDistance({ x: 0, y: 0 }, n)}m
+                </Text>
+              </View>
+              <Text style={styles.nodePct}>
+                {Math.round(((n.currentAmount || 0) / (n.capacity || 1)) * 100)}%
+              </Text>
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <Text style={styles.emptyText}>
+              {searchQuery
+                ? `No nodes for "${searchQuery}"`
+                : `No ${resourceTypeLabels[selectedResourceType] || selectedResourceType} nodes available`}
+            </Text>
+          }
+        />
+      </SafeAreaView>
     </Modal>
   );
 };

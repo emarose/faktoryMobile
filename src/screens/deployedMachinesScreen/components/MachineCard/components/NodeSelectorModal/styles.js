@@ -1,122 +1,107 @@
-
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(20,20,30,0.85)',
-    zIndex: 1000,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  nodeSelectorModal: {
+export default StyleSheet.create({
+  fullScreenContainer: {
+    flex: 1,
     backgroundColor: "#23233a",
-    borderRadius: 20,
-    paddingVertical: 28,
-    paddingHorizontal: 22,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 12,
-    maxWidth: '95%',
-    width: '95%',
-    maxHeight: '80%',
-    alignSelf: 'center',
-    flexShrink: 1,
-    flexGrow: 0,
+    paddingHorizontal: 20,
+    paddingTop: 12,
   },
-  modalHeader: {
+  fullHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  fullTitle: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  tabBar: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#444455",
+    height: 48,           // altura fija de la barra
+    backgroundColor: "#23233a",
+  },
+  tabContent: {
+    alignItems: "flex-end",
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
+
+  // Cada “pestaña”
+  chromeTab: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 22,
+    paddingHorizontal: 14,
+    height: 46,            // altura fija de la pestaña
+    marginBottom: -1,      // sube 1px sobre la barra
+    backgroundColor: "#23233a",
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderWidth: 1,
+    borderColor: "#444455",
+    borderBottomWidth: 0,  // elimina borde inferior
+    marginRight: 8,
+    zIndex: 0,
   },
-  modalTitle: {
+  chromeTabActive: {
+    borderColor: "#4CAF50",
+    zIndex: 1,             // aparece por encima de las demás
+  },
+
+  // Texto de la pestaña
+  chromeTabLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginLeft: 6,
+  },
+  chromeTabLabelActive: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    flex: 1,
-    textAlign: "center",
   },
-  closeButton: {
-    padding: 4,
+  chromeTabLabelInactive: {
+    color: "#bbb",
   },
-  searchContainer: {
+
+  searchBar: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#181828",
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 18,
-    height: 38,
+    height: 40,
+    marginBottom: 12,
   },
   searchInput: {
     flex: 1,
+    marginLeft: 8,
     color: "#fff",
     fontSize: 14,
-    marginLeft: 6,
-  },
-  tabContainer: {
-    flexDirection: "row",
-    marginBottom: 18,
-  },
-  resourceTab: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 16,
-    backgroundColor: "#23233a",
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: "#444455",
-  },
-  activeTab: {
-    backgroundColor: "#4CAF50",
-    borderColor: "#388E3C",
-  },
-  tabText: {
-    color: "#bbb",
-    fontWeight: "bold",
-    fontSize: 13,
-    marginLeft: 6,
-  },
-  activeTabText: {
-    color: "#fff",
-  },
-  flatListMaxHeight: {
-    maxHeight: 260,
-    flexGrow: 1,
   },
   nodeItem: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#181828",
     borderRadius: 10,
-    padding: 14,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "#23233a",
+    padding: 12,
+    marginBottom: 10,
   },
-  nodeIconContainer: {
-    backgroundColor: "#23233a",
-    borderRadius: 16,
-    padding: 6,
-    marginRight: 10,
+  nodeIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+    marginRight: 12,
   },
   nodeInfo: {
     flex: 1,
   },
   nodeName: {
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "600",
     fontSize: 15,
   },
   nodeLocation: {
@@ -124,19 +109,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
-  nodeProgress: {
-    marginTop: 4,
-    marginBottom: 2,
-  },
-  nodeStats: {
-    alignItems: "center",
-    marginLeft: 10,
-  },
-  nodeCapacity: {
+  nodePct: {
     color: "#4CAF50",
     fontWeight: "bold",
-    fontSize: 13,
-    marginBottom: 2,
+    fontSize: 14,
+    marginLeft: 8,
   },
   emptyText: {
     color: "#bbb",
@@ -145,5 +122,3 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
-export default styles;
