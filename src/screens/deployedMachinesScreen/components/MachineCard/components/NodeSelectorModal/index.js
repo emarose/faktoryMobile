@@ -39,7 +39,11 @@ const NodeSelectorModal = ({
   const resourceTypes = Object.keys(groupedNodes);
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
+    <Modal
+      visible={visible}
+      animationType="fade"
+      presentationStyle="fullScreen"
+    >
       <SafeAreaView style={styles.fullScreenContainer}>
         {/* Header */}
         <View style={styles.fullHeader}>
@@ -50,45 +54,44 @@ const NodeSelectorModal = ({
         </View>
 
         {/* Tabs */}
-  <View style={styles.tabBar}>
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    contentContainerStyle={styles.tabContent}
-  >
-    {resourceTypes.map((type) => {
-      const isActive = selectedResourceType === type;
-      return (
-        <TouchableOpacity
-          key={type}
-          style={[styles.chromeTab, isActive && styles.chromeTabActive]}
-          onPress={() => {
-            setSelectedResourceType(type);
-            setSearchQuery("");
-          }}
-          activeOpacity={0.7}
-        >
-          <MaterialCommunityIcons
-            name={getResourceIcon(type)}
-            size={18}
-            color={isActive ? "#fff" : "#bbb"}
-          />
-          <Text
-            style={[
-              styles.chromeTabLabel,
-              isActive
-                ? styles.chromeTabLabelActive
-                : styles.chromeTabLabelInactive,
-            ]}
+        <View style={styles.tabBar}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.tabContent}
           >
-            {resourceTypeLabels[type] || type}
-          </Text>
-        </TouchableOpacity>
-      );
-    })}
-  </ScrollView>
-</View>
-
+            {resourceTypes.map((type) => {
+              const isActive = selectedResourceType === type;
+              return (
+                <TouchableOpacity
+                  key={type}
+                  style={[styles.chromeTab, isActive && styles.chromeTabActive]}
+                  onPress={() => {
+                    setSelectedResourceType(type);
+                    setSearchQuery("");
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <MaterialCommunityIcons
+                    name={getResourceIcon(type)}
+                    size={18}
+                    color={isActive ? "#fff" : "#bbb"}
+                  />
+                  <Text
+                    style={[
+                      styles.chromeTabLabel,
+                      isActive
+                        ? styles.chromeTabLabelActive
+                        : styles.chromeTabLabelInactive,
+                    ]}
+                  >
+                    {resourceTypeLabels[type] || type}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
 
         {/* Search */}
         {/*   <View style={styles.searchBar}>
@@ -116,8 +119,17 @@ const NodeSelectorModal = ({
                 onClose();
               }}
             >
-              <View style={[styles.nodeIcon, { backgroundColor: getResourceColor(n.type) }]}>
-                <MaterialCommunityIcons name={getResourceIcon(n.type)} size={20} color="#fff" />
+              <View
+                style={[
+                  styles.nodeIcon,
+                  { backgroundColor: getResourceColor(n.type) },
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name={getResourceIcon(n.type)}
+                  size={20}
+                  color="#fff"
+                />
               </View>
               <View style={styles.nodeInfo}>
                 <Text style={styles.nodeName}>{n.name}</Text>
@@ -126,7 +138,8 @@ const NodeSelectorModal = ({
                 </Text>
               </View>
               <Text style={styles.nodePct}>
-                {Math.round(((n.currentAmount || 0) / (n.capacity || 1)) * 100)}%
+                {Math.round(((n.currentAmount || 0) / (n.capacity || 1)) * 100)}
+                %
               </Text>
             </TouchableOpacity>
           )}
@@ -134,7 +147,10 @@ const NodeSelectorModal = ({
             <Text style={styles.emptyText}>
               {searchQuery
                 ? `No nodes for "${searchQuery}"`
-                : `No ${resourceTypeLabels[selectedResourceType] || selectedResourceType} nodes available`}
+                : `No ${
+                    resourceTypeLabels[selectedResourceType] ||
+                    selectedResourceType
+                  } nodes available`}
             </Text>
           }
         />

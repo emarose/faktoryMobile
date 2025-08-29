@@ -2,10 +2,18 @@ import { StyleSheet } from "react-native";
 
 const machineCardStyles = StyleSheet.create({
   machineCard: {
+    backgroundColor: "#23233a",
     marginBottom: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    /*    paddingVertical: 8, */
+    paddingHorizontal: 16,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#4CAF50",
+  },
+  machineName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
   },
   machineInfo: {
     flex: 1,
@@ -28,11 +36,12 @@ const machineCardStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginTop: 16,
   },
   rowAlignCenterGap: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 16,
   },
   machineIconContainer: {
     alignItems: "center",
@@ -76,67 +85,94 @@ const machineCardStyles = StyleSheet.create({
     maxHeight: 320,
   },
   nodeInfoContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    backgroundColor: "#1a1a2e",
+    borderRadius: 10,
     borderWidth: 1,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderColor: "#444",
-    borderRadius: 8,
-    backgroundColor: "#1e1e2a",
+    borderColor: "#3A3A50",
+    marginBottom:16
   },
-  nodeDepletedText: {
-    color: "#c00",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 8,
-  },
-  rowGap8MarginTop8: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 8,
-  },
-  pauseResumeButton: {
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    borderRadius: 16,
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 2,
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  selectedNodePill: {
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  selectedNodePillText: {
+    color: "#333",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  machineStatus: {
+    color: "#9CA3AF", // Un gris suave para el estado
+    fontSize: 13,
+    fontStyle: "italic",
+  },
+  depletionSection: {
+    marginBottom: 16,
+  },
+  nodeDepletedText: {
+    color: "#EF4444", // Un rojo más estándar para errores
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 8,
+  },
+  controlButtonsContainer: {
+    flexDirection: "row",
+    gap: 12, // Espacio entre los botones
+    marginTop: 8,
+    justifyContent: "center", // Centra los botones
+  },
+  pauseResumeButton: {
+    flex: 1, // Permite que los botones ocupen el espacio disponible
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
   pauseResumeIdle: {
     backgroundColor: "#4CAF50",
-    shadowColor: "#4CAF50",
   },
   pauseResumeActive: {
     backgroundColor: "#ff9800",
-    shadowColor: "#ff9800",
   },
   pauseResumeText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 13,
+    fontSize: 14,
   },
   detachButton: {
-    backgroundColor: "#23233a",
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    borderRadius: 16,
+    flex: 1,
+    backgroundColor: "#2D3748", // Un gris oscuro para el botón de "desconectar"
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#bbb",
-    shadowColor: "#23233a",
+    borderColor: "#4A5568",
+    shadowColor: "#000",
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   detachText: {
-    color: "#bbb",
+    color: "#CBD5E0",
     fontWeight: "bold",
-    fontSize: 13,
+    fontSize: 14,
   },
 });
 
