@@ -16,6 +16,7 @@ import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResources
 import MachineDetailsScreen from "../screens/MachineDetailsScreen/MachineDetailsScreen";
 import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
 import NodeDetailScreen from "../screens/NodeDetailScreen/NodeDetailScreen";
+import Colors from "../constants/Colors";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -37,9 +38,9 @@ function RootNavigator() {
         headerShown: true,
         headerBackTitleVisible: false,
         headerStyle: {
-          backgroundColor: "#1a1a2e",
+          backgroundColor: Colors.backgroundPanel,
         },
-        headerTintColor: "#fff",
+        headerTintColor: Colors.textPrimary,
       }}
     >
       <Stack.Screen

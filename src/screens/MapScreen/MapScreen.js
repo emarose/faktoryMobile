@@ -16,6 +16,7 @@ import NodeCard from "./components/NodeCard/NodeCard";
 import MapToast from "./components/MapToast/MapToast";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useMilestone } from "../../hooks/useMilestone";
+import Colors from "../../constants/Colors";
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
@@ -172,7 +173,7 @@ export default function MapScreen({ navigation }) {
         const gy = cy * CHUNK_SIZE + y;
         const node = allResourceNodes.find((n) => n.x === gx && n.y === gy);
         const isPlayer = gx === px && gy === py;
-        let color = "#222";
+        let color = Colors.background;
         let discovered = false;
         if (node && discoveredNodes[node.id]) {
           color = getNodeColor(node.type);

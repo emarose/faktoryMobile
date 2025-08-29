@@ -1,27 +1,31 @@
-import React from "react";
 import { View, Text } from "react-native";
 import * as Progress from "react-native-progress";
+import Colors from "../../constants/Colors";
 
 const ProgressBar = ({
   value,
   max = 1,
   label,
   height = 20,
-  color = "#4CAF50",
-  backgroundColor = "#23233a",
+  color = Colors.backgroundAccent,
+  backgroundColor = Colors.background,
   style,
-  textColor = "#fff",
+  textColor = Colors.textPrimary,
 }) => {
   // coerce to safe numbers to avoid NaN transforms in native Animated views
-  const safeValue = typeof value === 'number' && !isNaN(value) ? value : Number(value) || 0;
-  const safeMax = typeof max === 'number' && !isNaN(max) && Number(max) > 0 ? Number(max) : 1;
+  const safeValue =
+    typeof value === "number" && !isNaN(value) ? value : Number(value) || 0;
+  const safeMax =
+    typeof max === "number" && !isNaN(max) && Number(max) > 0 ? Number(max) : 1;
   const progress = Math.max(0, Math.min(1, safeValue / safeMax));
   const progressText = `${Math.floor(safeValue)} / ${safeMax}`;
 
   return (
     <View style={[{ marginVertical: 4 }, style]}>
       {label && (
-        <Text style={{ color: "#fff", fontSize: 12, marginBottom: 6 }}>
+        <Text
+          style={{ color: Colors.textPrimary, fontSize: 12, marginBottom: 6 }}
+        >
           {label}
         </Text>
       )}
@@ -58,7 +62,6 @@ const ProgressBar = ({
       </View>
     </View>
   );
-  
 };
 
 export default ProgressBar;

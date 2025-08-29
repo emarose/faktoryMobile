@@ -15,7 +15,7 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Factory"
-      screenOptions={{ tabBarActiveTintColor: Colors[colorScheme].tint }}
+      screenOptions={{ tabBarActiveTintColor: Colors.background}}
     >
       <BottomTab.Screen
         name="Production"

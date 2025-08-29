@@ -47,13 +47,13 @@ const styles = StyleSheet.create({
   },
   machineStatus: {
     fontSize: 16,
-    color: "#ffffff",
+    color: "#fff",
     marginVertical: 8,
   },
   machineName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: "#fff",
     marginBottom: 5,
   },
   machineDescription: {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   upgradeButtonText: {
-    color: "#ffffff",
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 14,
   },

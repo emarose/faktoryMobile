@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import Colors from "../../../../constants/Colors";
 
 const ResourceAnalysisChart = ({ data, label }) => {
   if (!data || data.length === 0) {
@@ -14,7 +15,7 @@ const ResourceAnalysisChart = ({ data, label }) => {
         <View style={styles.yAxisLabelWrapper}>
           <Text style={styles.yAxisLabel}>Cantidad</Text>
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <LineChart
             data={{
               labels: data.map((_, i) => `${i + 1}`),
@@ -27,8 +28,8 @@ const ResourceAnalysisChart = ({ data, label }) => {
             width={300}
             height={180}
             chartConfig={{
-              backgroundColor: "#222",
-              backgroundGradientFrom: "#222",
+              backgroundColor: Colors.background,
+              backgroundGradientFrom: Colors.background,
               backgroundGradientTo: "#333",
               decimalPlaces: 0,
               color: (opacity = 1) => `rgba(255, 215, 0, ${opacity})`,

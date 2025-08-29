@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import Colors from "../../../../constants/Colors";
 
 const ResourceVisualCard = ({
   name,
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   card: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#222",
+    backgroundColor: Colors.background,
     borderRadius: 12,
     margin: 8,
     padding: 16,

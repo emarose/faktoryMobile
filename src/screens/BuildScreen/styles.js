@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#6c757d",
   },
   buildButtonText: {
-    color: "#ffffff",
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },

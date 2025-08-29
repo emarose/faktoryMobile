@@ -1,15 +1,16 @@
 // screens/InventoryScreen/styles.js
 import { StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1a1a2a", // Dark background for the whole screen
+    backgroundColor: Colors.background, // Dark background for the whole screen
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ffffff",
+    color: Colors.textPrimary,
     textAlign: "center",
     paddingVertical: 20,
     marginTop: 10, // Adjust for SafeAreaView
@@ -29,10 +30,10 @@ const styles = StyleSheet.create({
     width: "30%", // Roughly 3 items per row, adjust as needed (e.g., '23%' for 4 items)
     aspectRatio: 1, // Makes the item square
     margin: "1.66%", // Creates space between items for 3 items per row (100 / 3 = 33.33% - 30% = 3.33% / 2 margins = 1.66%)
-    backgroundColor: "#2a2a3a", // Darker background for each item card
+    backgroundColor: Colors.backgroundSecondary, // Darker background for each item card
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
     alignItems: "center",
     justifyContent: "center",
     padding: 5,
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: "80%", // Make icon placeholder take up most of the square
     height: "80%",
-    backgroundColor: "#5a5a7e", // Placeholder color for the icon area
+    backgroundColor: Colors.backgroundSecondary, // Placeholder color for the icon area
     borderRadius: 6,
     justifyContent: "center",
     alignItems: "center",
@@ -54,13 +55,13 @@ const styles = StyleSheet.create({
   //   resizeMode: 'contain', // Or 'cover'
   // },
   iconText: {
-    color: "#e0e0e0", // Light text for placeholder initial
+    color: Colors.textSecondary, // Light text for placeholder initial
     fontSize: 28, // Adjust size for visibility
     fontWeight: "bold",
   },
   itemName: {
     fontSize: 12, // Smaller font for item name below icon
-    color: "#ffffff",
+    color: "#fff",
     marginTop: 5,
     textAlign: "center",
     position: "absolute", // Position name below icon in a fixed spot
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0, // Position at bottom
     right: 0, // Position at right
-    backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent dark background for amount
+    backgroundColor: Colors.overlay, // Semi-transparent dark background for amount
     borderRadius: 4,
     paddingHorizontal: 5,
     paddingVertical: 2,
@@ -87,10 +88,10 @@ const styles = StyleSheet.create({
   itemAmount: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#a0d911", // Green for resource amounts, or '#fff' for white
+    color: Colors.textAccent, // Green for resource amounts, or '#fff' for white
   },
   emptyInventoryText: {
-    color: "#b0b0b0",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginTop: 50,
     fontSize: 16,

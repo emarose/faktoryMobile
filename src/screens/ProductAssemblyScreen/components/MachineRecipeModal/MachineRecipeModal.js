@@ -11,6 +11,7 @@ import { items } from "../../../../data/items";
 import { useGame } from "../../../../contexts/GameContext";
 import modalStyles from "./styles";
 import RecipeCard from "./RecipeCard/RecipeCard";
+import Colors from "../../../../constants/Colors";
 
 const MachineRecipeModal = ({
   isVisible,
@@ -78,21 +79,21 @@ const MachineRecipeModal = ({
                     key={recipe.id}
                     style={{
                       marginBottom: 16,
-                      backgroundColor: "#23233a",
+                      backgroundColor: Colors.background,
                       borderRadius: 8,
                       padding: 12,
                     }}
                   >
                     <Text
                       style={{
-                        color: "#fff",
+                        color: Colors.textPrimary,
                         fontWeight: "bold",
                         fontSize: 16,
                       }}
                     >
                       {recipe.name}
                     </Text>
-                    <Text style={{ color: "#fff", marginTop: 4 }}>
+                    <Text style={{ color: Colors.textPrimary, marginTop: 4 }}>
                       Requires:
                     </Text>
                     {(recipe.inputs || []).length === 0 ? (
@@ -106,11 +107,11 @@ const MachineRecipeModal = ({
                         </Text>
                       ))
                     )}
-                    <Text style={{ color: "#fff", marginTop: 4 }}>
+                    <Text style={{ color: Colors.textPrimary, marginTop: 4 }}>
                       Produces:
                     </Text>
                     {recipe.output ? (
-                      <Text style={{ color: "#fff" }}>
+                      <Text style={{ color: Colors.textPrimary }}>
                         {(recipe.outputAmount || 1) * parsedAmount} x{" "}
                         {items[recipe.output]?.name || recipe.output}
                       </Text>
@@ -123,13 +124,13 @@ const MachineRecipeModal = ({
                         </Text>
                       ))
                     ) : null}
-                    <Text style={{ color: "#fff", marginTop: 4 }}>
+                    <Text style={{ color: Colors.textPrimary, marginTop: 4 }}>
                       Amount to craft:
                     </Text>
                     <TextInput
                       style={{
-                        backgroundColor: "#fff",
-                        color: "#222",
+                        backgroundColor: Colors.textPrimary,
+                        color: Colors.background,
                         borderRadius: 6,
                         padding: 6,
                         marginBottom: 8,
