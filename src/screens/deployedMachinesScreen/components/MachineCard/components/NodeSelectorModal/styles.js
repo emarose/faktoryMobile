@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../../../../../constants/Colors";
 
 export default StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: "#23233a",
+    backgroundColor: Colors.background,
     paddingHorizontal: 20,
     paddingTop: 12,
   },
@@ -14,16 +15,16 @@ export default StyleSheet.create({
     marginBottom: 12,
   },
   fullTitle: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 20,
     fontWeight: "bold",
   },
   tabBar: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#444455",
+    borderBottomColor: Colors.borderLight,
     height: 48,           // altura fija de la barra
-    backgroundColor: "#23233a",
+    backgroundColor: Colors.background,
   },
   tabContent: {
     alignItems: "flex-end",
@@ -38,17 +39,17 @@ export default StyleSheet.create({
     paddingHorizontal: 14,
     height: 46,            // altura fija de la pestaña
     marginBottom: -1,      // sube 1px sobre la barra
-    backgroundColor: "#23233a",
+    backgroundColor: Colors.background,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
     borderBottomWidth: 0,  // elimina borde inferior
     marginRight: 8,
     zIndex: 0,
   },
   chromeTabActive: {
-    borderColor: "#4CAF50",
+    borderColor: Colors.backgroundAccent,
     zIndex: 1,             // aparece por encima de las demás
   },
 
@@ -59,16 +60,16 @@ export default StyleSheet.create({
     marginLeft: 6,
   },
   chromeTabLabelActive: {
-    color: "#fff",
+    color: Colors.textPrimary,
   },
   chromeTabLabelInactive: {
-    color: "#bbb",
+    color: Colors.textMuted,
   },
 
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#181828",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 8,
     paddingHorizontal: 10,
     height: 40,
@@ -77,13 +78,13 @@ export default StyleSheet.create({
   searchInput: {
     flex: 1,
     marginLeft: 8,
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 14,
   },
   nodeItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#181828",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 12,
     marginBottom: 10,
@@ -100,23 +101,23 @@ export default StyleSheet.create({
     flex: 1,
   },
   nodeName: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "600",
     fontSize: 15,
   },
   nodeLocation: {
-    color: "#bbb",
+    color: Colors.textMuted,
     fontSize: 12,
     marginTop: 2,
   },
   nodePct: {
-    color: "#4CAF50",
+    color: Colors.backgroundAccent,
     fontWeight: "bold",
     fontSize: 14,
     marginLeft: 8,
   },
   emptyText: {
-    color: "#bbb",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 20,
     fontSize: 14,

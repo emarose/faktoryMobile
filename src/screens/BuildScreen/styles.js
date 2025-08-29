@@ -1,15 +1,16 @@
 import { StyleSheet } from "react-native";
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#1a1a2e",
+    backgroundColor: Colors.backgroundPanel,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     marginBottom: 20,
     textAlign: "center",
   },
@@ -18,12 +19,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   buildCard: {
-    backgroundColor: "#2a2a4a",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
     padding: 15,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#4a4a6e",
+    borderColor: Colors.border,
   },
   itemHeader: {
     flexDirection: "row",
@@ -40,61 +41,61 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 5,
-    backgroundColor: "#5a5a7e",
+    backgroundColor: Colors.backgroundPill,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
   },
   iconText: {
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     fontSize: 20,
     fontWeight: "bold",
   },
   itemName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#a0d911",
+    color: Colors.textAccent,
   },
   itemDescription: {
     fontSize: 14,
-    color: "#cccccc",
+    color: Colors.textMuted,
     marginBottom: 10,
   },
   requirementsTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#f0f0f0",
+    color: Colors.textSecondary,
     marginBottom: 5,
   },
   requirementText: {
     fontSize: 14,
-    color: "#cccccc",
+    color: Colors.textMuted,
     marginLeft: 10,
     marginBottom: 3,
   },
   missingText: {
-    color: "#ffc107",
+    color: Colors.backgroundWarning,
     fontStyle: "italic",
     fontSize: 13,
   },
   buildButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: Colors.accentBlue,
     paddingVertical: 12,
     borderRadius: 5,
     marginTop: 15,
     alignItems: "center",
   },
   buildButtonDisabled: {
-    backgroundColor: "#6c757d",
+    backgroundColor: Colors.fallback,
   },
   buildButtonText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "bold",
   },
   noItemsText: {
     fontSize: 16,
-    color: "#aaaaaa",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 50,
   },

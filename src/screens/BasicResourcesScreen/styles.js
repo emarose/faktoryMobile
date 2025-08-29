@@ -1,10 +1,11 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   resourceCardSmall: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#23233a',
+    backgroundColor: Colors.background,
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
@@ -19,13 +20,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: Colors.backgroundPanel,
     paddingTop: 10,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#e0e0e0',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   resourceCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2a2a4a',
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
@@ -53,33 +54,33 @@ const styles = StyleSheet.create({
   resourceName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#c0c0c0',
+    color: Colors.textSecondary,
     marginBottom: 5,
   },
   resourceDescription: {
     fontSize: 14,
-    color: '#a0a0a0',
+    color: Colors.textMuted,
     marginBottom: 10,
   },
   resourceStats: {
     fontSize: 16,
-    color: '#e0e0e0',
+    color: Colors.textSecondary,
     fontWeight: '600',
   },
   mineButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: Colors.backgroundAccent,
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
     marginLeft: 15,
   },
   mineButtonText: {
-    color: 'white',
+    color: Colors.textPrimary,
     fontWeight: 'bold',
     fontSize: 15,
   },
   noResourcesText: {
-    color: '#a0a0a0',
+    color: Colors.textMuted,
     textAlign: 'center',
     marginTop: 50,
     fontSize: 16,

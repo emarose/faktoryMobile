@@ -1,14 +1,15 @@
 import { StyleSheet } from "react-native";
+import Colors from '../../../../constants/Colors';
 
 const machineCardStyles = StyleSheet.create({
   machineCard: {
-    backgroundColor: "#23233a",
+    backgroundColor: Colors.background,
     marginBottom: 8,
     /*    paddingVertical: 8, */
     paddingHorizontal: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#4CAF50",
+    borderColor: Colors.backgroundAccent,
   },
   machineName: {
     fontSize: 18,
@@ -22,7 +23,7 @@ const machineCardStyles = StyleSheet.create({
     marginBottom: 2,
   },
   emptyText: {
-    color: "#bbb",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 20,
     fontSize: 14,
@@ -46,11 +47,11 @@ const machineCardStyles = StyleSheet.create({
   machineIconContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#2c2c44",
+    backgroundColor: Colors.backgroundSecondary,
     padding: 8,
     borderRadius: 32,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
   },
   loupeButton: {
     padding: 8,
@@ -61,8 +62,8 @@ const machineCardStyles = StyleSheet.create({
   },
   assignNodeButton: {
     borderWidth: 1,
-    borderColor: "#4CAF50",
-    backgroundColor: "#2c2c44",
+    borderColor: Colors.backgroundAccent,
+    backgroundColor: Colors.backgroundSecondary,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
@@ -72,12 +73,12 @@ const machineCardStyles = StyleSheet.create({
     gap: 8,
   },
   assignNodeText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 16,
   },
   noNodesText: {
-    color: "#ff9800",
+    color: Colors.backgroundWarning,
     fontSize: 13,
     marginTop: 4,
   },
@@ -87,10 +88,10 @@ const machineCardStyles = StyleSheet.create({
   nodeInfoContainer: {
     paddingVertical: 20,
     paddingHorizontal: 16,
-    backgroundColor: "#1a1a2e",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#3A3A50",
+    borderColor: Colors.border,
     marginBottom:16
   },
   headerRow: {
@@ -105,12 +106,12 @@ const machineCardStyles = StyleSheet.create({
     borderRadius: 20,
   },
   selectedNodePillText: {
-    color: "#333",
+    color: Colors.fallback,
     fontWeight: "600",
     fontSize: 14,
   },
   machineStatus: {
-    color: "#9CA3AF", // Un gris suave para el estado
+    color: Colors.textMuted, // Un gris suave para el estado
     fontSize: 13,
     fontStyle: "italic",
   },
@@ -118,7 +119,7 @@ const machineCardStyles = StyleSheet.create({
     marginBottom: 16,
   },
   nodeDepletedText: {
-    color: "#EF4444", // Un rojo más estándar para errores
+    color: Colors.backgroundDanger, // Un rojo más estándar para errores
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 8,
@@ -137,25 +138,25 @@ const machineCardStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 3,
   },
   pauseResumeIdle: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.backgroundAccent,
   },
   pauseResumeActive: {
-    backgroundColor: "#ff9800",
+    backgroundColor: Colors.backgroundWarning,
   },
   pauseResumeText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 14,
   },
   detachButton: {
     flex: 1,
-    backgroundColor: "#2D3748", // Un gris oscuro para el botón de "desconectar"
+    backgroundColor: Colors.backgroundPanel, // Un gris oscuro para el botón de "desconectar"
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -163,14 +164,14 @@ const machineCardStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#4A5568",
-    shadowColor: "#000",
+    borderColor: Colors.border,
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
   },
   detachText: {
-    color: "#CBD5E0",
+    color: Colors.textSecondary,
     fontWeight: "bold",
     fontSize: 14,
   },

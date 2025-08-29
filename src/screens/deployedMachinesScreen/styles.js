@@ -1,9 +1,10 @@
 import { StyleSheet } from "react-native";
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1a1a2a",
+    backgroundColor: Colors.backgroundPanel,
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -11,7 +12,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   emptyStateText: {
-    color: "#b0b0b0",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 50,
     fontSize: 16,
@@ -22,21 +23,21 @@ const styles = StyleSheet.create({
   groupTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#a0d911",
+    color: Colors.textAccent,
     marginBottom: 10,
     marginLeft: 5,
     borderBottomWidth: 1,
-    borderBottomColor: "#444455",
+    borderBottomColor: Colors.borderLight,
     paddingBottom: 5,
   },
   machineCard: {
-    backgroundColor: "#2a2a3a",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 10,
     padding: 15,
     marginVertical: 8,
     marginHorizontal: 5,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -47,33 +48,33 @@ const styles = StyleSheet.create({
   },
   machineStatus: {
     fontSize: 16,
-    color: "#fff",
+    color: Colors.textPrimary,
     marginVertical: 8,
   },
   machineName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#fff",
+    color: Colors.textPrimary,
     marginBottom: 5,
   },
   machineDescription: {
     fontSize: 13,
-    color: "#b0b0b0",
+    color: Colors.textMuted,
     marginBottom: 5,
   },
   machineDetail: {
     fontSize: 14,
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     marginBottom: 2,
   },
   upgradeButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: Colors.accentBlue,
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
   },
   upgradeButtonText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 14,
   },
