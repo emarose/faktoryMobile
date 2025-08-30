@@ -1,11 +1,10 @@
 import { StyleSheet, Dimensions } from "react-native";
-
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: "#1a1a2e",
+    backgroundColor: Colors.background,
   },
   scrollViewContentWrapper: {
     paddingTop: 10,
@@ -15,64 +14,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "bold",
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginBottom: 15,
   },
-  // --- Map Legend Styles ---
-  mapLegend: {
-    backgroundColor: "#2a2a4a",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 6,
-  },
-  mapLegendTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#e0e0e0",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  mapLegendItems: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  mapLegendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-    marginHorizontal: 6,
-  },
-  mapLegendColorBox: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    borderWidth: 1,
-    borderColor: "#555",
-    marginRight: 4,
-  },
-  mapLegendText: {
-    color: "#c0c0c0",
-    fontSize: 12,
-  },
-  machineIconLegend: {
-    fontSize: 12,
-    color: "#e0e0e0",
-    marginRight: 4,
-  },
+
   // --- Map Visualization Section Styles ---
   mapVisualContainer: {
-    //width: screenWidth * 0.9,
     alignSelf: "center",
-    backgroundColor: "#0f0f1c",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: "#3a3a5a",
+    borderColor: Colors.borderLight,
     borderRadius: 8,
     padding: 16,
     marginVertical: 20,
@@ -81,100 +33,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 6,
-    elevation: 8,
+    elevation: 10,
   },
   mapGrid: {
     backgroundColor: "#0a0a15",
     position: "relative",
     overflow: "hidden",
   },
-  mapNodeDot: {
-    position: "absolute",
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    transform: [{ translateX: -6 }, { translateY: -6 }],
-  },
   machineIcon: {
     fontSize: 10,
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     fontWeight: "bold",
-  },
-  // --- Grid Lines & Axis Labels ---
-  gridLine: {
-    position: "absolute",
-    backgroundColor: "#3a3a5a",
-    opacity: 0.4, // Slightly more transparent grid lines
-  },
-  axisLabelX: {
-    position: "absolute",
-    color: "#c0c0c0",
-    fontSize: 9, // Smaller font for labels
-    fontWeight: "bold",
-    backgroundColor: "rgba(10, 10, 21, 0.7)",
-    paddingHorizontal: 2, // Reduced padding
-    borderRadius: 2,
-  },
-  axisLabelY: {
-    position: "absolute",
-    color: "#c0c0c0",
-    fontSize: 9, // Smaller font for labels
-    fontWeight: "bold",
-    backgroundColor: "rgba(10, 10, 21, 0.7)",
-    paddingVertical: 1, // Reduced padding
-    borderRadius: 2,
-  },
-  // --- Player Position ---
-  playerPositionDot: {
-    position: "absolute",
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: "#00FF00",
-    borderWidth: 1.5,
-    borderColor: "#fff",
-    zIndex: 100,
-    transform: [{ translateX: -8 }, { translateY: -8 }],
-  },
-  playerPositionLabel: {
-    position: "absolute",
-    color: "#fff",
-    fontSize: 10, // Smaller font
-    fontWeight: "bold",
-    zIndex: 101,
-  },
-  // --- Resource Node List Section Styles ---
-  subtitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#e0e0e0",
-    marginTop: 15,
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  inventorySummary: {
-    backgroundColor: "#2a2a4a",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 6,
-  },
-  inventoryStatus: {
-    color: "#e0e0e0",
-    fontSize: 15,
-    marginBottom: 4,
-    fontWeight: "600",
   },
   nodeCard: {
-    backgroundColor: "#23272a",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 14,
     padding: 16,
     marginVertical: 10,
@@ -185,26 +57,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     borderWidth: 1,
-    borderColor: "#444",
+    borderColor: Colors.accentGreen,
   },
   nodeName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#27ae60",
+    color: Colors.accentGreen,
     marginBottom: 4,
   },
   nodeDescription: {
-    color: "#aaa",
+    color: Colors.textMuted,
     fontSize: 14,
     marginBottom: 4,
   },
   nodeCapability: {
-    color: "#f1c40f",
+    color: Colors.accentGold,
     fontSize: 13,
     marginBottom: 2,
   },
   requiredMachineText: {
-    color: "#e67e22",
+    color: Colors.accentOrange,
     fontWeight: "bold",
   },
   assignedInfo: {
@@ -212,11 +84,11 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   assignedCount: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 13,
   },
   automatedRate: {
-    color: "#27ae60",
+    color: Colors.accentGreen,
     fontSize: 13,
   },
   placementActions: {
@@ -225,37 +97,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mineButton: {
-    backgroundColor: "#27ae60",
+    backgroundColor: Colors.backgroundAccent,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 18,
     marginBottom: 6,
   },
   mineButtonText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 15,
   },
   placeButton: {
-    backgroundColor: "#2980b9",
+    backgroundColor: Colors.accentBlue,
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 18,
     marginBottom: 6,
   },
   placeButtonText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 15,
   },
   noMachineText: {
-    color: "#c0392b",
+    color: Colors.accentRed,
     fontSize: 13,
     marginTop: 4,
     textAlign: "center",
   },
   alreadyAssignedText: {
-    color: "#aaa",
+    color: Colors.textMuted,
     fontSize: 13,
     marginTop: 4,
     textAlign: "center",
@@ -265,7 +137,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   noNodesText: {
-    color: "#a0a0a0",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 30,
     fontSize: 14,

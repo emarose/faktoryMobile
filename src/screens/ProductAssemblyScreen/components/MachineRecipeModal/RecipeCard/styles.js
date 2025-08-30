@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../../../../constants/Colors";
 
 export default styles = StyleSheet.create({
   card: {
-    backgroundColor: "#3a3a5a",
+    backgroundColor: Colors.background,
     borderRadius: 8,
     padding: 15,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#5a5a7e",
+    borderColor: Colors.borderLight,
     width: "100%",
   },
   recipeName: {

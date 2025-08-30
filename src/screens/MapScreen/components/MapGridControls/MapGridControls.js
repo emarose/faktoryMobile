@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../../../../constants/Colors";
 
 const BUTTON_SIZE = 38;
 const ICON_SIZE = 20;
@@ -60,9 +61,11 @@ const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
               backgroundColor: "rgba(30,30,50,0.8)",
               alignItems: "center",
               justifyContent: "center",
-              elevation: 2,
+              elevation: 8,
+              borderWidth: 1,
+              borderColor: Colors.borderLight,
               shadowColor: "#000",
-              shadowOpacity: 0.5,
+              shadowOpacity: 0.2,
               shadowRadius: 3,
               shadowOffset: { width: 0, height: 1 },
             },
@@ -71,7 +74,11 @@ const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
           onPress={() => exploreDirection && exploreDirection(dir)}
           activeOpacity={0.8}
         >
-          <MaterialCommunityIcons name={icon} size={ICON_SIZE} color="#fff" />
+          <MaterialCommunityIcons
+            name={icon}
+            size={ICON_SIZE}
+            color={Colors.textPrimary}
+          />
         </TouchableOpacity>
       ))}
       {/* Center dot */}
@@ -85,14 +92,18 @@ const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
           width: 20,
           height: 20,
           borderRadius: 10,
-          backgroundColor: "#23243a",
+          backgroundColor: Colors.background,
           borderWidth: 1.2,
-          borderColor: "#444",
+          borderColor: Colors.borderLight,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <MaterialCommunityIcons name="circle-medium" size={14} color="#888" />
+        <MaterialCommunityIcons
+          name="circle-medium"
+          size={14}
+          color={Colors.textMuted}
+        />
       </View>
     </View>
   );
