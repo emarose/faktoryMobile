@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const SRC_DIR = path.join(__dirname, "src");
+const SRC_DIR = path.join(__dirname, '..', 'src');
+const OUTPUT_FILE = path.join(__dirname, '..', '..', 'analysis-result.txt');
 const IGNORED_EXTENSIONS = [".json", ".md", ".lock"];
 const IGNORED_FILES = ["styles.js"];
-const OUTPUT_FILE = path.join(__dirname, "analysis-result.txt");
 const INLINE_STYLE_THRESHOLD = 5; // Puedes ajustar este valor
 
 let allFiles = [];
