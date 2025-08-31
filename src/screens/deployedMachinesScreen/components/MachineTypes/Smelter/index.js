@@ -1,47 +1,45 @@
 import React from "react";
-import MachineCard from "../../MachineCard";
+import { View, Text, TouchableOpacity } from "react-native";
 import { items } from "../../../../../data/items";
-import RESOURCE_CAP from "../../../../../constants/ResourceCap";
-import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../../contexts/GameContext";
+import styles from "../../MachineCard/styles";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Smelter = ({ machine, node }) => {
-  const navigation = useNavigation();
-  const { pauseMiner, resumeMiner } = useGame();
+const Smelter = ({ machine, onOpenModal }) => {
+  const { placedMachines } = useGame();
 
-  // Obtener receta actual si existe
-  const recipe = machine.currentRecipeId
-    ? items[machine.currentRecipeId]
+  const liveMachine =
+    placedMachines.find((m) => m.id === machine.id) || machine;
+
+  const recipe = liveMachine.currentRecipeId
+    ? items[liveMachine.currentRecipeId]
     : null;
 
-  // Obtener nombre para mostrar
-  const displayName = items[machine.type]?.name || machine.type;
-
-  // Estado de la máquina
-  let statusText = "Idle";
-  if (machine.currentRecipeId && recipe && recipe.inputs) {
-    statusText = `Processing ${recipe.name}`;
-  }
-
   return (
-    <MachineCard
-      machine={{ ...machine, statusText, displayName }}
-      node={node}
-      recipe={recipe}
-      resourceCap={RESOURCE_CAP}
-      onPress={() =>
-        navigation.navigate("MachineDetailsScreen", {
-          machine,
-          node,
-          recipe,
-        })
-      }
-      onPauseResume={() =>
-        machine.isIdle
-          ? resumeMiner(machine.id)
-          : pauseMiner(machine.id)
-      }
-    />
+    <>
+      <View style={styles.marginVertical10}>
+        <TouchableOpacity
+          style={styles.assignNodeButton}
+          onPress={onOpenModal}
+          activeOpacity={0.85}
+        >
+          <MaterialCommunityIcons
+            name="select-marker"
+            size={28}
+            color="#fff"
+            style={{ marginRight: 6 }}
+          />
+          <Text style={styles.assignNodeText}>
+            {liveMachine.currentRecipeId ? "Change Recipe" : "Assign Recipe"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {recipe && (
+        <View>
+          <Text style={{ color: "white" }}>Recipe: {recipe.name}</Text>
+        </View>
+      )}
+    </>
   );
 };
 

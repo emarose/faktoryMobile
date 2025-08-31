@@ -6,7 +6,15 @@ import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 import MachineCard from "./components/MachineCard";
+import Miner from "./components/MachineTypes/Miner";
+import Smelter from "./components/MachineTypes/Smelter";
+import Colors from "../../constants/Colors";
 import MachineGroup from "./components/MachineGroup";
+
+const machineComponents = {
+  miner: Miner,
+  smelter: Smelter,
+};
 
 const DeployedMachinesScreen = () => {
   const {
@@ -21,6 +29,8 @@ const DeployedMachinesScreen = () => {
     resumeMiner,
   } = useGame();
   const navigation = useNavigation();
+console.log(  placedMachines,
+    ownedMachines,);
 
   const allMachines = [
     ...placedMachines,
@@ -81,6 +91,16 @@ const DeployedMachinesScreen = () => {
     return acc;
   }, {});
 
+  const deployedMachines = ownedMachines.filter((machine) =>
+    Object.keys(machineComponents).includes(machine.type)
+  );
+
+  const getNodeForMachine = (machine) => {
+    return machine.assignedNodeId
+      ? allResourceNodes.find((node) => node.id === machine.assignedNodeId)
+      : null;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -94,6 +114,7 @@ const DeployedMachinesScreen = () => {
                   : null;
                 const statusText = getMachineStatusText(machine, node);
                 const displayName = items[machine.type]?.name || machine.type;
+                const SpecificMachineComponent = machineComponents[machine.type];
                 return (
                   <MachineCard
                     key={machine.id}
@@ -113,7 +134,11 @@ const DeployedMachinesScreen = () => {
                         ? resumeMiner(machine.id)
                         : pauseMiner(machine.id)
                     }
-                  />
+                  >
+                    {SpecificMachineComponent && (
+                      <SpecificMachineComponent machine={machine} node={node} />
+                    )}
+                  </MachineCard>
                 );
               })}
             </MachineGroup>
@@ -121,6 +146,11 @@ const DeployedMachinesScreen = () => {
         ) : (
           <Text style={styles.emptyStateText}>
             No machines deployed or owned yet.
+          </Text>
+        )}
+        {deployedMachines.length === 0 && (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No deployed machines of this type. Consider placing some!
           </Text>
         )}
       </ScrollView>

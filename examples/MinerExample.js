@@ -49,7 +49,7 @@ function getMachineIcon() {
   );
 }
 
-const MinerCard = ({ machine, node, onPress }) => {
+const Miner = ({ machine, node, onPress }) => {
   const { allResourceNodes = [], discoveredNodes = {}, placedMachines, setPlacedMachines } = useGame();
   const [showNodeSelector, setShowNodeSelector] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -331,4 +331,4 @@ const MinerCard = ({ machine, node, onPress }) => {
   );
 };
 
-export default MinerCard;
+export default Miner;

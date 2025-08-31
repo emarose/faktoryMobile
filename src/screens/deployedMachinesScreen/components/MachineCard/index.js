@@ -5,6 +5,7 @@ import styles from "./styles";
 import { getNodeTypeDefinition } from "../../../../data/nodeTypes";
 import ProgressBar from "../../../../components/ProgressBar";
 import NodeSelectorModal from "./components/NodeSelectorModal";
+import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
 import { useGame } from "../../../../contexts/GameContext";
 
 // helper: resource icon mapping (returns MaterialCommunityIcons name)
@@ -63,7 +64,7 @@ function getMachineIcon(type) {
   }
 }
 
-const MachineCard = ({ machine, node, onPress }) => {
+const MachineCard = ({ machine, node, children, onPress }) => {
   const isMiner = machine.type === "miner";
   const isIdle = machine.isIdle;
   const {
@@ -73,6 +74,7 @@ const MachineCard = ({ machine, node, onPress }) => {
     placedMachines,
   } = useGame();
   const [showNodeSelector, setShowNodeSelector] = useState(false);
+  const [showSmelterModal, setShowSmelterModal] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   const openNodeSelector = () => {
@@ -93,6 +95,36 @@ const MachineCard = ({ machine, node, onPress }) => {
       useNativeDriver: true,
     }).start(() => setShowNodeSelector(false));
   };
+
+  const openSmelterModal = () => {
+    setShowSmelterModal(true);
+  };
+
+  const closeSmelterModal = () => {
+    setShowSmelterModal(false);
+  };
+
+  const handleSelectRecipe = (recipeId) => {
+    setPlacedMachines((prev) =>
+      prev.map((m) =>
+        m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
+      )
+    );
+    closeSmelterModal();
+  };
+
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child)) {
+      const props = {};
+      if (machine.type === "miner") {
+        props.onOpenModal = openNodeSelector;
+      } else if (machine.type === "smelter") {
+        props.onOpenModal = openSmelterModal;
+      }
+      return React.cloneElement(child, props);
+    }
+    return child;
+  });
 
   const liveMachine =
     placedMachines.find((m) => m.id === machine.id) || machine;
@@ -227,49 +259,16 @@ const MachineCard = ({ machine, node, onPress }) => {
               </TouchableOpacity>
             ) : null}
           </View>
-          {(machine.type === "miner" || machine.type === "smelter") && (
-            <View style={styles.marginVertical10}>
-              {machine.type === "miner" ? (
-                <TouchableOpacity
-                  style={styles.assignNodeButton}
-                  onPress={openNodeSelector}
-                  activeOpacity={0.85}
-                >
-                  <MaterialCommunityIcons
-                    name="select-marker"
-                    size={28}
-                    color="#fff"
-                    style={{ marginRight: 6 }}
-                  />
-                  <Text style={styles.assignNodeText}>
-                    {liveMachine.assignedNodeId
-                      ? "Change resource node"
-                      : "Assign resource node"}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.assignNodeButton}
-                  onPress={onPress}
-                  activeOpacity={0.85}
-                >
-                  <MaterialCommunityIcons
-                    name="select-marker"
-                    size={28}
-                    color="#fff"
-                    style={{ marginRight: 6 }}
-                  />
-                  <Text style={styles.assignNodeText}>Assign recipe</Text>
-                </TouchableOpacity>
-              )}
-              {machine.type === "miner" &&
-                !liveMachine.assignedNodeId &&
-                discoveredNodeOptions.length === 0 && (
-                  <Text style={styles.noNodesText}>
-                    No discovered, non-depleted nodes available.
-                  </Text>
-                )}
-            </View>
+
+          {childrenWithProps}
+
+          {showSmelterModal && (
+            <SmelterModal
+              machine={liveMachine}
+              visible={showSmelterModal}
+              onClose={closeSmelterModal}
+              onSelectRecipe={handleSelectRecipe}
+            />
           )}
           {showNodeSelector && (
             <NodeSelectorModal

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import * as Progress from "react-native-progress";
 import Colors from "../../constants/Colors";
@@ -12,6 +13,7 @@ const ProgressBar = ({
   style,
   textColor = Colors.textPrimary,
 }) => {
+  const [barWidth, setBarWidth] = useState(null);
   // coerce to safe numbers to avoid NaN transforms in native Animated views
   const safeValue =
     typeof value === "number" && !isNaN(value) ? value : Number(value) || 0;
@@ -34,19 +36,23 @@ const ProgressBar = ({
         style={{
           height: height,
           justifyContent: "center",
+          alignItems: "center",
         }}
+        onLayout={(e) => setBarWidth(e.nativeEvent.layout.width)}
       >
-        <Progress.Bar
-          progress={progress}
-          width={null}
-          height={height}
-          color={color}
-          unfilledColor={backgroundColor}
-          borderWidth={1}
-          borderRadius={8}
-          animated={false}
-          style={{ position: "absolute", top: 0, left: 0, right: 0 }}
-        />
+        {barWidth && (
+          <Progress.Bar
+            progress={progress}
+            width={barWidth}
+            height={height}
+            color={color}
+            unfilledColor={backgroundColor}
+            borderWidth={1}
+            borderRadius={8}
+            animated={true}
+            style={{}}
+          />
+        )}
         <Text
           style={{
             position: "absolute",
