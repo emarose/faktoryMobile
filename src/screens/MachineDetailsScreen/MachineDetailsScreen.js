@@ -393,7 +393,7 @@ const MachineDetailsScreen = ({ route }) => {
                       },
                     ]}
                     onPress={() => startCrafting(amount)}
-                    disabled={!canCraft || isProcessing}
+                    disabled={!canCraft || !!isProcessing}
                     activeOpacity={0.85}
                   >
                     <MaterialCommunityIcons
