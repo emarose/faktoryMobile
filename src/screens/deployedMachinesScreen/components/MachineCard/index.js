@@ -6,6 +6,7 @@ import { getNodeTypeDefinition } from "../../../../data/nodeTypes";
 import ProgressBar from "../../../../components/ProgressBar";
 import NodeSelectorModal from "./components/NodeSelectorModal";
 import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
+import ConstructorModal from "../MachineTypes/Constructor/components/ConstructorModal";
 import { useGame } from "../../../../contexts/GameContext";
 
 // helper: resource icon mapping (returns MaterialCommunityIcons name)
@@ -59,6 +60,10 @@ function getMachineIcon(type) {
       return (
         <MaterialCommunityIcons name="factory" size={28} color="#4CAF50" />
       );
+    case "constructor":
+      return (
+        <MaterialCommunityIcons name="cog" size={28} color="#2196F3" />
+      );
     default:
       return <MaterialIcons name="build" size={28} color="#aaa" />;
   }
@@ -75,6 +80,7 @@ const MachineCard = ({ machine, node, children, onPress }) => {
   } = useGame();
   const [showNodeSelector, setShowNodeSelector] = useState(false);
   const [showSmelterModal, setShowSmelterModal] = useState(false);
+  const [showConstructorModal, setShowConstructorModal] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   const openNodeSelector = () => {
@@ -104,13 +110,25 @@ const MachineCard = ({ machine, node, children, onPress }) => {
     setShowSmelterModal(false);
   };
 
+  const openConstructorModal = () => {
+    setShowConstructorModal(true);
+  };
+
+  const closeConstructorModal = () => {
+    setShowConstructorModal(false);
+  };
+
   const handleSelectRecipe = (recipeId) => {
     setPlacedMachines((prev) =>
       prev.map((m) =>
         m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
       )
     );
-    closeSmelterModal();
+    if (machine.type === "smelter") {
+      closeSmelterModal();
+    } else if (machine.type === "constructor") {
+      closeConstructorModal();
+    }
   };
 
   const childrenWithProps = React.Children.map(children, (child) => {
@@ -120,6 +138,8 @@ const MachineCard = ({ machine, node, children, onPress }) => {
         props.onOpenModal = openNodeSelector;
       } else if (machine.type === "smelter") {
         props.onOpenModal = openSmelterModal;
+      } else if (machine.type === "constructor") {
+        props.onOpenModal = openConstructorModal;
       }
       return React.cloneElement(child, props);
     }
@@ -247,13 +267,13 @@ const MachineCard = ({ machine, node, children, onPress }) => {
                 {machine.displayName || machine.name || machine.type}
               </Text>
             </View>
-            {/* Show loupe icon for both miners and smelters. For smelters, it does nothing for now. */}
-            {machine.type === "miner" || machine.type === "smelter" ? (
+            {/* Show loupe icon for miners, smelters, and constructors */}
+            {(machine.type === "miner" || machine.type === "smelter" || machine.type === "constructor") ? (
               <TouchableOpacity
                 onPress={machine.type === "miner" ? onPress : undefined}
                 style={styles.loupeButton}
                 activeOpacity={0.7}
-                disabled={machine.type === "smelter"}
+                disabled={machine.type === "smelter" || machine.type === "constructor"}
               >
                 <MaterialIcons name="loupe" size={32} color="#bbb" />
               </TouchableOpacity>
@@ -267,6 +287,14 @@ const MachineCard = ({ machine, node, children, onPress }) => {
               machine={liveMachine}
               visible={showSmelterModal}
               onClose={closeSmelterModal}
+              onSelectRecipe={handleSelectRecipe}
+            />
+          )}
+          {showConstructorModal && (
+            <ConstructorModal
+              machine={liveMachine}
+              visible={showConstructorModal}
+              onClose={closeConstructorModal}
               onSelectRecipe={handleSelectRecipe}
             />
           )}

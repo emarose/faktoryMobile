@@ -8,12 +8,14 @@ import RESOURCE_CAP from "../../constants/ResourceCap";
 import MachineCard from "./components/MachineCard";
 import Miner from "./components/MachineTypes/Miner";
 import Smelter from "./components/MachineTypes/Smelter";
+import Constructor from "./components/MachineTypes/Constructor";
 import Colors from "../../constants/Colors";
 import MachineGroup from "./components/MachineGroup";
 
 const machineComponents = {
   miner: Miner,
   smelter: Smelter,
+  constructor: Constructor,
 };
 
 const DeployedMachinesScreen = () => {
