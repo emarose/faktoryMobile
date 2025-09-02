@@ -5,10 +5,15 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  InteractionManager,
 } from "react-native";
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
+import MapControls from "./components/MapControls/MapControls";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
+import MapGrid from "./components/MapGrid";
+import PlayerInfo from "./components/PlayerInfo";
+import DiscoveryRadius from "./components/DiscoveryRadius";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { useMachines } from "../../hooks/useMachines";
 import { GameContext } from "../../contexts/GameContext";
@@ -17,10 +22,12 @@ import MapToast from "./components/MapToast/MapToast";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useMilestone } from "../../hooks/useMilestone";
 import Colors from "../../constants/Colors";
+
 const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
+const MAP_SIZE = CHUNK_SIZE;
 
 export default function MapScreen({ navigation }) {
   const { allResourceNodes, regenerateSeed, setTestSeed } =
@@ -75,6 +82,7 @@ export default function MapScreen({ navigation }) {
     setPlayerMapPosition,
     () => handleManualPin
   );
+
   const handleManualPin = () => {
     setIsManualPin(false);
   };
@@ -107,8 +115,11 @@ export default function MapScreen({ navigation }) {
   ]);
 
   // Machines and mining logic
-  const { mineableNodes, placeMachine, placedMachines, setPlacedMachines } =
-    useMachines(inventory, removeResources, allResourceNodes);
+  const { mineableNodes, placeMachine, placedMachines } = useMachines(
+    inventory,
+    removeResources,
+    allResourceNodes
+  );
 
   // Compute closest node for auto-pin
   let closestNodeId = null;
@@ -158,91 +169,9 @@ export default function MapScreen({ navigation }) {
     return distA - distB;
   });
 
-  // Render tiles proceduralmente usando allResourceNodes y la posición visual del jugador
-  const renderTiles = () => {
-    const rows = [];
-    const px = visualPlayerPos.x;
-    const py = visualPlayerPos.y;
-    const cx = Math.floor(px / CHUNK_SIZE);
-    const cy = Math.floor(py / CHUNK_SIZE);
-    // Para cada tile visible en la grilla
-    for (let y = 0; y < CHUNK_SIZE; y++) {
-      const cols = [];
-      for (let x = 0; x < CHUNK_SIZE; x++) {
-        const gx = cx * CHUNK_SIZE + x;
-        const gy = cy * CHUNK_SIZE + y;
-        const node = allResourceNodes.find((n) => n.x === gx && n.y === gy);
-        const isPlayer = gx === px && gy === py;
-        let color = Colors.background;
-        let discovered = false;
-        if (node && discoveredNodes[node.id]) {
-          color = getNodeColor(node.type);
-          discovered = true;
-        }
-        if (isPlayer) {
-          cols.push(
-            <View
-              key={`${gx}-${gy}`}
-              style={{
-                width: TILE_SIZE,
-                height: TILE_SIZE,
-                backgroundColor: color,
-                borderWidth: 1,
-                borderColor: "#555",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                zIndex: 200,
-              }}
-            >
-              <MaterialIcons
-                name="my-location"
-                size={24}
-                color="#FFD700"
-                style={{ opacity: 0.85 }}
-              />
-            </View>
-          );
-        } else if (node && discovered) {
-          cols.push(
-            <Pressable
-              key={`${gx}-${gy}`}
-              style={{
-                width: TILE_SIZE,
-                height: TILE_SIZE,
-                backgroundColor: color,
-                borderWidth: pinnedNodeId !== node.id ? 1 : 2,
-                borderColor: pinnedNodeId !== node.id ? "#555" : "#FFD700",
-                zIndex: 100,
-              }}
-              onPress={() => {
-                setManualPinnedNodeId(node.id);
-                setIsManualPinActive(true);
-              }}
-            />
-          );
-        } else {
-          cols.push(
-            <View
-              key={`${gx}-${gy}`}
-              style={{
-                width: TILE_SIZE,
-                height: TILE_SIZE,
-                backgroundColor: color,
-                borderWidth: 1,
-                borderColor: "#555",
-              }}
-            />
-          );
-        }
-      }
-      rows.push(
-        <View key={`row-${y}`} style={{ flexDirection: "row" }}>
-          {cols}
-        </View>
-      );
-    }
-    return rows;
+  const handleTilePress = (node) => {
+    setManualPinnedNodeId(node.id);
+    setIsManualPinActive(true);
   };
 
   return (
@@ -255,50 +184,13 @@ export default function MapScreen({ navigation }) {
         message={toastMessage}
         onHide={() => setToastVisible(false)}
       />
-      {/* Row of icon-buttons (placeholder) */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          marginVertical: 8,
-        }}
-      >
-        {/* Botón momentáneo para regenerar el seed del mundo */}
-        <TouchableOpacity
-          style={{
-            marginHorizontal: 8,
-            backgroundColor: "#23233a",
-            borderRadius: 16,
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderWidth: 2,
-            borderColor: "#FFD700",
-          }}
-          onPress={regenerateSeed}
-        >
-          <Text style={{ color: "#FFD700", fontWeight: "bold" }}>
-            Change seed
-          </Text>
-        </TouchableOpacity>
-        {/* Botón para activar el seed de test */}
-        <TouchableOpacity
-          style={{
-            marginHorizontal: 8,
-            backgroundColor: "#23233a",
-            borderRadius: 16,
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderWidth: 2,
-            borderColor: "#00BFFF",
-          }}
-          onPress={setTestSeed}
-        >
-          <Text style={{ color: "#00BFFF", fontWeight: "bold" }}>
-            Test Seed
-          </Text>
-        </TouchableOpacity>
-      </View>
+
+      {/* Map Controls */}
+      <MapControls 
+        onRegenerateSeed={regenerateSeed}
+        onSetTestSeed={setTestSeed}
+      />
+
       <View style={styles.mapVisualContainer}>
         <View
           style={{
@@ -308,39 +200,24 @@ export default function MapScreen({ navigation }) {
             alignSelf: "center",
           }}
         >
-          <View
-            style={{
-              flexDirection: "column",
-              width: TILE_SIZE * VIEW_SIZE,
-              height: TILE_SIZE * VIEW_SIZE,
-            }}
-          >
-            {renderTiles()}
-          </View>
+          {/* Map Grid */}
+          <MapGrid
+            chunkSize={CHUNK_SIZE}
+            tileSize={TILE_SIZE}
+            visualPlayerPos={visualPlayerPos}
+            allResourceNodes={allResourceNodes}
+            discoveredNodes={discoveredNodes}
+            handleTilePress={handleTilePress}
+            navigation={navigation}
+            pinnedNodeId={pinnedNodeId}
+          />
 
-          {/* Radio de descubrimiento */}
-          <View
-            style={{
-              position: "absolute",
-              left:
-                (((visualPlayerPos.x % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
-                TILE_SIZE +
-                TILE_SIZE / 2 -
-                DISCOVERY_RADIUS_PX,
-              top:
-                (((visualPlayerPos.y % CHUNK_SIZE) + CHUNK_SIZE) % CHUNK_SIZE) *
-                TILE_SIZE +
-                TILE_SIZE / 2 -
-                DISCOVERY_RADIUS_PX,
-              width: DISCOVERY_RADIUS_PX * 2,
-              height: DISCOVERY_RADIUS_PX * 2,
-              borderRadius: DISCOVERY_RADIUS_PX,
-              borderWidth: 2,
-              borderColor: "#27ae60",
-              opacity: 0.15,
-              backgroundColor: "#27ae60",
-              zIndex: 2,
-            }}
+          {/* Discovery Radius */}
+          <DiscoveryRadius
+            tileSize={TILE_SIZE}
+            visualPlayerPos={visualPlayerPos}
+            discoveryRadiusPx={DISCOVERY_RADIUS_PX}
+            chunkSize={CHUNK_SIZE}
           />
         </View>
 
@@ -356,58 +233,15 @@ export default function MapScreen({ navigation }) {
             justifyContent: "space-between",
           }}
         >
-          {/* Izquierda */}
-          <View
-            style={{
-              alignSelf: "flex-start",
-              flexDirection: "column",
-              gap: 8,
-              borderWidth: 1,
-              borderColor: "#444",
-              borderRadius: 8,
-              padding: 8,
-            }}
-          >
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-            >
-              <MaterialIcons
-                name="my-location"
-                size={18}
-                color="#FFD700"
-                style={{ opacity: 0.85 }}
-              />
-              <Text style={{ fontSize: 12, color: "#fff" }}>
-                Current position: {visualPlayerPos.x}, {visualPlayerPos.y})
-              </Text>
-            </View>
-            <View style={{ marginBottom: 8 }}>
-              {currentMilestone || nextMilestone ? (
-                <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-                >
-                  <MaterialCommunityIcons
-                    name="flag-checkered"
-                    size={18}
-                    color="#1abc9c"
-                  />
-                  <Text
-                    style={{ fontSize: 12, color: "#e0e0e0" }}
-                    numberOfLines={1}
-                  >
-                    {currentMilestone.requirementsDescription}
-                  </Text>
-                </View>
-              ) : (
-                <Text style={{ fontSize: 11, color: "#e0e0e0" }}>
-                  No hay misiones pendientes
-                </Text>
-              )}
-            </View>
-          </View>
+          {/* Player Info */}
+          <PlayerInfo
+            visualPlayerPos={visualPlayerPos}
+            currentMilestone={currentMilestone}
+            nextMilestone={nextMilestone}
+          />
         </View>
 
-        {/* Derecha: D-pad completamente fuera del grid */}
+        {/* Movement Controls */}
         <MapGridControls
           MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
           exploreDirection={handleExploreDirection}
