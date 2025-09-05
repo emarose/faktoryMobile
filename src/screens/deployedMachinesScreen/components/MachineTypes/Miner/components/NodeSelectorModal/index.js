@@ -13,12 +13,15 @@ import { useGame } from "../../../../../../../contexts/GameContext";
 import { items } from "../../../../../../../data/items";
 
 const NodeSelectorModal = ({ visible, onClose, machine }) => {
-  const { 
-    allResourceNodes, 
-    discoveredNodes, 
-    nodeAmounts, 
+  const {
+    allResourceNodes,
+    discoveredNodes,
+    nodeAmounts,
     setPlacedMachines,
-    playerMapPosition 
+    playerMapPosition, 
+    placedMachines,
+    ownedMachines,
+    updateOwnedMachine
   } = useGame();
 
   const [selectedResourceType, setSelectedResourceType] = useState(null);
@@ -41,18 +44,40 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
   const resourceTypes = Object.keys(groupedNodes);
 
   // Get the nodes to display (filtered by selected type)
-  const nodesToDisplay = selectedResourceType 
+  const nodesToDisplay = selectedResourceType
     ? groupedNodes[selectedResourceType] || []
     : discoveredNodeOptions;
 
   const handleSelectNode = (node) => {
-    setPlacedMachines((prevPlaced) =>
-      prevPlaced.map((m) =>
-        m.id === machine.id
-          ? { ...m, assignedNodeId: node.id, isIdle: false }
-          : m
-      )
-    );
+    console.log(`Assigning node ${node.id} to machine ${machine.id}`);
+    
+    // Si la máquina ya está en placedMachines, actualizar su nodo
+    const existingMachine = placedMachines.find(m => m.id === machine.id);
+    if (existingMachine) {
+      setPlacedMachines((prevPlaced) =>
+        prevPlaced.map((m) =>
+          m.id === machine.id
+            ? { ...m, assignedNodeId: node.id, isIdle: false }
+            : m
+        )
+      );
+    } else {
+      // Si no está en placedMachines, moverla de ownedMachines a placedMachines
+      const machineToPlace = {
+        ...machine,
+        assignedNodeId: node.id,
+        isIdle: false
+      };
+      
+      // Agregar a placedMachines
+      setPlacedMachines((prevPlaced) => [...prevPlaced, machineToPlace]);
+      
+      // Marcar como colocada en ownedMachines para evitar duplicados
+      if (updateOwnedMachine) {
+        updateOwnedMachine(machine.id, { isPlaced: true });
+      }
+    }
+    
     onClose();
   };
 
@@ -66,7 +91,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
   const getResourceIcon = (type) => {
     const iconMap = {
       ironOre_node: "cube-outline",
-      copperOre_node: "circle-outline", 
+      copperOre_node: "circle-outline",
       coal_node: "fire",
       limestone_node: "mountain",
       quartz_node: "diamond-stone",
@@ -91,7 +116,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
 
   const resourceTypeLabels = {
     ironOre_node: "Iron Ore",
-    copperOre_node: "Copper Ore", 
+    copperOre_node: "Copper Ore",
     coal_node: "Coal",
     limestone_node: "Limestone",
     quartz_node: "Quartz Crystal",
@@ -120,8 +145,8 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
             {resourceTypes.length > 1 && (
               <View style={modalStyles.filterSection}>
                 <Text style={modalStyles.sectionTitle}>Filter by Resource</Text>
-                <ScrollView 
-                  horizontal 
+                <ScrollView
+                  horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={modalStyles.filterContainer}
                 >
@@ -139,7 +164,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
                       All
                     </Text>
                   </TouchableOpacity>
-                  
+
                   {resourceTypes.map((type) => (
                     <TouchableOpacity
                       key={type}
@@ -172,7 +197,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
               <Text style={modalStyles.sectionTitle}>
                 Available Nodes ({nodesToDisplay.length})
               </Text>
-              
+
               {nodesToDisplay.length === 0 ? (
                 <Text style={modalStyles.noNodesText}>
                   No available nodes found for this resource type.
@@ -202,7 +227,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
                           color={getResourceColor(node.type)}
                         />
                       </View>
-                      
+
                       <View style={modalStyles.nodeInfo}>
                         <Text style={modalStyles.nodeName}>
                           {nodeDefinition?.name || node.type || "Unknown"}
@@ -217,7 +242,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
                           Available: {nodeAmount} / {node.capacity || 1000}
                         </Text>
                       </View>
-                      
+
                       <MaterialCommunityIcons
                         name="chevron-right"
                         size={24}

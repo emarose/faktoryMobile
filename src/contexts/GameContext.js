@@ -105,6 +105,7 @@ export const GameProvider = ({ children }) => {
     canAfford,
     buildableItems,
     addMachine,
+    updateOwnedMachine,
   } = useInventory(placedMachines, allResourceNodes);
 
   const { placedMachines, setPlacedMachines, mineableNodes, placeMachine, pauseMiner, resumeMiner } =
@@ -260,6 +261,7 @@ export const GameProvider = ({ children }) => {
       craftItem,
       activeCrafts,
       addMachine,
+      updateOwnedMachine,
       getProductionRate,
       playerMapPosition,
       setPlayerMapPosition,
@@ -306,6 +308,7 @@ export const GameProvider = ({ children }) => {
       craftItem,
       activeCrafts,
       addMachine,
+      updateOwnedMachine,
       getProductionRate,
       playerMapPosition,
       setPlayerMapPosition,

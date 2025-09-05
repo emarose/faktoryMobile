@@ -31,8 +31,6 @@ const DeployedMachinesScreen = () => {
     resumeMiner,
   } = useGame();
   const navigation = useNavigation();
-console.log(  placedMachines,
-    ownedMachines,);
 
   const allMachines = [
     ...placedMachines,

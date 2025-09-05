@@ -213,5 +213,18 @@ export const useInventory = () => {
         };
       });
     },
+    updateOwnedMachine: (machineId, updates) => {
+      setInventoryState((prevInventory) => {
+        const updatedMachines = prevInventory.ownedMachines.map((machine) =>
+          machine.id === machineId
+            ? { ...machine, ...updates }
+            : machine
+        );
+        return {
+          ...prevInventory,
+          ownedMachines: updatedMachines,
+        };
+      });
+    },
   };
 };

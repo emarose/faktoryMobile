@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useMemo, useState, useRef, useEffect } from "react";
+import { Animated, Easing, View, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
+import { getNodeTypeDefinition } from "../../../../data/nodeTypes";
+import ProgressBar from "../../../../components/ProgressBar";
 import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
 import ConstructorModal from "../MachineTypes/Constructor/components/ConstructorModal";
 import { useGame } from "../../../../contexts/GameContext";
@@ -47,8 +49,12 @@ function getMachineIcon(type) {
         <MaterialCommunityIcons
           name="chemical-weapon"
           size={28}
-          color="#9C27B0"
+          color="#ff4081"
         />
+      );
+    case "foundry":
+      return (
+        <MaterialCommunityIcons name="furnace" size={28} color="#ffb300" />
       );
     case "smelter":
       return (
@@ -152,36 +158,124 @@ const MachineCard = ({ machine, node, children, onPress }) => {
               </TouchableOpacity>
             ) : null}
           </View>
+
+          {childrenWithProps}
+
+          {showSmelterModal && (
+            <SmelterModal
+              machine={liveMachine}
+              visible={showSmelterModal}
+              onClose={closeSmelterModal}
+              onSelectRecipe={handleSelectRecipe}
+            />
+          )}
+          {showConstructorModal && (
+            <ConstructorModal
+              machine={liveMachine}
+              visible={showConstructorModal}
+              onClose={closeConstructorModal}
+            />
+          )}
+          {showNodeSelector && (
+            <NodeSelectorModal
+              visible={showNodeSelector}
+              slideAnim={slideAnim}
+              onClose={closeNodeSelector}
+              groupedNodes={groupedNodes}
+              selectedResourceType={selectedResourceType}
+              setSelectedResourceType={setSelectedResourceType}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              filteredNodes={filteredNodes}
+              handleAssignNode={handleAssignNode}
+              getResourceIcon={getResourceIcon}
+              getResourceColor={getResourceColor}
+              calculateDistance={calculateDistance}
+            />
+          )}
+          {/* Node info and depletion/progress bar for any assigned node */}
+          {node && (
+            <View style={styles.nodeInfoContainer}>
+              {/* Encabezado del Nodo (Nombre y Estado) */}
+              <View style={styles.headerRow}>
+                {isMiner && node && (
+                  (() => {
+                    const nodeTypeDef = getNodeTypeDefinition(node.type);
+                    const pillColor = nodeTypeDef ? nodeTypeDef.color : '#333';
+                    return (
+                      <View style={[styles.selectedNodePill, { backgroundColor: pillColor }]}> 
+                        <Text style={styles.selectedNodePillText}>{node.name}</Text>
+                      </View>
+                    );
+                  })()
+                )}
+                <Text style={styles.machineStatus}>
+                  {isIdle ? "Miner is on hold" : machine.statusText}
+                </Text>
+              </View>
+
+              {/* Barra de Progreso y Mensaje de Depleción */}
+              <View style={styles.depletionSection}>
+                <ProgressBar
+                  value={nodeDepletionAmount}
+                  max={nodeCapacity}
+                  label={"Node Depletion"}
+                />
+                {nodeDepletionAmount <= 0 && (
+                  <Text style={styles.nodeDepletedText}>Node Depleted</Text>
+                )}
+              </View>
+
+              {/* Controles del Minero (Botones) */}
+              {isMiner && node && (
+                <View style={styles.controlButtonsContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.pauseResumeButton,
+                      isIdle
+                        ? styles.pauseResumeIdle
+                        : styles.pauseResumeActive,
+                    ]}
+                    onPress={handlePauseResume}
+                    activeOpacity={0.85}
+                  >
+                    <MaterialIcons
+                      name={isIdle ? "play-arrow" : "pause"}
+                      size={18}
+                      color="#fff"
+                      style={{ marginRight: 4 }}
+                    />
+                    <Text style={styles.pauseResumeText}>
+                      {isIdle ? "Resume Mining" : "Pause Miner"}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.detachButton}
+                    onPress={() => {
+                      setPlacedMachines((prevPlaced) =>
+                        prevPlaced.map((m) =>
+                          m.id === liveMachine.id
+                            ? { ...m, isIdle: true, assignedNodeId: undefined }
+                            : m
+                        )
+                      );
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <MaterialIcons
+                      name="link-off"
+                      size={16}
+                      color="#bbb"
+                      style={{ marginRight: 4 }}
+                    />
+                    <Text style={styles.detachText}>Detach Miner</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          )}
         </View>
       </View>
-
-      {/* Render children components (specific machine type content) */}
-      {childrenWithProps}
-
-      {/* Modals */}
-      {showSmelterModal && (
-        <SmelterModal
-          machine={liveMachine}
-          visible={showSmelterModal}
-          onClose={closeSmelterModal}
-          onSelectRecipe={handleSelectRecipe}
-        />
-      )}
-      {showConstructorModal && (
-        <ConstructorModal
-          machine={liveMachine}
-          visible={showConstructorModal}
-          onClose={closeConstructorModal}
-          onSelectRecipe={handleSelectRecipe}
-        />
-      )}
-      {showNodeSelector && (
-        <NodeSelectorModal
-          visible={showNodeSelector}
-          onClose={closeNodeSelector}
-          machine={liveMachine}
-        />
-      )}
     </View>
   );
 };

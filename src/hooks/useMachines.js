@@ -46,7 +46,6 @@ export const useMachines = (
 
   const placeMachine = useCallback(
     (machineIdInInventory, targetNodeId = null, recipeId = null) => {
-      console.log(`Attempting to place machine: ${machineIdInInventory} on node: ${targetNodeId}`);
       
       // Check inventory via the canAfford callback from useInventory (or directly via inventory prop)
       if ((inventory[machineIdInInventory]?.currentAmount || 0) <= 0) {
@@ -170,6 +169,5 @@ export const useMachines = (
     placeMachine,
     pauseMiner,
     resumeMiner,
-    // Add functions for updating machine recipes, removing machines, etc.
   };
 };

@@ -5,11 +5,21 @@ import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import ProgressBar from "../../../../../components/ProgressBar";
 import { items } from "../../../../../data/items";
+import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
 
 const Miner = ({ machine, onOpenModal }) => {
-  const { placedMachines, setPlacedMachines, allResourceNodes, discoveredNodes, nodeAmounts } = useGame();
+  const { 
+    placedMachines, 
+    setPlacedMachines, 
+    allResourceNodes, 
+    discoveredNodes, 
+    nodeAmounts,
+    pauseMiner,
+    resumeMiner
+  } = useGame();
 
   const liveMachine = placedMachines.find((m) => m.id === machine.id) || machine;
+  const isIdle = liveMachine.isIdle;
 
   const discoveredNodeOptions = allResourceNodes.filter(
     (n) =>
@@ -28,11 +38,11 @@ const Miner = ({ machine, onOpenModal }) => {
   const depletionPercentage = assignedNode ? ((nodeCapacity - nodeAmount) / nodeCapacity) * 100 : 0;
 
   const handlePauseResume = () => {
-    setPlacedMachines((prevPlaced) =>
-      prevPlaced.map((m) =>
-        m.id === liveMachine.id ? { ...m, isIdle: !m.isIdle } : m
-      )
-    );
+    if (isIdle) {
+      resumeMiner(liveMachine.id);
+    } else {
+      pauseMiner(liveMachine.id);
+    }
   };
 
   const handleDetachNode = () => {
@@ -71,6 +81,75 @@ const Miner = ({ machine, onOpenModal }) => {
         )}
       </View>
 
+      {/* Node Information and Controls */}
+      {assignedNode && (
+        <View style={styles.extraInfoContainer}>
+          <View style={styles.headerRow}>
+            {(() => {
+              const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);
+              const pillColor = nodeTypeDef ? nodeTypeDef.color : '#333';
+              return (
+                <View style={[styles.selectedNodePill, { backgroundColor: pillColor }]}> 
+                  <Text style={styles.selectedNodePillText}>{assignedNode.name}</Text>
+                </View>
+              );
+            })()}
+            <Text style={styles.machineStatus}>
+              {isIdle ? "Miner is on hold" : liveMachine.statusText}
+            </Text>
+          </View>
+
+          {/* Progress Bar and Depletion Message */}
+          <View style={styles.depletionSection}>
+            <ProgressBar
+              value={nodeAmount}
+              max={nodeCapacity}
+              label={"Node Resources"}
+              color={nodeAmount > 0 ? "#4CAF50" : "#FF6B6B"}
+            />
+            {nodeAmount <= 0 && (
+              <Text style={styles.nodeDepletedText}>Node Depleted</Text>
+            )}
+          </View>
+
+          {/* Miner Controls (Buttons) */}
+          <View style={styles.controlButtonsContainer}>
+            <TouchableOpacity
+              style={[
+                styles.pauseResumeButton,
+                isIdle
+                  ? styles.pauseResumeIdle
+                  : styles.pauseResumeActive,
+              ]}
+              onPress={handlePauseResume}
+              activeOpacity={0.85}
+            >
+              <MaterialIcons
+                name={isIdle ? "play-arrow" : "pause"}
+                size={18}
+                color="#fff"
+                style={{ marginRight: 4 }}
+              />
+              <Text style={styles.pauseResumeText}>
+                {isIdle ? "Resume Mining" : "Pause Miner"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.detachButton}
+              onPress={handleDetachNode}
+              activeOpacity={0.85}
+            >
+              <MaterialIcons
+                name="link-off"
+                size={16}
+                color="#bbb"
+                style={{ marginRight: 4 }}
+              />
+              <Text style={styles.detachText}>Detach Miner</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </>
   );
 };
