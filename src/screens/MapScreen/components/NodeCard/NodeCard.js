@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
@@ -23,6 +23,8 @@ const NodeCard = React.memo(
 
     const nodeDefinition = items[nodeType];
     const [miningFeedback, setMiningFeedback] = useState(false);
+    const rippleScale = useRef(new Animated.Value(1)).current;
+    const rippleOpacity = useRef(new Animated.Value(0)).current;
     const { manualMineable, machineRequired, output } = nodeDefinition;
     const producedItemId = output ? Object.keys(output)[0] : null;
     const producedItemName =
@@ -99,9 +101,24 @@ const NodeCard = React.memo(
       ) {
         if (onDepleteNode) {
           onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
-          setMiningFeedback(true);
-          setTimeout(() => setMiningFeedback(false), 100);
-          // trigger feedback to user momentarily changing the node border color
+          
+          // Trigger ripple animation en el icono
+          rippleOpacity.setValue(0.5);
+          rippleScale.setValue(0.9);
+          
+          Animated.parallel([
+            // Animación del icono
+            Animated.timing(rippleScale, {
+              toValue: 1.8,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(rippleOpacity, {
+              toValue: 0,
+              duration: 300,
+              useNativeDriver: true,
+            })
+          ]).start();
         }
       }
     };
@@ -119,14 +136,40 @@ const NodeCard = React.memo(
           marginLeft: 2,
           padding: 6,
           opacity: !canManualMine || isDepleted ? 0.4 : 1,
-          flexDirection: "row",
+          width: 48,
+          height: 48,
           alignItems: "center",
+          justifyContent: "center",
         }}
         onPress={() => canManualMine && !isDepleted && handleManualMine()}
         disabled={!canManualMine || isDepleted}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        <Icon name="pickaxe" size={24} color={Colors.accentGold} />
+        {/* Container for ripple effect - centered using flexbox */}
+        <View
+          style={{
+            width: 56,
+            height: 56,
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+          }}
+        >
+          {/* Ripple effect background */}
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              backgroundColor: Colors.accentGold,
+              opacity: rippleOpacity,
+              transform: [{ scale: rippleScale }],
+            }}
+          />
+          {/* Icon centered in the container */}
+          <Icon name="pickaxe" size={24} color={Colors.accentGold} />
+        </View>
       </TouchableOpacity>
     );
 
@@ -137,7 +180,6 @@ const NodeCard = React.memo(
         style={[
           styles.nodeCard,
           isExpanded && styles.selectedCard,
-          miningFeedback && { borderColor: Colors.accentGold, borderWidth: 4, shadowColor: Colors.accentGold, shadowOpacity: 0.7, shadowRadius: 10 }
         ]}
       >
         {/* Fila principal */}
