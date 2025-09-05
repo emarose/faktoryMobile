@@ -18,7 +18,10 @@ const AppLoader = ({ children, onLoaded }) => {
       await Font.loadAsync({
         ...MaterialIcons.font,
         ...MaterialCommunityIcons.font,
+        'SpaceMono-Regular': require('../../../assets/fonts/Space_Mono/SpaceMono-Regular.ttf'),
       });
+
+
 
       setLoadingStep('Preparing game data...');
       // Precalcular datos que necesites
@@ -26,7 +29,7 @@ const AppLoader = ({ children, onLoaded }) => {
 
       setLoadingStep('Ready!');
       await new Promise(resolve => setTimeout(resolve, 300));
-      
+
       setLoading(false);
       onLoaded?.();
     } catch (error) {
@@ -37,17 +40,19 @@ const AppLoader = ({ children, onLoaded }) => {
 
   if (loading) {
     return (
-      <View style={{ 
-        flex: 1, 
-        justifyContent: 'center', 
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#1a1a2e'
       }}>
         <ActivityIndicator size="large" color="#4CAF50" />
-        <Text style={{ 
-          color: '#fff', 
-          marginTop: 20, 
-          fontSize: 16 
+        <Text style={{
+          color: '#fff',
+          marginTop: 20,
+          fontSize: 16,
+          fontFamily: 'SpaceMono-Regular'
+
         }}>
           {loadingStep}
         </Text>
