@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View, Dimensions } from "react-native";
-import { Text } from "../Text";
+import  Text  from "../Text";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const Toast = ({ visible, message, duration = 1000, onHide }) => {

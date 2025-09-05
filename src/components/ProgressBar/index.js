@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { Text } from "../Text";
+import Text from "../Text";
 import * as Progress from "react-native-progress";
 import Colors from "../../constants/Colors";
 

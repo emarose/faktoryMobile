@@ -14,6 +14,7 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
         borderColor: "#444",
         borderRadius: 8,
         padding: 8,
+        marginTop:16
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -24,10 +25,10 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
           style={{ opacity: 0.85 }}
         />
         <Text style={{ fontSize: 12, color: "#fff" }}>
-          Current position: {visualPlayerPos.x}, {visualPlayerPos.y})
+          Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
         </Text>
       </View>
-      <View style={{ marginBottom: 8 }}>
+     {/*  <View style={{ marginBottom: 8 }}>
         {currentMilestone || nextMilestone ? (
           <View
             style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
@@ -49,7 +50,7 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
             No hay misiones pendientes
           </Text>
         )}
-      </View>
+      </View> */}
     </View>
   );
 };

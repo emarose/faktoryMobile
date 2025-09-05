@@ -226,8 +226,8 @@ export default function MapScreen({ navigation }) {
             flexDirection: "row",
             width: TILE_SIZE * VIEW_SIZE,
             minHeight: 90,
-            marginTop: 18,
-            marginBottom: 8,
+            marginTop: 16,
+            marginBottom: 16,
             alignSelf: "center",
             alignItems: "flex-end",
             justifyContent: "space-between",
@@ -236,8 +236,8 @@ export default function MapScreen({ navigation }) {
           {/* Player Info */}
           <PlayerInfo
             visualPlayerPos={visualPlayerPos}
-            currentMilestone={currentMilestone}
-            nextMilestone={nextMilestone}
+       /*      currentMilestone={currentMilestone}
+            nextMilestone={nextMilestone} */
           />
         </View>
 
