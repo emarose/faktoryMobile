@@ -1,7 +1,8 @@
 // NodeDetailScreen.js
 
 import React from "react";
-import { ScrollView, Text, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
+import { Text } from "../../components";
 import NodeCard from "../MapScreen/components/NodeCard/NodeCard";
 
 export default function NodeDetailScreen({ route }) {

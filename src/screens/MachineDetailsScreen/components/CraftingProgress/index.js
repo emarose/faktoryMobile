@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "../../../../components";
 import ProgressBar from "../../../../components/ProgressBar";
 import styles from "./styles";
 

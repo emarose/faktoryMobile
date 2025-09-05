@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
+import { Text } from "../../../../../components";
 import { items } from "../../../../../data/items";
 import styles from "./styles";
 

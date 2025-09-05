@@ -1,4 +1,5 @@
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import { TouchableOpacity, View, StyleSheet } from "react-native";
+import { Text } from "../../../../components";
 import Colors from "../../../../constants/Colors";
 const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId, onPress }) => {
   return (

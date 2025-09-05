@@ -1,5 +1,6 @@
 import React from "react";
-import { Animated, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { Text } from "../../../../components";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../../../../constants/Colors";
 

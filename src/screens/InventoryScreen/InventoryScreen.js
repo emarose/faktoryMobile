@@ -1,4 +1,5 @@
-import { Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { Text } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";

@@ -5,9 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Text,
   View,
 } from "react-native";
+import { Text } from "../../components";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";

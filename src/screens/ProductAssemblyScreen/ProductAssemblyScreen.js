@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Text, FlatList } from "react-native";
+import { FlatList } from "react-native";
+import { Text } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";

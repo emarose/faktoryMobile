@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import Colors from "../../../../constants/Colors";
+import { Text } from "../../../../components";
 
 const ResourceVisualCard = ({
   name,
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   selectedCard: {
-    borderColor: "#FFD700",
+    borderColor: Colors.accentGold,
     borderWidth: 2,
   },
   icon: {
@@ -44,13 +45,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   name: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 16,
     marginBottom: 4,
   },
   amount: {
-    color: "#aaa",
+    color: Colors.textMuted,
     fontSize: 14,
   },
 });

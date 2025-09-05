@@ -14,11 +14,14 @@ const AppLoader = ({ children, onLoaded }) => {
 
   const preloadAllAssets = async () => {
     try {
-      setLoadingStep('Loading fonts...');
+      setLoadingStep('Loading assets...');
       await Font.loadAsync({
         ...MaterialIcons.font,
         ...MaterialCommunityIcons.font,
         'SpaceMono-Regular': require('../../../assets/fonts/Space_Mono/SpaceMono-Regular.ttf'),
+        'SpaceMono-Bold': require('../../../assets/fonts/Space_Mono/SpaceMono-Bold.ttf'),
+        'SpaceMono-Italic': require('../../../assets/fonts/Space_Mono/SpaceMono-Italic.ttf'),
+        'SpaceMono-BoldItalic': require('../../../assets/fonts/Space_Mono/SpaceMono-BoldItalic.ttf'),
       });
 
 

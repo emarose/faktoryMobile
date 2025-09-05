@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "../../../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
 import { items } from "../../../../../../data/items";

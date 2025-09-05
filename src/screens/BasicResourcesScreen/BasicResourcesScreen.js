@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { Text } from "../../components";
 import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 import useBasicResources from "../../hooks/useBasicResources";

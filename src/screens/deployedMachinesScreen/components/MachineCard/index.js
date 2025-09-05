@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "../../../../components";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
 import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";

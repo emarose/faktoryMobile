@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   Pressable,
   ScrollView,
   InteractionManager,
 } from "react-native";
+import { Text } from "../../components";
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapControls from "./components/MapControls/MapControls";

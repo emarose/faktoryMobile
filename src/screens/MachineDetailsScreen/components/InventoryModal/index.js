@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+import { Text } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default CraftButton = ({ label, onPress, disabled, icon = "smog" }) => (

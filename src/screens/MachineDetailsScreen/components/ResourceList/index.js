@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "../../../../components";
 import { items } from "../../../../data/items";
 import styles from "./styles";
 import RequiredResources from "./components/RequiredResources/RequiredResources";

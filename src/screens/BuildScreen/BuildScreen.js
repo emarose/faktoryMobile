@@ -1,13 +1,13 @@
 import React from "react";
 import {
   StyleSheet,
-  Text,
   View,
   ScrollView,
   TouchableOpacity,
   Alert,
   Image,
 } from "react-native";
+import { Text } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGame } from "../../contexts/GameContext";
 import styles from "./styles";

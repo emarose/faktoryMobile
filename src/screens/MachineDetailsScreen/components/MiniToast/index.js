@@ -1,5 +1,6 @@
 import React from "react";
-import { Animated, Text, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
+import { Text } from "../../../../components";
 
 const MiniToast = ({ visible, message }) => {
   if (!visible) return null;
