@@ -58,7 +58,7 @@ const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
               width: BUTTON_SIZE,
               height: BUTTON_SIZE,
               borderRadius: BUTTON_SIZE / 2,
-              backgroundColor: "rgba(30,30,50,0.8)",
+              backgroundColor: Colors.overlay,
               alignItems: "center",
               justifyContent: "center",
               elevation: 8,

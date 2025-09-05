@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
 import { getNodeColor } from "../../../../data/nodeTypes";
+import Colors from "../../../../constants/Colors";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();
@@ -51,19 +52,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#333344",
+    backgroundColor: Colors.backgroundPanel,
     paddingVertical: 10,
     paddingHorizontal: 5,
     borderRadius: 8,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
     marginTop: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#f0f0f0",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginBottom: 10,
   },
@@ -87,14 +88,14 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   iconText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "bold",
   },
   resourceAmount: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#a0d911",
+    color: Colors.textAccent,
   },
 });
 

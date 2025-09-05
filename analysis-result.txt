@@ -1,82 +1,94 @@
-=== Unused files (not imported anywhere) ===
-E:\Code\faktoryMobile\src\screens\BasicResourcesScreen\components\ResourceVisualCard\styles.js
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\components\InventoryModal\styles.js
 
 === Files with more than 300 lines (excluding styles.js) ===
-E:\Code\faktoryMobile\src\contexts\GameContext.js
-E:\Code\faktoryMobile\src\data\items.js
-E:\Code\faktoryMobile\src\hooks\useInventory.js
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard\index.js
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\components\QuantityStepper\index.js
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\MachineDetailsScreen.js
-E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js
-E:\Code\faktoryMobile\src\screens\MapScreen\MapScreen.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\contexts\GameContext.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\data\items.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\hooks\useInventory.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\ConstructorModal\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Miner\components\NodeSelectorModal\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\SmelterModal\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\QuantityStepper\index.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\MapScreen.js
 
 === Files with many inline styles and NO styles.js in the same folder ===
-E:\Code\faktoryMobile\src\components\ProgressBar\index.js (inline styles: 8)
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\components\CraftButton\index.js (inline styles: 6)
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\components\NodeSelector\index.js (inline styles: 6)
-E:\Code\faktoryMobile\src\screens\MachineDetailsScreen\components\QuantityStepper\index.js (inline styles: 30)
-E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 22)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\components\ProgressBar\index.js (inline styles: 8)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\CraftButton\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js (inline styles: 30)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Miner\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\CraftButton\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\NodeSelector\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js (inline styles: 30)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\SmelterModal\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\CraftButton\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\NodeSelector\index.js (inline styles: 6)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MachineDetailsScreen\components\QuantityStepper\index.js (inline styles: 30)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\MapControls\MapControls.js (inline styles: 10)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js (inline styles: 10)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 22)
+C:\Users\emanu\OneDrive\Documentos\GitHub\faktoryMobile\src\screens\MapScreen\components\PlayerInfo\PlayerInfo.js (inline styles: 16)
+
+=== Color summary ===
+Total unique backgroundColor: 21
+Total unique text color: 32
+Total unique colors (all): 53
 
 === backgroundColor usage ===
-#23233a: 13 uses (25.49%)
-#2c2c44: 4 uses (7.84%)
-#1a1a2e: 3 uses (5.88%)
-#4CAF50: 3 uses (5.88%)
-#4caf50: 2 uses (3.92%)
-#253625: 2 uses (3.92%)
-#1a261a: 2 uses (3.92%)
-#3a2323: 2 uses (3.92%)
-#27ae60: 2 uses (3.92%)
-#555: 2 uses (3.92%)
-#333344: 1 uses (1.96%)
-#2a2a4a: 1 uses (1.96%)
-#292940: 1 uses (1.96%)
-#ff6b6b: 1 uses (1.96%)
-#444: 1 uses (1.96%)
-#ffe082: 1 uses (1.96%)
-rgba(30,30,50,0.8): 1 uses (1.96%)
-#232: 1 uses (1.96%)
-#234: 1 uses (1.96%)
-#0a0a15: 1 uses (1.96%)
-#181825: 1 uses (1.96%)
-#3a3a3a: 1 uses (1.96%)
-#3a3a5a: 1 uses (1.96%)
-#a0d911: 1 uses (1.96%)
-#007bff: 1 uses (1.96%)
-#6c757d: 1 uses (1.96%)
+#23233a: 24 uses (24.24%)
+#4CAF50: 11 uses (11.11%)
+#2c2c44: 9 uses (9.09%)
+#4caf50: 6 uses (6.06%)
+#253625: 6 uses (6.06%)
+#1a261a: 6 uses (6.06%)
+#3a2323: 6 uses (6.06%)
+#1a1a2e: 3 uses (3.03%)
+rgba(0,0,0,0.8): 3 uses (3.03%)
+#1a1a1a: 3 uses (3.03%)
+#292940: 3 uses (3.03%)
+#ff6b6b: 3 uses (3.03%)
+#444: 3 uses (3.03%)
+#ffe082: 3 uses (3.03%)
+#35354a: 3 uses (3.03%)
+#2a2a3e: 2 uses (2.02%)
+#16213e: 1 uses (1.01%)
+#2196F3: 1 uses (1.01%)
+#FF9800: 1 uses (1.01%)
+#333344: 1 uses (1.01%)
+#27ae60: 1 uses (1.01%)
+Total unique backgroundColor usage: 21
 
 === text color usage ===
-#fff: 36 uses (33.64%)
-#4CAF50: 7 uses (6.54%)
-#a0d911: 7 uses (6.54%)
-#aaa: 6 uses (5.61%)
-#e0e0e0: 5 uses (4.67%)
-#27ae60: 5 uses (4.67%)
-#FFD700: 3 uses (2.80%)
-#f0f0f0: 3 uses (2.80%)
-#c00: 3 uses (2.80%)
-#ff6b6b: 3 uses (2.80%)
-#bbb: 3 uses (2.80%)
-#ffd700: 2 uses (1.87%)
-#cccccc: 2 uses (1.87%)
-#888: 2 uses (1.87%)
-#a5d6a7: 2 uses (1.87%)
-#00BFFF: 2 uses (1.87%)
-#d8dadbff: 1 uses (0.93%)
-#b88333ff: 1 uses (0.93%)
-#f5d7c5ff: 1 uses (0.93%)
-#424040ff: 1 uses (0.93%)
-#DAA520: 1 uses (0.93%)
-#ADD8E6: 1 uses (0.93%)
-#FFFF00: 1 uses (0.93%)
-#4B0082: 1 uses (0.93%)
-#CD5C5C: 1 uses (0.93%)
-#00FF00: 1 uses (0.93%)
-#808080: 1 uses (0.93%)
-#333: 1 uses (0.93%)
-#bfbfbf: 1 uses (0.93%)
-#ff9800: 1 uses (0.93%)
-#ffe082: 1 uses (0.93%)
-#e53935: 1 uses (0.93%)
+#fff: 55 uses (35.95%)
+#4CAF50: 19 uses (12.42%)
+#ff6b6b: 9 uses (5.88%)
+#aaa: 7 uses (4.58%)
+#888: 7 uses (4.58%)
+#bbb: 7 uses (4.58%)
+#a5d6a7: 6 uses (3.92%)
+#e0e0e0: 6 uses (3.92%)
+#FFD700: 5 uses (3.27%)
+#a0d911: 4 uses (2.61%)
+#FF6B6B: 2 uses (1.31%)
+#ff9800: 2 uses (1.31%)
+#c00: 2 uses (1.31%)
+#f0f0f0: 2 uses (1.31%)
+#ffd700: 2 uses (1.31%)
+#27ae60: 2 uses (1.31%)
+#d8dadbff: 1 uses (0.65%)
+#b88333ff: 1 uses (0.65%)
+#f5d7c5ff: 1 uses (0.65%)
+#424040ff: 1 uses (0.65%)
+#DAA520: 1 uses (0.65%)
+#ADD8E6: 1 uses (0.65%)
+#FFFF00: 1 uses (0.65%)
+#4B0082: 1 uses (0.65%)
+#CD5C5C: 1 uses (0.65%)
+#00FF00: 1 uses (0.65%)
+#808080: 1 uses (0.65%)
+#333: 1 uses (0.65%)
+#bfbfbf: 1 uses (0.65%)
+#00BFFF: 1 uses (0.65%)
+#ffe082: 1 uses (0.65%)
+#cccccc: 1 uses (0.65%)
+Total unique text color usage: 32

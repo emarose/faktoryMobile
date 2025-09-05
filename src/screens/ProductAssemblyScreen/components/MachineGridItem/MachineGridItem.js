@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
-
+import Colors from "../../../../constants/Colors";
 const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId, onPress }) => {
   return (
     <TouchableOpacity
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     width: "45%",
     aspectRatio: 1,
     margin: "2.5%",
-    backgroundColor: "#3a3a3a",
+    backgroundColor: Colors,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "#555",
+    backgroundColor: Colors.backgroundPanel,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,

@@ -23,7 +23,6 @@ const Colors = {
   borderLight: "#444455",
 
   // Otros acentos vibrantes
-  accentBlue: "#007bff",
   accentGreen: "#27ae60",
   accentGold: "#FFD700",
 

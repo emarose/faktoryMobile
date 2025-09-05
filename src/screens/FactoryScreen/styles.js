@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
 
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    backgroundColor: "#1a1a2e",
+    backgroundColor: Colors.background,
     paddingTop: 0,
   },
   scrollViewContent: {
@@ -14,11 +15,11 @@ export default styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#a0d911",
+    color: Colors.textAccent,
     marginTop: 25,
     marginBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#4a4a6e",
+    borderBottomColor: Colors.borderLight,
     paddingBottom: 5,
   },
   gridContainer: {
@@ -29,7 +30,7 @@ export default styles = StyleSheet.create({
   },
   gridItem: {
     width: "48%",
-    backgroundColor: "#2a2a4a",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
@@ -41,13 +42,13 @@ export default styles = StyleSheet.create({
   gridItemTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#f0f0f0",
+    color: Colors.textSecondary,
     textAlign: "center",
     marginBottom: 5,
   },
   gridItemDescription: {
     fontSize: 12,
-    color: "#cccccc",
+    color: Colors.textMuted,
     textAlign: "center",
   },
 });

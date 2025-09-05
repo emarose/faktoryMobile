@@ -14,7 +14,7 @@ export default styles = StyleSheet.create({
   recipeName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#a0d911",
+    color: Colors.accentGreen,
     marginBottom: 10,
     textAlign: "center",
   },
@@ -42,24 +42,24 @@ export default styles = StyleSheet.create({
   progressBarBackground: {
     width: '100%',
     height: 10,
-    backgroundColor: '#555',
+    backgroundColor: Colors.borderLight,
     borderRadius: 5,
     overflow: 'hidden', // Ensures fill stays within bounds
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#a0d911', // Green progress bar
+    backgroundColor: Colors.accentGreen,
     borderRadius: 5,
   },
   craftButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: Colors.accentGreen,
     paddingVertical: 10,
     borderRadius: 5,
     marginTop: 15,
     alignItems: "center",
   },
   craftButtonDisabled: {
-    backgroundColor: "#6c757d",
+    backgroundColor: Colors.borderLight,
   },
   craftButtonText: {
     color: "white",

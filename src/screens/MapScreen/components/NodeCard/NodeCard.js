@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
+import Colors from "../../../../constants/Colors";
 
 const NodeCard = React.memo(
   ({
@@ -124,7 +125,7 @@ const NodeCard = React.memo(
         disabled={!canManualMine || isDepleted}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        <Icon name="pickaxe" size={24} color="#FFD700" />
+        <Icon name="pickaxe" size={24} color={Colors.accentGold} />
       </TouchableOpacity>
     );
 
@@ -135,7 +136,7 @@ const NodeCard = React.memo(
         style={[
           styles.nodeCard,
           isExpanded && styles.selectedCard,
-          miningFeedback && { borderColor: '#FFD700', borderWidth: 4, shadowColor: '#FFD700', shadowOpacity: 0.7, shadowRadius: 10 }
+          miningFeedback && { borderColor: Colors.accentGold, borderWidth: 4, shadowColor: Colors.accentGold, shadowOpacity: 0.7, shadowRadius: 10 }
         ]}
       >
         {/* Fila principal */}
@@ -156,7 +157,7 @@ const NodeCard = React.memo(
             <Text
               style={[
                 styles.nodeDescription,
-                { fontSize: isExpanded ? 13 : 11, color: "#aaa" },
+                { fontSize: isExpanded ? 13 : 11, color: Colors.textMuted },
               ]}
               numberOfLines={1}
             >
@@ -166,7 +167,7 @@ const NodeCard = React.memo(
               <Text
                 style={[
                   styles.automatedRate,
-                  { fontSize: isExpanded ? 13 : 11, color: "#27ae60" },
+                  { fontSize: isExpanded ? 13 : 11, color: Colors.accentGreen },
                 ]}
               >
                 +{automatedProductionRate.toFixed(1)}/s
@@ -187,7 +188,7 @@ const NodeCard = React.memo(
               canManualMine &&
               mineIcon}
             {!isDepleted && showManualMineButton && !canManualMine && (
-              <Text style={{ color: "#c00", fontSize: 12, marginTop: 2 }}>
+              <Text style={{ color: Colors.textDanger, fontSize: 12, marginTop: 2 }}>
                 Move closer to mine
               </Text>
             )}
@@ -196,16 +197,16 @@ const NodeCard = React.memo(
                 style={{
                   marginLeft: 8,
                   padding: 6,
-                  backgroundColor: "#232",
+                  backgroundColor: Colors.backgroundPanel,
                   borderRadius: 6,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
                 onPress={() => handlePlaceMachine("miner", nodeId)}
               >
-                <Icon name="cogs" size={18} color="#fff" />
+                <Icon name="cogs" size={18} color={Colors.textPrimary} />
                 {isExpanded && (
-                  <Text style={{ color: "#fff", fontSize: 13, marginLeft: 4 }}>
+                  <Text style={{ color: Colors.textPrimary, fontSize: 13, marginLeft: 4 }}>
                     Miner
                   </Text>
                 )}
@@ -217,16 +218,16 @@ const NodeCard = React.memo(
                 style={{
                   marginLeft: 8,
                   padding: 6,
-                  backgroundColor: "#234",
+                  backgroundColor: Colors.backgroundPanel,
                   borderRadius: 6,
                   flexDirection: "row",
                   alignItems: "center",
                 }}
                 onPress={() => handlePlaceMachine("oilExtractor", nodeId)}
               >
-                <Icon name="tint" size={18} color="#fff" />
+                <Icon name="tint" size={18} color={Colors.textPrimary} />
                 {isExpanded && (
-                  <Text style={{ color: "#fff", fontSize: 13, marginLeft: 4 }}>
+                  <Text style={{ color: Colors.textPrimary, fontSize: 13, marginLeft: 4 }}>
                     Extractor
                   </Text>
                 )}
@@ -254,7 +255,7 @@ const NodeCard = React.memo(
             {isDepleted && (
               <Text
                 style={{
-                  color: "#c00",
+                  color: Colors.textDanger,
                   fontWeight: "bold",
                   fontSize: 13,
                   marginBottom: 2,
@@ -269,7 +270,7 @@ const NodeCard = React.memo(
               <Text
                 style={[
                   styles.nodeCapability,
-                  { fontSize: 11, color: "#00BFFF", marginTop: 2 },
+                  { fontSize: 11, color: Colors.textAccent, marginTop: 2 },
                 ]}
               >
                 Requires: {items[machineRequired]?.name || machineRequired}
@@ -279,7 +280,7 @@ const NodeCard = React.memo(
               <Text
                 style={[
                   styles.assignedCount,
-                  { fontSize: 11, color: "#27ae60", marginTop: 2 },
+                  { fontSize: 11, color: Colors.textAccent, marginTop: 2 },
                 ]}
               >
                 Machines: {assignedMachineCount}

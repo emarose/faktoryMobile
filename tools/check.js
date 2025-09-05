@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SRC_DIR = path.join(__dirname, '..', 'src');
-const OUTPUT_FILE = path.join(__dirname, '..', '..', 'analysis-result.txt');
+const OUTPUT_FILE = path.join(__dirname,'..',  'analysis-result.txt');
 const IGNORED_EXTENSIONS = [".json", ".md", ".lock"];
 const IGNORED_FILES = ["styles.js"];
 const INLINE_STYLE_THRESHOLD = 5; // Puedes ajustar este valor
@@ -107,50 +107,6 @@ function buildImportMap() {
     importMap[file] = imports;
   });
 }
-
-// Find unused files
-function findUnusedFiles() {
-  // Build a set of all imported paths (relative to src)
-  const imported = new Set();
-  Object.entries(importMap).forEach(([file, imports]) => {
-    imports.forEach((imp) => {
-      // Only consider relative imports
-      if (imp.startsWith(".")) {
-        let resolved = path.resolve(path.dirname(file), imp);
-        // Try with and without extension
-        if (!fs.existsSync(resolved) && fs.existsSync(resolved + ".js")) {
-          resolved += ".js";
-        } else if (
-          !fs.existsSync(resolved) &&
-          fs.existsSync(resolved + ".jsx")
-        ) {
-          resolved += ".jsx";
-        } else if (
-          !fs.existsSync(resolved) &&
-          fs.existsSync(resolved + ".ts")
-        ) {
-          resolved += ".ts";
-        } else if (
-          !fs.existsSync(resolved) &&
-          fs.existsSync(resolved + ".tsx")
-        ) {
-          resolved += ".tsx";
-        }
-        imported.add(resolved);
-      }
-    });
-  });
-
-  // Files that are not imported anywhere (except entry points)
-  const unused = allFiles.filter(
-    (file) =>
-      !imported.has(file) &&
-      !file.endsWith("App.js") &&
-      !file.endsWith("index.js") // entry points
-  );
-  return unused;
-}
-
 // Find large files (excluding styles.js)
 function findLargeFiles() {
   return allFiles.filter((file) => {
@@ -185,14 +141,10 @@ function findFilesWithManyInlineStyles() {
 getAllFiles(SRC_DIR);
 buildImportMap();
 
-const unusedFiles = findUnusedFiles();
 const largeFiles = findLargeFiles();
 const filesWithManyInlineStyles = findFilesWithManyInlineStyles();
 
 let output = '';
-
-output += '=== Unused files (not imported anywhere) ===\n';
-unusedFiles.forEach(f => output += f + '\n');
 
 output += '\n=== Files with more than 300 lines (excluding styles.js) ===\n';
 largeFiles.forEach(f => output += f + '\n');

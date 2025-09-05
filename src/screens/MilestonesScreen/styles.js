@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#181825" },
-    title: { fontSize: 28, fontWeight: "bold", color: "#fff", margin: 16 },
+    container: { flex: 1, backgroundColor: Colors.background },
+    title: { fontSize: 28, fontWeight: "bold", color: Colors.textPrimary, margin: 16 },
     scrollViewContent: { padding: 16 },
     milestoneCard: {
-        backgroundColor: "#23233a",
+        backgroundColor: Colors.backgroundPanel,
         borderRadius: 14,
         padding: 14,
         marginBottom: 0,
@@ -15,21 +16,21 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 2,
         borderWidth: 1.5,
-        borderColor: '#23233a',
+        borderColor: Colors.borderLight,
         minHeight: 90,
         maxHeight: 320,
         overflow: 'hidden',
         justifyContent: 'flex-start',
     },
-    milestoneUnlocked: { borderColor: "#27ae60" },
-    milestoneLocked: { borderColor: "#e53935" },
-    milestoneName: { fontSize: 18, fontWeight: "bold", color: "#fff", marginBottom: 2 },
-    milestoneDescription: { fontSize: 14, color: "#bbb", marginVertical: 6 },
-    unlocksTitle: { fontWeight: "bold", color: "#fff", marginTop: 8 },
-    unlockItem: { color: "#a0d911", marginLeft: 0, fontSize: 13, marginBottom: 2 },
-    unlockedText: { color: "#27ae60", fontWeight: "bold", marginTop: 8 },
-    lockedText: { color: "#e53935", fontWeight: "bold", marginTop: 8 },
-    unlockButton: { backgroundColor: '#27ae60', borderRadius: 6, padding: 10, alignItems: 'center' },
+    milestoneUnlocked: { borderColor: Colors.accentGreen },
+    milestoneLocked: { borderColor: Colors.textDanger },
+    milestoneName: { fontSize: 18, fontWeight: "bold", color: Colors.textPrimary, marginBottom: 2 },
+    milestoneDescription: { fontSize: 14, color: Colors.textMuted, marginVertical: 6 },
+    unlocksTitle: { fontWeight: "bold", color: Colors.textPrimary, marginTop: 8 },
+    unlockItem: { color: Colors.textAccent, marginLeft: 0, fontSize: 13, marginBottom: 2 },
+    unlockedText: { color: Colors.accentGreen, fontWeight: "bold", marginTop: 8 },
+    lockedText: { color: Colors.textDanger, fontWeight: "bold", marginTop: 8 },
+    unlockButton: { backgroundColor: Colors.accentGreen, borderRadius: 6, padding: 10, alignItems: 'center' },
 });
 
 export default styles;

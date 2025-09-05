@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   mapGrid: {
-    backgroundColor: "#0a0a15",
+    backgroundColor: Colors,
     position: "relative",
     overflow: "hidden",
   },
