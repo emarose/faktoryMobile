@@ -123,7 +123,7 @@ export const items = {
     name: "Crude Oil",
     type: "rawMaterial",
     description: "Unrefined petroleum, a fossil fuel.",
-    machine: "pump",
+    machine: "oilExtractor",
   },
   bauxite: {
     id: "bauxite",
@@ -139,9 +139,9 @@ export const items = {
     description: "A hard, crystalline mineral.",
     machine: "miner",
   },
-  caterium: {
-    id: "caterium",
-    name: "Caterium",
+  cateriumOre: {
+    id: "cateriumOre",
+    name: "Caterium Ore",
     type: "rawMaterial",
     description: "A rare metallic ore.",
     machine: "miner",
@@ -178,6 +178,21 @@ export const items = {
     },
     output: {
       ironIngot: 1,
+    },
+    processingTime: 5,
+    fuelConsumption: 0.1,
+  },
+  cateriumIngot: {
+    id: "cateriumIngot",
+    name: "Caterium Ingot",
+    type: "intermediateProduct",
+    description: "Refined caterium bar.",
+    machine: "smelter",
+    inputs: {
+      cateriumOre: 2,
+    },
+    output: {
+      cateriumIngot: 1,
     },
     processingTime: 5,
     fuelConsumption: 0.1,
@@ -293,7 +308,7 @@ export const items = {
     name: "Cannisters",
     type: "intermediateProduct",
     description: "Containers for fluids.",
-    machine: "constructor",
+    machine: "assembler",
     inputs: {
       plastic: 4,
     },
@@ -338,7 +353,7 @@ export const items = {
     name: "Silica",
     type: "intermediateProduct",
     description: "Silicon dioxide, used in various industrial applications.",
-    machine: "constructor",
+    machine: "refinery",
     inputs: {
       aluminaSolution: 2,
       rawQuartz: 2,
@@ -399,7 +414,7 @@ export const items = {
     name: "Cables",
     type: "intermediateProduct",
     description: "Bundled wires.",
-    machine: "constructor",
+    machine: "assembler",
     inputs: {
       rubber: 2,
       wires: 2,
@@ -434,7 +449,6 @@ export const items = {
     machine: "foundry",
     inputs: {
       aluminumScrap: 5,
-      silica: 2,
     },
     output: {
       aluminumIngot: 1,
@@ -726,12 +740,22 @@ export const items = {
     processingTime: 1.5,
     fuelConsumption: 0.3,
   },
+  basicCables: {
+    machine: "constructor",
+    inputs: {
+      copperSheets: 3,
+      ironRods: 1,
+    },
+    output: {
+      cables: 1,
+    },
+  },
   circuitBoards: {
     id: "circuitBoards",
     name: "Circuit Boards",
     type: "intermediateProduct",
     description: "Electronic boards with circuits.",
-    machine: "assembler",
+    machine: "refinery",
     inputs: {
       plastic: 2,
       copperSheets: 4,
@@ -1167,6 +1191,21 @@ export const items = {
     },
     buildTime: 15,
   },
+  oilExtractor: {
+    id: "oilExtractor",
+    name: "Oil Extractor",
+    type: "machine",
+    description: "Extracts crude oil from underground deposits.",
+    inputs: {
+      steelPipes: 8, // From Constructor
+      concrete: 6, // From Smelter
+      wires: 10, // From Constructor
+    },
+    output: {
+      oilExtractor: 1,
+    },
+    buildTime: 12,
+  },
   refinery: {
     id: "refinery",
     name: "Refinery",
@@ -1175,8 +1214,7 @@ export const items = {
     inputs: {
       steelPipes: 12,
       concrete: 8,
-      plastic: 5,
-      rubber: 5,
+      reinforcedIronPlates: 5,
     },
     output: {
       refinery: 1,
@@ -1189,9 +1227,10 @@ export const items = {
     type: "machine",
     description: "Combines multiple parts to create more complex components.",
     inputs: {
-      reinforcedIronPlates: 10,
-      rotors: 5,
-      wires: 20,
+      steelBeams: 15, // From Constructor via Foundry
+      ironPlates: 25, // From Constructor
+      wires: 20, // From Constructor
+      screws: 30, // From Constructor
     },
     output: {
       assembler: 1,
