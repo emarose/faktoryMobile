@@ -11,7 +11,8 @@ import MachineGridItem from "./components/MachineGridItem/MachineGridItem";
 import ProgressionTree from "../../components/ProgressionTree";
 
 const ProductAssemblyScreen = () => {
-  const { inventory, craftItem, ownedMachines, assignRecipeToMachine } = useGame();
+  const { inventory, craftItem, ownedMachines, assignRecipeToMachine } =
+    useGame();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedMachineType, setSelectedMachineType] = useState(null);
@@ -21,8 +22,7 @@ const ProductAssemblyScreen = () => {
     // Filter only machine objects of type 'machine'
     return ownedMachines.filter(
       (machine) =>
-        inventory[machine.type] &&
-        inventory[machine.type].type === "machine"
+        inventory[machine.type] && inventory[machine.type].type === "machine"
     );
   }, [ownedMachines, inventory]);
 
@@ -56,7 +56,7 @@ const ProductAssemblyScreen = () => {
 
       {/* Progression Tree Visualization */}
       <ProgressionTree />
-
+      {/* 
       {ownedCraftingMachineTypes.length > 0 ? (
         <FlatList
           data={ownedCraftingMachineTypes}
@@ -71,9 +71,9 @@ const ProductAssemblyScreen = () => {
           from the "Build" screen!
         </Text>
       )}
-
+ */}
       {/* The Machine Recipe Modal */}
-      <MachineRecipeModal
+     {/*  <MachineRecipeModal
         isVisible={isModalVisible}
         onClose={handleModalClose}
         machineId={selectedMachineId}
@@ -81,7 +81,7 @@ const ProductAssemblyScreen = () => {
         assignRecipeToMachine={assignRecipeToMachine}
         inventory={inventory}
         craftItem={craftItem}
-      />
+      /> */}
     </SafeAreaView>
   );
 };
