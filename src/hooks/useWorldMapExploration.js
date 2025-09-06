@@ -1,9 +1,7 @@
-// /hooks/useWorldMapExploration.js
+import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { useState, useEffect } from "react";
-
-const CHUNK_SIZE = 11; // Número de tiles por chunk (ancho y alto)
-const TILE_SIZE = 30; // Tamaño en px de cada tile
+const CHUNK_SIZE = 11;
+const TILE_SIZE = 30;
 
 export default function useWorldMapExploration(
   nodes,
@@ -15,13 +13,23 @@ export default function useWorldMapExploration(
   onMove
 ) {
   const tileRadius = Math.ceil(discoveryRadiusPx / TILE_SIZE);
-
-  // Pin state managed here
   const [pinnedNodeId, setPinnedNodeId] = useState(null);
   const [isManualPin, setIsManualPin] = useState(false);
 
-  // Move player
-  const exploreDirection = (dir) => {
+  // Memoize nodes in discovery range to avoid recalculating
+  const nodesInRange = useMemo(() => {
+    const radiusSquared = (tileRadius - 1) * (tileRadius - 1);
+    return nodes.filter((node) => {
+      const dx = node.x - playerMapPosition.x;
+      const dy = node.y - playerMapPosition.y;
+      return dx * dx + dy * dy <= radiusSquared;
+    });
+  }, [nodes, playerMapPosition.x, playerMapPosition.y, tileRadius]);
+
+  // Debounced discovery to prevent rapid updates
+  const [discoveryTimer, setDiscoveryTimer] = useState(null);
+
+  const exploreDirection = useCallback((dir) => {
     setPlayerMapPosition((pos) => {
       const deltas = {
         up: { x: 0, y: -1 },
@@ -32,74 +40,90 @@ export default function useWorldMapExploration(
       const delta = deltas[dir] || { x: 0, y: 0 };
       const newX = pos.x + delta.x;
       const newY = pos.y + delta.y;
+      
       if (onMove) {
         onMove();
       }
-      // Reset manual pin on move
       setIsManualPin(false);
       return { x: newX, y: newY };
     });
-  };
+  }, [setPlayerMapPosition, onMove]);
 
-  // Discover nodes (safe: only update if new nodes are found)
+  // Optimized discovery with debouncing and batching
   useEffect(() => {
-    if (!setDiscoveredNodes) return;
-    const toDiscover = nodes.filter((node) => {
-      const dx = node.x - playerMapPosition.x;
-      const dy = node.y - playerMapPosition.y;
-      return dx * dx + dy * dy <= (tileRadius - 1) * (tileRadius - 1);
-    });
-    // Only update if there are undiscovered nodes in range
-    if (toDiscover.length > 0) {
-      setDiscoveredNodes((prev) => {
-        let changed = false;
-        const updated = { ...prev };
-        toDiscover.forEach((node) => {
-          if (!updated[node.id]) {
-            updated[node.id] = true;
-            changed = true;
-          }
-        });
-        return changed ? updated : prev;
-      });
+    if (!setDiscoveredNodes || nodesInRange.length === 0) return;
+
+    // Clear existing timer
+    if (discoveryTimer) {
+      clearTimeout(discoveryTimer);
     }
-  }, [playerMapPosition, nodes, tileRadius, setDiscoveredNodes]);
 
-  // Auto-pin logic (always overrides manual pin)
-  useEffect(() => {
-    let closestNodeId = null;
+    // Debounce discovery updates
+    const timer = setTimeout(() => {
+      const undiscoveredNodes = nodesInRange.filter(node => !discoveredNodes[node.id]);
+      
+      if (undiscoveredNodes.length > 0) {
+        // Batch update to prevent multiple renders
+        setDiscoveredNodes((prev) => {
+          const updated = { ...prev };
+          undiscoveredNodes.forEach((node) => {
+            updated[node.id] = true;
+          });
+          return updated;
+        });
+      }
+    }, 50); // 50ms debounce
+
+    setDiscoveryTimer(timer);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [nodesInRange, discoveredNodes, setDiscoveredNodes]);
+
+  // Optimized auto-pin logic
+  const closestDiscoveredNode = useMemo(() => {
+    let closestNode = null;
     let minDist = Infinity;
-    nodes.forEach((node) => {
+
+    nodesInRange.forEach((node) => {
       if (discoveredNodes[node.id]) {
         const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
         const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
         const euclideanDist = Math.sqrt(dx * dx + dy * dy);
+        
         if (euclideanDist <= discoveryRadiusPx && euclideanDist < minDist) {
-          closestNodeId = node.id;
+          closestNode = node;
           minDist = euclideanDist;
         }
       }
     });
-    if (closestNodeId && pinnedNodeId !== closestNodeId) {
-      setPinnedNodeId(closestNodeId);
-      setIsManualPin(false);
-    } else if (!closestNodeId && pinnedNodeId) {
-      setPinnedNodeId(null);
+
+    return closestNode;
+  }, [nodesInRange, discoveredNodes, playerMapPosition, discoveryRadiusPx]);
+
+  // Update pinned node only when closest changes
+  useEffect(() => {
+    const newPinnedId = closestDiscoveredNode?.id || null;
+    if (pinnedNodeId !== newPinnedId) {
+      setPinnedNodeId(newPinnedId);
       setIsManualPin(false);
     }
-  }, [
-    playerMapPosition,
-    nodes,
-    discoveredNodes,
-    pinnedNodeId,
-    discoveryRadiusPx,
-  ]);
+  }, [closestDiscoveredNode, pinnedNodeId]);
 
-  // Manual pin handler
-  const manualPinNode = (nodeId) => {
+  const manualPinNode = useCallback((nodeId) => {
     setPinnedNodeId(nodeId);
     setIsManualPin(true);
-  };
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (discoveryTimer) {
+        clearTimeout(discoveryTimer);
+      }
+    };
+  }, [discoveryTimer]);
 
   return {
     exploreDirection,

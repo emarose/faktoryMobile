@@ -30,9 +30,10 @@ export const GameProvider = ({ children }) => {
     setNodeAmounts(() => {
       const newAmounts = {};
       allResourceNodes.forEach((node) => {
-        newAmounts[node.id] = typeof node.currentAmount === "number"
-          ? node.currentAmount
-          : node.capacity || 1000;
+        newAmounts[node.id] =
+          typeof node.currentAmount === "number"
+            ? node.currentAmount
+            : node.capacity || 1000;
       });
       return newAmounts;
     });
@@ -46,7 +47,8 @@ export const GameProvider = ({ children }) => {
     });
     if (isManual) {
       const node = allResourceNodes.find((n) => n.id === nodeId);
-      const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+      const nodeDefinition =
+        node && node.type ? require("../data/items").items[node.type] : null;
       if (nodeDefinition && nodeDefinition.output) {
         const resourceId = Object.keys(nodeDefinition.output)[0];
         addResource(resourceId, 1, nodeId);
@@ -56,7 +58,11 @@ export const GameProvider = ({ children }) => {
   const [nodeAmounts, setNodeAmounts] = useState({});
   const [playerMapPosition, setPlayerMapPosition] = useState({ x: 5, y: 5 });
   // allResourceNodes ahora depende de la posición del jugador
-  const { allResourceNodes, regenerateSeed: baseRegenerateSeed, setTestSeed: baseSetTestSeed } = useMapNodes(playerMapPosition);
+  const {
+    allResourceNodes,
+    regenerateSeed: baseRegenerateSeed,
+    setTestSeed: baseSetTestSeed,
+  } = useMapNodes(playerMapPosition);
 
   // Función extendida para regenerar el seed y limpiar el estado relacionado
 
@@ -64,7 +70,8 @@ export const GameProvider = ({ children }) => {
     if (!nodes || nodes.length === 0) return;
     const newAmounts = {};
     nodes.forEach((node) => {
-      newAmounts[node.id] = typeof node.capacity === 'number' ? node.capacity : 1000;
+      newAmounts[node.id] =
+        typeof node.capacity === "number" ? node.capacity : 1000;
     });
     setNodeAmounts(newAmounts);
   };
@@ -108,8 +115,14 @@ export const GameProvider = ({ children }) => {
     updateOwnedMachine,
   } = useInventory(placedMachines, allResourceNodes);
 
-  const { placedMachines, setPlacedMachines, mineableNodes, placeMachine, pauseMiner, resumeMiner } =
-    useMachines(inventory, removeResources, allResourceNodes);
+  const {
+    placedMachines,
+    setPlacedMachines,
+    mineableNodes,
+    placeMachine,
+    pauseMiner,
+    resumeMiner,
+  } = useMachines(inventory, removeResources, allResourceNodes);
 
   // Depletion/production global: siempre activo
   useProduction(
@@ -172,32 +185,45 @@ export const GameProvider = ({ children }) => {
       machines.forEach((machine) => {
         if (machine.type !== "miner" || !machine.assignedNodeId) return;
         if (machine.isIdle) return; // No producir si está en idle
-        const node = allResourceNodes.find((n) => n.id === machine.assignedNodeId);
+        const node = allResourceNodes.find(
+          (n) => n.id === machine.assignedNodeId
+        );
         if (!node) return;
-        const nodeCap = typeof node.capacity === "number" ? node.capacity : 1000;
+        const nodeCap =
+          typeof node.capacity === "number" ? node.capacity : 1000;
         const nodeAmount = nodeAmounts[node.id] ?? nodeCap;
         if (nodeAmount <= 0) return; // Node depleted
-        const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+        const nodeDefinition =
+          node && node.type ? require("../data/items").items[node.type] : null;
         if (!nodeDefinition || !nodeDefinition.output) return;
         const resourceId = Object.keys(nodeDefinition.output)[0];
-        const outputAmount = nodeDefinition.output[resourceId] * (machine.efficiency || 1);
+        const outputAmount =
+          nodeDefinition.output[resourceId] * (machine.efficiency || 1);
         handleDepleteNode(node.id, nodeAmount - 1, false);
         addResource(resourceId, outputAmount, node.id);
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [
-    allResourceNodes.length,
-    JSON.stringify(nodeAmounts)
-  ]);
+  }, [allResourceNodes.length, JSON.stringify(nodeAmounts)]);
 
   useEffect(() => {
-    if (canCompleteCurrentMilestone) {
-      Promise.resolve().then(() => {
-        const message = completeCurrentMilestone();
-        if (message) {
-          showToast(message);
-        }
+    if (canCompleteCurrentMilestone && !milestoneProcessing) {
+      setMilestoneProcessing(true);
+
+      // Use requestAnimationFrame to defer milestone processing
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          try {
+            const message = completeCurrentMilestone();
+            if (message) {
+              showToast(message);
+            }
+          } catch (error) {
+            console.error("Milestone completion error:", error);
+          } finally {
+            setMilestoneProcessing(false);
+          }
+        }, 100);
       });
     }
   }, [
@@ -205,16 +231,29 @@ export const GameProvider = ({ children }) => {
     completeCurrentMilestone,
     showToast,
     discoveredNodesCount,
+    milestoneProcessing,
   ]);
 
   // Cola de crafting global
   const [craftingQueue, setCraftingQueue] = useState([]);
+  const [milestoneProcessing, setMilestoneProcessing] = useState(false);
 
-  const addToCraftingQueue = ({ machineId, recipeId, amount, processingTime, itemName }) => {
+  const addToCraftingQueue = ({
+    machineId,
+    recipeId,
+    amount,
+    processingTime,
+    itemName,
+  }) => {
     const now = Date.now();
     const queue = [];
     for (let i = 0; i < amount; i++) {
-      const lastEnd = queue.length > 0 ? queue[queue.length - 1].endsAt : (craftingQueue.length > 0 ? craftingQueue[craftingQueue.length - 1].endsAt : now);
+      const lastEnd =
+        queue.length > 0
+          ? queue[queue.length - 1].endsAt
+          : craftingQueue.length > 0
+          ? craftingQueue[craftingQueue.length - 1].endsAt
+          : now;
       const start = i === 0 && craftingQueue.length === 0 ? now : lastEnd;
       queue.push({
         id: `${machineId}_${recipeId}_${now}_${i}`,
@@ -224,20 +263,22 @@ export const GameProvider = ({ children }) => {
         startedAt: start,
         endsAt: start + processingTime * 1000,
         processingTime,
-        status: 'pending',
+        status: "pending",
       });
     }
-    setCraftingQueue(prev => [...prev, ...queue]);
+    setCraftingQueue((prev) => [...prev, ...queue]);
   };
 
   const updateCraftingQueue = () => {
     const now = Date.now();
-    setCraftingQueue(prev => prev.map(proc => {
-      if (proc.status === 'pending' && now >= proc.endsAt) {
-        return { ...proc, status: 'done' };
-      }
-      return proc;
-    }));
+    setCraftingQueue((prev) =>
+      prev.map((proc) => {
+        if (proc.status === "pending" && now >= proc.endsAt) {
+          return { ...proc, status: "done" };
+        }
+        return proc;
+      })
+    );
   };
 
   const contextValue = useMemo(
@@ -277,17 +318,17 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
-  nodeAmounts,
-  setNodeAmounts,
-  handleDepleteNode,
-  craftingQueue,
-  setCraftingQueue,
-  addToCraftingQueue,
-  updateCraftingQueue,
-  pauseMiner,
-  resumeMiner,
-  regenerateSeed,
-  setTestSeed,
+      nodeAmounts,
+      setNodeAmounts,
+      handleDepleteNode,
+      craftingQueue,
+      setCraftingQueue,
+      addToCraftingQueue,
+      updateCraftingQueue,
+      pauseMiner,
+      resumeMiner,
+      regenerateSeed,
+      setTestSeed,
     }),
     [
       inventory,
