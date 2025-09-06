@@ -54,10 +54,10 @@ const DeployedMachinesScreen = () => {
         : baseNode.capacity || 50;
     return { ...baseNode, currentAmount };
   };
-
+/* TODO: NEEDS TO BE UPDATED AND BE SEPARATED ON THE DIFFERENT MACHINE TYPES */
   // Helper to get machine state (depletion aware)
   const getMachineStatusText = (machine, node) => {
-    if (machine.type === "miner" || machine.type === "pump") {
+    if (machine.type === "miner" || machine.type === "oilExtractor") {
       if (node) {
         if (typeof node.currentAmount === "number" && node.currentAmount <= 0)
           return `Depleted: ${node.name}`;

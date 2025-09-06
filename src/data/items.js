@@ -1131,20 +1131,6 @@ export const items = {
     },
     buildTime: 5,
   },
-  pump: {
-    id: "pump",
-    name: "Pump",
-    type: "machine",
-    description: "Extracts liquid resources.",
-    inputs: {
-      ironIngot: 8,
-      copperIngot: 5,
-    },
-    output: {
-      pump: 1,
-    },
-    buildTime: 5,
-  },
   constructor: {
     id: "constructor",
     name: "Constructor",
