@@ -6,6 +6,7 @@ import styles from "./styles";
 import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
 import ConstructorModal from "../MachineTypes/Constructor/components/ConstructorModal";
 import { useGame } from "../../../../contexts/GameContext";
+import { useMachineColors } from "../../../../hooks";
 import NodeSelectorModal from "../MachineTypes/Miner/components/NodeSelectorModal";
 
 // helper: resource icon mapping (returns MaterialCommunityIcons name)
@@ -33,14 +34,14 @@ function getResourceColor(resourceType) {
   return "#4CAF50";
 }
 
-function getMachineIcon(type) {
+function getMachineIcon(type, color) {
   switch (type) {
     case "miner":
       return (
         <MaterialCommunityIcons
           name="robot-industrial"
           size={28}
-          color="#4CAF50"
+          color={color}
         />
       );
     case "refinery":
@@ -48,19 +49,35 @@ function getMachineIcon(type) {
         <MaterialCommunityIcons
           name="chemical-weapon"
           size={28}
-          color="#9C27B0"
+          color={color}
         />
       );
     case "smelter":
       return (
-        <MaterialCommunityIcons name="factory" size={28} color="#4CAF50" />
+        <MaterialCommunityIcons name="factory" size={28} color={color} />
       );
     case "constructor":
       return (
-        <MaterialCommunityIcons name="cog" size={28} color="#2196F3" />
+        <MaterialCommunityIcons name="cog" size={28} color={color} />
+      );
+    case "assembler":
+      return (
+        <MaterialCommunityIcons name="wrench" size={28} color={color} />
+      );
+    case "manufacturer":
+      return (
+        <MaterialCommunityIcons name="factory" size={28} color={color} />
+      );
+    case "foundry":
+      return (
+        <MaterialCommunityIcons name="anvil" size={28} color={color} />
+      );
+    case "oilExtractor":
+      return (
+        <MaterialCommunityIcons name="oil-lamp" size={28} color={color} />
       );
     default:
-      return <MaterialIcons name="build" size={28} color="#aaa" />;
+      return <MaterialIcons name="build" size={28} color={color || "#aaa"} />;
   }
 }
 
@@ -69,9 +86,15 @@ const MachineCard = ({ machine, node, children, onPress }) => {
     setPlacedMachines,
     placedMachines,
   } = useGame();
+  const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
+  
   const [showNodeSelector, setShowNodeSelector] = useState(false);
   const [showSmelterModal, setShowSmelterModal] = useState(false);
   const [showConstructorModal, setShowConstructorModal] = useState(false);
+
+  // Get machine color
+  const machineColor = getMachineColor(machine.type);
+  const machineColorBackground = getMachineColorWithOpacity(machine.type, 0.1);
 
   const openNodeSelector = () => {
     setShowNodeSelector(true);
@@ -129,15 +152,24 @@ const MachineCard = ({ machine, node, children, onPress }) => {
     placedMachines.find((m) => m.id === machine.id) || machine;
 
   return (
-    <View style={styles.machineCard}>
+    <View 
+      style={[
+        styles.machineCard,
+        { 
+          borderLeftWidth: 4,
+          borderLeftColor: machineColor,
+          backgroundColor: machineColorBackground
+        }
+      ]}
+    >
       <View style={styles.rowAlignCenter}>
         <View style={styles.machineInfo}>
           <View style={styles.rowSpaceBetween}>
             <View style={styles.rowAlignCenterGap}>
-              <View style={styles.machineIconContainer}>
-                {getMachineIcon(machine.type)}
+              <View style={[styles.machineIconContainer, { backgroundColor: machineColor }]}>
+                {getMachineIcon(machine.type, '#FFFFFF')}
               </View>
-              <Text style={[styles.machineName, { color: "#4CAF50" }]}>
+              <Text style={[styles.machineName, { color: machineColor }]}>
                 {machine.displayName || machine.name || machine.type}
               </Text>
             </View>

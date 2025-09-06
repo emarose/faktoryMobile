@@ -8,7 +8,7 @@ import { items } from "../../data/items";
 import MachineRecipeModal from "./components/MachineRecipeModal/MachineRecipeModal";
 import styles from "./styles";
 import MachineGridItem from "./components/MachineGridItem/MachineGridItem";
-import ProgressionTree from "../../components/ProgressionTree";
+import ProgressionTree from "./components/ProgressionTree/ProgressionTree";
 
 const ProductAssemblyScreen = () => {
   const { inventory, craftItem, ownedMachines, assignRecipeToMachine } =
@@ -52,9 +52,6 @@ const ProductAssemblyScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Product Assembly</Text>
-
-      {/* Progression Tree Visualization */}
       <ProgressionTree />
       {/* 
       {ownedCraftingMachineTypes.length > 0 ? (

@@ -1,16 +1,30 @@
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from "../../../../components";
+import { useMachineColors } from "../../../../hooks";
 import Colors from "../../../../constants/Colors";
+
 const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId, onPress }) => {
+  const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
+  
+  const machineColor = getMachineColor(machineType || machineId);
+  const machineColorBackground = getMachineColorWithOpacity(machineType || machineId, 0.2);
+  
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[
+        styles.container, 
+        { 
+          backgroundColor: machineColorBackground,
+          borderWidth: 2,
+          borderColor: machineColor
+        }
+      ]}
       onPress={() => onPress(machineId)}
     >
-      <View style={styles.iconPlaceholder}>
+      <View style={[styles.iconPlaceholder, { backgroundColor: machineColor }]}>
         <Text style={styles.iconText}>{machineName.charAt(0)}</Text>
       </View>
-      <Text style={styles.name}>{machineName}</Text>
+      <Text style={[styles.name, { color: machineColor }]}>{machineName}</Text>
       {currentRecipeId && (
         <Text style={styles.recipeText}>Recipe: {currentRecipeId}</Text>
       )}
@@ -23,8 +37,8 @@ const styles = StyleSheet.create({
     width: "45%",
     aspectRatio: 1,
     margin: "2.5%",
-    backgroundColor: Colors,
-    borderRadius: 8,
+    backgroundColor: Colors.backgroundSecondary,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
@@ -37,14 +51,16 @@ const styles = StyleSheet.create({
   iconPlaceholder: {
     width: 60,
     height: 60,
-    borderRadius: 30,
+    borderRadius: 8,
     backgroundColor: Colors.backgroundPanel,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   iconText: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#fff",
   },
@@ -55,9 +71,15 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   name: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  recipeText: {
+    color: Colors.textSecondary,
+    fontSize: 12,
     textAlign: "center",
   },
 });

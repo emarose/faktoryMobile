@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: Colors.border,
+    // Enhanced shadow for better visual separation
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
   itemHeader: {
     flexDirection: "row",
@@ -40,21 +46,25 @@ const styles = StyleSheet.create({
   iconPlaceholder: {
     width: 40,
     height: 40,
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: Colors.backgroundPill,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
+    // Enhanced styling for machine color integration
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   iconText: {
     color: Colors.textSecondary,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
   },
   itemName: {
     fontSize: 20,
     fontWeight: "bold",
     color: Colors.textAccent,
+    flex: 1,
   },
   itemDescription: {
     fontSize: 14,
@@ -81,9 +91,15 @@ const styles = StyleSheet.create({
   buildButton: {
     backgroundColor: Colors.accentBlue,
     paddingVertical: 12,
-    borderRadius: 5,
+    borderRadius: 8,
     marginTop: 15,
     alignItems: "center",
+    // Enhanced button styling
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
   },
   buildButtonDisabled: {
     backgroundColor: Colors.fallback,

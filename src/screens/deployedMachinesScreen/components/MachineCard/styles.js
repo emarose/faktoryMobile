@@ -10,6 +10,12 @@ const machineCardStyles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: Colors.backgroundAccent,
+    // Enhanced shadow for machine cards
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
   machineName: {
     fontSize: 18,
@@ -48,10 +54,16 @@ const machineCardStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.backgroundSecondary,
-    padding: 8,
-    borderRadius: 32,
+    padding: 10,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    // Enhanced shadow for icon container
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
   },
   loupeButton: {
     padding: 8,
