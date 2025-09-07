@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { View, Text, TouchableOpacity, PanResponder, Animated } from "react-native";
+import { View, TouchableOpacity, PanResponder, Animated } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Text } from "../../../../../../../components";
 
 const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
   // Valores calculados que no cambian con frecuencia

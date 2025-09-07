@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import styles from "./styles";
 import ProgressBar from "../../../../../../../components/ProgressBar";
+import { Text } from "../../../../../../../components";
 
 const CraftingProgress = ({
   isProcessing,

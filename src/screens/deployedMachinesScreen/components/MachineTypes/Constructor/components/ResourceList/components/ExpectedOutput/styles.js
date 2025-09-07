@@ -24,26 +24,35 @@ export default StyleSheet.create({
   },
   outputInfoContainer: {
     flex: 1,
+    minWidth: 0, // Allows text truncation
   },
   outputAmount: {
     color: "#4CAF50",
     fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 4,
+  },
+  outputDetailsRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    minWidth: 0,
   },
   outputDescription: {
     color: "#a5d6a7",
     fontSize: 12,
-    marginTop: 2,
+    flex: 1,
+    marginRight: 8,
   },
   outputBadge: {
     backgroundColor: "#23233a",
-    borderRadius: 10,
+    borderRadius: 8,
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginLeft: 10,
+    paddingVertical: 3,
     borderWidth: 1,
     borderColor: "#4CAF50",
     alignSelf: "flex-start",
+    flexShrink: 0, // Prevents badge from shrinking
   },
   outputBadgeText: {
     color: "#4CAF50",

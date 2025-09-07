@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   View,
-  Text,
   ScrollView,
   TouchableOpacity,
   Modal,
@@ -21,6 +20,7 @@ import CraftButton from "../CraftButton";
 import MiniToast from "../MiniToast";
 import QuantityStepper from "../QuantityStepper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../../../../components";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -236,7 +236,6 @@ const ConstructorModal = ({
           <ScrollView contentContainerStyle={styles.detailsContent}>
             {/* Recipe Selection */}
             <View style={styles.card}>
-              <Text style={styles.sectionTitle}>Available Recipes</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {availableRecipes.map((recipeItem) => (
                   <TouchableOpacity
@@ -260,16 +259,6 @@ const ConstructorModal = ({
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              
-              {/* Assign Recipe Button */}
-              <TouchableOpacity
-                style={modalStyles.assignButton}
-                onPress={handleAssignRecipe}
-              >
-                <Text style={modalStyles.assignButtonText}>
-                  Assign Selected Recipe
-                </Text>
-              </TouchableOpacity>
             </View>
 
             {selectedRecipe && (

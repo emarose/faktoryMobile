@@ -30,7 +30,8 @@ export const items = {
     id: "limestone_node",
     name: "Limestone Node",
     type: "rawMaterial",
-    description: "A deposit of limestone. Primarily used for concrete production.",
+    description:
+      "A deposit of limestone. Primarily used for concrete production.",
     manualMineable: true,
     output: { limestone: 6 },
     processingTime: 1,
@@ -741,14 +742,20 @@ export const items = {
     fuelConsumption: 0.3,
   },
   basicCables: {
+    id: "basicCables",
+    name: "Basic Cables",
+    type: "intermediateProduct",
+    description: "Simple electrical cables.",
     machine: "constructor",
     inputs: {
       copperSheets: 3,
       ironRods: 1,
     },
     output: {
-      cables: 1,
+      basicCables: 1,
     },
+    processingTime: 1.5,
+    fuelConsumption: 0.3,
   },
   circuitBoards: {
     id: "circuitBoards",

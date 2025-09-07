@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
 import { items } from "../../../../../../../../../data/items";
+import { Text } from "../../../../../../../../../components";
 
 const ExpectedOutput = ({ output, amount, inventory, getResourceIcon }) => {
   if (!output) {
@@ -27,9 +28,12 @@ const ExpectedOutput = ({ output, amount, inventory, getResourceIcon }) => {
         />
       </View>
       <View style={styles.outputInfoContainer}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.outputAmount}>
-            {output.amount * amount} x {items[output.item]?.name || output.item}
+        <Text style={styles.outputAmount}>
+          {output.amount * amount} x {items[output.item]?.name || output.item}
+        </Text>
+        <View style={styles.outputDetailsRow}>
+          <Text style={styles.outputDescription}>
+            {items[output.item]?.description || ""}
           </Text>
           <View style={styles.outputBadge}>
             <Text style={styles.outputBadgeText}>
@@ -37,9 +41,6 @@ const ExpectedOutput = ({ output, amount, inventory, getResourceIcon }) => {
             </Text>
           </View>
         </View>
-        <Text style={styles.outputDescription}>
-          {items[output.item]?.description || ""}
-        </Text>
       </View>
     </View>
   );

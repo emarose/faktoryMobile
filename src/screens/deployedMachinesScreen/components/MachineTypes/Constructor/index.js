@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { items } from "../../../../../data/items";
 import { useGame } from "../../../../../contexts/GameContext";
 import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../../components";
 
 const Constructor = ({ machine, onOpenModal }) => {
   const { placedMachines } = useGame();

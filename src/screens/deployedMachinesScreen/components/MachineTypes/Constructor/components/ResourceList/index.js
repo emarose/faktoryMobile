@@ -1,8 +1,9 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import styles from "./styles";
 import RequiredResources from "./components/RequiredResources/RequiredResources";
 import ExpectedOutput from "./components/ExpectedOutput/ExpectedOutput";
 import { items } from "../../../../../../../data/items";
+import { Text } from "../../../../../../../components";
 
 const ResourceList = ({ inputs, outputs, amount, inventory }) => {
   const input = Array.isArray(inputs) ? inputs : [];

@@ -1,6 +1,7 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import {  TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../../../../components";
 
 const CraftButton = ({
   label,
