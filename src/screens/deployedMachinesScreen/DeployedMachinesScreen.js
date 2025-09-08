@@ -123,13 +123,13 @@ const DeployedMachinesScreen = () => {
                     node={node}
                     recipe={recipe}
                     resourceCap={RESOURCE_CAP}
-                    onPress={() =>
+                   /*  onPress={() =>
                       navigation.navigate("MachineDetailsScreen", {
                         machine,
                         node,
                         recipe,
                       })
-                    }
+                    } */
                     onPauseResume={() =>
                       machine.isIdle
                         ? resumeMiner(machine.id)

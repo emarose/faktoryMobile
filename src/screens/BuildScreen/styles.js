@@ -32,6 +32,20 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
+  lockedBanner: {
+    backgroundColor: '#ff6b47',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginBottom: 12,
+    alignItems: 'center',
+  },
+  lockedBannerText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   itemHeader: {
     flexDirection: "row",
     alignItems: "center",

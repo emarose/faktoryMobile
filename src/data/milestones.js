@@ -7,7 +7,7 @@ const milestones = [
     requirementsDescription: null,
     unlocked: true,
     unlocks: [],
-    requirements: {}, 
+    requirements: {},
   },
   {
     id: "milestone1",
@@ -33,11 +33,11 @@ const milestones = [
     id: "milestone3",
     name: "Advanced Materials",
     description:
-      "Expand your factory's capabilities with advanced machines and recipes. Produce Wire and Cable in bulk to unlock the Assembler and new crafting options.",
-    requirementsDescription: "Produce 50 Wire and 20 Cable.",
+      "Expand your factory's capabilities with advanced machines and recipes. Produce Wire and Iron Rods in bulk to unlock the Assembler and new crafting options.",
+    requirementsDescription: "Produce 50 Wire and 20 Iron Rods.",
     unlocked: false,
     unlocks: ["Assembler"],
-    requirements: { wire: 50, cable: 20 },
+    requirements: { wire: 50, ironRods: 20 },
   },
   {
     id: "milestone4",

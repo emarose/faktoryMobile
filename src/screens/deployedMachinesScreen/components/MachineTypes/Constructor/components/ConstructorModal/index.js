@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import styles from "../../../../../../MachineDetailsScreen/styles";
+import styles from "../../../Smelter/components/SmelterModal/styles";
 import { items } from "../../../../../../../data/items";
 import { useGame } from "../../../../../../../contexts/GameContext";
 import useCrafting from "../../../../../../../hooks/useCrafting";

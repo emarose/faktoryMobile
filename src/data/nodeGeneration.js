@@ -17,7 +17,7 @@ export const NODE_SPAWN_RATES = {
   },
   limestone_node: {
     name: "Limestone Node",
-    ratio: 70,
+    ratio: 50,
     capacity: 1000,
     type: "limestone_node",
     output: { limestone: 1 },
@@ -38,7 +38,7 @@ export const NODE_SPAWN_RATES = {
   },
   rawQuartz_node: {
     name: "Raw Quartz Node",
-    ratio: 15,
+    ratio: 5,
     capacity: 1000,
     type: "rawQuartz_node",
     output: { rawQuartz: 1 },
