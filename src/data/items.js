@@ -1175,9 +1175,10 @@ export const items = {
     description:
       "Combines materials to create advanced ingots like steel and aluminum.",
     inputs: {
-      steelBeams: 10,
+      ironRods: 10,
       ironPlates: 20,
       wires: 15,
+      screws: 10,
     },
     output: {
       foundry: 1,
