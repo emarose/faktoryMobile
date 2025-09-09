@@ -29,7 +29,7 @@ export default styles = StyleSheet.create({
     marginBottom: 15,
   },
   gridItem: {
-    width: "48%",
+    width: "100%",
     backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 15,

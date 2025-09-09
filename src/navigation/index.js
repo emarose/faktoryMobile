@@ -35,8 +35,16 @@ function RootNavigator() {
       screenOptions={{
         headerShown: true,
         headerBackTitleVisible: false,
+        headerTitleStyle: {
+          fontFamily: "SpaceMono-Regular",
+          fontWeight: "normal",
+        },
         headerStyle: {
           backgroundColor: Colors.backgroundPanel,
+          elevation: 0, 
+          shadowOpacity: 0,
+          borderBottomWidth: 0, 
+          paddingTop: 24,
         },
         headerTintColor: Colors.textPrimary,
       }}
