@@ -18,31 +18,36 @@ const CraftButton = ({
       style={{
         flex: 1,
         backgroundColor: disabled
-          ? "#3a3a48"
+          ? "#3a4856"
           : isActive
-          ? "#4CAF50"
-          : "#2c2c44",
-        borderRadius: 12,
-        paddingVertical: 14,
-        marginHorizontal: 4,
+          ? "#4a7fa7"
+          : "#2a3441",
+        borderRadius: 4,
+        paddingVertical: 10,
+        marginHorizontal: 3,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
-        borderColor: disabled ? "#444455" : isActive ? "#388E3C" : "#4CAF50",
+        borderColor: disabled 
+          ? "#4a5866" 
+          : isActive 
+          ? "#6db4f0" 
+          : "#4a5866",
         shadowColor: "#000",
-        shadowOpacity: 0.15,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 3 },
-        elevation: 3,
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
         <Text
           style={{
-            color: disabled ? "#888" : "#fff",
-            fontWeight: "bold",
-            fontSize: 14,
+            color: disabled ? "#6b7885" : isActive ? "#e8f4fd" : "#b8c7d1",
+            fontWeight: isActive ? "700" : "600",
+            fontSize: 12,
             letterSpacing: 0.5,
+            textTransform: "uppercase",
           }}
         >
           {label}

@@ -136,24 +136,24 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
         <TouchableOpacity
           onPress={() => updateValue(numericValue - 1)}
           style={{
-            backgroundColor: "#2c2c44",
-            width: 36,
-            height: 36,
-            borderRadius: 18,
+            backgroundColor: "#3a4856",
+            width: 32,
+            height: 32,
+            borderRadius: 4,
             justifyContent: "center",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: "#444455",
+            borderColor: "#4a5866",
           }}
         >
-          <MaterialIcons name="remove" size={20} color="#fff" />
+          <MaterialIcons name="remove" size={18} color="#e8f4fd" />
         </TouchableOpacity>
         
         <View style={{ marginHorizontal: 16, alignItems: "center", width: 60 }}>
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
+          <Text style={{ color: "#e8f4fd", fontWeight: "bold", fontSize: 16 }}>
             {numericValue}
           </Text>
-          <Text style={{ color: "#aaa", fontSize: 12 }}>
+          <Text style={{ color: "#b8c7d1", fontSize: 11 }}>
             of {safeMaxAmount}
           </Text>
         </View>
@@ -161,17 +161,17 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
         <TouchableOpacity
           onPress={() => updateValue(numericValue + 1)}
           style={{
-            backgroundColor: "#2c2c44",
-            width: 36,
-            height: 36,
-            borderRadius: 18,
+            backgroundColor: "#3a4856",
+            width: 32,
+            height: 32,
+            borderRadius: 4,
             justifyContent: "center",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: "#444455",
+            borderColor: "#4a5866",
           }}
         >
-          <MaterialIcons name="add" size={20} color="#fff" />
+          <MaterialIcons name="add" size={18} color="#e8f4fd" />
         </TouchableOpacity>
       </View>
       
@@ -186,7 +186,7 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
             position: "absolute",
             width: sliderWidth,
             height: trackHeight,
-            backgroundColor: "#444",
+            backgroundColor: "#4a5866",
             borderRadius: trackHeight / 2,
           }}
         />
@@ -197,7 +197,7 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
             position: "absolute",
             width: Animated.add(thumbPosition, thumbSize / 2),
             height: trackHeight,
-            backgroundColor: "#4caf50",
+            backgroundColor: "#6db4f0",
             borderRadius: trackHeight / 2,
           }}
         />
@@ -211,10 +211,10 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
            // top: -10,
             width: thumbSize,
             height: thumbSize,
-            borderRadius: thumbSize / 2,
-            backgroundColor: "#ffe082",
+            borderRadius: 4,
+            backgroundColor: "#e8f4fd",
             borderWidth: 2,
-            borderColor: "#4caf50",
+            borderColor: "#6db4f0",
             elevation: 3,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
@@ -230,8 +230,8 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
             style={{ 
               width: 6, 
               height: 6, 
-              borderRadius: 3, 
-              backgroundColor: "#4caf50" 
+              borderRadius: 2, 
+              backgroundColor: "#6db4f0" 
             }} 
           />
         </Animated.View>
@@ -239,8 +239,8 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
       
       {/* Valores extremos como texto */}
       <View style={{ flexDirection: "row", width: sliderWidth, justifyContent: "space-between", marginTop: 8 }}>
-        <Text style={{ color: "#888", fontSize: 12 }}>1</Text>
-        <Text style={{ color: "#888", fontSize: 12 }}>{safeMaxAmount}</Text>
+        <Text style={{ color: "#6b7885", fontSize: 11 }}>1</Text>
+        <Text style={{ color: "#6b7885", fontSize: 11 }}>{safeMaxAmount}</Text>
       </View>
     </View>
   );
