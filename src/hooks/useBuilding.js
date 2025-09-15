@@ -4,7 +4,8 @@ export const useBuilding = (
   addResourceCallback,
   removeResourcesCallback,
   buildableItems,
-  addMachine
+  addMachine,
+  showToast
 ) => {
   const buildItem = useCallback(
     (itemId) => {
@@ -35,12 +36,16 @@ export const useBuilding = (
         addMachine(itemId);
       }
 
-      console.log(
-        `Construido exitosamente ${itemToBuild.name}! Añadido al inventario.`
-      );
+      // Show toast notification instead of console.log
+      if (showToast) {
+        const isMachine = itemToBuild.type === "buildable" || itemToBuild.type === "machine";
+        const icon = isMachine ? "🏭" : "🔧";
+        showToast(`${icon} ${itemToBuild.name} constructed successfully!`, 2500);
+      }
+      
       return true;
     },
-    [addResourceCallback, removeResourcesCallback, buildableItems, addMachine]
+    [addResourceCallback, removeResourcesCallback, buildableItems, addMachine, showToast]
   );
 
   return {

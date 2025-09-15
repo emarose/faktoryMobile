@@ -3,7 +3,6 @@ import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: Colors.background },
-    title: { fontSize: 28, fontWeight: "bold", color: Colors.textPrimary, margin: 16 },
     scrollViewContent: { padding: 16 },
     milestoneCard: {
         backgroundColor: Colors.backgroundPanel,

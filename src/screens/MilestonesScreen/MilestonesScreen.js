@@ -22,7 +22,6 @@ export default function MilestonesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Milestones</Text>
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 12 }}
       >

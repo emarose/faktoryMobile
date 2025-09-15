@@ -134,11 +134,14 @@ export const GameProvider = ({ children }) => {
     handleDepleteNode
   );
 
+  const { showToast } = useToastContext();
+
   const { buildItem } = useBuilding(
     addResource,
     removeResources,
     buildableItems,
-    addMachine
+    addMachine,
+    showToast
   );
 
   const { mineResource } = useMining(
@@ -158,7 +161,6 @@ export const GameProvider = ({ children }) => {
   );
 
   const { getProductionRate } = useProductionRate(placedMachines);
-  const { showToast } = useToastContext();
   const discoveredNodesCount = Object.keys(discoveredNodes).length;
   const {
     milestones,

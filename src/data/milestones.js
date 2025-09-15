@@ -1,213 +1,236 @@
 const milestones = [
   {
-    id: "milestone0",
-    name: "Manual Mining & Exploration",
-    description:
-      "Begin your journey! Explore the world map and manually mine resources to gather your first materials. Discover new nodes to unlock further progress.",
-    requirementsDescription: null,
-    unlocked: true,
-    unlocks: [],
-    requirements: {},
-  },
-  {
     id: "milestone1",
     name: "Basic Automation - Smelting",
     description:
-      "Reach your first milestone by discovering resource nodes and establishing basic ore processing. Unlocks mining and smelting operations.",
-    requirementsDescription: "Discover 2 resource nodes and produce 25 Iron Ingots",
+      "Reach your first milestone by discovering resource nodes. The materials you gather will help you build your first machines: Smelter and Miner.",
+    requirementsDescription: "Discover 2 resource nodes and gather 12 Iron Ore and 5 Coal",
     unlocked: false,
     unlocks: ["Smelter", "Miner"],
-    requirements: { discoveredNodes: 2, ironIngot: 25 },
+    requirements: { discoveredNodes: 2, ironOre: 12, coal: 5 },
   },
   {
     id: "milestone2",
     name: "Basic Manufacturing",
     description:
-      "Establish basic part manufacturing with the Constructor. Create essential building components and simple materials.",
-    requirementsDescription: "Produce 30 Iron Rods, 20 Iron Plates, and 10 Concrete",
+      "Master basic smelting by producing iron ingots and concrete. These materials will be used to construct your first Constructor.",
+    requirementsDescription:
+      "Produce 20 Iron Ingots and 5 Concrete",
     unlocked: false,
     unlocks: ["Constructor"],
-    requirements: { ironRods: 30, ironPlates: 20, concrete: 10 },
+    requirements: { ironIngot: 20, concrete: 5 },
   },
   {
     id: "milestone3",
-    name: "Copper Technology",
+    name: "Component Production",
     description:
-      "Expand into copper processing and electrical components. Begin working with basic electrical infrastructure.",
-    requirementsDescription: "Produce 25 Copper Ingots, 40 Wires, and 15 Copper Sheets",
+      "Use your Constructor to create basic building components. These parts will prepare you for more advanced manufacturing.",
+    requirementsDescription:
+      "Produce 15 Iron Rods, 10 Iron Plates, and 20 Screws",
     unlocked: false,
     unlocks: [],
-    requirements: { copperIngot: 25, wires: 40, copperSheets: 15 },
+    requirements: { ironRods: 15, ironPlates: 10, screws: 20 },
   },
   {
     id: "milestone4",
-    name: "Advanced Parts Assembly",
+    name: "Copper Technology",
     description:
-      "Unlock the Assembler to create complex multi-component items. Begin producing reinforced materials and mechanical components.",
-    requirementsDescription: "Produce 50 Screws, 20 Reinforced Iron Plates, and 10 Rotors",
+      "Expand into copper processing to create electrical components. Master copper ingots and basic wiring systems.",
+    requirementsDescription:
+      "Produce 15 Copper Ingots and 25 Wires",
     unlocked: false,
-    unlocks: ["Assembler"],
-    requirements: { screws: 50, reinforcedIronPlates: 20, rotors: 10 },
+    unlocks: [],
+    requirements: { copperIngot: 15, wires: 25 },
   },
   {
     id: "milestone5",
-    name: "Steel Production",
+    name: "Advanced Parts Assembly",
     description:
-      "Advance to steel production with the Foundry. Create stronger materials for more demanding applications.",
-    requirementsDescription: "Produce 15 Steel Ingots, 10 Steel Beams, and 8 Steel Pipes",
+      "Unlock the Assembler to create complex multi-component items. Produce reinforced materials and mechanical components.",
+    requirementsDescription:
+      "Produce 10 Reinforced Iron Plates and 5 Rotors",
     unlocked: false,
-    unlocks: ["Foundry"],
-    requirements: { steelIngot: 15, steelBeams: 10, steelPipes: 8 },
+    unlocks: ["Assembler"],
+    requirements: { reinforcedIronPlates: 10, rotors: 5 },
   },
   {
     id: "milestone6",
-    name: "Electrical Systems",
+    name: "Steel Production Foundation",
     description:
-      "Develop electrical infrastructure with advanced wiring and components. Create the foundation for smart automation.",
-    requirementsDescription: "Produce 10 Stators, 5 Motors, and 8 Cables",
+      "Advance to steel production with the Foundry. Prepare the materials needed to build this advanced machine.",
+    requirementsDescription: "Gather materials for Foundry: 10 Iron Rods, 20 Iron Plates, 15 Wires, 10 Screws",
     unlocked: false,
-    unlocks: [],
-    requirements: { stators: 10, motors: 5, cables: 8 },
+    unlocks: ["Foundry"],
+    requirements: { ironRods: 10, ironPlates: 20, wires: 15, screws: 10 },
   },
   {
     id: "milestone7",
-    name: "Modular Construction",
+    name: "Steel Technology",
     description:
-      "Create modular building systems and smart components for scalable factory design.",
-    requirementsDescription: "Produce 5 Modular Frames, 3 Smart Platings, and 4 Versatile Frameworks",
+      "Master steel production and create structural components for heavy industry.",
+    requirementsDescription:
+      "Produce 10 Steel Ingots, 8 Steel Beams, and 6 Steel Pipes",
     unlocked: false,
     unlocks: [],
-    requirements: { modularFrames: 5, smartPlatings: 3, versatileFrameworks: 4 },
+    requirements: { steelIngot: 10, steelBeams: 8, steelPipes: 6 },
   },
   {
     id: "milestone8",
     name: "Oil & Petroleum Industry",
     description:
-      "Enter the petroleum age with oil extraction and refining. Unlock plastics, rubber, and fuel production.",
-    requirementsDescription: "Discover 1 Oil Node and produce 20 Crude Oil, 10 Plastic, and 10 Rubber",
+      "Enter the petroleum age with oil extraction and refining. Gather materials to build Oil Extractors and Refineries.",
+    requirementsDescription:
+      "Discover 5 nodes total and prepare: 8 Steel Pipes, 6 Concrete, 10 Wires",
     unlocked: false,
     unlocks: ["oilExtractor", "Refinery"],
-    requirements: { discoveredNodes: 5, crudeOil: 20, plastic: 10, rubber: 10 },
+    requirements: { discoveredNodes: 5, steelPipes: 8, concrete: 6, wires: 10 },
   },
   {
     id: "milestone9",
-    name: "Advanced Chemicals",
+    name: "Basic Petroleum Products",
     description:
-      "Develop chemical processing capabilities with sulfur and advanced petroleum products.",
-    requirementsDescription: "Produce 8 Sulfuric Acid, 15 Fuel, and 5 Heavy Oil Residue",
+      "Master basic oil refining by producing plastics, rubber, and fuel for advanced manufacturing.",
+    requirementsDescription:
+      "Produce 10 Plastic, 10 Rubber, and 8 Fuel",
     unlocked: false,
     unlocks: [],
-    requirements: { sulfuricAcid: 8, fuel: 15, heavyOilResidue: 5 },
+    requirements: { plastic: 10, rubber: 8, fuel: 8 },
   },
   {
     id: "milestone10",
     name: "Electronics Foundation",
     description:
-      "Begin electronics production with circuit boards and basic computing components.",
-    requirementsDescription: "Produce 5 Circuit Boards, 3 Computers, and 10 Quickwire",
+      "Begin electronics production. Prepare materials to build the Manufacturer for advanced components.",
+    requirementsDescription:
+      "Produce 5 Modular Frames, 3 Motors, and 5 Circuit Boards",
     unlocked: false,
     unlocks: ["Manufacturer"],
-    requirements: { circuitBoards: 5, computers: 3, quickwire: 10 },
+    requirements: { modularFrames: 5, motors: 3, circuitBoards: 5 },
   },
   {
     id: "milestone11",
-    name: "Rare Materials Processing",
+    name: "Advanced Computing",
     description:
-      "Unlock advanced material processing with Caterium and Quartz for high-tech applications.",
-    requirementsDescription: "Discover 7 nodes total and produce 5 Caterium Ingots, 8 Quartz Crystals",
+      "Master advanced electronics by producing your first computers and high-tech components.",
+    requirementsDescription:
+      "Produce 3 Computers and 10 Quickwire",
     unlocked: false,
     unlocks: [],
-    requirements: { discoveredNodes: 7, cateriumIngot: 5, quartzCrystals: 8 },
+    requirements: { computers: 3, quickwire: 10 },
   },
   {
     id: "milestone12",
-    name: "Aluminum Industry",
+    name: "Rare Materials Processing",
     description:
-      "Establish aluminum production chain with bauxite processing and advanced lightweight materials.",
-    requirementsDescription: "Produce 5 Alumina Solution, 3 Aluminum Ingots, and 5 Aluminum Sheets",
+      "Discover and process rare materials like Caterium and Quartz for specialized applications.",
+    requirementsDescription:
+      "Discover 7 nodes total and produce 5 Caterium Ingots, 6 Quartz Crystals",
     unlocked: false,
     unlocks: [],
-    requirements: { aluminaSolution: 5, aluminumIngot: 3, aluminumSheets: 5 },
+    requirements: { discoveredNodes: 7, cateriumIngot: 5, quartzCrystals: 6 },
   },
   {
     id: "milestone13",
     name: "High-Tech Electronics",
     description:
-      "Create advanced electronic systems with AI components and high-speed data processing.",
-    requirementsDescription: "Produce 3 AI Limiters, 2 High-Speed Connectors, and 1 Supercomputer",
+      "Create advanced electronic systems with AI components and high-speed processing capabilities.",
+    requirementsDescription:
+      "Produce 2 AI Limiters, 2 High-Speed Connectors, and 1 Supercomputer",
     unlocked: false,
     unlocks: [],
-    requirements: { aiLimiter: 3, highSpeedConnector: 2, supercomputers: 1 },
+    requirements: { aiLimiter: 2, highSpeedConnector: 2, supercomputers: 1 },
   },
   {
     id: "milestone14",
-    name: "Industrial Automation",
+    name: "Aluminum Industry",
     description:
-      "Implement advanced automation systems with electromagnetic controls and automated wiring.",
-    requirementsDescription: "Produce 3 Electromagnetic Control Rods, 5 Automated Wiring, and 2 Crystal Oscillators",
+      "Establish aluminum production chain with bauxite processing for lightweight materials.",
+    requirementsDescription:
+      "Discover 8 nodes total and produce 3 Alumina Solution, 2 Aluminum Ingots",
     unlocked: false,
     unlocks: [],
-    requirements: { electromagneticControlRods: 3, automatedWiring: 5, crystalOscillator: 2 },
+    requirements: { discoveredNodes: 8, aluminaSolution: 3, aluminumIngot: 2 },
   },
   {
     id: "milestone15",
-    name: "Heavy Industry",
+    name: "Industrial Automation",
     description:
-      "Develop heavy industrial capabilities with reinforced structures and powerful machinery.",
-    requirementsDescription: "Produce 2 Heavy Modular Frames, 1 Modular Engine, and 3 Encased Industrial Beams",
+      "Implement advanced automation systems with electromagnetic controls and smart wiring.",
+    requirementsDescription:
+      "Produce 2 Electromagnetic Control Rods, 3 Automated Wiring, and 1 Crystal Oscillator",
     unlocked: false,
     unlocks: [],
-    requirements: { heavyModularFrames: 2, modularEngines: 1, encasedIndustrialBeams: 3 },
+    requirements: {
+      electromagneticControlRods: 2,
+      automatedWiring: 3,
+      crystalOscillator: 1,
+    },
   },
   {
     id: "milestone16",
-    name: "Nuclear Technology",
+    name: "Heavy Industry",
     description:
-      "Enter the nuclear age with uranium processing and advanced power generation systems.",
-    requirementsDescription: "Discover 9 nodes total and produce 2 Uranium Pellets, 1 Encased Uranium Cell",
+      "Develop heavy industrial capabilities with reinforced structures and powerful machinery.",
+    requirementsDescription:
+      "Produce 1 Heavy Modular Frame, 1 Modular Engine, and 2 Encased Industrial Beams",
     unlocked: false,
     unlocks: [],
-    requirements: { discoveredNodes: 9, uraniumPellets: 2, encasedUraniumCell: 1 },
+    requirements: {
+      heavyModularFrames: 1,
+      modularEngines: 1,
+      encasedIndustrialBeams: 2,
+    },
   },
   {
     id: "milestone17",
-    name: "Advanced Power Systems",
+    name: "Nuclear Technology",
     description:
-      "Create sophisticated power and control systems with batteries and heat management.",
-    requirementsDescription: "Produce 2 Batteries, 3 Heat Sinks, and 1 Turbofuel",
+      "Enter the nuclear age with uranium processing and advanced power generation systems.",
+    requirementsDescription:
+      "Discover 9 nodes total and produce 2 Uranium Pellets, 1 Encased Uranium Cell",
     unlocked: false,
     unlocks: [],
-    requirements: { battery: 2, heatSink: 3, turbofuel: 1 },
+    requirements: {
+      discoveredNodes: 9,
+      uraniumPellets: 2,
+      encasedUraniumCell: 1,
+    },
   },
   {
     id: "milestone18",
-    name: "Space-Age Technology",
+    name: "Advanced Power Systems",
     description:
-      "Achieve the highest level of technological advancement with adaptive systems and turbo motors.",
-    requirementsDescription: "Produce 1 Adaptive Control Unit, 1 Radio Control Unit, and 1 Turbo Motor",
+      "Create sophisticated power and control systems with batteries and thermal management.",
+    requirementsDescription:
+      "Produce 2 Batteries and 2 Heat Sinks",
     unlocked: false,
     unlocks: [],
-    requirements: { adaptiveControlUnits: 1, radioControlUnits: 1, turboMotors: 1 },
+    requirements: { battery: 2, heatSink: 2 },
   },
   {
     id: "milestone19",
-    name: "Nuclear Power Generation",
+    name: "Space-Age Technology",
     description:
-      "Master nuclear technology with fuel rod production for ultimate power generation.",
-    requirementsDescription: "Produce 1 Nuclear Fuel Rod",
+      "Achieve the highest level of technological advancement with adaptive systems and turbo motors.",
+    requirementsDescription:
+      "Produce 1 Adaptive Control Unit, 1 Radio Control Unit, and 1 Turbo Motor",
     unlocked: false,
     unlocks: [],
-    requirements: { nuclearFuelRods: 1 },
+    requirements: {
+      adaptiveControlUnits: 1,
+      radioControlUnits: 1,
+      turboMotors: 1,
+    },
   },
   {
     id: "milestone20",
-    name: "Planetary Industrialization",
+    name: "Nuclear Mastery",
     description:
-      "Complete planetary industrialization by discovering all resource types and mastering all production chains.",
-    requirementsDescription: "Discover all 10 resource node types",
+      "Master nuclear technology with fuel rod production for ultimate power generation.",
+    requirementsDescription: "Produce 1 Nuclear Fuel Rod and discover all 10 resource node types",
     unlocked: false,
     unlocks: ["Master Industrialist"],
-    requirements: { discoveredNodes: 10 },
+    requirements: { nuclearFuelRods: 1, discoveredNodes: 10 },
   },
 ];
 

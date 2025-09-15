@@ -61,7 +61,7 @@ const Toast = ({ visible, message, duration = 1000, onHide }) => {
       ]}
     >
       <Text style={styles.toastText}>
-        🎉 {message}
+        {message}
       </Text>
     </Animated.View>
   );
@@ -70,14 +70,14 @@ const Toast = ({ visible, message, duration = 1000, onHide }) => {
 const styles = StyleSheet.create({
   toast: {
     position: "absolute",
-    top: '30%',
+    top: 80,
     left: 0,
     right: 0,
-    marginHorizontal: 24,
+    marginHorizontal: 20,
     backgroundColor: "#23233a",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
     alignItems: "center",
     zIndex: 1000,
     elevation: 10,
@@ -88,12 +88,13 @@ const styles = StyleSheet.create({
   },
   toastText: {
     color: "#FFD700",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     textShadowColor: '#000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    letterSpacing: 1,
+    letterSpacing: 0.5,
+    textAlign: 'center',
   },
 });
 

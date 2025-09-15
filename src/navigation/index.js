@@ -44,7 +44,6 @@ function RootNavigator() {
           elevation: 0, 
           shadowOpacity: 0,
           borderBottomWidth: 0, 
-          paddingTop: 24,
         },
         headerTintColor: Colors.textPrimary,
       }}
