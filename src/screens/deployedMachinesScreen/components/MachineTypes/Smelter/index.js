@@ -7,7 +7,7 @@ import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Smelter = ({ machine, onOpenModal }) => {
-  const { placedMachines } = useGame();
+  const { placedMachines, craftingQueue } = useGame();
 
   const liveMachine =
     placedMachines.find((m) => m.id === machine.id) || machine;
@@ -15,6 +15,11 @@ const Smelter = ({ machine, onOpenModal }) => {
   const recipe = liveMachine.currentRecipeId
     ? items[liveMachine.currentRecipeId]
     : null;
+
+  // Check if machine is currently crafting
+  const isProcessing = craftingQueue.some(
+    (proc) => proc.machineId === machine.id && proc.status === "pending"
+  );
 
   return (
     <>
@@ -31,7 +36,8 @@ const Smelter = ({ machine, onOpenModal }) => {
             style={{ marginRight: 6 }}
           />
           <Text style={styles.assignNodeText}>
-            {liveMachine.currentRecipeId ? "Change Recipe" : "Assign Recipe"}
+            {isProcessing ? "Change Recipe" : 
+             liveMachine.currentRecipeId ? "Change Recipe" : "Assign Recipe"}
           </Text>
         </TouchableOpacity>
       </View>

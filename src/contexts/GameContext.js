@@ -182,6 +182,9 @@ export const GameProvider = ({ children }) => {
   useEffect(() => {
     if (!placedMachines || !allResourceNodes) return;
     const interval = setInterval(() => {
+      // Update crafting queue
+      updateCraftingQueue();
+      
       const machines = placedMachinesRef.current;
       if (!Array.isArray(machines) || !Array.isArray(allResourceNodes)) return;
       machines.forEach((machine) => {
@@ -273,14 +276,42 @@ export const GameProvider = ({ children }) => {
 
   const updateCraftingQueue = () => {
     const now = Date.now();
-    setCraftingQueue((prev) =>
-      prev.map((proc) => {
+    setCraftingQueue((prev) => {
+      const updated = prev.map((proc) => {
         if (proc.status === "pending" && now >= proc.endsAt) {
+          // Process completed - give rewards
+          const recipe = require("../data/items").items[proc.recipeId];
+          if (recipe && recipe.output) {
+            // Handle both object and array outputs
+            if (Array.isArray(recipe.output)) {
+              recipe.output.forEach(output => {
+                addResource(output.item, output.amount);
+              });
+            } else if (typeof recipe.output === 'object') {
+              Object.entries(recipe.output).forEach(([item, amount]) => {
+                addResource(item, amount);
+              });
+            }
+          } else if (recipe && recipe.outputs) {
+            recipe.outputs.forEach(output => {
+              addResource(output.item, output.amount);
+            });
+          }
+          
           return { ...proc, status: "done" };
         }
         return proc;
-      })
-    );
+      });
+      
+      // Remove completed processes after a short delay to allow UI updates
+      return updated.filter(proc => {
+        if (proc.status === "done") {
+          const timeSinceCompletion = now - proc.endsAt;
+          return timeSinceCompletion < 2000; // Keep for 2 seconds after completion
+        }
+        return true;
+      });
+    });
   };
 
   const contextValue = useMemo(

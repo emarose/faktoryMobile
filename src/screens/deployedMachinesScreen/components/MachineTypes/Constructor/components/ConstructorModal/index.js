@@ -53,6 +53,8 @@ const ConstructorModal = ({
     addResource,
     removeResources,
     canAfford,
+    addToCraftingQueue,
+    craftingQueue,
   } = useGame();
 
   const ownedMachines = useMemo(
@@ -113,80 +115,60 @@ const ConstructorModal = ({
     );
   };
 
-  // Progress state for crafting
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressInterval = useRef(null);
-  const [currentCraftAmount, setCurrentCraftAmount] = useState(1);
+  // UI state
   const [activeCraftButton, setActiveCraftButton] = useState("1");
 
-  const cancelCrafting = () => {
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-      progressInterval.current = null;
-    }
-    setIsProcessing(false);
-    setProgress(0);
-  };
+  // Check for active crafting processes for this machine
+  const machineProcesses = useMemo(() => {
+    return craftingQueue.filter(
+      (proc) => proc.machineId === machine.id && proc.status === "pending"
+    );
+  }, [craftingQueue, machine.id]);
 
-  // Crafting logic
+  const isProcessing = machineProcesses.length > 0;
+
+  // Crafting logic using global craftingQueue
   const startCrafting = async (amountToCraft, isMax = false) => {
-    if (!selectedRecipe || isProcessing) return;
+    if (!selectedRecipe) return;
     const totalAmount = Number(amountToCraft) || 1;
-    const unitProcessingTime = Number(selectedRecipe.processingTime) || 1;
 
-    // Always clear any previous interval before starting
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-      progressInterval.current = null;
+    // Check if we can afford the inputs
+    const canAffordAll = selectedRecipe.inputs.every((input) => {
+      const available = inventory[input.item]?.currentAmount || 0;
+      return available >= input.amount * totalAmount;
+    });
+
+    if (!canAffordAll) {
+      showMiniToast("Insufficient resources!");
+      return;
     }
 
-    setProgress(0);
-    setIsProcessing(isMax || totalAmount > 1 ? "max" : "single");
-    setCurrentCraftAmount(totalAmount);
+    // Deduct resources immediately
+    selectedRecipe.inputs.forEach((input) => {
+      removeResources(input.item, input.amount * totalAmount);
+    });
 
-    let crafted = 0;
-    let totalElapsed = 0;
-    const outputAmount = selectedRecipe.outputs[0]?.amount || 1;
-    const outputItem = selectedRecipe.outputs[0]?.item;
-
+    // Add to global crafting queue
     for (let i = 0; i < totalAmount; i++) {
-      const success = craftItem(selectedRecipe, 1);
-      if (!success) {
-        alert("Crafting failed.");
-        break;
-      }
-      await new Promise((resolve) => {
-        let elapsed = 0;
-        const step = 50;
-        setProgress(0);
-        if (progressInterval.current) {
-          clearInterval(progressInterval.current);
-          progressInterval.current = null;
-        }
-        const interval = setInterval(() => {
-          elapsed += step / 1000;
-          totalElapsed += step / 1000;
-          setProgress(elapsed);
-          if (elapsed >= unitProcessingTime) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, step);
-        progressInterval.current = interval;
+      addToCraftingQueue({
+        machineId: machine.id,
+        recipeId: selectedRecipe.id,
+        itemName: selectedRecipe.name,
+        outputs: selectedRecipe.outputs,
+        processingTime: selectedRecipe.processingTime,
       });
-      crafted++;
-      showMiniToast(
-        `+${outputAmount} ${items[outputItem]?.name || outputItem}`
-      );
     }
-    cancelCrafting();
-    setCurrentCraftAmount(1);
 
+    showMiniToast(`Added ${totalAmount}x ${selectedRecipe.name} to queue`);
+    
+    // Reset UI state
     if (activeCraftButton === "max") {
       setActiveCraftButton("1");
       setProductAmount("1");
     }
+
+    // Close modal automatically after starting crafting
+    onClose();
   };
 
   const calculateMaxCraftable = () => {
@@ -470,11 +452,8 @@ const ConstructorModal = ({
                   <View style={modalStyles.panelContent}>
                     <CraftingProgress
                       isProcessing={isProcessing}
-                      progress={progress}
-                      processingTime={processingTime}
+                      machineProcesses={machineProcesses}
                       maxCraftable={maxCraftable}
-                      onCancel={cancelCrafting}
-                      totalAmount={currentCraftAmount}
                     />
                   </View>
                 </View>

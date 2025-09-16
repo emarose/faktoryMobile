@@ -47,4 +47,12 @@ export default StyleSheet.create({
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
+  queueText: {
+    color: '#b0c4de',
+    fontSize: 11,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
 });

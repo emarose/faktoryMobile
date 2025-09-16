@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import ProgressBar from "../../../../components/ProgressBar";
 import styles from "./styles";
 import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
 import ConstructorModal from "../MachineTypes/Constructor/components/ConstructorModal";
@@ -53,41 +54,26 @@ function getMachineIcon(type, color) {
         />
       );
     case "smelter":
-      return (
-        <MaterialCommunityIcons name="factory" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="factory" size={28} color={color} />;
     case "constructor":
-      return (
-        <MaterialCommunityIcons name="cog" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="cog" size={28} color={color} />;
     case "assembler":
-      return (
-        <MaterialCommunityIcons name="wrench" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="wrench" size={28} color={color} />;
     case "manufacturer":
-      return (
-        <MaterialCommunityIcons name="factory" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="factory" size={28} color={color} />;
     case "foundry":
-      return (
-        <MaterialCommunityIcons name="anvil" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="anvil" size={28} color={color} />;
     case "oilExtractor":
-      return (
-        <MaterialCommunityIcons name="oil-lamp" size={28} color={color} />
-      );
+      return <MaterialCommunityIcons name="oil-lamp" size={28} color={color} />;
     default:
       return <MaterialIcons name="build" size={28} color={color || "#aaa"} />;
   }
 }
 
 const MachineCard = ({ machine, node, children, onPress }) => {
-  const {
-    setPlacedMachines,
-    placedMachines,
-  } = useGame();
+  const { setPlacedMachines, placedMachines, craftingQueue } = useGame();
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
-  
+
   const [showNodeSelector, setShowNodeSelector] = useState(false);
   const [showSmelterModal, setShowSmelterModal] = useState(false);
   const [showConstructorModal, setShowConstructorModal] = useState(false);
@@ -151,35 +137,79 @@ const MachineCard = ({ machine, node, children, onPress }) => {
   const liveMachine =
     placedMachines.find((m) => m.id === machine.id) || machine;
 
+  // Check for active crafting processes for this machine
+  const machineProcesses = useMemo(() => {
+    return craftingQueue.filter(
+      (proc) => proc.machineId === machine.id && proc.status === "pending"
+    );
+  }, [craftingQueue, machine.id]);
+
+  const isProcessing = machineProcesses.length > 0;
+  const currentProcess = machineProcesses[0]; // Get the current running process
+
+  // Calculate progress for current process
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (!currentProcess) {
+      setProgress(0);
+      return;
+    }
+
+    const updateProgress = () => {
+      const now = Date.now();
+      const elapsed = (now - currentProcess.startedAt) / 1000;
+      const totalTime = currentProcess.processingTime;
+      const currentProgress = Math.min(elapsed, totalTime);
+      setProgress(currentProgress);
+    };
+
+    // Update immediately
+    updateProgress();
+
+    // Set up interval to update progress
+    const interval = setInterval(updateProgress, 100);
+    return () => clearInterval(interval);
+  }, [currentProcess]);
+
   return (
-    <View 
+    <View
       style={[
         styles.machineCard,
-        { 
+        {
           borderLeftWidth: 4,
           borderLeftColor: machineColor,
-          backgroundColor: machineColorBackground
-        }
+          backgroundColor: machineColorBackground,
+        },
       ]}
     >
       <View style={styles.rowAlignCenter}>
         <View style={styles.machineInfo}>
           <View style={styles.rowSpaceBetween}>
             <View style={styles.rowAlignCenterGap}>
-              <View style={[styles.machineIconContainer, { backgroundColor: machineColor }]}>
-                {getMachineIcon(machine.type, '#FFFFFF')}
+              <View
+                style={[
+                  styles.machineIconContainer,
+                  { backgroundColor: machineColor },
+                ]}
+              >
+                {getMachineIcon(machine.type, "#FFFFFF")}
               </View>
               <Text style={[styles.machineName, { color: machineColor }]}>
                 {machine.displayName || machine.name || machine.type}
               </Text>
             </View>
             {/* Show loupe icon for miners, smelters, and constructors */}
-            {(machine.type === "miner" || machine.type === "smelter" || machine.type === "constructor") ? (
+            {machine.type === "miner" ||
+            machine.type === "smelter" ||
+            machine.type === "constructor" ? (
               <TouchableOpacity
                 onPress={machine.type === "miner" ? onPress : undefined}
                 style={styles.loupeButton}
                 activeOpacity={0.7}
-                disabled={machine.type === "smelter" || machine.type === "constructor"}
+                disabled={
+                  machine.type === "smelter" || machine.type === "constructor"
+                }
               >
                 <MaterialIcons name="loupe" size={32} color="#bbb" />
               </TouchableOpacity>
@@ -190,6 +220,37 @@ const MachineCard = ({ machine, node, children, onPress }) => {
 
       {/* Render children components (specific machine type content) */}
       {childrenWithProps}
+
+      {/* Crafting Progress Section */}
+      {isProcessing && currentProcess && (
+        <View style={styles.extraInfoContainer}>
+          <View style={styles.headerRow}>
+            <View
+              style={[
+                styles.selectedNodePill,
+                { backgroundColor: machineColor },
+              ]}
+            >
+              <Text style={styles.selectedNodePillText}>
+                Crafting: {currentProcess.itemName}
+              </Text>
+            </View>
+            <Text style={styles.machineStatus}>
+              Processing... ({machineProcesses.length} in queue)
+            </Text>
+          </View>
+
+          {/* Progress Bar */}
+          <View style={styles.depletionSection}>
+            <ProgressBar
+              value={progress}
+              max={currentProcess.processingTime}
+              label={`Crafting Progress`}
+              color="#4CAF50"
+            />
+          </View>
+        </View>
+      )}
 
       {/* Modals */}
       {showSmelterModal && (

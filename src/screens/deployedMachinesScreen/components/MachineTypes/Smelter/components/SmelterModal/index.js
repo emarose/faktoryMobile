@@ -53,6 +53,8 @@ const SmelterModal = ({
     addResource,
     removeResources,
     canAfford,
+    craftingQueue,
+    addToCraftingQueue,
   } = useGame();
 
   const ownedMachines = useMemo(
@@ -112,80 +114,114 @@ const SmelterModal = ({
     );
   };
 
-  // Progress state for crafting
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
+  // Progress state for crafting - now based on global crafting queue
   const progressInterval = useRef(null);
-  const [currentCraftAmount, setCurrentCraftAmount] = useState(1);
   const [activeCraftButton, setActiveCraftButton] = useState("1");
+
+  // Check if this machine has active crafting processes
+  const machineProcesses = useMemo(() => {
+    return craftingQueue.filter(
+      (proc) => proc.machineId === machine.id && proc.status === "pending"
+    );
+  }, [craftingQueue, machine.id]);
+
+  const isProcessing = machineProcesses.length > 0;
+  const currentProcess = machineProcesses[0]; // Get the current running process
+
+  // Calculate progress for current process
+  const [progress, setProgress] = useState(0);
+  const [currentCraftAmount, setCurrentCraftAmount] = useState(1);
+
+  // Update progress based on current process
+  useEffect(() => {
+    if (!currentProcess) {
+      setProgress(0);
+      setCurrentCraftAmount(1);
+      return;
+    }
+
+    const now = Date.now();
+    const elapsed = (now - currentProcess.startedAt) / 1000;
+    const totalTime = currentProcess.processingTime;
+    
+    setProgress(Math.min(elapsed, totalTime));
+    setCurrentCraftAmount(machineProcesses.length);
+
+    if (elapsed < totalTime) {
+      const interval = setInterval(() => {
+        const currentNow = Date.now();
+        const currentElapsed = (currentNow - currentProcess.startedAt) / 1000;
+        setProgress(Math.min(currentElapsed, totalTime));
+      }, 100);
+      
+      progressInterval.current = interval;
+      return () => clearInterval(interval);
+    } else {
+      setProgress(totalTime);
+    }
+  }, [currentProcess, machineProcesses.length]);
 
   const cancelCrafting = () => {
     if (progressInterval.current) {
       clearInterval(progressInterval.current);
       progressInterval.current = null;
     }
-    setIsProcessing(false);
+    // Here we could remove pending processes from the queue if needed
+    // For now, let them complete naturally
     setProgress(0);
   };
 
-  // Crafting logic
-  const startCrafting = async (amountToCraft, isMax = false) => {
+  // Crafting logic - now using global crafting queue
+  const startCrafting = (amountToCraft, isMax = false) => {
     if (!selectedRecipe || isProcessing) return;
+    
     const totalAmount = Number(amountToCraft) || 1;
     const unitProcessingTime = Number(selectedRecipe.processingTime) || 1;
-
-    // Always clear any previous interval before starting
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-      progressInterval.current = null;
-    }
-
-    setProgress(0);
-    setIsProcessing(isMax || totalAmount > 1 ? "max" : "single");
-    setCurrentCraftAmount(totalAmount);
-
-    let crafted = 0;
-    let totalElapsed = 0;
-    const outputAmount = selectedRecipe.outputs[0]?.amount || 1;
-    const outputItem = selectedRecipe.outputs[0]?.item;
-
-    for (let i = 0; i < totalAmount; i++) {
-      const success = craftItem(selectedRecipe, 1);
-      if (!success) {
-        alert("Crafting failed.");
-        break;
+    
+    // Check if we have enough resources for all items
+    let canCraftAll = true;
+    selectedRecipe.inputs.forEach((input) => {
+      const totalNeeded = input.amount * totalAmount;
+      const available = inventory[input.item]?.currentAmount || 0;
+      if (available < totalNeeded) {
+        canCraftAll = false;
       }
-      await new Promise((resolve) => {
-        let elapsed = 0;
-        const step = 50;
-        setProgress(0); // <-- Ensure progress is 0 at the start of each craft
-        if (progressInterval.current) {
-          clearInterval(progressInterval.current);
-          progressInterval.current = null;
-        }
-        const interval = setInterval(() => {
-          elapsed += step / 1000;
-          totalElapsed += step / 1000;
-          setProgress(elapsed); // <-- Use elapsed, not totalElapsed, for per-craft progress
-          if (elapsed >= unitProcessingTime) {
-            clearInterval(interval);
-            resolve();
-          }
-        }, step);
-        progressInterval.current = interval;
-      });
-      crafted++;
-      showMiniToast(
-        `+${outputAmount} ${items[outputItem]?.name || outputItem}`
-      );
-    }
-    cancelCrafting();
-    setCurrentCraftAmount(1);
+    });
 
+    if (!canCraftAll) {
+      alert("Not enough resources for this amount.");
+      return;
+    }
+
+    // Deduct all resources upfront
+    const deductionData = {};
+    selectedRecipe.inputs.forEach((input) => {
+      deductionData[input.item] = input.amount * totalAmount;
+    });
+    
+    const success = removeResources(deductionData);
+    if (!success) {
+      alert("Failed to deduct resources.");
+      return;
+    }
+
+    // Add to global crafting queue
+    addToCraftingQueue({
+      machineId: machine.id,
+      recipeId: selectedRecipe.id,
+      amount: totalAmount,
+      processingTime: unitProcessingTime,
+      itemName: selectedRecipe.name,
+    });
+
+    // Reset UI state
     if (activeCraftButton === "max") {
       setActiveCraftButton("1");
       setProductAmount("1");
     }
+
+    // Close modal automatically after starting crafting
+    onClose();
   };
 
   const calculateMaxCraftable = () => {
@@ -208,6 +244,28 @@ const SmelterModal = ({
     setActiveCraftButton("1");
     setProductAmount("1");
   }, [selectedRecipeId]);
+
+  // Show toast for completed processes (rewards are handled automatically in GameContext)
+  useEffect(() => {
+    const completedProcesses = craftingQueue.filter(
+      (proc) => 
+        proc.machineId === machine.id && 
+        proc.status === "done"
+    );
+
+    // Show toast for newly completed processes
+    if (completedProcesses.length > 0 && visible) {
+      const latestCompleted = completedProcesses[completedProcesses.length - 1];
+      const recipe = availableRecipes.find(r => r.id === latestCompleted.recipeId);
+      if (recipe) {
+        const outputAmount = recipe.outputs[0]?.amount || 1;
+        const outputItem = recipe.outputs[0]?.item;
+        showMiniToast(
+          `+${outputAmount} ${items[outputItem]?.name || outputItem}`
+        );
+      }
+    }
+  }, [craftingQueue, machine.id, availableRecipes, showMiniToast, visible]);
 
   return (
     <Modal
@@ -250,7 +308,7 @@ const SmelterModal = ({
                         <CraftingProgress
                           isProcessing={isProcessing}
                           progress={progress}
-                          processingTime={processingTime * currentCraftAmount}
+                          processingTime={currentProcess?.processingTime || processingTime}
                           maxCraftable={maxCraftable}
                           onCancel={cancelCrafting}
                           totalAmount={currentCraftAmount}
@@ -319,12 +377,7 @@ const SmelterModal = ({
                       disabled={!canCraft || !!isProcessing}
                       activeOpacity={0.85}
                     >
-                      <MaterialCommunityIcons
-                        name="hammer-screwdriver"
-                        size={26}
-                        color={canCraft && !isProcessing ? "#fff" : "#888"}
-                        style={{ marginRight: 10 }}
-                      />
+                  
                       <Text
                         style={{
                           color: canCraft && !isProcessing ? "#fff" : "#888",
