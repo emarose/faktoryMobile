@@ -117,6 +117,7 @@ const ConstructorModal = ({
 
   // UI state
   const [activeCraftButton, setActiveCraftButton] = useState("1");
+  const [activeTab, setActiveTab] = useState("recipe");
 
   // Check for active crafting processes for this machine
   const machineProcesses = useMemo(() => {
@@ -216,278 +217,347 @@ const ConstructorModal = ({
             </TouchableOpacity>
           </View>
 
-          {/* Split Panel Layout */}
-          <View style={modalStyles.contentContainer}>
+          {/* Tab Navigation */}
+          <View style={modalStyles.tabContainer}>
+            <TouchableOpacity
+              style={[
+                modalStyles.tabButton,
+                activeTab === "recipe" && modalStyles.activeTabButton
+              ]}
+              onPress={() => setActiveTab("recipe")}
+            >
+              <MaterialCommunityIcons
+                name="book-open-variant"
+                size={18}
+                color={activeTab === "recipe" ? "#e8f4fd" : "#b8c7d1"}
+              />
+              <Text style={[
+                modalStyles.tabButtonText,
+                activeTab === "recipe" && modalStyles.activeTabButtonText
+              ]}>
+                Recipe
+              </Text>
+            </TouchableOpacity>
             
-            {/* LEFT PANEL - Inputs & Recipe Selection */}
-            <ScrollView style={modalStyles.leftPanel} showsVerticalScrollIndicator={false}>
-              
-              {/* Recipe Selection Panel */}
-              <View style={modalStyles.industrialPanel}>
-                <View style={modalStyles.panelHeader}>
-                  <Text style={modalStyles.panelTitle}>Available Recipes</Text>
-                </View>
-                <View style={modalStyles.panelContent}>
-                  <ScrollView 
-                    horizontal 
-                    showsHorizontalScrollIndicator={false}
-                    style={modalStyles.recipeScrollContainer}
-                  >
+            <TouchableOpacity
+              style={[
+                modalStyles.tabButton,
+                activeTab === "production" && modalStyles.activeTabButton
+              ]}
+              onPress={() => setActiveTab("production")}
+            >
+              <MaterialCommunityIcons
+                name="factory"
+                size={18}
+                color={activeTab === "production" ? "#e8f4fd" : "#b8c7d1"}
+              />
+              <Text style={[
+                modalStyles.tabButtonText,
+                activeTab === "production" && modalStyles.activeTabButtonText
+              ]}>
+                Production
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Tab Content */}
+          <View style={modalStyles.contentContainer}>
+            {activeTab === "recipe" ? (
+              // RECIPE TAB - Vertical scroll of recipes
+              <ScrollView style={modalStyles.recipeTab} showsVerticalScrollIndicator={false}>
+                <View style={modalStyles.industrialPanel}>
+                  <View style={modalStyles.panelHeader}>
+                    <Text style={modalStyles.panelTitle}>Available Recipes</Text>
+                  </View>
+                  <View style={modalStyles.panelContent}>
                     {availableRecipes.map((recipeItem) => (
                       <TouchableOpacity
                         key={recipeItem.id}
                         style={[
-                          modalStyles.recipeButton,
-                          selectedRecipeId === recipeItem.id &&
-                            modalStyles.selectedRecipeButton,
+                          modalStyles.recipeCard,
+                          selectedRecipeId === recipeItem.id && modalStyles.selectedRecipeCard,
                         ]}
                         onPress={() => setSelectedRecipeId(recipeItem.id)}
                       >
-                        <Text
-                          style={[
-                            modalStyles.recipeButtonText,
-                            selectedRecipeId === recipeItem.id &&
-                              modalStyles.selectedRecipeButtonText,
-                          ]}
-                        >
-                          {recipeItem.name}
-                        </Text>
+                        <View style={modalStyles.recipeCardHeader}>
+                          <View style={modalStyles.recipeIconContainer}>
+                            <MaterialCommunityIcons
+                              name="cog"
+                              size={24}
+                              color={selectedRecipeId === recipeItem.id ? "#e8f4fd" : "#b8c7d1"}
+                            />
+                          </View>
+                          <View style={modalStyles.recipeInfo}>
+                            <Text style={[
+                              modalStyles.recipeCardTitle,
+                              selectedRecipeId === recipeItem.id && modalStyles.selectedRecipeCardTitle
+                            ]}>
+                              {recipeItem.name}
+                            </Text>
+                            <Text style={modalStyles.recipeCardTime}>
+                              {recipeItem.processingTime}s processing time
+                            </Text>
+                          </View>
+                          {selectedRecipeId === recipeItem.id && (
+                            <MaterialCommunityIcons
+                              name="check-circle"
+                              size={20}
+                              color="#4CAF50"
+                            />
+                          )}
+                        </View>
+                        
+                        {/* Recipe Details */}
+                        <View style={modalStyles.recipeDetails}>
+                          <View style={modalStyles.recipeInputsOutputs}>
+                            <View style={modalStyles.recipeInputs}>
+                              <Text style={modalStyles.recipeDetailLabel}>Inputs:</Text>
+                              {recipeItem.inputs.map((input, idx) => (
+                                <Text key={idx} style={modalStyles.recipeDetailText}>
+                                  {input.amount}x {items[input.item]?.name || input.item}
+                                </Text>
+                              ))}
+                            </View>
+                            <MaterialCommunityIcons
+                              name="arrow-right"
+                              size={16}
+                              color="#6db4f0"
+                              style={modalStyles.arrowIcon}
+                            />
+                            <View style={modalStyles.recipeOutputs}>
+                              <Text style={modalStyles.recipeDetailLabel}>Outputs:</Text>
+                              {recipeItem.outputs.map((output, idx) => (
+                                <Text key={idx} style={modalStyles.recipeDetailText}>
+                                  {output.amount}x {items[output.item]?.name || output.item}
+                                </Text>
+                              ))}
+                            </View>
+                          </View>
+                        </View>
                       </TouchableOpacity>
                     ))}
-                  </ScrollView>
-                </View>
-              </View>
-
-              {/* Required Resources Panel */}
-              {selectedRecipe && (
-                <View style={modalStyles.industrialPanel}>
-                  <View style={modalStyles.panelHeader}>
-                    <Text style={modalStyles.panelTitle}>Required Resources</Text>
                   </View>
-                  <View style={modalStyles.panelContent}>
-                    {selectedRecipe.inputs.map((input) => {
-                      const requiredAmount = input.amount * amount;
-                      const currentAmount = inventory[input.item]?.currentAmount || 0;
-                      const hasEnough = currentAmount >= requiredAmount;
-                      const itemName = items[input.item]?.name || input.item;
-                      
-                      return (
-                        <View key={input.item} style={modalStyles.resourceContainer}>
-                          <View style={modalStyles.resourceRow}>
+                </View>
+              </ScrollView>
+            ) : (
+              // PRODUCTION TAB - Single scroll with Satisfactory-like layout
+              <ScrollView style={modalStyles.productionTab} showsVerticalScrollIndicator={false}>
+                {/* Main Production Area - Similar to Satisfactory interface */}
+                <View style={modalStyles.productionMainArea}>
+                  
+                  {/* Input/Output Flow Section */}
+                  {selectedRecipe && (
+                    <View style={modalStyles.flowSection}>
+                      {/* Input Side */}
+                      <View style={modalStyles.inputSection}>
+                        <View style={modalStyles.flowLabel}>
+                          <Text style={modalStyles.flowLabelText}>INPUT</Text>
+                        </View>
+                        <View style={modalStyles.inputSlots}>
+                          {selectedRecipe.inputs.map((input, index) => {
+                            const requiredAmount = input.amount * amount;
+                            const currentAmount = inventory[input.item]?.currentAmount || 0;
+                            const hasEnough = currentAmount >= requiredAmount;
+                            const itemName = items[input.item]?.name || input.item;
+                            
+                            return (
+                              <View key={input.item} style={modalStyles.resourceSlot}>
+                                <View style={[
+                                  modalStyles.slotIcon,
+                                  { backgroundColor: hasEnough ? "#4a7fa7" : "#a74a4a" }
+                                ]}>
+                                  <MaterialCommunityIcons
+                                    name="cube-outline"
+                                    size={20}
+                                    color="#e8f4fd"
+                                  />
+                                </View>
+                                <Text style={modalStyles.slotAmount}>{requiredAmount}</Text>
+                                <Text style={modalStyles.slotName}>{itemName}</Text>
+                                <Text style={[
+                                  modalStyles.slotInventory,
+                                  { color: hasEnough ? "#4CAF50" : "#ff6b6b" }
+                                ]}>
+                                  {currentAmount}/{requiredAmount}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </View>
+
+                      {/* Arrow */}
+                      <View style={modalStyles.arrowSection}>
+                        <MaterialCommunityIcons
+                          name="arrow-right"
+                          size={32}
+                          color="#6db4f0"
+                        />
+                      </View>
+
+                      {/* Output Side */}
+                      <View style={modalStyles.outputSection}>
+                        <View style={modalStyles.flowLabel}>
+                          <Text style={modalStyles.flowLabelText}>OUTPUT</Text>
+                        </View>
+                        <View style={modalStyles.outputSlots}>
+                          {selectedRecipe.outputs.map((output, index) => {
+                            const outputAmount = output.amount * amount;
+                            const itemName = items[output.item]?.name || output.item;
+                            const currentInventory = inventory[output.item]?.currentAmount || 0;
+                            
+                            return (
+                              <View key={output.item} style={modalStyles.resourceSlot}>
+                                <View style={[
+                                  modalStyles.slotIcon,
+                                  { backgroundColor: "#4a7fa7" }
+                                ]}>
+                                  <MaterialCommunityIcons
+                                    name="package-variant"
+                                    size={20}
+                                    color="#e8f4fd"
+                                  />
+                                </View>
+                                <Text style={modalStyles.slotAmount}>{outputAmount}</Text>
+                                <Text style={modalStyles.slotName}>{itemName}</Text>
+                                <Text style={modalStyles.slotInventory}>
+                                  Current: {currentInventory}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                      </View>
+                    </View>
+                  )}
+
+                  {/* Machine Status & Recipe Info */}
+                  {selectedRecipe && (
+                    <View style={modalStyles.machineStatusSection}>
+                      <View style={modalStyles.machineInfoCard}>
+                        <View style={modalStyles.machineHeader}>
+                          <View style={modalStyles.machineIcon}>
+                            <MaterialCommunityIcons
+                              name="factory"
+                              size={28}
+                              color="#6db4f0"
+                            />
+                          </View>
+                          <View style={modalStyles.machineInfo}>
+                            <Text style={modalStyles.machineTitle}>Constructor</Text>
+                            <Text style={modalStyles.recipeTitle}>{selectedRecipe.name}</Text>
+                          </View>
+                          <View style={modalStyles.machineStatus}>
                             <View style={[
-                              modalStyles.resourceIcon,
-                              { backgroundColor: hasEnough ? "#4a7fa7" : "#a74a4a" }
-                            ]}>
-                              <MaterialCommunityIcons
-                                name="cube-outline"
-                                size={16}
-                                color="#e8f4fd"
-                              />
-                            </View>
-                            <Text style={modalStyles.resourceText}>
-                              {itemName}
-                            </Text>
-                            <Text style={[
-                              modalStyles.resourceAmount,
-                              { color: hasEnough ? "#e8f4fd" : "#ff6b6b" }
-                            ]}>
-                              {requiredAmount}/{currentAmount}
+                              modalStyles.statusIndicator,
+                              { backgroundColor: isProcessing ? "#4CAF50" : "#6db4f0" }
+                            ]} />
+                            <Text style={modalStyles.statusText}>
+                              {isProcessing ? "Processing" : "Ready"}
                             </Text>
                           </View>
                         </View>
-                      );
-                    })}
-                  </View>
-                </View>
-              )}
-
-              {/* Quantity Control Panel */}
-              {selectedRecipe && (
-                <View style={modalStyles.industrialPanel}>
-                  <View style={modalStyles.panelHeader}>
-                    <Text style={modalStyles.panelTitle}>Production Control</Text>
-                  </View>
-                  <View style={modalStyles.panelContent}>
-                    <QuantityStepper
-                      amount={productAmount}
-                      setAmount={setProductAmount}
-                      maxAmount={maxCraftable}
-                    />
-                    
-                    <View style={{ flexDirection: "row", marginTop: 12 }}>
-                      <CraftButton
-                        isActive={activeCraftButton === "1"}
-                        label="1x"
-                        onPress={() => {
-                          setProductAmount("1");
-                          setActiveCraftButton("1");
-                        }}
-                        disabled={!!isProcessing}
-                      />
-                      <CraftButton
-                        isActive={activeCraftButton === "5"}
-                        label="5x"
-                        onPress={() => {
-                          setProductAmount("5");
-                          setActiveCraftButton("5");
-                        }}
-                        disabled={!!isProcessing || maxCraftable < 5}
-                      />
-                      <CraftButton
-                        isActive={activeCraftButton === "max"}
-                        label={`Max (${maxCraftable})`}
-                        onPress={() => {
-                          setProductAmount(String(maxCraftable));
-                          setActiveCraftButton("max");
-                        }}
-                        disabled={!!isProcessing || maxCraftable <= 0}
-                      />
-                    </View>
-                  </View>
-                </View>
-              )}
-            </ScrollView>
-
-            {/* RIGHT PANEL - Machine View & Output */}
-            <ScrollView style={modalStyles.rightPanel} showsVerticalScrollIndicator={false}>
-              
-              {/* Machine Display */}
-              <View style={modalStyles.machineDisplay}>
-                <View style={modalStyles.machineIcon}>
-                  <MaterialCommunityIcons
-                    name="factory"
-                    size={40}
-                    color="#6db4f0"
-                  />
-                </View>
-                <Text style={modalStyles.panelTitle}>Constructor</Text>
-                
-                <View style={modalStyles.machineStatus}>
-                  <View style={[
-                    modalStyles.statusIndicator,
-                    { backgroundColor: isProcessing ? "#4CAF50" : "#6db4f0" }
-                  ]} />
-                  <Text style={modalStyles.statusText}>
-                    {isProcessing ? "Processing..." : "Ready"}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Production Information */}
-              {selectedRecipe && (
-                <View style={modalStyles.industrialPanel}>
-                  <View style={modalStyles.panelHeader}>
-                    <Text style={modalStyles.panelTitle}>Production Info</Text>
-                  </View>
-                  <View style={modalStyles.panelContent}>
-                    <View style={modalStyles.productionInfo}>
-                      <View style={modalStyles.productionRow}>
-                        <Text style={modalStyles.productionLabel}>Recipe:</Text>
-                        <Text style={modalStyles.productionValue}>
-                          {selectedRecipe.name}
-                        </Text>
-                      </View>
-                      <View style={modalStyles.productionRow}>
-                        <Text style={modalStyles.productionLabel}>Processing Time:</Text>
-                        <Text style={modalStyles.productionValue}>
-                          {processingTime}s per item
-                        </Text>
-                      </View>
-                      <View style={modalStyles.productionRow}>
-                        <Text style={modalStyles.productionLabel}>Max Craftable:</Text>
-                        <Text style={modalStyles.productionValue}>
-                          {maxCraftable} items
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              )}
-
-              {/* Expected Output */}
-              {selectedRecipe && (
-                <View style={modalStyles.industrialPanel}>
-                  <View style={modalStyles.panelHeader}>
-                    <Text style={modalStyles.panelTitle}>Expected Output</Text>
-                  </View>
-                  <View style={modalStyles.panelContent}>
-                    {selectedRecipe.outputs.map((output) => {
-                      const outputAmount = output.amount * amount;
-                      const itemName = items[output.item]?.name || output.item;
-                      const currentInventory = inventory[output.item]?.currentAmount || 0;
-                      
-                      return (
-                        <View key={output.item} style={modalStyles.resourceContainer}>
-                          <View style={modalStyles.resourceRow}>
-                            <View style={[
-                              modalStyles.resourceIcon,
-                              { backgroundColor: "#4a7fa7" }
-                            ]}>
-                              <MaterialCommunityIcons
-                                name="package-variant"
-                                size={16}
-                                color="#e8f4fd"
-                              />
-                            </View>
-                            <Text style={modalStyles.resourceText}>
-                              {itemName}
-                            </Text>
-                            <Text style={modalStyles.resourceAmount}>
-                              +{outputAmount} (inv: {currentInventory})
-                            </Text>
+                        
+                        <View style={modalStyles.productionStats}>
+                          <View style={modalStyles.statItem}>
+                            <Text style={modalStyles.statLabel}>Processing Time</Text>
+                            <Text style={modalStyles.statValue}>{processingTime}s</Text>
+                          </View>
+                          <View style={modalStyles.statItem}>
+                            <Text style={modalStyles.statLabel}>Max Craftable</Text>
+                            <Text style={modalStyles.statValue}>{maxCraftable}</Text>
+                          </View>
+                          <View style={modalStyles.statItem}>
+                            <Text style={modalStyles.statLabel}>Total Time</Text>
+                            <Text style={modalStyles.statValue}>{processingTime * amount}s</Text>
                           </View>
                         </View>
-                      );
-                    })}
-                  </View>
-                </View>
-              )}
+                      </View>
+                    </View>
+                  )}
 
-              {/* Progress Display */}
-              {isProcessing && (
-                <View style={modalStyles.industrialPanel}>
-                  <View style={modalStyles.panelHeader}>
-                    <Text style={modalStyles.panelTitle}>Processing Status</Text>
-                  </View>
-                  <View style={modalStyles.panelContent}>
-                    <CraftingProgress
-                      isProcessing={isProcessing}
-                      machineProcesses={machineProcesses}
-                      maxCraftable={maxCraftable}
-                    />
-                  </View>
-                </View>
-              )}
+                  {/* Progress Display */}
+                  {isProcessing && (
+                    <View style={modalStyles.progressSection}>
+                      <CraftingProgress
+                        isProcessing={isProcessing}
+                        machineProcesses={machineProcesses}
+                        maxCraftable={maxCraftable}
+                      />
+                    </View>
+                  )}
 
-              {/* Control Section */}
-              {selectedRecipe && (
-                <View style={modalStyles.controlSection}>
-                  <TouchableOpacity
-                    style={[
-                      modalStyles.craftButton,
-                      (!canCraft || !!isProcessing) && modalStyles.craftButtonDisabled,
-                    ]}
-                    onPress={() => startCrafting(amount)}
-                    disabled={!canCraft || !!isProcessing}
-                    activeOpacity={0.85}
-                  >
-                    <MaterialCommunityIcons
-                      name="play-circle"
-                      size={20}
-                      color={canCraft && !isProcessing ? "#e8f4fd" : "#6b7885"}
-                    />
-                    <Text
-                      style={[
-                        modalStyles.craftButtonText,
-                        (!canCraft || !!isProcessing) && modalStyles.craftButtonTextDisabled,
-                      ]}
-                    >
-                      {isProcessing ? "Processing..." : `Start Production (${amount}x)`}
-                    </Text>
-                  </TouchableOpacity>
+                  {/* Production Controls */}
+                  {selectedRecipe && (
+                    <View style={modalStyles.controlsSection}>
+                      <View style={modalStyles.quantityControls}>
+                        <Text style={modalStyles.controlLabel}>Production Quantity</Text>
+                        <QuantityStepper
+                          amount={productAmount}
+                          setAmount={setProductAmount}
+                          maxAmount={maxCraftable}
+                        />
+                        
+                        <View style={modalStyles.quickButtons}>
+                          <CraftButton
+                            isActive={activeCraftButton === "1"}
+                            label="1x"
+                            onPress={() => {
+                              setProductAmount("1");
+                              setActiveCraftButton("1");
+                            }}
+                            disabled={!!isProcessing}
+                          />
+                          <CraftButton
+                            isActive={activeCraftButton === "5"}
+                            label="5x"
+                            onPress={() => {
+                              setProductAmount("5");
+                              setActiveCraftButton("5");
+                            }}
+                            disabled={!!isProcessing || maxCraftable < 5}
+                          />
+                          <CraftButton
+                            isActive={activeCraftButton === "max"}
+                            label={`Max (${maxCraftable})`}
+                            onPress={() => {
+                              setProductAmount(String(maxCraftable));
+                              setActiveCraftButton("max");
+                            }}
+                            disabled={!!isProcessing || maxCraftable <= 0}
+                          />
+                        </View>
+                      </View>
+
+                      {/* Start Production Button */}
+                      <TouchableOpacity
+                        style={[
+                          modalStyles.startProductionButton,
+                          (!canCraft || !!isProcessing) && modalStyles.startProductionButtonDisabled,
+                        ]}
+                        onPress={() => startCrafting(amount)}
+                        disabled={!canCraft || !!isProcessing}
+                        activeOpacity={0.85}
+                      >
+                        <MaterialCommunityIcons
+                          name={isProcessing ? "cog" : "play-circle"}
+                          size={24}
+                          color={canCraft && !isProcessing ? "#e8f4fd" : "#6b7885"}
+                        />
+                        <Text
+                          style={[
+                            modalStyles.startProductionButtonText,
+                            (!canCraft || !!isProcessing) && modalStyles.startProductionButtonTextDisabled,
+                          ]}
+                        >
+                          {isProcessing ? "Processing..." : `Start Production (${amount}x)`}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
-              )}
-            </ScrollView>
+              </ScrollView>
+            )}
           </View>
           
           <MiniToast visible={miniToastVisible} message={miniToastMsg} />
@@ -540,28 +610,314 @@ const modalStyles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
   },
-  
-  // Main content layout - split screen like Satisfactory
-  contentContainer: {
+
+  // Tab Navigation
+  tabContainer: {
+    flexDirection: "row",
+    backgroundColor: "#1f2935",
+    borderBottomWidth: 2,
+    borderBottomColor: "#4a5866",
+  },
+  tabButton: {
     flex: 1,
     flexDirection: "row",
-    padding: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: "#2a3441",
+    borderRightWidth: 1,
+    borderRightColor: "#4a5866",
+  },
+  activeTabButton: {
+    backgroundColor: "#4a7fa7",
+    borderBottomWidth: 3,
+    borderBottomColor: "#6db4f0",
+  },
+  tabButtonText: {
+    color: "#b8c7d1",
+    fontSize: 14,
+    fontWeight: "600",
+    marginLeft: 8,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  activeTabButtonText: {
+    color: "#e8f4fd",
+    fontWeight: "700",
   },
   
-  // Left panel for inputs and recipe selection
-  leftPanel: {
+  // Main content layout - now supports tabs
+  contentContainer: {
+    flex: 1,
+  },
+
+  // Recipe Tab Styles
+  recipeTab: {
+    flex: 1,
+    padding: 16,
+  },
+  recipeCard: {
+    backgroundColor: "#1f2935",
+    borderWidth: 1,
+    borderColor: "#4a5866",
+    borderRadius: 8,
+    marginBottom: 12,
+    padding: 16,
+  },
+  selectedRecipeCard: {
+    borderColor: "#6db4f0",
+    borderWidth: 2,
+    backgroundColor: "#2a3441",
+  },
+  recipeCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  recipeIconContainer: {
+    width: 40,
+    height: 40,
+    backgroundColor: "#3a4856",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  recipeInfo: {
+    flex: 1,
+  },
+  recipeCardTitle: {
+    color: "#b8c7d1",
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  selectedRecipeCardTitle: {
+    color: "#e8f4fd",
+    fontWeight: "700",
+  },
+  recipeCardTime: {
+    color: "#6b7885",
+    fontSize: 12,
+  },
+  recipeDetails: {
+    marginTop: 8,
+  },
+  recipeInputsOutputs: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  recipeInputs: {
+    flex: 1,
+  },
+  recipeOutputs: {
+    flex: 1,
+  },
+  arrowIcon: {
+    marginHorizontal: 12,
+  },
+  recipeDetailLabel: {
+    color: "#6db4f0",
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 4,
+    textTransform: "uppercase",
+  },
+  recipeDetailText: {
+    color: "#b8c7d1",
+    fontSize: 11,
+    marginBottom: 2,
+  },
+
+  // Production Tab Styles - Satisfactory-like layout
+  productionTab: {
     flex: 1,
     backgroundColor: "#2a3441",
-    borderRightWidth: 2,
-    borderRightColor: "#4a5866",
+  },
+  productionMainArea: {
     padding: 16,
   },
-  
-  // Right panel for machine view and outputs
-  rightPanel: {
-    flex: 1,
-    backgroundColor: "#323d4a",
+
+  // Input/Output Flow Section
+  flowSection: {
+    backgroundColor: "#1f2935",
+    borderWidth: 2,
+    borderColor: "#4a5866",
+    borderRadius: 8,
     padding: 16,
+    marginBottom: 16,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inputSection: {
+    flex: 1,
+    alignItems: "center",
+  },
+  outputSection: {
+    flex: 1,
+    alignItems: "center",
+  },
+  arrowSection: {
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  flowLabel: {
+    backgroundColor: "#3a4856",
+    borderRadius: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginBottom: 12,
+  },
+  flowLabelText: {
+    color: "#e8f4fd",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  inputSlots: {
+    alignItems: "center",
+  },
+  outputSlots: {
+    alignItems: "center",
+  },
+  resourceSlot: {
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  slotIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 6,
+    borderWidth: 2,
+    borderColor: "#4a5866",
+  },
+  slotAmount: {
+    color: "#e8f4fd",
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  slotName: {
+    color: "#b8c7d1",
+    fontSize: 11,
+    textAlign: "center",
+    marginBottom: 2,
+  },
+  slotInventory: {
+    fontSize: 10,
+    fontWeight: "600",
+  },
+
+  // Machine Status Section
+  machineStatusSection: {
+    marginBottom: 16,
+  },
+  machineInfoCard: {
+    backgroundColor: "#1f2935",
+    borderWidth: 1,
+    borderColor: "#4a5866",
+    borderRadius: 8,
+    padding: 16,
+  },
+  machineHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  machineInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  recipeTitle: {
+    color: "#6db4f0",
+    fontSize: 14,
+    fontWeight: "600",
+    marginTop: 2,
+  },
+  productionStats: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "#2a3441",
+    borderRadius: 6,
+    padding: 12,
+  },
+  statItem: {
+    alignItems: "center",
+  },
+  statLabel: {
+    color: "#b8c7d1",
+    fontSize: 11,
+    marginBottom: 4,
+  },
+  statValue: {
+    color: "#e8f4fd",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+
+  // Progress Section
+  progressSection: {
+    backgroundColor: "#1f2935",
+    borderWidth: 1,
+    borderColor: "#4a5866",
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+
+  // Controls Section
+  controlsSection: {
+    backgroundColor: "#1f2935",
+    borderWidth: 1,
+    borderColor: "#4a5866",
+    borderRadius: 8,
+    padding: 16,
+  },
+  quantityControls: {
+    marginBottom: 16,
+  },
+  controlLabel: {
+    color: "#e8f4fd",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 12,
+    textAlign: "center",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  quickButtons: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  startProductionButton: {
+    backgroundColor: "#4a7fa7",
+    borderWidth: 2,
+    borderColor: "#6db4f0",
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  startProductionButtonDisabled: {
+    backgroundColor: "#3a4856",
+    borderColor: "#4a5866",
+  },
+  startProductionButtonText: {
+    color: "#e8f4fd",
+    fontWeight: "700",
+    fontSize: 16,
+    letterSpacing: 0.5,
+    marginLeft: 8,
+    textTransform: "uppercase",
+  },
+  startProductionButtonTextDisabled: {
+    color: "#6b7885",
   },
   
   // Industrial panels
@@ -594,69 +950,28 @@ const modalStyles = StyleSheet.create({
     padding: 12,
   },
   
-  // Recipe selection
-  recipeScrollContainer: {
-    paddingVertical: 8,
-  },
-  
-  recipeButton: {
-    backgroundColor: "#3a4856",
-    borderWidth: 1,
-    borderColor: "#4a5866",
-    borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginRight: 8,
-    marginBottom: 8,
-    minWidth: 120,
-  },
-  
-  selectedRecipeButton: {
-    backgroundColor: "#4a7fa7", // Industrial blue
-    borderColor: "#6db4f0",
-    borderWidth: 2,
-  },
-  
-  recipeButtonText: {
-    color: "#b8c7d1",
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "500",
-  },
-  
-  selectedRecipeButtonText: {
-    color: "#e8f4fd",
-    fontWeight: "700",
-  },
-  
-  // Machine display area
-  machineDisplay: {
-    backgroundColor: "#1f2935",
-    borderWidth: 2,
-    borderColor: "#4a5866",
-    borderRadius: 8,
-    padding: 16,
-    alignItems: "center",
-    marginBottom: 16,
-    minHeight: 200,
-  },
-  
+  // Machine display components
   machineIcon: {
-    width: 80,
-    height: 80,
+    width: 48,
+    height: 48,
     backgroundColor: "#3a4856",
     borderWidth: 2,
     borderColor: "#6db4f0",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 12,
+  },
+
+  machineTitle: {
+    color: "#e8f4fd",
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
   
   machineStatus: {
-    flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
   },
   
   statusIndicator: {
@@ -668,115 +983,10 @@ const modalStyles = StyleSheet.create({
   
   statusText: {
     color: "#b8c7d1",
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
   },
-  
-  // Production info
-  productionInfo: {
-    backgroundColor: "#1f2935",
-    borderWidth: 1,
-    borderColor: "#4a5866",
-    borderRadius: 4,
-    padding: 12,
-    marginBottom: 12,
-  },
-  
-  productionRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  
-  productionLabel: {
-    color: "#b8c7d1",
-    fontSize: 12,
-    flex: 1,
-  },
-  
-  productionValue: {
-    color: "#e8f4fd",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  
-  // Resource display
-  resourceContainer: {
-    backgroundColor: "#2a3441",
-    borderWidth: 1,
-    borderColor: "#4a5866",
-    borderRadius: 4,
-    padding: 8,
-    marginVertical: 4,
-  },
-  
-  resourceRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 6,
-  },
-  
-  resourceIcon: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#3a4856",
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  
-  resourceText: {
-    flex: 1,
-    color: "#b8c7d1",
-    fontSize: 12,
-  },
-  
-  resourceAmount: {
-    color: "#e8f4fd",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  
-  // Control buttons
-  controlSection: {
-    backgroundColor: "#1f2935",
-    borderWidth: 1,
-    borderColor: "#4a5866",
-    borderRadius: 4,
-    padding: 12,
-    marginTop: 16,
-  },
-  
-  craftButton: {
-    backgroundColor: "#4a7fa7",
-    borderWidth: 1,
-    borderColor: "#6db4f0",
-    borderRadius: 6,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginTop: 12,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  
-  craftButtonDisabled: {
-    backgroundColor: "#3a4856",
-    borderColor: "#4a5866",
-  },
-  
-  craftButtonText: {
-    color: "#e8f4fd",
-    fontWeight: "700",
-    fontSize: 14,
-    letterSpacing: 0.5,
-    marginLeft: 8,
-  },
-  
-  craftButtonTextDisabled: {
-    color: "#6b7885",
-  },
+
 });
 
 export default ConstructorModal;
