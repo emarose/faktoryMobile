@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -119,17 +119,17 @@ const ConstructorModal = ({
   const [activeCraftButton, setActiveCraftButton] = useState("1");
   const [activeTab, setActiveTab] = useState("recipe");
 
-  // Check for active crafting processes for this machine
+  // Check for active crafting processes for this machine - memoized
   const machineProcesses = useMemo(() => {
     return craftingQueue.filter(
       (proc) => proc.machineId === machine.id && proc.status === "pending"
     );
   }, [craftingQueue, machine.id]);
 
-  const isProcessing = machineProcesses.length > 0;
+  const isProcessing = useMemo(() => machineProcesses.length > 0, [machineProcesses]);
 
   // Crafting logic using global craftingQueue
-  const startCrafting = async (amountToCraft, isMax = false) => {
+  const startCrafting = useCallback(async (amountToCraft, isMax = false) => {
     if (!selectedRecipe) return;
     const totalAmount = Number(amountToCraft) || 1;
 
@@ -145,20 +145,25 @@ const ConstructorModal = ({
     }
 
     // Deduct resources immediately
+    const deductionData = {};
     selectedRecipe.inputs.forEach((input) => {
-      removeResources(input.item, input.amount * totalAmount);
+      deductionData[input.item] = input.amount * totalAmount;
     });
+    
+    const success = removeResources(deductionData);
+    if (!success) {
+      showMiniToast("Failed to deduct resources!");
+      return;
+    }
 
     // Add to global crafting queue
-    for (let i = 0; i < totalAmount; i++) {
-      addToCraftingQueue({
-        machineId: machine.id,
-        recipeId: selectedRecipe.id,
-        itemName: selectedRecipe.name,
-        outputs: selectedRecipe.outputs,
-        processingTime: selectedRecipe.processingTime,
-      });
-    }
+    addToCraftingQueue({
+      machineId: machine.id,
+      recipeId: selectedRecipe.id,
+      amount: totalAmount,
+      processingTime: selectedRecipe.processingTime,
+      itemName: selectedRecipe.name,
+    });
 
     showMiniToast(`Added ${totalAmount}x ${selectedRecipe.name} to queue`);
     
@@ -170,9 +175,10 @@ const ConstructorModal = ({
 
     // Close modal automatically after starting crafting
     onClose();
-  };
+  }, [selectedRecipe, inventory, removeResources, addToCraftingQueue, machine.id, activeCraftButton, setActiveCraftButton, setProductAmount, onClose, showMiniToast]);
 
-  const calculateMaxCraftable = () => {
+  // Memoize expensive calculations
+  const maxCraftable = useMemo(() => {
     if (!selectedRecipe) return 0;
     let maxCraftable = Infinity;
     selectedRecipe.inputs.forEach((input) => {
@@ -181,24 +187,48 @@ const ConstructorModal = ({
       if (possible < maxCraftable) maxCraftable = possible;
     });
     return maxCraftable === Infinity ? 0 : maxCraftable;
-  };
+  }, [selectedRecipe, inventory]);
 
-  const maxCraftable = calculateMaxCraftable();
-  const amount = Math.max(1, parseInt(productAmount) || 1);
-  const canCraft = amount > 0 && amount <= maxCraftable;
-  const processingTime = Number(selectedRecipe?.processingTime) || 1;
+  const amount = useMemo(() => Math.max(1, parseInt(productAmount) || 1), [productAmount]);
+  const canCraft = useMemo(() => amount > 0 && amount <= maxCraftable, [amount, maxCraftable]);
+  const processingTime = useMemo(() => Number(selectedRecipe?.processingTime) || 1, [selectedRecipe]);
 
   useEffect(() => {
     setActiveCraftButton("1");
     setProductAmount("1");
   }, [selectedRecipeId]);
 
-  const handleAssignRecipe = () => {
+  const handleAssignRecipe = useCallback(() => {
     if (selectedRecipeId) {
       onSelectRecipe(selectedRecipeId);
       onClose();
     }
-  };
+  }, [selectedRecipeId, onSelectRecipe, onClose]);
+
+  // Optimize tab handlers
+  const handleRecipeTab = useCallback(() => setActiveTab("recipe"), []);
+  const handleProductionTab = useCallback(() => setActiveTab("production"), []);
+
+  // Optimize quantity button handlers
+  const handleSet1 = useCallback(() => {
+    setProductAmount("1");
+    setActiveCraftButton("1");
+  }, []);
+
+  const handleSet5 = useCallback(() => {
+    setProductAmount("5");
+    setActiveCraftButton("5");
+  }, []);
+
+  const handleSetMax = useCallback(() => {
+    setProductAmount(String(maxCraftable));
+    setActiveCraftButton("max");
+  }, [maxCraftable]);
+
+  // Optimize start crafting handler
+  const handleStartCrafting = useCallback(() => {
+    startCrafting(amount);
+  }, [startCrafting, amount]);
 
   return (
     <Modal
@@ -224,7 +254,7 @@ const ConstructorModal = ({
                 modalStyles.tabButton,
                 activeTab === "recipe" && modalStyles.activeTabButton
               ]}
-              onPress={() => setActiveTab("recipe")}
+              onPress={handleRecipeTab}
             >
               <MaterialCommunityIcons
                 name="book-open-variant"
@@ -244,7 +274,7 @@ const ConstructorModal = ({
                 modalStyles.tabButton,
                 activeTab === "production" && modalStyles.activeTabButton
               ]}
-              onPress={() => setActiveTab("production")}
+              onPress={handleProductionTab}
             >
               <MaterialCommunityIcons
                 name="factory"
@@ -502,28 +532,19 @@ const ConstructorModal = ({
                           <CraftButton
                             isActive={activeCraftButton === "1"}
                             label="1x"
-                            onPress={() => {
-                              setProductAmount("1");
-                              setActiveCraftButton("1");
-                            }}
+                            onPress={handleSet1}
                             disabled={!!isProcessing}
                           />
                           <CraftButton
                             isActive={activeCraftButton === "5"}
                             label="5x"
-                            onPress={() => {
-                              setProductAmount("5");
-                              setActiveCraftButton("5");
-                            }}
+                            onPress={handleSet5}
                             disabled={!!isProcessing || maxCraftable < 5}
                           />
                           <CraftButton
                             isActive={activeCraftButton === "max"}
                             label={`Max (${maxCraftable})`}
-                            onPress={() => {
-                              setProductAmount(String(maxCraftable));
-                              setActiveCraftButton("max");
-                            }}
+                            onPress={handleSetMax}
                             disabled={!!isProcessing || maxCraftable <= 0}
                           />
                         </View>
@@ -535,7 +556,7 @@ const ConstructorModal = ({
                           modalStyles.startProductionButton,
                           (!canCraft || !!isProcessing) && modalStyles.startProductionButtonDisabled,
                         ]}
-                        onPress={() => startCrafting(amount)}
+                        onPress={handleStartCrafting}
                         disabled={!canCraft || !!isProcessing}
                         activeOpacity={0.85}
                       >
@@ -989,4 +1010,4 @@ const modalStyles = StyleSheet.create({
 
 });
 
-export default ConstructorModal;
+export default React.memo(ConstructorModal);

@@ -1,0 +1,1 @@
+en factory screen cambiar el milestones por progress bar en cada item segun lo que pida

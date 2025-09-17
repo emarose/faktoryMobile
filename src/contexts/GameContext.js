@@ -252,14 +252,20 @@ export const GameProvider = ({ children }) => {
   }) => {
     const now = Date.now();
     const queue = [];
+    
+    // Find existing processes for this machine to calculate proper start times
+    const existingMachineProcesses = craftingQueue.filter(
+      proc => proc.machineId === machineId && proc.status === "pending"
+    );
+    
+    let lastEndTime = now;
+    if (existingMachineProcesses.length > 0) {
+      // If there are existing processes, start after the last one
+      lastEndTime = Math.max(...existingMachineProcesses.map(proc => proc.endsAt));
+    }
+    
     for (let i = 0; i < amount; i++) {
-      const lastEnd =
-        queue.length > 0
-          ? queue[queue.length - 1].endsAt
-          : craftingQueue.length > 0
-          ? craftingQueue[craftingQueue.length - 1].endsAt
-          : now;
-      const start = i === 0 && craftingQueue.length === 0 ? now : lastEnd;
+      const start = i === 0 ? lastEndTime : lastEndTime + (processingTime * 1000 * i);
       queue.push({
         id: `${machineId}_${recipeId}_${now}_${i}`,
         machineId,
