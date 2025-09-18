@@ -241,7 +241,7 @@ export const items = {
     output: {
       ironRods: 1,
     },
-    processingTime: 15,
+    processingTime: 2,
     fuelConsumption: 0.2,
   },
   ironPlates: {

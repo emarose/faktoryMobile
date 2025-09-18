@@ -13,7 +13,8 @@ export const useMachines = (
       .filter(
         (node) =>
           items[node.type]?.manualMineable ||
-          items[node.type]?.machineRequired === "miner"
+          items[node.type]?.machineRequired === "miner" ||
+          items[node.type]?.machineRequired === "oilExtractor"
       )
       .map((node) => {
         const itemDefinition = items[node.type];
@@ -24,13 +25,13 @@ export const useMachines = (
           ? items[outputResourceId]
           : undefined;
 
-        const assignedMiner = placedMachines.find(
-          (m) => m.type === "miner" && m.assignedNodeId === node.id
+        const assignedMachine = placedMachines.find(
+          (m) => (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === node.id
         );
         const automatedProductionRate =
-          assignedMiner && outputResourceId
+          assignedMachine && outputResourceId
             ? (itemDefinition.output[outputResourceId] || 0) *
-              (assignedMiner.efficiency || 1)
+              (assignedMachine.efficiency || 1)
             : 0;
 
         return {
@@ -38,7 +39,8 @@ export const useMachines = (
           currentAmount: inventory[outputResourceId]?.currentAmount ?? 0,
           outputItemName: outputItemDefinition?.name || "Unknown",
           productionRate: automatedProductionRate,
-          hasMiner: !!assignedMiner,
+          hasMachine: !!assignedMachine,
+          assignedMachineType: assignedMachine?.type || null,
           canManualMine: itemDefinition?.manualMineable || false,
         };
       });
@@ -75,9 +77,9 @@ export const useMachines = (
         return false;
       }
 
-      if (machineTypeData.id === "miner") {
+      if (machineTypeData.id === "miner" || machineTypeData.id === "oilExtractor") {
         if (!targetNodeId) {
-          console.warn("A Miner must be assigned to a resource node.");
+          console.warn(`A ${machineTypeData.name} must be assigned to a resource node.`);
           return false;
         }
         const node = allResourceNodes.find((n) => n.id === targetNodeId);
@@ -87,35 +89,35 @@ export const useMachines = (
         }
         if (placedMachines.some((m) => m.assignedNodeId === targetNodeId)) {
           console.warn(
-            `Node ${node.name} (${targetNodeId}) already has a Miner assigned.`
+            `Node ${node.name} (${targetNodeId}) already has a machine assigned.`
           );
           return false;
         }
         if (
           items[node.type]?.machineRequired &&
-          items[node.type].machineRequired !== "miner"
+          items[node.type].machineRequired !== machineTypeData.id
         ) {
           console.warn(
-            `Cannot place Miner on ${node.name}. It requires an ${
+            `Cannot place ${machineTypeData.name} on ${node.name}. It requires a ${
               items[node.type].machineRequired || "unknown machine type"
             }.`
           );
           return false;
         }
 
-        // Genera un id único y consistente para el miner
-        const uniqueMinerId = `miner-${targetNodeId}-${Date.now()}-${Math.floor(Math.random()*10000)}`;
+        // Genera un id único y consistente para la máquina
+        const uniqueMachineId = `${machineTypeData.id}-${targetNodeId}-${Date.now()}-${Math.floor(Math.random()*10000)}`;
         setPlacedMachines((prevPlaced) => [
           ...prevPlaced,
           {
-            id: uniqueMinerId,
-            type: "miner",
+            id: uniqueMachineId,
+            type: machineTypeData.id,
             assignedNodeId: targetNodeId,
             efficiency: machineTypeData.efficiency || 1,
             isIdle: false,
           },
         ]);
-        console.log(`Miner placed on ${node.name} (${targetNodeId})!`);
+        console.log(`${machineTypeData.name} placed on ${node.name} (${targetNodeId})!`);
         return true;
       } else {
         setPlacedMachines((prevPlaced) => [
@@ -135,38 +137,45 @@ export const useMachines = (
   );
 
 
-  // Función para pausar un miner (siempre inmutable y seguro)
-  const pauseMiner = useCallback((minerId) => {
+  // Función para pausar una máquina de extracción (miner o oilExtractor)
+  const pauseMachine = useCallback((machineId) => {
     setPlacedMachines((prev) => prev.map(m => {
-      if (m.id === minerId) {
+      if (m.id === machineId) {
         return { ...m, isIdle: true };
       }
-      // Si el miner no tiene isIdle, lo agrega por robustez
-      if (m.type === "miner" && typeof m.isIdle === 'undefined') {
+      // Si la máquina no tiene isIdle, lo agrega por robustez
+      if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
         return { ...m, isIdle: false };
       }
       return m;
     }));
   }, []);
 
-  // Función para reanudar un miner (siempre inmutable y seguro)
-  const resumeMiner = useCallback((minerId) => {
+  // Función para reanudar una máquina de extracción (miner o oilExtractor)
+  const resumeMachine = useCallback((machineId) => {
     setPlacedMachines((prev) => prev.map(m => {
-      if (m.id === minerId) {
+      if (m.id === machineId) {
         return { ...m, isIdle: false };
       }
-      if (m.type === "miner" && typeof m.isIdle === 'undefined') {
+      if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
         return { ...m, isIdle: false };
       }
       return m;
     }));
   }, []);
+
+  // Legacy functions for backward compatibility
+  const pauseMiner = pauseMachine;
+  const resumeMiner = resumeMachine;
 
   return {
     placedMachines,
     setPlacedMachines,
     mineableNodes,
     placeMachine,
+    pauseMachine,
+    resumeMachine,
+    // Legacy exports for backward compatibility
     pauseMiner,
     resumeMiner,
   };

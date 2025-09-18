@@ -93,7 +93,7 @@ const NodeSelectorModal = ({ visible, onClose, machine }) => {
       ironOre_node: "cube-outline",
       copperOre_node: "circle-outline",
       coal_node: "fire",
-      limestone_node: "mountain",
+      limestone_node: "shape-outline",
       quartz_node: "diamond-stone",
       crudeOil_node: "oil",
       cateriumOre_node: "lightning-bolt",

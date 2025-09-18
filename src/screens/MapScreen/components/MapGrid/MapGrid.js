@@ -5,23 +5,24 @@ import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
 //import NodeCard from "../NodeCard";
 
-const MapGrid = ({ 
+const MapGrid = ({
   chunkSize,
-  tileSize, 
-  visualPlayerPos, 
+  tileSize,
+  visualPlayerPos,
   allResourceNodes,
   discoveredNodes,
   handleTilePress,
   navigation,
-  pinnedNodeId
+  pinnedNodeId,
 }) => {
+  
   const renderTiles = () => {
     const rows = [];
     const px = visualPlayerPos.x;
     const py = visualPlayerPos.y;
     const cx = Math.floor(px / chunkSize);
     const cy = Math.floor(py / chunkSize);
-    
+
     // Para cada tile visible en la grilla
     for (let y = 0; y < chunkSize; y++) {
       const cols = [];
@@ -29,15 +30,16 @@ const MapGrid = ({
         const gx = cx * chunkSize + x;
         const gy = cy * chunkSize + y;
         const node = allResourceNodes.find((n) => n.x === gx && n.y === gy);
+
         const isPlayer = gx === px && gy === py;
         let color = Colors.background;
         let discovered = false;
-        
+
         if (node && discoveredNodes[node.id]) {
           color = getNodeColor(node.type);
           discovered = true;
         }
-        
+
         if (isPlayer) {
           cols.push(
             <View
