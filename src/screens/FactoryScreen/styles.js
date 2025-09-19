@@ -55,30 +55,30 @@ export default styles = StyleSheet.create({
   // Milestone specific styles
   milestoneCard: {
     alignItems: "stretch",
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   milestoneHeader: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 16,
+    marginBottom: 8,
   },
   milestoneInfo: {
     flex: 1,
     marginLeft: 12,
   },
   milestoneTitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#fff",
     fontWeight: "bold",
     marginBottom: 4,
   },
   milestoneDescription: {
-    color: "#ffd700",
-    fontSize: 13,
+    color: Colors.textAccent,
+    fontSize: 12,
     lineHeight: 18,
   },
   completedText: {
-    color: "#bfbfbf",
+    color: Colors.textMuted,
     fontSize: 16,
     fontStyle: "italic",
     marginLeft: 12,
@@ -91,12 +91,7 @@ export default styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#4a4a6e",
   },
-  progressTitle: {
-    color: Colors.textSecondary,
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 12,
-  },
+ 
   requirementRow: {
     marginBottom: 12,
   },
@@ -120,7 +115,7 @@ export default styles = StyleSheet.create({
     color: "#4CAF50",
   },
   overallProgress: {
-    marginTop: 16,
+    marginTop: 8,
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: "#3a3a5e",
@@ -130,6 +125,7 @@ export default styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: 12,
     fontWeight: "500",
+    alignSelf: "flex-end",
   },
   readyToComplete: {
     color: "#4CAF50",

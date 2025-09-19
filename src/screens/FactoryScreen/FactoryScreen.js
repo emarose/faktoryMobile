@@ -22,7 +22,7 @@ export default function FactoryScreen() {
   // Helper function to get item display name
   const getItemDisplayName = (itemKey) => {
     // Handle special cases
-    if (itemKey === 'discoveredNodes') return 'Resource Nodes';
+    if (itemKey === 'discoveredNodes') return 'Resource Nodes discovered';
     
     // Find in items data
     const item = items[itemKey];
@@ -96,7 +96,6 @@ export default function FactoryScreen() {
             {/* Progress bars for each requirement */}
             {currentMilestone && !currentMilestone.unlocked && milestoneProgress.length > 0 && (
               <View style={styles.progressSection}>
-                <Text style={styles.progressTitle}>Progress:</Text>
                 {milestoneProgress.map((requirement) => (
                   <View key={requirement.key} style={styles.requirementRow}>
                     <View style={styles.requirementHeader}>
@@ -127,7 +126,7 @@ export default function FactoryScreen() {
                 {/* Overall completion indicator */}
                 <View style={styles.overallProgress}>
                   <Text style={styles.overallProgressText}>
-                    Overall: {milestoneProgress.filter(r => r.completed).length}/{milestoneProgress.length} completed
+                    {milestoneProgress.filter(r => r.completed).length}/{milestoneProgress.length} completed
                   </Text>
                   {isMilestoneCompleted && (
                     <Text style={styles.readyToComplete}>

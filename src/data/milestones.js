@@ -3,7 +3,7 @@ const milestones = [
     id: "milestone1",
     name: "Basic Automation - Smelting",
     description:
-      "Reach your first milestone by discovering resource nodes. The materials you gather will help you build your first machines: Smelter and Miner.",
+      "Reach your first milestone by discovering 2 resource nodes. The materials you gather will help you build your first machines.",
     requirementsDescription: "Discover 2 resource nodes and gather 12 Iron Ore and 5 Coal",
     unlocked: false,
     unlocks: ["Smelter", "Miner"],

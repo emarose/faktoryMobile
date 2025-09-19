@@ -12,6 +12,7 @@ Fixes/reworks:
 * en Deployed Machines:
 Miner dice Idle (Not Placed) cuando sie sta funcionando. Ajustar UI
 debe ponerse automaticamente en idle al llegar al resourcecap del recurso asignado
+en machinecard el progreso cuando hay dos miners asignados al mismo nodo no es correcto, siento que no muestra el progreso real de deplecion del nodo
 Smelter: agregar mini toast al completar craft
 
 agregar INVENTARIO en screens de deployedMachines
