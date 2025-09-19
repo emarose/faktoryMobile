@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { GameContext } from "../../contexts/GameContext";
 import milestones from "../../data/milestones";
 import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
@@ -12,11 +12,54 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function FactoryScreen() {
   const navigation = useNavigation();
-  const { currentMilestone } = useContext(GameContext);
+  const { currentMilestone, inventory, discoveredNodes } = useContext(GameContext);
+  
   // Busca el milestone completo para acceder a requirementsDescription
   const milestoneFull = currentMilestone
     ? milestones.find((m) => m.id === currentMilestone.id)
     : null;
+
+  // Helper function to get item display name
+  const getItemDisplayName = (itemKey) => {
+    // Handle special cases
+    if (itemKey === 'discoveredNodes') return 'Resource Nodes';
+    
+    // Find in items data
+    const item = items[itemKey];
+    if (item?.name) return item.name;
+    
+    // Convert camelCase to readable format
+    return itemKey
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
+  };
+
+  // Get current inventory amount for a requirement
+  const getCurrentAmount = (requirementKey) => {
+    if (requirementKey === 'discoveredNodes') {
+      return Object.keys(discoveredNodes).filter(nodeId => discoveredNodes[nodeId]).length;
+    }
+    
+    return inventory[requirementKey]?.currentAmount || 0;
+  };
+
+  // Calculate milestone progress requirements
+  const milestoneProgress = useMemo(() => {
+    if (!milestoneFull?.requirements) return [];
+    
+    return Object.entries(milestoneFull.requirements).map(([key, required]) => ({
+      key,
+      name: getItemDisplayName(key),
+      current: getCurrentAmount(key),
+      required,
+      completed: getCurrentAmount(key) >= required,
+      percentage: Math.min((getCurrentAmount(key) / required) * 100, 100)
+    }));
+  }, [milestoneFull, inventory, discoveredNodes]);
+
+  // Check if milestone is fully completed
+  const isMilestoneCompleted = milestoneProgress.every(item => item.completed);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,34 +68,74 @@ export default function FactoryScreen() {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={{}}>
           <TouchableOpacity
-            style={styles.gridItem}
+            style={[styles.gridItem, styles.milestoneCard]}
             onPress={() => navigation.navigate("MilestonesScreen")}
           >
-            <MaterialCommunityIcons name="star" size={28} />
-            {currentMilestone && !currentMilestone.unlocked ? (
-              <>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: "#fff",
-                    fontWeight: "bold",
-                    marginBottom: 2,
-                  }}
-                >
-                  {currentMilestone.name}
-                </Text>
-                {milestoneFull?.requirementsDescription && (
-                  <Text
-                    style={{ color: "#ffd700", marginBottom: 6, fontSize: 15 }}
-                  >
-                    {milestoneFull.requirementsDescription}
+            <View style={styles.milestoneHeader}>
+              <MaterialCommunityIcons 
+                name={isMilestoneCompleted ? "check-circle" : "star"} 
+                size={28} 
+                color={isMilestoneCompleted ? "#4CAF50" : "#ffd700"}
+              />
+              {currentMilestone && !currentMilestone.unlocked ? (
+                <View style={styles.milestoneInfo}>
+                  <Text style={styles.milestoneTitle}>
+                    {currentMilestone.name}
                   </Text>
-                )}
-              </>
-            ) : (
-              <Text style={{ color: "#bfbfbf" }}>
-                All milestones completed!
-              </Text>
+                  <Text style={styles.milestoneDescription}>
+                    {milestoneFull?.requirementsDescription}
+                  </Text>
+                </View>
+              ) : (
+                <Text style={styles.completedText}>
+                  All milestones completed!
+                </Text>
+              )}
+            </View>
+            
+            {/* Progress bars for each requirement */}
+            {currentMilestone && !currentMilestone.unlocked && milestoneProgress.length > 0 && (
+              <View style={styles.progressSection}>
+                <Text style={styles.progressTitle}>Progress:</Text>
+                {milestoneProgress.map((requirement) => (
+                  <View key={requirement.key} style={styles.requirementRow}>
+                    <View style={styles.requirementHeader}>
+                      <Text style={styles.requirementName}>
+                        {requirement.name}
+                      </Text>
+                      <Text style={[
+                        styles.requirementCount,
+                        requirement.completed && styles.requirementCompleted
+                      ]}>
+                        {requirement.current}/{requirement.required}
+                      </Text>
+                    </View>
+                    <View style={styles.miniProgressBar}>
+                      <View 
+                        style={[
+                          styles.miniProgressFill,
+                          {
+                            width: `${requirement.percentage}%`,
+                            backgroundColor: requirement.completed ? "#4CAF50" : "#ffd700"
+                          }
+                        ]} 
+                      />
+                    </View>
+                  </View>
+                ))}
+                
+                {/* Overall completion indicator */}
+                <View style={styles.overallProgress}>
+                  <Text style={styles.overallProgressText}>
+                    Overall: {milestoneProgress.filter(r => r.completed).length}/{milestoneProgress.length} completed
+                  </Text>
+                  {isMilestoneCompleted && (
+                    <Text style={styles.readyToComplete}>
+                      Ready to complete! 🎉
+                    </Text>
+                  )}
+                </View>
+              </View>
             )}
           </TouchableOpacity>
 
@@ -91,21 +174,6 @@ export default function FactoryScreen() {
             <Text style={styles.gridItemTitle}>Product Assembly</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("ConstructorScreen")}
-          >
-            <MaterialCommunityIcons name="hammer-wrench" size={28} color="#fff" />
-            <Text style={styles.gridItemTitle}>Constructor</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("SmelterScreen")}
-          >
-            <MaterialCommunityIcons name="fire" size={28} color="#ff9800" />
-            <Text style={styles.gridItemTitle}>Smelter</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
