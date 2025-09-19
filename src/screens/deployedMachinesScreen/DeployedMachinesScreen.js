@@ -123,6 +123,7 @@ const DeployedMachinesScreen = () => {
                     node={node}
                     recipe={recipe}
                     resourceCap={RESOURCE_CAP}
+                    navigation={navigation}
                    /*  onPress={() =>
                       navigation.navigate("MachineDetailsScreen", {
                         machine,

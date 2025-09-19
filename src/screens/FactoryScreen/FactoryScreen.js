@@ -90,6 +90,22 @@ export default function FactoryScreen() {
           >
             <Text style={styles.gridItemTitle}>Product Assembly</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.gridItem}
+            onPress={() => navigation.navigate("ConstructorScreen")}
+          >
+            <MaterialCommunityIcons name="hammer-wrench" size={28} color="#fff" />
+            <Text style={styles.gridItemTitle}>Constructor</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.gridItem}
+            onPress={() => navigation.navigate("SmelterScreen")}
+          >
+            <MaterialCommunityIcons name="fire" size={28} color="#ff9800" />
+            <Text style={styles.gridItemTitle}>Smelter</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

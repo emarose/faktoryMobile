@@ -4,8 +4,7 @@ import { Text } from "../../../../components";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import ProgressBar from "../../../../components/ProgressBar";
 import styles from "./styles";
-import SmelterModal from "../MachineTypes/Smelter/components/SmelterModal";
-import ConstructorModal from "../MachineTypes/Constructor/components/ConstructorModal";
+
 import { useGame } from "../../../../contexts/GameContext";
 import { useMachineColors } from "../../../../hooks";
 import NodeSelectorModal from "../MachineTypes/Miner/components/NodeSelectorModal";
@@ -70,13 +69,12 @@ function getMachineIcon(type, color) {
   }
 }
 
-const MachineCard = ({ machine, node, children, onPress }) => {
+const MachineCard = ({ machine, node, children, onPress, navigation }) => {
   const { setPlacedMachines, placedMachines, craftingQueue } = useGame();
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
 
   const [showNodeSelector, setShowNodeSelector] = useState(false);
-  const [showSmelterModal, setShowSmelterModal] = useState(false);
-  const [showConstructorModal, setShowConstructorModal] = useState(false);
+
 
   // Get machine color
   const machineColor = getMachineColor(machine.type);
@@ -90,21 +88,20 @@ const MachineCard = ({ machine, node, children, onPress }) => {
     setShowNodeSelector(false);
   };
 
-  const openSmelterModal = () => {
-    setShowSmelterModal(true);
+  const openSmelterScreen = () => {
+    navigation.navigate('SmelterScreen', { machine });
   };
 
-  const closeSmelterModal = () => {
-    setShowSmelterModal(false);
+  const openConstructorScreen = () => {
+    if (navigation) {
+      navigation.navigate('ConstructorScreen', { 
+        machine: machine,
+        recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
+      });
+    }
   };
 
-  const openConstructorModal = () => {
-    setShowConstructorModal(true);
-  };
 
-  const closeConstructorModal = () => {
-    setShowConstructorModal(false);
-  };
 
   const handleSelectRecipe = (recipeId) => {
     setPlacedMachines((prev) =>
@@ -112,11 +109,7 @@ const MachineCard = ({ machine, node, children, onPress }) => {
         m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
       )
     );
-    if (machine.type === "smelter") {
-      closeSmelterModal();
-    } else if (machine.type === "constructor") {
-      closeConstructorModal();
-    }
+    // Both constructor and smelter now use screen navigation, no modals to close
   };
 
   const childrenWithProps = React.Children.map(children, (child) => {
@@ -125,9 +118,9 @@ const MachineCard = ({ machine, node, children, onPress }) => {
       if (machine.type === "miner") {
         props.onOpenModal = openNodeSelector;
       } else if (machine.type === "smelter") {
-        props.onOpenModal = openSmelterModal;
+        props.onOpenModal = openSmelterScreen;
       } else if (machine.type === "constructor") {
-        props.onOpenModal = openConstructorModal;
+        props.onOpenModal = openConstructorScreen;
       }
       return React.cloneElement(child, props);
     }
@@ -253,22 +246,6 @@ const MachineCard = ({ machine, node, children, onPress }) => {
       )}
 
       {/* Modals */}
-      {showSmelterModal && (
-        <SmelterModal
-          machine={liveMachine}
-          visible={showSmelterModal}
-          onClose={closeSmelterModal}
-          onSelectRecipe={handleSelectRecipe}
-        />
-      )}
-      {showConstructorModal && (
-        <ConstructorModal
-          machine={liveMachine}
-          visible={showConstructorModal}
-          onClose={closeConstructorModal}
-          onSelectRecipe={handleSelectRecipe}
-        />
-      )}
       {showNodeSelector && (
         <NodeSelectorModal
           visible={showNodeSelector}

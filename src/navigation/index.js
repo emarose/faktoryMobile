@@ -14,6 +14,8 @@ import ProductAssemblyScreen from "../screens/ProductAssemblyScreen/ProductAssem
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResourcesScreen";
 import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
+import ConstructorScreen from "../screens/ConstructorScreen/ConstructorScreen";
+import SmelterScreen from "../screens/SmelterScreen/SmelterScreen";
 import Colors from "../constants/Colors";
 
 export default function Navigation({ colorScheme }) {
@@ -88,6 +90,16 @@ function RootNavigator() {
         name="MilestonesScreen"
         component={MilestonesScreen}
         options={{ title: "Milestones" }}
+      />
+      <Stack.Screen
+        name="ConstructorScreen"
+        component={ConstructorScreen}
+        options={{ title: "Constructor" }}
+      />
+      <Stack.Screen
+        name="SmelterScreen"
+        component={SmelterScreen}
+        options={{ title: "Smelter" }}
       />
     </Stack.Navigator>
   );

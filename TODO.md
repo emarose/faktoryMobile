@@ -6,7 +6,7 @@ Fixes/reworks:
 
 * en factory screen:
 - cambiar el milestones por progress bar en cada item segun lo que pida
-- deployMachines debe mostrar una version muy minima de las maquinas deployadas y si estan procesando o no
+- deployMachines sdebe mostrar una version muy minima de las maquinas deployadas y si estan procesando o no
 
 * ajustar en build screen cuando sale el toast de built machine, debe cerrar el previo y disparar un nuevo toast cada vez, en lugar de simplemente reemplazar el texto, debe dispararse un nuevo toast.
 
@@ -39,5 +39,3 @@ Implementaciones:
 
 
 * en product assembly agregar buscador de recetas
-
-REVISAR QUE ONDA CON crude oil y porque no aparece como recurso en world map
