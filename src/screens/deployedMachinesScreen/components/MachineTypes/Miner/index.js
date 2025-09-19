@@ -7,7 +7,7 @@ import ProgressBar from "../../../../../components/ProgressBar";
 import { items } from "../../../../../data/items";
 import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
 
-const Miner = ({ machine, onOpenModal }) => {
+const Miner = ({ machine, navigation }) => {
   const { 
     placedMachines, 
     setPlacedMachines, 
@@ -58,7 +58,7 @@ const Miner = ({ machine, onOpenModal }) => {
       <View style={styles.marginVertical10}>
         <TouchableOpacity
           style={styles.assignNodeButton}
-          onPress={onOpenModal}
+          onPress={() => navigation.navigate('NodeSelectorScreen', { machine: liveMachine })}
           activeOpacity={0.85}
         >
           <MaterialCommunityIcons

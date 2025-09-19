@@ -138,7 +138,7 @@ const DeployedMachinesScreen = () => {
                     }
                   >
                     {SpecificMachineComponent && (
-                      <SpecificMachineComponent machine={machine} node={node} />
+                      <SpecificMachineComponent machine={machine} node={node} navigation={navigation} />
                     )}
                   </MachineCard>
                 );

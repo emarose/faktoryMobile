@@ -2,8 +2,6 @@
 
 Fixes/reworks:
 
-* Constructor modal no permite el scroll sino hasta que se  selecciona una receta. Deberia permitir el scroll de las recetas disponibles
-
 * en factory screen:
 - cambiar el milestones por progress bar en cada item segun lo que pida
 - deployMachines sdebe mostrar una version muy minima de las maquinas deployadas y si estan procesando o no
@@ -16,8 +14,7 @@ Miner dice Idle (Not Placed) cuando sie sta funcionando. Ajustar UI
 debe ponerse automaticamente en idle al llegar al resourcecap del recurso asignado
 Smelter: agregar mini toast al completar craft
 
-agregar INVENTARIO en modales
-Revisar rendimiento de constructorModal, sigue teniendo problemas de delay al presionar tabs botones y el stepper
+agregar INVENTARIO en screens de deployedMachines
 
 Revisar cancel crafting/ pause crafting - arreglarlo y agregarlo a machineCard.
 

@@ -16,6 +16,7 @@ import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResources
 import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
 import ConstructorScreen from "../screens/ConstructorScreen/ConstructorScreen";
 import SmelterScreen from "../screens/SmelterScreen/SmelterScreen";
+import NodeSelectorScreen from "../screens/NodeSelectorScreen/NodeSelectorScreen";
 import Colors from "../constants/Colors";
 
 export default function Navigation({ colorScheme }) {
@@ -100,6 +101,11 @@ function RootNavigator() {
         name="SmelterScreen"
         component={SmelterScreen}
         options={{ title: "Smelter" }}
+      />
+      <Stack.Screen
+        name="NodeSelectorScreen"
+        component={NodeSelectorScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

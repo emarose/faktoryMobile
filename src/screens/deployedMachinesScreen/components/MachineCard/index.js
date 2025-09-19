@@ -7,7 +7,6 @@ import styles from "./styles";
 
 import { useGame } from "../../../../contexts/GameContext";
 import { useMachineColors } from "../../../../hooks";
-import NodeSelectorModal from "../MachineTypes/Miner/components/NodeSelectorModal";
 
 // helper: resource icon mapping (returns MaterialCommunityIcons name)
 function getResourceIcon(resourceType) {
@@ -73,19 +72,12 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
   const { setPlacedMachines, placedMachines, craftingQueue } = useGame();
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
 
-  const [showNodeSelector, setShowNodeSelector] = useState(false);
-
-
   // Get machine color
   const machineColor = getMachineColor(machine.type);
   const machineColorBackground = getMachineColorWithOpacity(machine.type, 0.1);
 
   const openNodeSelector = () => {
-    setShowNodeSelector(true);
-  };
-
-  const closeNodeSelector = () => {
-    setShowNodeSelector(false);
+    navigation.navigate('NodeSelectorScreen', { machine });
   };
 
   const openSmelterScreen = () => {
@@ -245,14 +237,6 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
         </View>
       )}
 
-      {/* Modals */}
-      {showNodeSelector && (
-        <NodeSelectorModal
-          visible={showNodeSelector}
-          onClose={closeNodeSelector}
-          machine={liveMachine}
-        />
-      )}
     </View>
   );
 };
