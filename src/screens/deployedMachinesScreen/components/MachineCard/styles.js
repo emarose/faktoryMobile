@@ -187,6 +187,13 @@ const machineCardStyles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
+  depletionTime: {
+    color: Colors.textSecondary,
+    fontSize: 12,
+    fontStyle: "italic",
+    marginTop: 4,
+    textAlign: "center",
+  },
 });
 
 export default machineCardStyles;

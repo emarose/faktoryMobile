@@ -25,13 +25,15 @@ export const useMachines = (
           ? items[outputResourceId]
           : undefined;
 
-        const assignedMachine = placedMachines.find(
+        const assignedMachines = placedMachines.filter(
           (m) => (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === node.id
         );
+        const activeMachines = assignedMachines.filter(m => !m.isIdle);
         const automatedProductionRate =
-          assignedMachine && outputResourceId
-            ? (itemDefinition.output[outputResourceId] || 0) *
-              (assignedMachine.efficiency || 1)
+          activeMachines.length > 0 && outputResourceId
+            ? activeMachines.reduce((total, machine) => {
+                return total + (itemDefinition.output[outputResourceId] || 0) * (machine.efficiency || 1);
+              }, 0)
             : 0;
 
         return {
@@ -39,8 +41,11 @@ export const useMachines = (
           currentAmount: inventory[outputResourceId]?.currentAmount ?? 0,
           outputItemName: outputItemDefinition?.name || "Unknown",
           productionRate: automatedProductionRate,
-          hasMachine: !!assignedMachine,
-          assignedMachineType: assignedMachine?.type || null,
+          hasMachine: assignedMachines.length > 0,
+          assignedMachineCount: assignedMachines.length,
+          activeMachineCount: activeMachines.length,
+          maxMachinesAllowed: 4,
+          assignedMachineType: assignedMachines[0]?.type || null,
           canManualMine: itemDefinition?.manualMineable || false,
         };
       });
@@ -87,9 +92,15 @@ export const useMachines = (
           console.warn(`Node ${targetNodeId} not found.`);
           return false;
         }
-        if (placedMachines.some((m) => m.assignedNodeId === targetNodeId)) {
+        // Check how many machines are already assigned to this node
+        const assignedMachines = placedMachines.filter(
+          (m) => (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === targetNodeId
+        );
+        const MAX_MACHINES_PER_NODE = 4;
+        
+        if (assignedMachines.length >= MAX_MACHINES_PER_NODE) {
           console.warn(
-            `Node ${node.name} (${targetNodeId}) already has a machine assigned.`
+            `Node ${node.name} (${targetNodeId}) already has the maximum number of machines (${MAX_MACHINES_PER_NODE}) assigned.`
           );
           return false;
         }

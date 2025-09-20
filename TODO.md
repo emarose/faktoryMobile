@@ -2,22 +2,24 @@
 
 Fixes/reworks:
 
-* en factory screen:
+* FACTORY SCREEN:
 - cambiar el milestones por progress bar en cada item segun lo que pida
 - deployMachines sdebe mostrar una version muy minima de las maquinas deployadas y si estan procesando o no
 
-* ajustar en build screen cuando sale el toast de built machine, debe cerrar el previo y disparar un nuevo toast cada vez, en lugar de simplemente reemplazar el texto, debe dispararse un nuevo toast.
+* BUILD SCREEN:
+- ajustar en  cuando sale el toast de built machine, debe cerrar el previo y disparar un nuevo toast cada vez, en lugar de simplemente reemplazar el texto, debe dispararse un nuevo toast.
+- no seleccionar una maquina por defecto
+- deberia ser mas facil para el jugador ver al ingresar las recetas de las maquinas, talvez hacerlo con cards y que cada card muestre la receta. quiero simplificar la cantidad de pasos requeridos para construir la maquina.
 
+* product assembly
+- agregar buscador de recetas
 
-* en Deployed Machines:
-Miner dice Idle (Not Placed) cuando sie sta funcionando. Ajustar UI
-debe ponerse automaticamente en idle al llegar al resourcecap del recurso asignado
-en machinecard el progreso cuando hay dos miners asignados al mismo nodo no es correcto, siento que no muestra el progreso real de deplecion del nodo
-Smelter: agregar mini toast al completar craft
+* Deployed Machines:
+- Miner dice Idle (Not Placed) cuando sie sta funcionando. Ajustar UI
+- debe ponerse automaticamente en idle al llegar al resourcecap del recurso asignado
+- agregar INVENTARIO en screens de deployedMachines
 
-agregar INVENTARIO en screens de deployedMachines
-
-Revisar cancel crafting/ pause crafting - arreglarlo y agregarlo a machineCard.
+- Revisar cancel crafting/ pause crafting - arreglarlo y agregarlo a machineCard.
 
 * Cambiar recetas de maquinas:
  - smelter
@@ -35,5 +37,3 @@ Implementaciones:
 - navega a la posicion x,y (encuentra nodo)
 - explora el mapa ...
 
-
-* en product assembly agregar buscador de recetas

@@ -187,25 +187,58 @@ export const GameProvider = ({ children }) => {
       
       const machines = placedMachinesRef.current;
       if (!Array.isArray(machines) || !Array.isArray(allResourceNodes)) return;
+      
+      // Group active miners/extractors by node
+      const machinesByNode = {};
       machines.forEach((machine) => {
-        if (machine.type !== "miner" || !machine.assignedNodeId) return;
-        if (machine.isIdle) return; // No producir si está en idle
-        const node = allResourceNodes.find(
-          (n) => n.id === machine.assignedNodeId
-        );
+        if ((machine.type !== "miner" && machine.type !== "oilExtractor") || !machine.assignedNodeId) return;
+        if (machine.isIdle) return; // Skip idle machines
+        
+        if (!machinesByNode[machine.assignedNodeId]) {
+          machinesByNode[machine.assignedNodeId] = [];
+        }
+        machinesByNode[machine.assignedNodeId].push(machine);
+      });
+
+      // Process each node with assigned machines
+      Object.entries(machinesByNode).forEach(([nodeId, assignedMachines]) => {
+        const node = allResourceNodes.find((n) => n.id === nodeId);
         if (!node) return;
-        const nodeCap =
-          typeof node.capacity === "number" ? node.capacity : 1000;
+        
+        const nodeCap = typeof node.capacity === "number" ? node.capacity : 1000;
         const nodeAmount = nodeAmounts[node.id] ?? nodeCap;
-        if (nodeAmount <= 0) return; // Node depleted
-        const nodeDefinition =
-          node && node.type ? require("../data/items").items[node.type] : null;
+        if (nodeAmount <= 0) {
+          // Node depleted - pause all machines on this node
+          assignedMachines.forEach(machine => {
+            pauseMiner(machine.id);
+          });
+          return;
+        }
+        
+        const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
         if (!nodeDefinition || !nodeDefinition.output) return;
+        
         const resourceId = Object.keys(nodeDefinition.output)[0];
-        const outputAmount =
-          nodeDefinition.output[resourceId] * (machine.efficiency || 1);
-        handleDepleteNode(node.id, nodeAmount - 1, false);
-        addResource(resourceId, outputAmount, node.id);
+        
+        // Calculate total output from all machines on this node
+        const totalOutput = assignedMachines.reduce((total, machine) => {
+          return total + (nodeDefinition.output[resourceId] * (machine.efficiency || 1));
+        }, 0);
+        
+        // Apply depletion (1 unit per active machine)
+        const depletionAmount = assignedMachines.length;
+        const newNodeAmount = Math.max(0, nodeAmount - depletionAmount);
+        
+        // Update node amount and add resources
+        handleDepleteNode(node.id, newNodeAmount, false);
+        addResource(resourceId, totalOutput, node.id);
+        
+        // If node becomes depleted, pause all machines
+        if (newNodeAmount <= 0) {
+          assignedMachines.forEach(machine => {
+            pauseMiner(machine.id);
+          });
+        }
       });
     }, 1000);
     return () => clearInterval(interval);

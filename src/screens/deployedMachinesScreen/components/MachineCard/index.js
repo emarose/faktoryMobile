@@ -69,7 +69,13 @@ function getMachineIcon(type, color) {
 }
 
 const MachineCard = ({ machine, node, children, onPress, navigation }) => {
-  const { setPlacedMachines, placedMachines, craftingQueue } = useGame();
+  const { 
+    setPlacedMachines, 
+    placedMachines, 
+    craftingQueue, 
+    allResourceNodes, 
+    nodeAmounts 
+  } = useGame();
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
 
   // Get machine color
@@ -122,20 +128,80 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
   const liveMachine =
     placedMachines.find((m) => m.id === machine.id) || machine;
 
-  // Check for active crafting processes for this machine
+  // Constants
+  const MAX_MACHINES_PER_NODE = 4;
+
+  // For miners and oil extractors - calculate node depletion progress
+  const nodeDepletionData = useMemo(() => {
+    if (machine.type !== "miner" && machine.type !== "oilExtractor") return null;
+    if (!node || !machine.assignedNodeId) return null;
+
+    // Find all machines assigned to this node
+    const assignedMachines = placedMachines.filter(
+      (m) => (m.type === "miner" || m.type === "oilExtractor") && 
+             m.assignedNodeId === machine.assignedNodeId
+    );
+
+    // Get node data
+    const nodeData = allResourceNodes.find(n => n.id === machine.assignedNodeId);
+    if (!nodeData) return null;
+
+    const nodeCap = typeof nodeData.capacity === "number" ? nodeData.capacity : 1000;
+    const currentAmount = nodeAmounts[machine.assignedNodeId] ?? nodeCap;
+    
+    // Calculate how much has been mined (depletion progress)
+    const minedAmount = nodeCap - currentAmount;
+    const depletionProgress = nodeCap > 0 ? (minedAmount / nodeCap) * 100 : 0;
+    
+    // Count active machines
+    const activeMachines = assignedMachines.filter(m => !m.isIdle);
+    
+    // Calculate combined mining rate
+    const totalMiningRate = activeMachines.reduce((total, m) => {
+      const efficiency = m.efficiency || 1;
+      return total + efficiency; // Base rate per machine
+    }, 0);
+
+    // Calculate time to depletion
+    const timeToDepletionMinutes = totalMiningRate > 0 ? 
+      Math.ceil(currentAmount / (totalMiningRate * 60)) : Infinity;
+
+    return {
+      progress: Math.min(depletionProgress, 100),
+      currentAmount,
+      maxAmount: nodeCap,
+      assignedCount: assignedMachines.length,
+      activeCount: activeMachines.length,
+      maxAllowed: MAX_MACHINES_PER_NODE,
+      combinedRate: totalMiningRate,
+      timeToDepletion: timeToDepletionMinutes,
+      isDepleted: currentAmount <= 0,
+      isNearDepletion: depletionProgress > 80,
+      canAddMore: assignedMachines.length < MAX_MACHINES_PER_NODE
+    };
+  }, [machine, node, placedMachines, allResourceNodes, nodeAmounts, machine.assignedNodeId]);
+
+  // For crafting machines - check for active crafting processes
   const machineProcesses = useMemo(() => {
+    if (machine.type === "miner" || machine.type === "oilExtractor") return [];
     return craftingQueue.filter(
       (proc) => proc.machineId === machine.id && proc.status === "pending"
     );
-  }, [craftingQueue, machine.id]);
+  }, [craftingQueue, machine.id, machine.type]);
 
   const isProcessing = machineProcesses.length > 0;
   const currentProcess = machineProcesses[0]; // Get the current running process
 
-  // Calculate progress for current process
+  // Calculate progress for crafting machines
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Only for crafting machines
+    if (machine.type === "miner" || machine.type === "oilExtractor") {
+      setProgress(0);
+      return;
+    }
+
     if (!currentProcess) {
       setProgress(0);
       return;
@@ -155,7 +221,7 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
     // Set up interval to update progress
     const interval = setInterval(updateProgress, 100);
     return () => clearInterval(interval);
-  }, [currentProcess]);
+  }, [currentProcess, machine.type]);
 
   return (
     <View
@@ -206,34 +272,84 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
       {/* Render children components (specific machine type content) */}
       {childrenWithProps}
 
-      {/* Crafting Progress Section */}
-      {isProcessing && currentProcess && (
+      {/* Progress Section */}
+      {(((machine.type === "miner" || machine.type === "oilExtractor") && nodeDepletionData) || 
+       (isProcessing && currentProcess)) && (
         <View style={styles.extraInfoContainer}>
-          <View style={styles.headerRow}>
-            <View
-              style={[
-                styles.selectedNodePill,
-                { backgroundColor: machineColor },
-              ]}
-            >
-              <Text style={styles.selectedNodePillText}>
-                Crafting: {currentProcess.itemName}
-              </Text>
-            </View>
-            <Text style={styles.machineStatus}>
-              Processing... ({machineProcesses.length} in queue)
-            </Text>
-          </View>
+          
+          {/* Node Depletion Progress for Miners/Oil Extractors */}
+          {(machine.type === "miner" || machine.type === "oilExtractor") && nodeDepletionData && (
+            <View>
+              <View style={styles.headerRow}>
+                <View
+                  style={[
+                    styles.selectedNodePill,
+                    { 
+                      backgroundColor: nodeDepletionData.isDepleted ? "#ff6b6b" : 
+                                     nodeDepletionData.isNearDepletion ? "#ff9800" : machineColor 
+                    },
+                  ]}
+                >
+                  <Text style={styles.selectedNodePillText}>
+                    {nodeDepletionData.isDepleted ? "Depleted" : 
+                     nodeDepletionData.isNearDepletion ? "Near Depletion" : 
+                     `${machine.type === "miner" ? "Mining" : "Extracting"}`}
+                  </Text>
+                </View>
+                <Text style={styles.machineStatus}>
+                  {nodeDepletionData.activeCount}/{nodeDepletionData.assignedCount} active 
+                  {nodeDepletionData.canAddMore ? ` (max ${nodeDepletionData.maxAllowed})` : " (full)"}
+                </Text>
+              </View>
 
-          {/* Progress Bar */}
-          <View style={styles.depletionSection}>
-            <ProgressBar
-              value={progress}
-              max={currentProcess.processingTime}
-              label={`Crafting Progress`}
-              color="#4CAF50"
-            />
-          </View>
+              {/* Node Depletion Bar */}
+              <View style={styles.depletionSection}>
+                <ProgressBar
+                  value={nodeDepletionData.progress}
+                  max={100}
+                  label={`Node Depletion: ${nodeDepletionData.currentAmount.toLocaleString()}/${nodeDepletionData.maxAmount.toLocaleString()} remaining`}
+                  color={nodeDepletionData.isDepleted ? "#ff6b6b" : 
+                         nodeDepletionData.isNearDepletion ? "#ff9800" : "#4CAF50"}
+                />
+                {nodeDepletionData.timeToDepletion !== Infinity && !nodeDepletionData.isDepleted && (
+                  <Text style={styles.depletionTime}>
+                    ~{nodeDepletionData.timeToDepletion} min to depletion at current rate
+                  </Text>
+                )}
+              </View>
+            </View>
+          )}
+
+          {/* Crafting Progress for other machines */}
+          {isProcessing && currentProcess && machine.type !== "miner" && machine.type !== "oilExtractor" && (
+            <View>
+              <View style={styles.headerRow}>
+                <View
+                  style={[
+                    styles.selectedNodePill,
+                    { backgroundColor: machineColor },
+                  ]}
+                >
+                  <Text style={styles.selectedNodePillText}>
+                    Crafting: {currentProcess.itemName}
+                  </Text>
+                </View>
+                <Text style={styles.machineStatus}>
+                  Processing... ({machineProcesses.length} in queue)
+                </Text>
+              </View>
+
+              {/* Crafting Progress Bar */}
+              <View style={styles.depletionSection}>
+                <ProgressBar
+                  value={progress}
+                  max={currentProcess.processingTime}
+                  label={`Crafting Progress`}
+                  color="#4CAF50"
+                />
+              </View>
+            </View>
+          )}
         </View>
       )}
 
