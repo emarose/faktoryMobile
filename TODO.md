@@ -16,9 +16,6 @@ Fixes/reworks:
 * Deployed Machines screen:
 - MINER: 
 - cambiar los tipos de maquinas a filtros o tabs, el scroll vertical es muy largo cuandos e agregan muchas maquinas, la pantalla debe poder filtrarse mejor entre tipos de maquina.
-
-
-
 - Revisar cancel crafting/ pause crafting - arreglarlo y agregarlo a machineCard.
 
 

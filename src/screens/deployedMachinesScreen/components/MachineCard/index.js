@@ -70,13 +70,14 @@ function getMachineIcon(type, color) {
 }
 
 const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResume, onCancelCrafting }) => {
+  const gameContext = useGame();
   const { 
     setPlacedMachines, 
-    placedMachines, 
-    craftingQueue, 
-    allResourceNodes, 
-    nodeAmounts 
-  } = useGame();
+    placedMachines = [], 
+    craftingQueue = [], 
+    allResourceNodes = [], 
+    nodeAmounts = {} 
+  } = gameContext || {};
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
 
   // Get machine color
@@ -88,14 +89,15 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
 
   // For miners and oil extractors - calculate node depletion progress
   const nodeDepletionData = useMemo(() => {
-    if (machine.type !== "miner" && machine.type !== "oilExtractor") return null;
-    if (!node || !machine.assignedNodeId) return null;
+    try {
+      if (machine?.type !== "miner" && machine?.type !== "oilExtractor") return null;
+      if (!node || !machine?.assignedNodeId) return null;
 
-    // Find all machines assigned to this node
-    const assignedMachines = placedMachines.filter(
-      (m) => (m.type === "miner" || m.type === "oilExtractor") && 
-             m.assignedNodeId === machine.assignedNodeId
-    );
+      // Find all machines assigned to this node
+      const assignedMachines = Array.isArray(placedMachines) ? placedMachines.filter(
+        (m) => m && (m.type === "miner" || m.type === "oilExtractor") && 
+               m.assignedNodeId === machine.assignedNodeId
+      ) : [];
 
     // Get node data
     const nodeData = allResourceNodes.find(n => n.id === machine.assignedNodeId);
@@ -134,7 +136,11 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
       isNearDepletion: depletionProgress > 80,
       canAddMore: assignedMachines.length < MAX_MACHINES_PER_NODE
     };
-  }, [machine, node, placedMachines, allResourceNodes, nodeAmounts, machine.assignedNodeId]);
+    } catch (error) {
+      console.error('Error in nodeDepletionData calculation:', error);
+      return null;
+    }
+  }, [machine, node, placedMachines, allResourceNodes, nodeAmounts, machine?.assignedNodeId]);
 
   // For crafting machines - check for active crafting processes
   const machineProcesses = useMemo(() => {
@@ -187,22 +193,36 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
   };
 
   const openConstructorScreen = () => {
-    if (navigation) {
-      navigation.navigate('ConstructorScreen', { 
-        machine: machine,
-        recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
-      });
+    console.log('openConstructorScreen called');
+    console.log('navigation:', navigation);
+    console.log('machine:', machine);
+    console.log('machine.currentRecipeId:', machine?.currentRecipeId);
+    
+    try {
+      if (navigation && typeof navigation.navigate === 'function') {
+        navigation.navigate('ConstructorScreen', { 
+          machine: machine,
+          recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
+        });
+      } else {
+        console.error('Navigation is not available or navigate is not a function');
+      }
+    } catch (error) {
+      console.error('Error in openConstructorScreen:', error);
     }
   };
 
 
 
   const handleSelectRecipe = (recipeId) => {
-    setPlacedMachines((prev) =>
-      prev.map((m) =>
-        m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
-      )
-    );
+    if (setPlacedMachines && typeof setPlacedMachines === 'function') {
+      setPlacedMachines((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.map((m) =>
+          m && m.id === machine?.id ? { ...m, currentRecipeId: recipeId } : m
+        );
+      });
+    }
     // Both constructor and smelter now use screen navigation, no modals to close
   };
 
@@ -221,8 +241,9 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
     return child;
   });
 
-  const liveMachine =
-    placedMachines.find((m) => m.id === machine.id) || machine;
+  const liveMachine = Array.isArray(placedMachines) 
+    ? placedMachines.find((m) => m && m.id === machine?.id) || machine
+    : machine;
 
 
 
