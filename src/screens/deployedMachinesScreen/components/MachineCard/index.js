@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import ProgressBar from "../../../../components/ProgressBar";
+
 import styles from "./styles";
 
 import { useGame } from "../../../../contexts/GameContext";
@@ -68,7 +69,7 @@ function getMachineIcon(type, color) {
   }
 }
 
-const MachineCard = ({ machine, node, children, onPress, navigation }) => {
+const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResume, onCancelCrafting }) => {
   const { 
     setPlacedMachines, 
     placedMachines, 
@@ -81,52 +82,6 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
   // Get machine color
   const machineColor = getMachineColor(machine.type);
   const machineColorBackground = getMachineColorWithOpacity(machine.type, 0.1);
-
-  const openNodeSelector = () => {
-    navigation.navigate('NodeSelectorScreen', { machine });
-  };
-
-  const openSmelterScreen = () => {
-    navigation.navigate('SmelterScreen', { machine });
-  };
-
-  const openConstructorScreen = () => {
-    if (navigation) {
-      navigation.navigate('ConstructorScreen', { 
-        machine: machine,
-        recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
-      });
-    }
-  };
-
-
-
-  const handleSelectRecipe = (recipeId) => {
-    setPlacedMachines((prev) =>
-      prev.map((m) =>
-        m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
-      )
-    );
-    // Both constructor and smelter now use screen navigation, no modals to close
-  };
-
-  const childrenWithProps = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      const props = {};
-      if (machine.type === "miner") {
-        props.onOpenModal = openNodeSelector;
-      } else if (machine.type === "smelter") {
-        props.onOpenModal = openSmelterScreen;
-      } else if (machine.type === "constructor") {
-        props.onOpenModal = openConstructorScreen;
-      }
-      return React.cloneElement(child, props);
-    }
-    return child;
-  });
-
-  const liveMachine =
-    placedMachines.find((m) => m.id === machine.id) || machine;
 
   // Constants
   const MAX_MACHINES_PER_NODE = 4;
@@ -185,7 +140,7 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
   const machineProcesses = useMemo(() => {
     if (machine.type === "miner" || machine.type === "oilExtractor") return [];
     return craftingQueue.filter(
-      (proc) => proc.machineId === machine.id && proc.status === "pending"
+      (proc) => proc.machineId === machine.id && (proc.status === "pending" || proc.status === "paused")
     );
   }, [craftingQueue, machine.id, machine.type]);
 
@@ -222,6 +177,54 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
     const interval = setInterval(updateProgress, 100);
     return () => clearInterval(interval);
   }, [currentProcess, machine.type]);
+
+  const openNodeSelector = () => {
+    navigation.navigate('NodeSelectorScreen', { machine });
+  };
+
+  const openSmelterScreen = () => {
+    navigation.navigate('SmelterScreen', { machine });
+  };
+
+  const openConstructorScreen = () => {
+    if (navigation) {
+      navigation.navigate('ConstructorScreen', { 
+        machine: machine,
+        recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
+      });
+    }
+  };
+
+
+
+  const handleSelectRecipe = (recipeId) => {
+    setPlacedMachines((prev) =>
+      prev.map((m) =>
+        m.id === machine.id ? { ...m, currentRecipeId: recipeId } : m
+      )
+    );
+    // Both constructor and smelter now use screen navigation, no modals to close
+  };
+
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child)) {
+      const props = {};
+      if (machine.type === "miner") {
+        props.onOpenModal = openNodeSelector;
+      } else if (machine.type === "smelter") {
+        props.onOpenModal = openSmelterScreen;
+      } else if (machine.type === "constructor") {
+        props.onOpenModal = openConstructorScreen;
+      }
+      return React.cloneElement(child, props);
+    }
+    return child;
+  });
+
+  const liveMachine =
+    placedMachines.find((m) => m.id === machine.id) || machine;
+
+
 
   return (
     <View
@@ -345,8 +348,40 @@ const MachineCard = ({ machine, node, children, onPress, navigation }) => {
                   value={progress}
                   max={currentProcess.processingTime}
                   label={`Crafting Progress`}
-                  color="#4CAF50"
+                  color={currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"}
                 />
+                
+                {/* Crafting Controls */}
+                <View style={styles.craftingControlsContainer}>
+                  {onPauseResume && (
+                    <TouchableOpacity
+                      style={[
+                        styles.craftingControlButton,
+                        currentProcess.status === "paused" ? styles.resumeButton : styles.pauseButton
+                      ]}
+                      onPress={onPauseResume}
+                    >
+                      <MaterialIcons
+                        name={currentProcess.status === "paused" ? "play-arrow" : "pause"}
+                        size={16}
+                        color="#fff"
+                      />
+                      <Text style={styles.craftingControlText}>
+                        {currentProcess.status === "paused" ? "Resume" : "Pause"}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  
+                  {onCancelCrafting && (
+                    <TouchableOpacity
+                      style={[styles.craftingControlButton, styles.cancelButton]}
+                      onPress={onCancelCrafting}
+                    >
+                      <MaterialIcons name="stop" size={16} color="#fff" />
+                      <Text style={styles.craftingControlText}>Cancel</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
             </View>
           )}

@@ -194,6 +194,37 @@ const machineCardStyles = StyleSheet.create({
     marginTop: 4,
     textAlign: "center",
   },
+  // Crafting Controls
+  craftingControlsContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 12,
+    justifyContent: "center",
+  },
+  craftingControlButton: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  pauseButton: {
+    backgroundColor: Colors.backgroundWarning,
+  },
+  resumeButton: {
+    backgroundColor: Colors.accentGreen,
+  },
+  cancelButton: {
+    backgroundColor: '#ff6b6b',
+  },
+  craftingControlText: {
+    color: Colors.textPrimary,
+    fontWeight: "600",
+    fontSize: 12,
+  },
 });
 
 export default machineCardStyles;

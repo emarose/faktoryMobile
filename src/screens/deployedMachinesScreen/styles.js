@@ -6,6 +6,56 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.backgroundPanel,
   },
+  // Machine Type Tabs
+  filterTabsContainer: {
+    backgroundColor: Colors.backgroundSecondary,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+  },
+  filterTabsContent: {
+    paddingHorizontal: 16,
+    gap: 8,
+  },
+  machineTab: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    gap: 6,
+  },
+  machineTabActive: {
+    backgroundColor: Colors.textAccent,
+    borderColor: Colors.textAccent,
+  },
+  machineTabIcon: {
+    fontSize: 16,
+  },
+  machineTabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.textSecondary,
+    minWidth: 40,
+    textAlign: 'center',
+  },
+  machineTabTextActive: {
+    color: Colors.backgroundPrimary,
+    fontWeight: '600',
+  },
+  machineTabCount: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: Colors.textMuted,
+    marginLeft: 2,
+  },
+  machineTabCountActive: {
+    color: Colors.backgroundPrimary,
+    fontWeight: '600',
+  },
   scrollViewContent: {
     flexGrow: 1,
     paddingHorizontal: 10,

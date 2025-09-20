@@ -147,4 +147,93 @@ export default styles = StyleSheet.create({
     borderRadius: 3,
     transition: "width 0.3s ease",
   },
+
+  // Deployed machines summary styles
+  deployedMachinesCard: {
+    alignItems: "stretch",
+    paddingVertical: 16,
+  },
+  deployedMachinesHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  totalMachinesCount: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    marginLeft: "auto",
+    fontWeight: "500",
+  },
+  machinesSummaryContainer: {
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#4a4a6e",
+  },
+  machineGroupSummary: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    backgroundColor: "#2a2a3a",
+    borderRadius: 6,
+  },
+  machineGroupHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  machineGroupName: {
+    color: Colors.textSecondary,
+    fontSize: 13,
+    fontWeight: "500",
+    marginLeft: 8,
+    flex: 1,
+  },
+  machineGroupCount: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    fontWeight: "600",
+    marginRight: 8,
+  },
+  statusIndicators: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    backgroundColor: "#3a3a4a",
+    borderRadius: 10,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 4,
+  },
+  statusText: {
+    color: Colors.textPrimary,
+    fontSize: 10,
+    fontWeight: "600",
+  },
+  moreMachinesText: {
+    color: Colors.textMuted,
+    fontSize: 11,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 8,
+  },
+  noMachinesText: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 8,
+  },
 });

@@ -4,6 +4,7 @@ import React, {
   useContext,
   useMemo,
   useState,
+  useCallback
 } from "react";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
@@ -15,6 +16,7 @@ import useProductionRate from "../hooks/useProductionRate";
 import { useMapNodes } from "../hooks/useGeneratedMapNodes";
 import useMilestone from "../hooks/useMilestone";
 import { useToastContext } from "./ToastContext";
+import RESOURCE_CAP from "../constants/ResourceCap";
 
 export const GameContext = createContext();
 
@@ -220,6 +222,20 @@ export const GameProvider = ({ children }) => {
         
         const resourceId = Object.keys(nodeDefinition.output)[0];
         
+        // Check if storage is full before mining
+        const currentAmount = inventory[resourceId]?.currentAmount || 0;
+        const isStorageFull = currentAmount >= RESOURCE_CAP;
+        
+        if (isStorageFull) {
+          // Storage is full, pause all miners on this node
+          assignedMachines.forEach(machine => {
+            if (!machine.isIdle) {
+              pauseMiner(machine.id);
+            }
+          });
+          return; // Skip resource generation
+        }
+        
         // Calculate total output from all machines on this node
         const totalOutput = assignedMachines.reduce((total, machine) => {
           return total + (nodeDefinition.output[resourceId] * (machine.efficiency || 1));
@@ -271,6 +287,37 @@ export const GameProvider = ({ children }) => {
     discoveredNodesCount,
     milestoneProcessing,
   ]);
+
+  // Effect to auto-resume miners when storage has space
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const machines = [...placedMachines, ...ownedMachines];
+      const idleMiners = machines.filter(machine => 
+        (machine.type === "miner" || machine.type === "oilExtractor") && 
+        machine.isIdle && 
+        machine.assignedNodeId
+      );
+
+      idleMiners.forEach(machine => {
+        const node = allResourceNodes.find(n => n.id === machine.assignedNodeId);
+        if (!node) return;
+
+        const nodeDefinition = node && node.type ? require("../data/items").items[node.type] : null;
+        if (!nodeDefinition || !nodeDefinition.output) return;
+
+        const resourceId = Object.keys(nodeDefinition.output)[0];
+        const currentAmount = inventory[resourceId]?.currentAmount || 0;
+        const nodeAmount = nodeAmounts[node.id] ?? (node.capacity || 1000);
+
+        // Resume if storage has space and node is not depleted
+        if (currentAmount < RESOURCE_CAP && nodeAmount > 0) {
+          resumeMiner(machine.id);
+        }
+      });
+    }, 2000); // Check every 2 seconds
+    
+    return () => clearInterval(interval);
+  }, [placedMachines.length, ownedMachines.length, JSON.stringify(inventory), JSON.stringify(nodeAmounts)]);
 
   // Cola de crafting global
   const [craftingQueue, setCraftingQueue] = useState([]);
@@ -353,6 +400,42 @@ export const GameProvider = ({ children }) => {
     });
   };
 
+  const cancelCrafting = useCallback((machineId, processId = null) => {
+    setCraftingQueue((prev) => {
+      if (processId) {
+        // Cancel specific process
+        return prev.filter(proc => proc.id !== processId);
+      } else {
+        // Cancel all processes for the machine
+        return prev.filter(proc => proc.machineId !== machineId);
+      }
+    });
+  }, []);
+
+  const pauseCrafting = useCallback((machineId) => {
+    setCraftingQueue((prev) => prev.map(proc => {
+      if (proc.machineId === machineId && proc.status === "pending") {
+        return { ...proc, status: "paused", pausedAt: Date.now() };
+      }
+      return proc;
+    }));
+  }, []);
+
+  const resumeCrafting = useCallback((machineId) => {
+    setCraftingQueue((prev) => prev.map(proc => {
+      if (proc.machineId === machineId && proc.status === "paused") {
+        const pauseDuration = Date.now() - (proc.pausedAt || 0);
+        return { 
+          ...proc, 
+          status: "pending", 
+          endsAt: proc.endsAt + pauseDuration,
+          pausedAt: undefined
+        };
+      }
+      return proc;
+    }));
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       inventory,
@@ -397,6 +480,9 @@ export const GameProvider = ({ children }) => {
       setCraftingQueue,
       addToCraftingQueue,
       updateCraftingQueue,
+      cancelCrafting,
+      pauseCrafting,
+      resumeCrafting,
       pauseMiner,
       resumeMiner,
       regenerateSeed,

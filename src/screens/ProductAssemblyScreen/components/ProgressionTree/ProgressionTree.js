@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   Text,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styles from "./styles";
@@ -19,11 +21,104 @@ const ProgressionTree = () => {
     machineList,
     selectedMachineId,
     selectedMachine,
-    handleMachineSelect
+    handleMachineSelect,
+    machineRecipes
   } = useProgressionTree();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+
+  // Filter recipes based on search query
+  const filteredRecipes = useMemo(() => {
+    if (!selectedMachine || !searchQuery.trim()) {
+      return selectedMachine?.recipes || [];
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    return selectedMachine.recipes.filter(recipe => {
+      // Search in recipe name
+      if (recipe.name.toLowerCase().includes(query)) return true;
+      
+      // Search in input materials
+      const hasInputMatch = recipe.inputs.some(input => 
+        input.name.toLowerCase().includes(query)
+      );
+      if (hasInputMatch) return true;
+      
+      // Search in output products
+      const hasOutputMatch = recipe.outputs.some(output => 
+        output.name.toLowerCase().includes(query)
+      );
+      if (hasOutputMatch) return true;
+      
+      return false;
+    });
+  }, [selectedMachine, searchQuery]);
+
+  // Also filter machines that have matching recipes
+  const filteredMachineList = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return machineList;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    return machineList.filter(machine => {
+      const machineData = machineRecipes[machine.id];
+      
+      // Search in machine name
+      if (machine.name.toLowerCase().includes(query)) return true;
+      
+      // Search in any recipes for this machine
+      return machineData.recipes.some(recipe => {
+        return recipe.name.toLowerCase().includes(query) ||
+               recipe.inputs.some(input => input.name.toLowerCase().includes(query)) ||
+               recipe.outputs.some(output => output.name.toLowerCase().includes(query));
+      });
+    });
+  }, [machineList, machineRecipes, searchQuery]);
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setShowSearch(false);
+  };
 
   return (
     <View style={styles.container}>
+      {/* Search Header */}
+      <View style={styles.searchHeader}>
+        {showSearch ? (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search recipes, materials, products..."
+              placeholderTextColor="#666"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+            />
+            <TouchableOpacity style={styles.clearButton} onPress={clearSearch}>
+              <Text style={styles.clearButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.headerControls}>
+            <Text style={styles.screenTitle}>Assembly Recipes</Text>
+            <TouchableOpacity style={styles.searchButton} onPress={() => setShowSearch(true)}>
+              <Text style={styles.searchButtonText}>🔍</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      {/* Search Results Summary */}
+      {searchQuery.trim() && (
+        <View style={styles.searchSummary}>
+          <Text style={styles.searchSummaryText}>
+            Found {filteredRecipes.length} recipes in {filteredMachineList.length} machines
+          </Text>
+        </View>
+      )}
+
       {/* Machine Tabs */}
       <View style={styles.tabsContainer}>
         <ScrollView
@@ -31,7 +126,7 @@ const ProgressionTree = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tabsScrollContent}
         >
-          {machineList.map((machine) => (
+          {filteredMachineList.map((machine) => (
             <MachineTab
               key={machine.id}
               machine={machine}
@@ -80,8 +175,8 @@ const ProgressionTree = () => {
 
       {/* Recipe List */}
       <ScrollView style={styles.recipesContainer}>
-        {selectedMachine?.recipes.length > 0 ? (
-          selectedMachine.recipes.map((recipe) => (
+        {filteredRecipes.length > 0 ? (
+          filteredRecipes.map((recipe) => (
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
@@ -92,8 +187,16 @@ const ProgressionTree = () => {
         ) : (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>
-              No recipes available for this machine.
+              {searchQuery.trim() 
+                ? `No recipes found for "${searchQuery}"`
+                : "No recipes available for this machine."
+              }
             </Text>
+            {searchQuery.trim() && (
+              <TouchableOpacity style={styles.clearSearchButton} onPress={clearSearch}>
+                <Text style={styles.clearSearchButtonText}>Clear Search</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
 

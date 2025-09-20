@@ -6,6 +6,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.backgroundPrimary,
   },
+  // Search header styles
+  searchHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: Colors.backgroundSecondary,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+  },
+  headerControls: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  screenTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.textPrimary,
+  },
+  searchButton: {
+    padding: 8,
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  searchButtonText: {
+    fontSize: 16,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  searchInput: {
+    flex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: Colors.textPrimary,
+  },
+  clearButton: {
+    padding: 8,
+    marginRight: 4,
+  },
+  clearButtonText: {
+    fontSize: 18,
+    color: Colors.textSecondary,
+  },
+  searchSummary: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: Colors.backgroundPanel,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+  },
+  searchSummaryText: {
+    fontSize: 14,
+    color: Colors.textSecondary,
+    fontStyle: 'italic',
+  },
   // Tab navigation styles
   tabsContainer: {
     paddingVertical: 8,
@@ -91,6 +154,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textSecondary,
     textAlign: "center",
+    marginBottom: 16,
+  },
+  clearSearchButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  clearSearchButtonText: {
+    fontSize: 14,
+    color: Colors.textPrimary,
+    fontWeight: '500',
   },
 });
 

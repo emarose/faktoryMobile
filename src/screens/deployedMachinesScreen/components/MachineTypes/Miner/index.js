@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { useGame } from "../../../../../contexts/GameContext";
 import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import ProgressBar from "../../../../../components/ProgressBar";
 import { items } from "../../../../../data/items";
 import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
 
@@ -32,10 +31,7 @@ const Miner = ({ machine, navigation }) => {
     ? allResourceNodes.find(n => n.id === liveMachine.assignedNodeId)
     : null;
 
-  const nodeDefinition = assignedNode?.type ? items[assignedNode.type] : null;
-  const nodeAmount = assignedNode ? (nodeAmounts[assignedNode.id] ?? assignedNode.capacity ?? 1000) : 0;
-  const nodeCapacity = assignedNode?.capacity || 1000;
-  const depletionPercentage = assignedNode ? ((nodeCapacity - nodeAmount) / nodeCapacity) * 100 : 0;
+
 
   const handlePauseResume = () => {
     if (isIdle) {
@@ -99,18 +95,7 @@ const Miner = ({ machine, navigation }) => {
             </Text>
           </View>
 
-          {/* Progress Bar and Depletion Message */}
-          <View style={styles.depletionSection}>
-            <ProgressBar
-              value={nodeAmount}
-              max={nodeCapacity}
-              label={"Node Resources"}
-              color={nodeAmount > 0 ? "#4CAF50" : "#FF6B6B"}
-            />
-            {nodeAmount <= 0 && (
-              <Text style={styles.nodeDepletedText}>Node Depleted</Text>
-            )}
-          </View>
+
 
           {/* Miner Controls (Buttons) */}
           <View style={styles.controlButtonsContainer}>

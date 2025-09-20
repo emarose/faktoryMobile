@@ -19,7 +19,6 @@ const { width } = Dimensions.get('window');
 const BuildScreen = () => {
   const { buildableItems, buildItem, inventory, ownedMachines, unlockedMachineNames, milestones } = useGame();
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
-  const [selectedMachine, setSelectedMachine] = useState(null);
 
   // Show all buildable items, but distinguish between locked and unlocked
   const allBuildableItems = buildableItems.map(item => {
@@ -71,56 +70,115 @@ const BuildScreen = () => {
     const success = buildItem(itemId);
   };
 
-  // Select first machine by default
-  React.useEffect(() => {
-    if (allBuildableItems.length > 0 && !selectedMachine) {
-      setSelectedMachine(allBuildableItems[0]);
-    }
-  }, [allBuildableItems, selectedMachine]);
+  const getMachineIcon = (machineId) => {
+    const icons = {
+      'miner': '⛏️',
+      'smelter': '🔥',
+      'constructor': '🔧',
+      'assembler': '⚙️',
+      'foundry': '🏭',
+      'manufacturer': '🏗️',
+      'refinery': '⚗️',
+      'oilExtractor': '🛢️'
+    };
+    return icons[machineId] || '🔧';
+  };
 
-  const renderMachineSlot = (item, index) => {
+  const renderMachineCard = (item) => {
     const machineColor = getMachineColor(item.id);
     const isLocked = !item.isUnlocked;
     const canBuild = item.isUnlocked && item.canBuild;
-    const isSelected = selectedMachine?.id === item.id;
 
     return (
-      <TouchableOpacity
-        key={item.id}
-        style={[
-          retroStyles.machineSlot,
-          isSelected && retroStyles.machineSlotSelected,
-          isLocked && retroStyles.machineSlotLocked,
-          canBuild && retroStyles.machineSlotAvailable,
-        ]}
-        onPress={() => setSelectedMachine(item)}
-      >
-        {/* Machine Icon/Letter */}
-        <View style={[
-          retroStyles.machineIcon,
-          { backgroundColor: isLocked ? '#444' : machineColor + '40' }
-        ]}>
-          <Text style={[
-            retroStyles.machineIconText,
-            { color: isLocked ? '#666' : machineColor }
+      <View key={item.id} style={[
+        retroStyles.machineCard,
+        isLocked && retroStyles.machineCardLocked,
+        canBuild && retroStyles.machineCardAvailable,
+      ]}>
+        {/* Machine Header */}
+        <View style={retroStyles.machineCardHeader}>
+          <View style={[
+            retroStyles.machineCardIcon,
+            { backgroundColor: isLocked ? '#666' : machineColor + '40' }
           ]}>
-            {item.name.charAt(0).toUpperCase()}
-          </Text>
+            <Text style={retroStyles.machineCardIconText}>
+              {getMachineIcon(item.id)}
+            </Text>
+          </View>
+          
+          <View style={retroStyles.machineCardInfo}>
+            <Text style={retroStyles.machineCardName}>{item.name}</Text>
+            <Text style={retroStyles.machineCardDescription} numberOfLines={2}>
+              {item.description}
+            </Text>
+          </View>
+
+          {/* Status Badge */}
+          <View style={[
+            retroStyles.statusBadge,
+            {
+              backgroundColor: isLocked ? '#666' : canBuild ? Colors.accentGreen : '#ff6b6b'
+            }
+          ]}>
+            <Text style={retroStyles.statusBadgeText}>
+              {isLocked ? 'LOCKED' : canBuild ? 'READY' : 'NEED RESOURCES'}
+            </Text>
+          </View>
         </View>
 
-        {/* Status Indicators */}
-        {canBuild && (
-          <View style={retroStyles.readyIndicator}>
-            <Text style={retroStyles.readyIndicatorText}>✓</Text>
+        {/* Requirements */}
+        {!isLocked && (
+          <View style={retroStyles.requirementsSection}>
+            <Text style={retroStyles.requirementsSectionTitle}>Required Materials:</Text>
+            {Object.keys(item.inputs || {}).length > 0 ? (
+              <View style={retroStyles.requirementsList}>
+                {Object.entries(item.inputs || {}).map(([inputId, requiredAmount]) => {
+                  const currentAmount = Math.floor(inventory[inputId]?.currentAmount || 0);
+                  const hasEnough = currentAmount >= requiredAmount;
+                  
+                  return (
+                    <View key={inputId} style={retroStyles.requirementChip}>
+                      <Text style={[
+                        retroStyles.requirementChipText,
+                        hasEnough ? retroStyles.requirementChipHave : retroStyles.requirementChipNeed
+                      ]}>
+                        {inventory[inputId]?.name || inputId}: {currentAmount}/{requiredAmount}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            ) : (
+              <Text style={retroStyles.noRequirementsText}>No materials required</Text>
+            )}
           </View>
         )}
-        
+
+        {/* Locked Message */}
         {isLocked && (
-          <View style={retroStyles.lockedIndicator}>
-            <Text style={retroStyles.lockedIndicatorText}>🔒</Text>
+          <View style={retroStyles.lockedSection}>
+            <Text style={retroStyles.lockedSectionText}>
+              🔒 Complete "{item.requiredMilestone?.name || 'milestone'}" to unlock
+            </Text>
           </View>
         )}
-      </TouchableOpacity>
+
+        {/* Build Button */}
+        <TouchableOpacity
+          style={[
+            retroStyles.buildButton,
+            {
+              backgroundColor: isLocked ? '#444' : canBuild ? machineColor : '#666'
+            }
+          ]}
+          onPress={() => handleBuild(item.id)}
+          disabled={!canBuild && !isLocked}
+        >
+          <Text style={retroStyles.buildButtonText}>
+            {isLocked ? "Locked" : canBuild ? `Build ${item.name}` : "Not Enough Resources"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -131,105 +189,12 @@ const BuildScreen = () => {
         <Text style={retroStyles.headerTitle}>Building</Text>
       </View>
 
-      {/* Machine Grid */}
-      <View style={retroStyles.machineGrid}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={retroStyles.machineGridContent}
-        >
-          {allBuildableItems.map((item, index) => renderMachineSlot(item, index))}
-        </ScrollView>
-      </View>
-
-      {/* Details Panel */}
-      <View style={retroStyles.detailsPanel}>
-        {selectedMachine ? (
-          <>
-            {/* Machine Info */}
-            <View style={retroStyles.machineInfo}>
-              <Text style={retroStyles.machineName}>{selectedMachine.name}</Text>
-              <Text style={retroStyles.machineDescription}>
-                {selectedMachine.description}
-              </Text>
-            </View>
-
-            {/* Requirements Section */}
-            <View style={retroStyles.requirementsSection}>
-              {!selectedMachine.isUnlocked ? (
-                <View style={retroStyles.lockedMessage}>
-                  <Text style={retroStyles.lockedMessageText}>
-                    🔒 Complete "{selectedMachine.requiredMilestone?.name || 'milestone'}" to unlock
-                  </Text>
-                </View>
-              ) : (
-                <>
-                  {Object.keys(selectedMachine.inputs || {}).length > 0 ? (
-                    Object.entries(selectedMachine.inputs || {}).map(([inputId, requiredAmount]) => {
-                      const currentAmount = Math.floor(inventory[inputId]?.currentAmount || 0);
-                      const hasEnough = currentAmount >= requiredAmount;
-                      
-                      return (
-                        <View key={inputId} style={retroStyles.requirementItem}>
-                          <View style={[
-                            retroStyles.requirementIcon,
-                            { backgroundColor: hasEnough ? Colors.accentGreen + '30' : Colors.backgroundWarning + '30' }
-                          ]}>
-                            <Text style={retroStyles.requirementIconText}>
-                              {inventory[inputId]?.name?.charAt(0) || inputId.charAt(0)}
-                            </Text>
-                          </View>
-                          <View style={retroStyles.requirementInfo}>
-                            <Text style={retroStyles.requirementName}>
-                              {inventory[inputId]?.name || inputId}
-                            </Text>
-                            <Text style={[
-                              retroStyles.requirementAmount,
-                              { color: hasEnough ? Colors.accentGreen : Colors.backgroundWarning }
-                            ]}>
-                              ({currentAmount}/{requiredAmount})
-                            </Text>
-                          </View>
-                        </View>
-                      );
-                    })
-                  ) : (
-                    <Text style={retroStyles.noRequirements}>No resources required!</Text>
-                  )}
-                </>
-              )}
-            </View>
-
-            {/* Build Button */}
-            <TouchableOpacity
-              style={[
-                retroStyles.buildButton,
-                {
-                  backgroundColor: !selectedMachine.isUnlocked
-                    ? '#444'
-                    : selectedMachine.canBuild
-                      ? getMachineColor(selectedMachine.id)
-                      : '#666'
-                }
-              ]}
-              onPress={() => handleBuild(selectedMachine.id)}
-              disabled={!selectedMachine.canBuild && selectedMachine.isUnlocked}
-            >
-              <Text style={retroStyles.buildButtonText}>
-                {!selectedMachine.isUnlocked
-                  ? "Locked"
-                  : selectedMachine.canBuild
-                    ? `Build ${selectedMachine.name}`
-                    : "Not Enough Resources"}
-              </Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <View style={retroStyles.noSelection}>
-            <Text style={retroStyles.noSelectionText}>Select a machine to view details</Text>
-          </View>
-        )}
-      </View>
+      {/* Machine Cards List */}
+      <ScrollView style={retroStyles.cardsList} showsVerticalScrollIndicator={false}>
+        <View style={retroStyles.cardsContainer}>
+          {allBuildableItems.map(item => renderMachineCard(item))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -256,235 +221,170 @@ const retroStyles = StyleSheet.create({
     color: Colors.textPrimary,
   },
 
-  // Machine Grid (Top Section)
-  machineGrid: {
-    backgroundColor: Colors.backgroundPanel,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.border,
-    paddingVertical: 16,
-    minHeight: 120,
-  },
-
-  machineGridContent: {
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-
-  machineSlot: {
-    width: 80,
-    height: 80,
-    backgroundColor: Colors.backgroundSecondary,
-    borderWidth: 2,
-    borderColor: Colors.border,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-
-  machineSlotSelected: {
-    borderColor: Colors.textAccent,
-    backgroundColor: Colors.textAccent + '20',
-    borderWidth: 3,
-  },
-
-  machineSlotLocked: {
-    borderColor: '#666',
-    backgroundColor: '#2a2a2a',
-  },
-
-  machineSlotAvailable: {
-    borderColor: Colors.accentGreen,
-    backgroundColor: Colors.accentGreen + '10',
-  },
-
-  machineIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-
-  machineIconText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-
-  // Status Indicators
-  readyIndicator: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 20,
-    height: 20,
-    backgroundColor: Colors.accentGreen,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: Colors.backgroundPanel,
-  },
-
-  readyIndicatorText: {
-    fontSize: 10,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-
-  lockedIndicator: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 20,
-    height: 20,
-    backgroundColor: '#666',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: Colors.backgroundPanel,
-  },
-
-  lockedIndicatorText: {
-    fontSize: 8,
-  },
-
-  // Details Panel (Bottom Section)
-  detailsPanel: {
+  // Cards List
+  cardsList: {
     flex: 1,
+  },
+
+  cardsContainer: {
+    padding: 16,
+    gap: 16,
+  },
+
+  // Machine Card
+  machineCard: {
     backgroundColor: Colors.backgroundSecondary,
-    borderTopWidth: 2,
-    borderTopColor: Colors.border,
-    padding: 20,
-  },
-
-  // Machine Info
-  machineInfo: {
-    marginBottom: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border + '50',
-  },
-
-  machineName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
+    borderWidth: 2,
+    borderColor: Colors.border,
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 8,
   },
 
-  machineDescription: {
-    fontSize: 16,
+  machineCardLocked: {
+    borderColor: '#666',
+    backgroundColor: '#2a2a2a',
+    opacity: 0.7,
+  },
+
+  machineCardAvailable: {
+    borderColor: Colors.accentGreen,
+    backgroundColor: Colors.accentGreen + '05',
+  },
+
+  // Machine Card Header
+  machineCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
+  machineCardIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+    borderWidth: 2,
+    borderColor: Colors.border,
+  },
+
+  machineCardIconText: {
+    fontSize: 24,
+  },
+
+  machineCardInfo: {
+    flex: 1,
+  },
+
+  machineCardName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.textPrimary,
+    marginBottom: 4,
+  },
+
+  machineCardDescription: {
+    fontSize: 14,
     color: Colors.textSecondary,
-    lineHeight: 22,
+    lineHeight: 18,
+  },
+
+  // Status Badge
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+
+  statusBadgeText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: 'white',
   },
 
   // Requirements Section
   requirementsSection: {
-    flex: 1,
-    marginBottom: 20,
+    marginBottom: 16,
   },
 
-  requirementItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.backgroundPanel,
-    padding: 12,
-    marginBottom: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-
-  requirementIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-
-  requirementIconText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.textSecondary,
-  },
-
-  requirementInfo: {
-    flex: 1,
-  },
-
-  requirementName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.textPrimary,
-    marginBottom: 2,
-  },
-
-  requirementAmount: {
+  requirementsSectionTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    marginBottom: 8,
   },
 
-  noRequirements: {
-    fontSize: 16,
+  requirementsList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+
+  requirementChip: {
+    backgroundColor: Colors.backgroundPanel,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+
+  requirementChipText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+
+  requirementChipHave: {
+    color: Colors.accentGreen,
+    borderColor: Colors.accentGreen,
+    backgroundColor: Colors.accentGreen + '10',
+  },
+
+  requirementChipNeed: {
+    color: '#ff6b6b',
+    borderColor: '#ff6b6b',
+    backgroundColor: '#ff6b6b10',
+  },
+
+  noRequirementsText: {
+    fontSize: 14,
     color: Colors.textMuted,
-    textAlign: 'center',
     fontStyle: 'italic',
-    marginTop: 20,
   },
 
-  // Locked Message
-  lockedMessage: {
+  // Locked Section
+  lockedSection: {
     backgroundColor: Colors.backgroundWarning + '20',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: Colors.backgroundWarning,
     borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 20,
+    padding: 12,
+    marginBottom: 16,
   },
 
-  lockedMessageText: {
-    fontSize: 16,
+  lockedSectionText: {
+    fontSize: 14,
     color: Colors.backgroundWarning,
-    fontWeight: '600',
+    fontWeight: '500',
     textAlign: 'center',
   },
 
   // Build Button
   buildButton: {
-    paddingVertical: 16,
+    paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: Colors.border,
-    marginTop: 'auto',
   },
 
   buildButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: Colors.textPrimary,
-  },
-
-  // No Selection State
-  noSelection: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  noSelectionText: {
-    fontSize: 16,
-    color: Colors.textMuted,
-    textAlign: 'center',
   },
 });
 
