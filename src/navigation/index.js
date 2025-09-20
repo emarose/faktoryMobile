@@ -65,7 +65,7 @@ function RootNavigator() {
       <Stack.Screen
         name="BuildScreen"
         component={BuildScreen}
-        options={{ title: "Build Machines" }}
+        options={{ title: "Machine Builder" }}
       />
       <Stack.Screen
         name="MapScreen"

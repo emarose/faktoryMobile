@@ -1,15 +1,17 @@
 Fixes/reworks:
+- TODAS las screens deben llevar un componente dynamico reutilizable que tendrá una flecha hacia atras, un titulo y opcional icono presionable a la derecha. Este header reemplazará el header del stack navigator y su goBack. El objetivo es obtener una mayor personalizacion sobre el header.
 
 * FACTORY SCREEN:
-- deployMachines debe mostrar una version muy minima de las maquinas deployadas y si estan procesando o no/ en qué estado se encuentran
+- deployMachines no muestra correctamente las maquinas, siempre muestra "no machines deployed yet" y 0 total. debe reflejar las maquinas y el estado de cada una. Revisar el estilado.
 
-* BUILD SCREEN:
-- ajustar en  cuando sale el toast de built machine, debe cerrar el previo y disparar un nuevo toast cada vez, en lugar de simplemente reemplazar el texto, debe dispararse un nuevo toast.
-- no seleccionar una maquina por defecto
-- deberia ser mas facil para el jugador ver al ingresar las recetas de las maquinas, talvez hacerlo con cards y que cada card muestre la receta. quiero simplificar la cantidad de pasos requeridos para construir la maquina.
+* MACHINE BUILDER SCREEN:
+- Muestra las maquinas en un orden fijo: Miner, Smelter, Constructor, Assembler, y luego proseguir con el orden natural segun el milestone que permita su construccin
 
 * product assembly screen
-- agregar buscador de recetas
+- cambia el estilo del buscador a estar siempre activo (sin necesidad de presionar la lupa) en la parte superior con bordes redondeados.
+- revisar la funcionalidad y el display de numero de recetas encontradas
+- la card de "miner" se encuentra fija, cuando deberia mostrarse por defecto seleccionada la primer maquina en que se encuentren resultados. por ejemplo: buscar "Rotor" debe mostrar seleccionado el chip del Assembler y alli sus recetas. EN caso haya varias maquinas mostrará la primera y el usuario podrá cambiar entre las distintas maquinas que contengan resultados.
+
 
 * Deployed Machines screen:
 - MINER: 

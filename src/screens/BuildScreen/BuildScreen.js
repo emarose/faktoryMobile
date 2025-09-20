@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import { Text } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useGame } from "../../contexts/GameContext";
 import { useMachineColors } from "../../hooks";
 import Colors from "../../constants/Colors";
+import styles from "./styles";
 
 const { width } = Dimensions.get('window');
 
@@ -23,10 +25,10 @@ const BuildScreen = () => {
   // Show all buildable items, but distinguish between locked and unlocked
   const allBuildableItems = buildableItems.map(item => {
     const isUnlocked = unlockedMachineNames.includes(item.name);
-    const requiredMilestone = milestones.find(milestone => 
+    const requiredMilestone = milestones.find(milestone =>
       milestone.unlockedMachines && milestone.unlockedMachines.includes(item.name)
     );
-    
+
     return {
       ...item,
       isUnlocked,
@@ -36,24 +38,24 @@ const BuildScreen = () => {
     // Primero: máquinas que se pueden construir (unlocked y con recursos)
     const aCanBuild = a.isUnlocked && a.canBuild;
     const bCanBuild = b.isUnlocked && b.canBuild;
-    
+
     if (aCanBuild && !bCanBuild) return -1;
     if (!aCanBuild && bCanBuild) return 1;
-    
+
     // Segundo: máquinas desbloqueadas pero sin recursos
     const aUnlockedOnly = a.isUnlocked && !a.canBuild;
     const bUnlockedOnly = b.isUnlocked && !b.canBuild;
-    
+
     if (aUnlockedOnly && !bUnlockedOnly) return -1;
     if (!aUnlockedOnly && bUnlockedOnly) return 1;
-    
+
     // Tercero: máquinas bloqueadas (al final)
     const aLocked = !a.isUnlocked;
     const bLocked = !b.isUnlocked;
-    
+
     if (!aLocked && bLocked) return -1;
     if (aLocked && !bLocked) return 1;
-    
+
     // Finalmente: orden alfabético dentro del mismo grupo
     return a.name.localeCompare(b.name);
   });
@@ -62,7 +64,7 @@ const BuildScreen = () => {
     const itemToBuild = allBuildableItems.find((item) => item.id === itemId);
     if (!itemToBuild?.isUnlocked) {
       Alert.alert(
-        "Machine Locked", 
+        "Machine Locked",
         `Complete the "${itemToBuild?.requiredMilestone?.title || 'required milestone'}" to unlock this machine.`
       );
       return;
@@ -91,74 +93,100 @@ const BuildScreen = () => {
 
     return (
       <View key={item.id} style={[
-        retroStyles.machineCard,
-        isLocked && retroStyles.machineCardLocked,
-        canBuild && retroStyles.machineCardAvailable,
+        styles.machineCard,
+        isLocked && styles.lockedMachineCard,
+        canBuild && styles.availableMachineCard,
       ]}>
+        {/* Status Badge */}
+        {isLocked && (
+          <View style={styles.statusBadge}>
+            <MaterialCommunityIcons name="lock" size={12} color="#fff" />
+            <Text style={styles.statusBadgeText}>LOCKED</Text>
+          </View>
+        )}
+        
+
         {/* Machine Header */}
-        <View style={retroStyles.machineCardHeader}>
+        <View style={styles.machineHeader}>
           <View style={[
-            retroStyles.machineCardIcon,
-            { backgroundColor: isLocked ? '#666' : machineColor + '40' }
+            styles.machineIcon,
+            { 
+              backgroundColor: isLocked ? '#3a3a3a' : machineColor + '30',
+              borderColor: isLocked ? '#555' : machineColor 
+            }
           ]}>
-            <Text style={retroStyles.machineCardIconText}>
+            <Text style={styles.machineIconText}>
               {getMachineIcon(item.id)}
             </Text>
           </View>
-          
-          <View style={retroStyles.machineCardInfo}>
-            <Text style={retroStyles.machineCardName}>{item.name}</Text>
-            <Text style={retroStyles.machineCardDescription} numberOfLines={2}>
-              {item.description}
-            </Text>
-          </View>
 
-          {/* Status Badge */}
-          <View style={[
-            retroStyles.statusBadge,
-            {
-              backgroundColor: isLocked ? '#666' : canBuild ? Colors.accentGreen : '#ff6b6b'
-            }
-          ]}>
-            <Text style={retroStyles.statusBadgeText}>
-              {isLocked ? 'LOCKED' : canBuild ? 'READY' : 'NEED RESOURCES'}
+          <View style={styles.machineInfo}>
+            <Text style={[
+              styles.machineName,
+              isLocked && styles.lockedMachineName
+            ]}>
+              {item.name}
+            </Text>
+            <Text style={[
+              styles.machineDescription,
+              isLocked && styles.lockedMachineDescription
+            ]} numberOfLines={2}>
+              {item.description}
             </Text>
           </View>
         </View>
 
-        {/* Requirements */}
+        {/* Requirements Section */}
         {!isLocked && (
-          <View style={retroStyles.requirementsSection}>
-            <Text style={retroStyles.requirementsSectionTitle}>Required Materials:</Text>
+          <View style={styles.requirementsContainer}>
+            <View style={styles.sectionHeader}>
+              <MaterialCommunityIcons name="package-variant" size={16} color="#6db4f0" />
+              <Text style={styles.sectionTitle}>Required Materials</Text>
+            </View>
+            
             {Object.keys(item.inputs || {}).length > 0 ? (
-              <View style={retroStyles.requirementsList}>
+              <View style={styles.requirementsList}>
                 {Object.entries(item.inputs || {}).map(([inputId, requiredAmount]) => {
                   const currentAmount = Math.floor(inventory[inputId]?.currentAmount || 0);
                   const hasEnough = currentAmount >= requiredAmount;
-                  
+
                   return (
-                    <View key={inputId} style={retroStyles.requirementChip}>
+                    <View key={inputId} style={styles.requirementItem}>
+                      <View style={[
+                        styles.requirementIndicator,
+                        { backgroundColor: hasEnough ? '#4CAF50' : '#ff6b47' }
+                      ]} />
+                      <Text style={styles.requirementText}>
+                        {inventory[inputId]?.name || inputId}
+                      </Text>
                       <Text style={[
-                        retroStyles.requirementChipText,
-                        hasEnough ? retroStyles.requirementChipHave : retroStyles.requirementChipNeed
+                        styles.requirementAmount,
+                        hasEnough ? styles.hasEnoughAmount : styles.needsAmount
                       ]}>
-                        {inventory[inputId]?.name || inputId}: {currentAmount}/{requiredAmount}
+                        {currentAmount}/{requiredAmount}
                       </Text>
                     </View>
                   );
                 })}
               </View>
             ) : (
-              <Text style={retroStyles.noRequirementsText}>No materials required</Text>
+              <View style={styles.noRequirementsContainer}>
+                <MaterialCommunityIcons name="check-circle-outline" size={16} color="#4CAF50" />
+                <Text style={styles.noRequirementsText}>No materials required</Text>
+              </View>
             )}
           </View>
         )}
 
-        {/* Locked Message */}
+        {/* Locked Information */}
         {isLocked && (
-          <View style={retroStyles.lockedSection}>
-            <Text style={retroStyles.lockedSectionText}>
-              🔒 Complete "{item.requiredMilestone?.name || 'milestone'}" to unlock
+          <View style={styles.lockedContainer}>
+            <View style={styles.sectionHeader}>
+              <MaterialCommunityIcons name="lock-outline" size={16} color="#ff6b47" />
+              <Text style={styles.sectionTitle}>Unlock Requirements</Text>
+            </View>
+            <Text style={styles.lockedText}>
+              Complete milestone: "{item.requiredMilestone?.name || 'Unknown milestone'}"
             </Text>
           </View>
         )}
@@ -166,16 +194,25 @@ const BuildScreen = () => {
         {/* Build Button */}
         <TouchableOpacity
           style={[
-            retroStyles.buildButton,
-            {
-              backgroundColor: isLocked ? '#444' : canBuild ? machineColor : '#666'
-            }
+            styles.buildButton,
+            isLocked && styles.lockedBuildButton,
+            canBuild && styles.availableBuildButton,
+            !canBuild && !isLocked && styles.disabledBuildButton
           ]}
           onPress={() => handleBuild(item.id)}
           disabled={!canBuild && !isLocked}
         >
-          <Text style={retroStyles.buildButtonText}>
-            {isLocked ? "Locked" : canBuild ? `Build ${item.name}` : "Not Enough Resources"}
+          <MaterialCommunityIcons 
+            name={
+              isLocked ? "lock" : 
+              canBuild ? "hammer" : 
+              "alert-circle"
+            } 
+            size={18} 
+            color="#fff" 
+          />
+          <Text style={styles.buildButtonText}>
+            {isLocked ? "Locked" : canBuild ? `Build ${item.name}` : "Insufficient Resources"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -183,209 +220,26 @@ const BuildScreen = () => {
   };
 
   return (
-    <SafeAreaView style={retroStyles.container}>
-      {/* Header */}
-      <View style={retroStyles.header}>
-        <Text style={retroStyles.headerTitle}>Building</Text>
-      </View>
-
-      {/* Machine Cards List */}
-      <ScrollView style={retroStyles.cardsList} showsVerticalScrollIndicator={false}>
-        <View style={retroStyles.cardsContainer}>
-          {allBuildableItems.map(item => renderMachineCard(item))}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <MaterialCommunityIcons name="factory" size={24} color="#e8f4fd" />
+          <Text style={styles.title}>Machine Builder</Text>
         </View>
-      </ScrollView>
+
+        {/* Machine Cards List */}
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {allBuildableItems.map(item => renderMachineCard(item))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
-const retroStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-
-  // Header
-  header: {
-    backgroundColor: Colors.backgroundSecondary,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.border,
-    alignItems: 'center',
-  },
-
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-  },
-
-  // Cards List
-  cardsList: {
-    flex: 1,
-  },
-
-  cardsContainer: {
-    padding: 16,
-    gap: 16,
-  },
-
-  // Machine Card
-  machineCard: {
-    backgroundColor: Colors.backgroundSecondary,
-    borderWidth: 2,
-    borderColor: Colors.border,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-  },
-
-  machineCardLocked: {
-    borderColor: '#666',
-    backgroundColor: '#2a2a2a',
-    opacity: 0.7,
-  },
-
-  machineCardAvailable: {
-    borderColor: Colors.accentGreen,
-    backgroundColor: Colors.accentGreen + '05',
-  },
-
-  // Machine Card Header
-  machineCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-
-  machineCardIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-    borderWidth: 2,
-    borderColor: Colors.border,
-  },
-
-  machineCardIconText: {
-    fontSize: 24,
-  },
-
-  machineCardInfo: {
-    flex: 1,
-  },
-
-  machineCardName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginBottom: 4,
-  },
-
-  machineCardDescription: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    lineHeight: 18,
-  },
-
-  // Status Badge
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-
-  statusBadgeText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-
-  // Requirements Section
-  requirementsSection: {
-    marginBottom: 16,
-  },
-
-  requirementsSectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-    marginBottom: 8,
-  },
-
-  requirementsList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-
-  requirementChip: {
-    backgroundColor: Colors.backgroundPanel,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-
-  requirementChipText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-
-  requirementChipHave: {
-    color: Colors.accentGreen,
-    borderColor: Colors.accentGreen,
-    backgroundColor: Colors.accentGreen + '10',
-  },
-
-  requirementChipNeed: {
-    color: '#ff6b6b',
-    borderColor: '#ff6b6b',
-    backgroundColor: '#ff6b6b10',
-  },
-
-  noRequirementsText: {
-    fontSize: 14,
-    color: Colors.textMuted,
-    fontStyle: 'italic',
-  },
-
-  // Locked Section
-  lockedSection: {
-    backgroundColor: Colors.backgroundWarning + '20',
-    borderWidth: 1,
-    borderColor: Colors.backgroundWarning,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-
-  lockedSectionText: {
-    fontSize: 14,
-    color: Colors.backgroundWarning,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-
-  // Build Button
-  buildButton: {
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: Colors.border,
-  },
-
-  buildButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-  },
-});
 
 export default BuildScreen;
