@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FlatList } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useGame } from "../../contexts/GameContext";
@@ -52,6 +52,11 @@ const ProductAssemblyScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomHeader 
+        title="Product Assembly"
+        rightIcon="wrench"
+        onRightIconPress={() => console.log("Assembly tools pressed")}
+      />
       <ProgressionTree />
       {/* 
       {ownedCraftingMachineTypes.length > 0 ? (

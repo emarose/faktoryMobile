@@ -12,25 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#2a3441",
   },
 
-  // Header with industrial styling
-  header: {
-    backgroundColor: "#1f2935", // Darker header background
-    borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#e8f4fd", // Light blue-white text
-    letterSpacing: 1,
-    textTransform: "uppercase",
-    marginLeft: 12,
-  },
+
 
   // Scroll view
   scrollView: {

@@ -8,7 +8,7 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useGame } from "../../contexts/GameContext";
@@ -35,29 +35,53 @@ const BuildScreen = () => {
       requiredMilestone: requiredMilestone || null
     };
   }).sort((a, b) => {
-    // Primero: máquinas que se pueden construir (unlocked y con recursos)
-    const aCanBuild = a.isUnlocked && a.canBuild;
-    const bCanBuild = b.isUnlocked && b.canBuild;
+    // Define fixed order: Miner, Smelter, Constructor, Assembler, then natural order
+    const fixedOrder = ['miner', 'smelter', 'constructor', 'assembler'];
+    
+    const aOrderIndex = fixedOrder.indexOf(a.id);
+    const bOrderIndex = fixedOrder.indexOf(b.id);
+    
+    // If both machines are in fixed order, sort by fixed order
+    if (aOrderIndex !== -1 && bOrderIndex !== -1) {
+      return aOrderIndex - bOrderIndex;
+    }
+    
+    // If only one is in fixed order, prioritize it
+    if (aOrderIndex !== -1 && bOrderIndex === -1) return -1;
+    if (aOrderIndex === -1 && bOrderIndex !== -1) return 1;
+    
+    // For machines not in fixed order, use milestone-based ordering
+    if (aOrderIndex === -1 && bOrderIndex === -1) {
+      // First: unlocked and can build
+      const aCanBuild = a.isUnlocked && a.canBuild;
+      const bCanBuild = b.isUnlocked && b.canBuild;
 
-    if (aCanBuild && !bCanBuild) return -1;
-    if (!aCanBuild && bCanBuild) return 1;
+      if (aCanBuild && !bCanBuild) return -1;
+      if (!aCanBuild && bCanBuild) return 1;
 
-    // Segundo: máquinas desbloqueadas pero sin recursos
-    const aUnlockedOnly = a.isUnlocked && !a.canBuild;
-    const bUnlockedOnly = b.isUnlocked && !b.canBuild;
+      // Second: unlocked but insufficient resources
+      const aUnlockedOnly = a.isUnlocked && !a.canBuild;
+      const bUnlockedOnly = b.isUnlocked && !b.canBuild;
 
-    if (aUnlockedOnly && !bUnlockedOnly) return -1;
-    if (!aUnlockedOnly && bUnlockedOnly) return 1;
+      if (aUnlockedOnly && !bUnlockedOnly) return -1;
+      if (!aUnlockedOnly && bUnlockedOnly) return 1;
 
-    // Tercero: máquinas bloqueadas (al final)
-    const aLocked = !a.isUnlocked;
-    const bLocked = !b.isUnlocked;
+      // Third: locked machines (by milestone order if available)
+      const aLocked = !a.isUnlocked;
+      const bLocked = !b.isUnlocked;
 
-    if (!aLocked && bLocked) return -1;
-    if (aLocked && !bLocked) return 1;
+      if (!aLocked && bLocked) return -1;
+      if (aLocked && !bLocked) return 1;
 
-    // Finalmente: orden alfabético dentro del mismo grupo
-    return a.name.localeCompare(b.name);
+      // If both locked or both same status, order by milestone ID then name
+      if (a.requiredMilestone && b.requiredMilestone) {
+        const milestoneCompare = a.requiredMilestone.id - b.requiredMilestone.id;
+        if (milestoneCompare !== 0) return milestoneCompare;
+      }
+      
+      // Finally: alphabetical order within the same group
+      return a.name.localeCompare(b.name);
+    }
   });
 
   const handleBuild = (itemId) => {
@@ -221,13 +245,12 @@ const BuildScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <CustomHeader 
+        title="Machine Builder" 
+        rightIcon="factory"
+        onRightIconPress={() => console.log("Factory icon pressed")}
+      />
       <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <MaterialCommunityIcons name="factory" size={24} color="#e8f4fd" />
-          <Text style={styles.title}>Machine Builder</Text>
-        </View>
-
         {/* Machine Cards List */}
         <ScrollView 
           style={styles.scrollView} 

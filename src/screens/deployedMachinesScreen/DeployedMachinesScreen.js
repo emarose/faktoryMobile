@@ -1,5 +1,5 @@
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import styles from "./styles";
@@ -52,28 +52,26 @@ const DeployedMachinesScreen = () => {
   }, {});
 
   // Get available machine types (tabs)
-  const availableMachineTypes = Object.keys(machinesByType);
-  const [activeTab, setActiveTab] = useState(availableMachineTypes[0] || "All");
-
-  // If activeTab doesn't exist in current machines, switch to first available
-  if (!machinesByType[activeTab] && availableMachineTypes.length > 0) {
-    setActiveTab(availableMachineTypes[0]);
-  }
+  const availableMachineTypes = ["All", ...Object.keys(machinesByType)];
+  const [activeTab, setActiveTab] = useState("All");
 
   // Get machines for current tab
-  const currentTabMachines = machinesByType[activeTab] || [];
+  const currentTabMachines = activeTab === "All" 
+    ? allMachines 
+    : machinesByType[activeTab] || [];
 
   // Machine type icons
   const getMachineTypeIcon = (typeName) => {
+    if (typeName === "All") return '🏭';
     const icons = {
-      'miner': '⛏️',
-      'smelter': '🔥', 
-      'constructor': '🔧',
-      'assembler': '⚙️',
-      'foundry': '🏭',
-      'manufacturer': '🏗️',
-      'refinery': '⚗️',
-      'oilExtractor': '🛢️'
+      'Miner': '⛏️',
+      'Smelter': '🔥', 
+      'Constructor': '🔧',
+      'Assembler': '⚙️',
+      'Foundry': '🏭',
+      'Manufacturer': '🏗️',
+      'Refinery': '⚗️',
+      'Oil Extractor': '🛢️'
     };
     return icons[typeName] || '🔧';
   };
@@ -144,6 +142,12 @@ const DeployedMachinesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomHeader 
+        title="Deployed Machines"
+        rightIcon="plus-circle"
+        onRightIconPress={() => navigation.navigate("BuildScreen")}
+      />
+      
       {/* Machine Type Tabs */}
       <View style={styles.filterTabsContainer}>
         <ScrollView 
@@ -173,7 +177,7 @@ const DeployedMachinesScreen = () => {
                 styles.machineTabCount,
                 activeTab === machineType && styles.machineTabCountActive
               ]}>
-                ({machinesByType[machineType].length})
+                ({machineType === "All" ? allMachines.length : (machinesByType[machineType]?.length || 0)})
               </Text>
             </TouchableOpacity>
           ))}
@@ -207,27 +211,47 @@ const DeployedMachinesScreen = () => {
                       })
                     } */
                     onPauseResume={() => {
+                      console.log("Pause/Resume clicked for machine:", machine.id, machine.type);
+                      
                       if (machine.type === "miner" || machine.type === "oilExtractor") {
                         // Handle miners/extractors
+                        console.log("Machine isIdle:", machine.isIdle);
                         machine.isIdle ? resumeMiner(machine.id) : pauseMiner(machine.id);
                       } else {
                         // Handle crafting machines
                         const machineProcesses = craftingQueue.filter(
                           proc => proc.machineId === machine.id
                         );
+                        console.log("Machine processes:", machineProcesses);
+                        
                         const hasActiveProcesses = machineProcesses.some(proc => proc.status === "pending");
                         const hasPausedProcesses = machineProcesses.some(proc => proc.status === "paused");
                         
+                        console.log("Has active processes:", hasActiveProcesses);
+                        console.log("Has paused processes:", hasPausedProcesses);
+                        
                         if (hasActiveProcesses) {
+                          console.log("Pausing crafting for machine:", machine.id);
                           pauseCrafting(machine.id);
                         } else if (hasPausedProcesses) {
+                          console.log("Resuming crafting for machine:", machine.id);
                           resumeCrafting(machine.id);
+                        } else {
+                          console.log("No active or paused processes found for machine:", machine.id);
                         }
                       }
                     }}
                     onCancelCrafting={() => {
+                      console.log("Cancel crafting clicked for machine:", machine.id, machine.type);
+                      
                       if (machine.type !== "miner" && machine.type !== "oilExtractor") {
+                        const machineProcesses = craftingQueue.filter(
+                          proc => proc.machineId === machine.id
+                        );
+                        console.log("Cancelling processes:", machineProcesses);
                         cancelCrafting(machine.id);
+                      } else {
+                        console.log("Cannot cancel crafting for miner/oil extractor");
                       }
                     }}
                   >

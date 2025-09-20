@@ -36,77 +36,20 @@ function RootNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: true,
-        headerBackTitleVisible: false,
-        headerTitleStyle: {
-          fontFamily: "SpaceMono-Regular",
-          fontWeight: "normal",
-        },
-        headerStyle: {
-          backgroundColor: Colors.backgroundPanel,
-          elevation: 0, 
-          shadowOpacity: 0,
-          borderBottomWidth: 0, 
-        },
-        headerTintColor: Colors.textPrimary,
+        headerShown: false, // Disable all headers to use CustomHeader instead
       }}
     >
-      <Stack.Screen
-        name="Root"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="BasicResourcesScreen"
-        component={BasicResourcesScreen}
-        options={{ title: "Basic Resources" }}
-      />
-      <Stack.Screen
-        name="BuildScreen"
-        component={BuildScreen}
-        options={{ title: "Machine Builder" }}
-      />
-      <Stack.Screen
-        name="MapScreen"
-        component={MapScreen}
-        options={{ title: "World Map" }}
-      />
-      <Stack.Screen
-        name="InventoryScreen"
-        component={InventoryScreen}
-        options={{ title: "Inventory" }}
-      />
-      <Stack.Screen
-        name="ProductAssemblyScreen"
-        component={ProductAssemblyScreen}
-        options={{ title: "Product Assembly" }}
-      />
-      <Stack.Screen
-        name="DeployedMachinesScreen"
-        component={DeployedMachinesScreen}
-        options={{ title: "Deployed Machines" }}
-      />
-      <Stack.Screen
-        name="MilestonesScreen"
-        component={MilestonesScreen}
-        options={{ title: "Milestones" }}
-      />
-      <Stack.Screen
-        name="ConstructorScreen"
-        component={ConstructorScreen}
-        options={{ title: "Constructor" }}
-      />
-      <Stack.Screen
-        name="SmelterScreen"
-        component={SmelterScreen}
-        options={{ title: "Smelter" }}
-      />
-      <Stack.Screen
-        name="NodeSelectorScreen"
-        component={NodeSelectorScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen name="BasicResourcesScreen" component={BasicResourcesScreen} />
+      <Stack.Screen name="BuildScreen" component={BuildScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
+      <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
+      <Stack.Screen name="ProductAssemblyScreen" component={ProductAssemblyScreen} />
+      <Stack.Screen name="DeployedMachinesScreen" component={DeployedMachinesScreen} />
+      <Stack.Screen name="MilestonesScreen" component={MilestonesScreen} />
+      <Stack.Screen name="ConstructorScreen" component={ConstructorScreen} />
+      <Stack.Screen name="SmelterScreen" component={SmelterScreen} />
+      <Stack.Screen name="NodeSelectorScreen" component={NodeSelectorScreen} />
     </Stack.Navigator>
   );
 }

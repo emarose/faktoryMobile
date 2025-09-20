@@ -8,15 +8,13 @@ Fixes/reworks:
 - Muestra las maquinas en un orden fijo: Miner, Smelter, Constructor, Assembler, y luego proseguir con el orden natural segun el milestone que permita su construccin
 
 * product assembly screen
-- cambia el estilo del buscador a estar siempre activo (sin necesidad de presionar la lupa) en la parte superior con bordes redondeados.
+- cambia el estilo del buscador a estar siempre visible (sin necesidad de presionar la lupa) en la parte superior con bordes redondeados.
 - revisar la funcionalidad y el display de numero de recetas encontradas
 - la card de "miner" se encuentra fija, cuando deberia mostrarse por defecto seleccionada la primer maquina en que se encuentren resultados. por ejemplo: buscar "Rotor" debe mostrar seleccionado el chip del Assembler y alli sus recetas. EN caso haya varias maquinas mostrará la primera y el usuario podrá cambiar entre las distintas maquinas que contengan resultados.
 
 
 * Deployed Machines screen:
 - MINER: 
-  - Debe ponerse automaticamente en idle al llegar al resourcecap del recurso asignado.
-  - Esta mostrando informacion duplicada. eliminar la progress bar que se muestra en la parte mas inferior de la machineCard
 - cambiar los tipos de maquinas a filtros o tabs, el scroll vertical es muy largo cuandos e agregan muchas maquinas, la pantalla debe poder filtrarse mejor entre tipos de maquina.
 
 

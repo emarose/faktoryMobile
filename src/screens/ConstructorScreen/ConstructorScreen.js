@@ -26,7 +26,7 @@ import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Const
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/MiniToast";
 import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -240,11 +240,12 @@ const ConstructorScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <CustomHeader 
+        title="Constructor"
+        rightIcon="cog"
+        onRightIconPress={() => console.log("Constructor tools pressed")}
+      />
       <View style={styles.container}>
-        {/* Industrial Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Constructor Interface</Text>
-        </View>
 
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>

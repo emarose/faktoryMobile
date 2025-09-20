@@ -1,5 +1,5 @@
 import { View, ScrollView, TouchableOpacity, Image } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
@@ -22,7 +22,11 @@ const InventoryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Your Crafted Items</Text>
+      <CustomHeader 
+        title="Inventory"
+        rightIcon="package-variant"
+        onRightIconPress={() => console.log("Inventory tools pressed")}
+      />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {ownedCraftedItems.length > 0 ? (
           <View style={styles.inventoryGrid}>

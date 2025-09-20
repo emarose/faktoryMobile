@@ -6,7 +6,8 @@ import {
   ScrollView,
   InteractionManager,
 } from "react-native";
-import { Text } from "../../components";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, CustomHeader } from "../../components";
 import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapControls from "./components/MapControls/MapControls";
@@ -175,21 +176,28 @@ export default function MapScreen({ navigation }) {
   };
 
   return (
-    <ScrollView
-      style={styles.fullScreenContainer}
-      contentContainerStyle={{ flexGrow: 1 }}
-    >
-      <MapToast
-        visible={toastVisible}
-        message={toastMessage}
-        onHide={() => setToastVisible(false)}
+    <SafeAreaView style={styles.fullScreenContainer}>
+      <CustomHeader 
+        title="World Map"
+        rightIcon="target"
+        onRightIconPress={() => console.log("Map target pressed")}
       />
+      
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        <MapToast
+          visible={toastVisible}
+          message={toastMessage}
+          onHide={() => setToastVisible(false)}
+        />
 
-      {/* Map Controls */}
-      <MapControls 
-        onRegenerateSeed={regenerateSeed}
-        onSetTestSeed={setTestSeed}
-      />
+        {/* Map Controls */}
+        <MapControls 
+          onRegenerateSeed={regenerateSeed}
+          onSetTestSeed={setTestSeed}
+        />
 
       <View style={styles.mapVisualContainer}>
         <View
@@ -264,6 +272,7 @@ export default function MapScreen({ navigation }) {
         />
       ))}
       <View style={{ height: 20 }} />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

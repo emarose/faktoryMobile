@@ -24,7 +24,7 @@ import ResourceList from "../DeployedMachinesScreen/components/MachineTypes/Smel
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -270,11 +270,12 @@ const SmelterScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <CustomHeader 
+        title="Smelter"
+        rightIcon="fire"
+        onRightIconPress={() => console.log("Smelter tools pressed")}
+      />
       <View style={styles.container}>
-        {/* Industrial Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Smelter Interface</Text>
-        </View>
 
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>

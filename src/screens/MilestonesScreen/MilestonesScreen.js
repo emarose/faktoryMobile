@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, ScrollView, TouchableOpacity } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 
@@ -22,6 +22,11 @@ export default function MilestonesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomHeader 
+        title="Milestones"
+        rightIcon="trophy"
+        onRightIconPress={() => console.log("Milestones tools pressed")}
+      />
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 12 }}
       >

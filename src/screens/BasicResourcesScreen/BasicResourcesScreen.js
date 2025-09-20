@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { View } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import styles from "./styles";
 import { useGame } from "../../contexts/GameContext";
 import useBasicResources from "../../hooks/useBasicResources";
@@ -40,7 +40,11 @@ const BasicResourcesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Basic Resources</Text>
+      <CustomHeader 
+        title="Basic Resources"
+        rightIcon="chart-line"
+        onRightIconPress={() => console.log("Basic resources tools pressed")}
+      />
       <View
         style={{
           flexDirection: "row",

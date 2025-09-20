@@ -6,7 +6,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { useGame } from "../../contexts/GameContext";
 import { items } from "../../data/items";
 import styles from "./styles";
@@ -133,18 +133,13 @@ const NodeSelectorScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <CustomHeader 
+        title="Select Resource Node"
+        showBackButton={true}
+        rightIcon="crosshairs-gps"
+        onRightIconPress={() => console.log("Node selector tools pressed")}
+      />
       <View style={styles.container}>
-        {/* Industrial Header */}
-        <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.backButton} 
-            onPress={() => navigation.goBack()}
-          >
-            <MaterialCommunityIcons name="arrow-left" size={24} color="#e8f4fd" />
-          </TouchableOpacity>
-          <Text style={styles.title}>Select Resource Node</Text>
-          <View style={styles.headerSpacer} />
-        </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Resource Type Filter */}

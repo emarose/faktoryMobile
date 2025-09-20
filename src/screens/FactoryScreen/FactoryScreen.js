@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import { GameContext } from "../../contexts/GameContext";
 import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
-import { Text } from "../../components";
+import { Text, CustomHeader } from "../../components";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -64,6 +64,12 @@ export default function FactoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <CustomHeader 
+        title="Factory Dashboard" 
+        showBackButton={false}
+        rightIcon="cog"
+        onRightIconPress={() => navigation.navigate("InventoryScreen")}
+      />
       <ResourceOverviewHeader />
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
