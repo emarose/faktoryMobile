@@ -17,8 +17,6 @@ const ResourceOverviewHeader = () => {
         onPress={() => navigation.navigate("BasicResourcesScreen")}
         style={styles.headerContainer}
       >
-        <Text style={styles.title}>Basic Resources</Text>
-
         <View style={styles.resourcesWrapper}>
           {displayedResourceIds.map((resourceId) => {
             const item = inventory[resourceId];
@@ -62,13 +60,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
     marginTop: 16,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: Colors.textSecondary,
-    textAlign: "center",
-    marginBottom: 10,
-  },
+
   resourcesWrapper: {
     flexDirection: "row",
     justifyContent: "center",

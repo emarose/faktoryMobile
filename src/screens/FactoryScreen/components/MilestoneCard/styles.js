@@ -13,7 +13,7 @@ export default styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#4a4a6e",
   },
-  
+
   // Milestone specific styles
   milestoneCard: {
     alignItems: "stretch",
@@ -26,7 +26,7 @@ export default styles = StyleSheet.create({
   },
   milestoneInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 8,
   },
   milestoneTitle: {
     fontSize: 16,
@@ -42,10 +42,9 @@ export default styles = StyleSheet.create({
   completedText: {
     color: Colors.textMuted,
     fontSize: 16,
-    fontStyle: "italic",
-    marginLeft: 12,
+    marginLeft: 8,
   },
-  
+
   // Progress section styles
   progressSection: {
     marginTop: 8,
@@ -53,9 +52,8 @@ export default styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#4a4a6e",
   },
- 
   requirementRow: {
-    marginBottom: 12,
+    marginBottom: 8,
   },
   requirementHeader: {
     flexDirection: "row",
@@ -95,7 +93,7 @@ export default styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 4,
   },
-  
+
   // Mini progress bar styles
   miniProgressBar: {
     height: 6,

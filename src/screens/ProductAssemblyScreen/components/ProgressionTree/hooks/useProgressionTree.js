@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useMachineRecipes from "./useMachineRecipes";
 
 /**
@@ -18,6 +18,16 @@ export const useProgressionTree = () => {
     setSelectedMachineId(machineId);
   };
 
+  // Function to auto-select first machine with search results
+  const autoSelectMachineWithResults = (filteredMachineList) => {
+    if (filteredMachineList.length > 0) {
+      const firstMachineWithResults = filteredMachineList[0];
+      if (firstMachineWithResults && selectedMachineId !== firstMachineWithResults.id) {
+        setSelectedMachineId(firstMachineWithResults.id);
+      }
+    }
+  };
+
   // Get the currently selected machine data
   const selectedMachine = machineRecipes[selectedMachineId];
 
@@ -26,7 +36,8 @@ export const useProgressionTree = () => {
     machineRecipes,
     selectedMachineId,
     selectedMachine,
-    handleMachineSelect
+    handleMachineSelect,
+    autoSelectMachineWithResults
   };
 };
 
