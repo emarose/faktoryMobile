@@ -5,11 +5,11 @@ const styles = StyleSheet.create({
   // Main container styles
   safeArea: {
     flex: 1,
-    backgroundColor: "#2a3441", // Industrial gray-blue background like ConstructorScreen
+    backgroundColor: Colors.backgroundPanel, // Industrial gray-blue background like ConstructorScreen
   },
   container: {
     flex: 1,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.backgroundPanel,
   },
 
   // Scroll view
@@ -23,28 +23,27 @@ const styles = StyleSheet.create({
 
   // Machine card styles
   machineCard: {
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: "#4a5866",
-    backgroundColor: Colors.backgroundPanel,
+    borderColor: Colors.border,
     marginBottom: 16,
     padding: 16,
     position: "relative",
-    shadowColor: "#000",
+    shadowColor: Colors.fallback,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 3,
   },
   lockedMachineCard: {
-    backgroundColor: "#1a1f29",
-    borderColor: "#3a3a3a",
+    backgroundColor: Colors.background,
+    borderColor: Colors.borderLight,
     opacity: 0.8,
   },
   availableMachineCard: {
-    borderColor: "#4CAF50",
+    borderColor: Colors.backgroundAccent,
     borderWidth: 2,
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundSecondary,
   },
 
   // Status badge
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: "#ff6b47",
+    backgroundColor: Colors.error,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   statusBadgeText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 10,
     fontWeight: "700",
     marginLeft: 4,
@@ -77,10 +76,10 @@ const styles = StyleSheet.create({
   machineIcon: {
     width: 48,
     height: 48,
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 16,
@@ -93,22 +92,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   machineName: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 20,
     marginBottom: 4,
     letterSpacing: 0.5,
   },
   lockedMachineName: {
-    color: "#8a9aa8",
+    color: Colors.textSecondary,
   },
   machineDescription: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     lineHeight: 18,
   },
   lockedMachineDescription: {
-    color: "#6a7a88",
+    color: Colors.textTertiary,
   },
 
   // Section headers
@@ -118,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    color: "#6db4f0",
+    color: Colors.textAccent,
     fontSize: 13,
     fontWeight: "600",
     marginLeft: 8,
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
   // Requirements container
   requirementsContainer: {
     borderTopWidth: 1,
-    borderTopColor: "#4a5866",
+    borderTopColor: Colors.border,
     paddingTop: 16,
     marginBottom: 16,
   },
@@ -142,10 +141,10 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     marginBottom: 4,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
   },
   requirementIndicator: {
     width: 8,
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
   },
   requirementText: {
     flex: 1,
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -164,24 +163,24 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   hasEnoughAmount: {
-    color: "#4CAF50",
+    color: Colors.success,
   },
   needsAmount: {
-    color: "#ff6b47",
+    color: Colors.error,
   },
   noRequirementsContainer: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#4CAF50",
+    borderColor: Colors.success,
     marginLeft: 8,
   },
   noRequirementsText: {
-    color: "#4CAF50",
+    color: Colors.success,
     fontSize: 14,
     fontWeight: "500",
     marginLeft: 8,
@@ -190,12 +189,12 @@ const styles = StyleSheet.create({
   // Locked container
   lockedContainer: {
     borderTopWidth: 1,
-    borderTopColor: "#4a5866",
+    borderTopColor: Colors.border,
     paddingTop: 16,
     marginBottom: 16,
   },
   lockedText: {
-    color: "#8a9aa8",
+    color: Colors.textSecondary,
     fontSize: 14,
     lineHeight: 18,
     marginLeft: 24,
@@ -210,29 +209,29 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#4a7fa7",
+    backgroundColor: Colors.backgroundAccent,
     borderWidth: 1,
-    borderColor: "#6db4f0",
+    borderColor: Colors.textAccent,
   },
   availableBuildButton: {
-    backgroundColor: "#4CAF50",
-    borderColor: "#66BB6A",
-    shadowColor: "#4CAF50",
+    backgroundColor: Colors.success,
+    borderColor: Colors.success,
+    shadowColor: Colors.success,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
   },
   lockedBuildButton: {
-    backgroundColor: "#444",
-    borderColor: "#666",
+    backgroundColor: Colors.backgroundTertiary,
+    borderColor: Colors.textTertiary,
   },
   disabledBuildButton: {
-    backgroundColor: "#666",
-    borderColor: "#777",
+    backgroundColor: Colors.textTertiary,
+    borderColor: Colors.textSecondary,
   },
   buildButtonText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 15,
     fontWeight: "700",
     marginLeft: 8,

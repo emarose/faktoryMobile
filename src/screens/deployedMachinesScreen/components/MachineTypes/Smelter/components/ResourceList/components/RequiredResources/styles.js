@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../../../../../../../../constants/Colors";
 
 export default StyleSheet.create({
   resourceListContainer: {
@@ -9,7 +10,7 @@ export default StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#292940",
+    borderBottomColor: Colors.border,
     marginBottom: 2,
   },
   resourceIconContainer: {
@@ -20,7 +21,7 @@ export default StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
     borderWidth: 1,
-    borderColor: "#444455",
+    borderColor: Colors.borderLight,
   },
   resourceInfoContainer: {
     flexDirection: "row",
@@ -28,22 +29,22 @@ export default StyleSheet.create({
     flex: 1,
   },
   resourceName: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "500",
   },
   resourceErrorBadge: {
-    backgroundColor: "#3a2323",
+    backgroundColor: Colors.backgroundDanger,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 16,
     borderWidth: 1,
-    borderColor: "#ff6b6b",
+    borderColor: Colors.backgroundDanger,
     alignSelf: "flex-start",
   },
   resourceErrorBadgeText: {
-    color: "#ff6b6b",
+    color: Colors.backgroundDanger,
     fontSize: 12,
   },
 });

@@ -11,7 +11,7 @@ const machineCardStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.backgroundAccent,
     // Enhanced shadow for machine cards
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOpacity: 0.2,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },

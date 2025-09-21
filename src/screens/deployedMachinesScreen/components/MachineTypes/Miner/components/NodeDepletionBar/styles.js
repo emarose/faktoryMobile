@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../../../../../constants/Colors";
 
 const styles = StyleSheet.create({
   depletionSection: {
@@ -6,7 +7,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   nodeDepletedText: {
-    color: "#FF6B6B",
+    color: Colors.error,
     fontSize: 14,
     fontWeight: "600",
     textAlign: "center",

@@ -29,7 +29,7 @@ export default StyleSheet.create({
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: Colors.border,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,

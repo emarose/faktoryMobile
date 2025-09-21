@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import Colors from "../../../../../constants/Colors";
 
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.background,
     borderRadius: 8,
@@ -21,13 +21,13 @@ export default styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#e0e0e0",
+    color: Colors.textSecondary,
     marginTop: 5,
     marginBottom: 3,
   },
   resourceText: {
     fontSize: 14,
-    color: "#cccccc",
+    color: Colors.textMuted,
     marginLeft: 10,
   },
   timerContainer: {
@@ -36,7 +36,7 @@ export default styles = StyleSheet.create({
   },
   timerText: {
     fontSize: 16,
-    color: '#f0f0f0',
+    color: Colors.textPrimary,
     marginBottom: 5,
   },
   progressBarBackground: {
@@ -62,8 +62,10 @@ export default styles = StyleSheet.create({
     backgroundColor: Colors.borderLight,
   },
   craftButtonText: {
-    color: "white",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 16,
   },
 });
+
+export default styles;

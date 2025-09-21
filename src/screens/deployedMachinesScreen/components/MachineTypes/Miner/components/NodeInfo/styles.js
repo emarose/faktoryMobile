@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../../../../../constants/Colors";
 
 const styles = StyleSheet.create({
   nodeInfoContainer: {
-    backgroundColor: "#2a2a3e",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 12,
     padding: 16,
     marginTop: 12,
     borderLeftWidth: 4,
-    borderLeftColor: "#4CAF50",
+    borderLeftColor: Colors.success,
   },
   headerRow: {
     flexDirection: "row",
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   selectedNodePill: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.success,
     borderRadius: 16,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -24,13 +25,13 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   selectedNodePillText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
     textAlign: "center",
   },
   machineStatus: {
-    color: "#4CAF50",
+    color: Colors.success,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -38,12 +39,12 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   nodeStatsText: {
-    color: "#bbb",
+    color: Colors.textSecondary,
     fontSize: 14,
     fontWeight: "500",
   },
   nodeLocationText: {
-    color: "#888",
+    color: Colors.textTertiary,
     fontSize: 12,
     fontStyle: "italic",
   },
