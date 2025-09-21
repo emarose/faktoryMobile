@@ -97,10 +97,10 @@ const MachineRecipeModal = ({
                       Requires:
                     </Text>
                     {(recipe.inputs || []).length === 0 ? (
-                      <Text style={{ color: "#fff" }}>None</Text>
+                      <Text style={{ color: Colors.textPrimary }}>None</Text>
                     ) : (
                       (recipe.inputs || []).map((input) => (
-                        <Text key={input.item} style={{ color: "#fff" }}>
+                        <Text key={input.item} style={{ color: Colors.textPrimary }}>
                           {input.amount * parsedAmount} x{" "}
                           {items[input.item]?.name || input.item} (You have:{" "}
                           {inventory[input.item]?.currentAmount || 0})
@@ -118,7 +118,7 @@ const MachineRecipeModal = ({
                     ) : Array.isArray(recipe.outputs) &&
                       recipe.outputs.length > 0 ? (
                       recipe.outputs.map((output) => (
-                        <Text key={output.item} style={{ color: "#fff" }}>
+                        <Text key={output.item} style={{ color: Colors.textPrimary }}>
                           {(output.amount || 1) * parsedAmount} x{" "}
                           {items[output.item]?.name || output.item}
                         </Text>
@@ -144,7 +144,7 @@ const MachineRecipeModal = ({
                     />
                     <TouchableOpacity
                       style={{
-                        backgroundColor: canAfford ? "#27ae60" : "#aaa",
+                        backgroundColor: canAfford ? Colors.success : Colors.textSecondary,
                         borderRadius: 6,
                         paddingVertical: 8,
                         paddingHorizontal: 18,
@@ -159,7 +159,7 @@ const MachineRecipeModal = ({
                         }
                       }}
                     >
-                      <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                      <Text style={{ color: Colors.textPrimary, fontWeight: "bold" }}>
                         Craft
                       </Text>
                     </TouchableOpacity>

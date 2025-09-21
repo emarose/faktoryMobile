@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: Colors.borderLight,
   },
   iconText: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#fff",
+    color: Colors.textPrimary,
   },
   icon: {
     width: 60,

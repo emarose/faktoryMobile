@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Text } from "../../../../components";
+import Colors from "../../../../constants/Colors";
 
 const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
   return (
@@ -16,16 +17,16 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
       <TouchableOpacity
         style={{
           marginHorizontal: 8,
-          backgroundColor: "#23233a",
+          backgroundColor: Colors.backgroundPanel,
           borderRadius: 16,
           paddingVertical: 8,
           paddingHorizontal: 16,
           borderWidth: 2,
-          borderColor: "#FFD700",
+          borderColor: Colors.warning,
         }}
         onPress={onRegenerateSeed}
       >
-        <Text style={{ color: "#FFD700", fontWeight: "bold" }}>
+        <Text style={{ color: Colors.warning, fontWeight: "bold" }}>
           Change seed
         </Text>
       </TouchableOpacity>
@@ -33,16 +34,16 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
       <TouchableOpacity
         style={{
           marginHorizontal: 8,
-          backgroundColor: "#23233a",
+          backgroundColor: Colors.backgroundPanel,
           borderRadius: 16,
           paddingVertical: 8,
           paddingHorizontal: 16,
           borderWidth: 2,
-          borderColor: "#00BFFF",
+          borderColor: Colors.primary,
         }}
         onPress={onSetTestSeed}
       >
-        <Text style={{ color: "#00BFFF", fontWeight: "bold" }}>
+        <Text style={{ color: Colors.primary, fontWeight: "bold" }}>
           Test Seed
         </Text>
       </TouchableOpacity>

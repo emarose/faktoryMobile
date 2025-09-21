@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader } from "../../components";
 import { useGame } from "../../contexts/GameContext";
 import { items } from "../../data/items";
+import Colors from "../../constants/Colors";
 import styles from "./styles";
 
 const NodeSelectorScreen = ({ route, navigation }) => {
@@ -181,7 +182,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       <MaterialCommunityIcons
                         name={getResourceIcon(type)}
                         size={16}
-                        color={selectedResourceType === type ? "#e8f4fd" : "#b8c7d1"}
+                        color={selectedResourceType === type ? Colors.textPrimary : Colors.textSecondary}
                         style={{ marginRight: 8 }}
                       />
                       <Text style={[
@@ -210,7 +211,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                   <MaterialCommunityIcons
                     name="map-marker-off"
                     size={48}
-                    color="#6b7885"
+                    color={Colors.textSecondary}
                   />
                   <Text style={styles.noNodesText}>
                     No available nodes found for this resource type.
@@ -244,7 +245,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name={getResourceIcon(node.type)}
                           size={24}
-                          color="#e8f4fd"
+                          color={Colors.textPrimary}
                         />
                       </View>
 
@@ -264,7 +265,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                           </Text>
                           <View style={[
                             styles.availabilityIndicator,
-                            { backgroundColor: isAvailable ? "#4CAF50" : "#ff6b6b" }
+                            { backgroundColor: isAvailable ? Colors.success : Colors.error }
                           ]} />
                         </View>
                       </View>
@@ -272,7 +273,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       <MaterialCommunityIcons
                         name="chevron-right"
                         size={24}
-                        color={isAvailable ? "#6db4f0" : "#6b7885"}
+                        color={isAvailable ? Colors.textAccent : Colors.textSecondary}
                       />
                     </TouchableOpacity>
                   );
@@ -293,7 +294,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     <MaterialCommunityIcons
                       name="pickaxe"
                       size={28}
-                      color="#6db4f0"
+                      color={Colors.textAccent}
                     />
                   </View>
                   <View style={styles.machineDetails}>

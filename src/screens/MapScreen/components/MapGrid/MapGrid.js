@@ -49,7 +49,7 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: "#555",
+                borderColor: Colors.border,
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
@@ -59,7 +59,7 @@ const MapGrid = ({
               <MaterialCommunityIcons
                 name="account-circle"
                 size={24}
-                color="#FFD700"
+                color={Colors.warning}
               />
             </View>
           );
@@ -72,7 +72,7 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: pinnedNodeId !== node.id ? 1 : 2,
-                borderColor: pinnedNodeId !== node.id ? "#555" : "#FFD700",
+                borderColor: pinnedNodeId !== node.id ? Colors.border : Colors.warning,
                 zIndex: 100,
               }}
               onPress={() => handleTilePress(node)}
@@ -87,7 +87,7 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: "#555",
+                borderColor: Colors.border,
               }}
             />
           );

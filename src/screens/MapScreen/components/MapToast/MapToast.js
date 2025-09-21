@@ -11,7 +11,7 @@ const MapToast = ({ visible, message, onHide }) => {
     <Animated.View style={styles.toast}>
       <Text style={styles.text}>{message}</Text>
       <TouchableOpacity style={styles.closeBtn} onPress={onHide}>
-        <Icon name="close" size={18} color="#aaa" />
+        <Icon name="close" size={18} color={Colors.textSecondary} />
       </TouchableOpacity>
     </Animated.View>
   );
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 10,
     elevation: 6,
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.18,
     shadowRadius: 4,
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.accentGreen,
   },
   text: {
-    color: "#27ae60",
+    color: Colors.success,
     fontWeight: "bold",
     fontSize: 15,
     flex: 1,

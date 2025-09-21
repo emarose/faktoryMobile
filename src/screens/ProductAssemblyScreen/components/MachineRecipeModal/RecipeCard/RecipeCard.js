@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { Text } from "../../../../../components";
 import { items } from "../../../../../data/items";
+import Colors from "../../../../../constants/Colors";
 import styles from "./styles";
 
 const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
@@ -65,8 +66,8 @@ const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
             style={{
               color:
                 (currentItems[inputId]?.currentAmount || 0) >= amount
-                  ? "#a0d911"
-                  : "#ff6347",
+                  ? Colors.success
+                  : Colors.error,
             }}
           >
             {Math.floor(currentItems[inputId]?.currentAmount || 0)}

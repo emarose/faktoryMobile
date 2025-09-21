@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styles from "./styles";
+import Colors from "../../../../constants/Colors";
 
 // Import componentized subcomponents
 import RecipeCard from "./components/RecipeCard";
@@ -96,7 +97,7 @@ const ProgressionTree = () => {
           <TextInput
             style={styles.searchInput}
             placeholder="Search recipes, materials, products..."
-            placeholderTextColor="#666"
+            placeholderTextColor={Colors.textSecondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
           />

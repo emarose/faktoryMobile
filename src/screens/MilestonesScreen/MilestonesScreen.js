@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { Text, CustomHeader } from "../../components";
 import styles from "./styles";
+import Colors from "../../constants/Colors";
 import { useGame } from "../../contexts/GameContext";
 
 export default function MilestonesScreen() {
@@ -44,9 +45,9 @@ export default function MilestonesScreen() {
                   ? styles.milestoneUnlocked
                   : styles.milestoneLocked,
                 isNext && {
-                  borderColor: "#ffd700",
+                  borderColor: Colors.warning,
                   borderWidth: 3,
-                  shadowColor: "#ffd700",
+                  shadowColor: Colors.warning,
                   shadowOpacity: 0.25,
                 },
                 {
@@ -70,7 +71,7 @@ export default function MilestonesScreen() {
               >
                 {isNext && (
                   <Text
-                    style={{ fontSize: 18, color: "#ffd700", marginRight: 6 }}
+                    style={{ fontSize: 18, color: Colors.warning, marginRight: 6 }}
                   >
                     ★
                   </Text>
@@ -81,7 +82,7 @@ export default function MilestonesScreen() {
               </View>
               <Text
                 style={{
-                  color: milestone.unlocked ? "#a0d911" : "#ffd700",
+                  color: milestone.unlocked ? Colors.success : Colors.warning,
                   fontSize: 14,
                   marginBottom: 2,
                 }}
@@ -91,13 +92,13 @@ export default function MilestonesScreen() {
               {expanded && (
                 <>
                   <Text
-                    style={{ color: "#bbb", fontSize: 13, marginBottom: 2 }}
+                    style={{ color: Colors.textSecondary, fontSize: 13, marginBottom: 2 }}
                   >
                     {milestone.requirementsDescription}
                   </Text>
                   <Text
                     style={{
-                      color: "#fff",
+                      color: Colors.textPrimary,
                       fontSize: 14,
                       marginTop: 6,
                       marginBottom: 2,
@@ -107,10 +108,10 @@ export default function MilestonesScreen() {
                   </Text>
                   {milestone.unlocks && milestone.unlocks.length > 0 && (
                     <View style={{ marginTop: 8 }}>
-                      <Text style={{ color: "#ffe082", fontSize: 15 }}>
+                      <Text style={{ color: Colors.textAccent, fontSize: 15 }}>
                         Unlocks:
                       </Text>
-                      <Text style={{ color: "#fff", fontSize: 14 }}>
+                      <Text style={{ color: Colors.textPrimary, fontSize: 14 }}>
                         {milestone.unlocks.join(", ")}
                       </Text>
                     </View>

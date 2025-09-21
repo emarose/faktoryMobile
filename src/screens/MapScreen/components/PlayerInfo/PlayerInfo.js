@@ -2,6 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import Colors from "../../../../constants/Colors";
 
 const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
   return (
@@ -11,7 +12,7 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
         flexDirection: "column",
         gap: 8,
         borderWidth: 1,
-        borderColor: "#444",
+        borderColor: Colors.border,
         borderRadius: 8,
         padding: 8,
         marginTop:16
@@ -21,10 +22,10 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
         <MaterialIcons
           name="my-location"
           size={18}
-          color="#FFD700"
+          color={Colors.warning}
           style={{ opacity: 0.85 }}
         />
-        <Text style={{ fontSize: 12, color: "#fff" }}>
+        <Text style={{ fontSize: 12, color: Colors.textPrimary }}>
           Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
         </Text>
       </View>
@@ -36,17 +37,17 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
             <MaterialCommunityIcons
               name="flag-checkered"
               size={18}
-              color="#1abc9c"
+              color={Colors.success}
             />
             <Text
-              style={{ fontSize: 12, color: "#e0e0e0" }}
+              style={{ fontSize: 12, color: Colors.textSecondary }}
               numberOfLines={1}
             >
               {currentMilestone.requirementsDescription}
             </Text>
           </View>
         ) : (
-          <Text style={{ fontSize: 11, color: "#e0e0e0" }}>
+          <Text style={{ fontSize: 11, color: Colors.textSecondary }}>
             No hay misiones pendientes
           </Text>
         )}

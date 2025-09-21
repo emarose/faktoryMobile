@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import styles from "./styles";
+import Colors from "../../constants/Colors";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
@@ -289,7 +290,7 @@ const SmelterScreen = ({ route, navigation }) => {
             <MaterialCommunityIcons
               name="book-open-variant"
               size={18}
-              color={activeTab === "recipe" ? "#e8f4fd" : "#b8c7d1"}
+              color={activeTab === "recipe" ? Colors.textPrimary : Colors.textSecondary}
             />
             <Text style={[
               styles.tabButtonText,
@@ -309,7 +310,7 @@ const SmelterScreen = ({ route, navigation }) => {
             <MaterialCommunityIcons
               name="fire"
               size={18}
-              color={activeTab === "production" ? "#e8f4fd" : "#b8c7d1"}
+              color={activeTab === "production" ? Colors.textPrimary : Colors.textSecondary}
             />
             <Text style={[
               styles.tabButtonText,
@@ -348,7 +349,7 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="fire"
                           size={24}
-                          color={selectedRecipeId === recipeItem.id ? "#e8f4fd" : "#b8c7d1"}
+                          color={selectedRecipeId === recipeItem.id ? Colors.textPrimary : Colors.textSecondary}
                         />
                       </View>
                       <View style={styles.recipeInfo}>
@@ -366,7 +367,7 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="check-circle"
                           size={20}
-                          color="#4CAF50"
+                          color={Colors.success}
                         />
                       )}
                     </View>
@@ -385,7 +386,7 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="arrow-right"
                           size={16}
-                          color="#ff9800"
+                          color={Colors.warning}
                           style={styles.arrowIcon}
                         />
                         <View style={styles.recipeOutputs}>

@@ -14,7 +14,7 @@ const modalStyles = StyleSheet.create({
     borderRadius: 8, // Matching buildCard borderRadius
     padding: 25, // Consistent padding
     alignItems: "center",
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2, // Subtle shadow, similar to buildCard implicit shadow
@@ -55,7 +55,7 @@ const modalStyles = StyleSheet.create({
     marginTop: 25, // Adjusted for consistent spacing
     alignItems: "center", // Ensures text is centered
     // Shadow properties from buildButton (elevation 3)
-    shadowColor: "#000",
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 1,
