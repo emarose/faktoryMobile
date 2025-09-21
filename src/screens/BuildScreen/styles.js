@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import Colors from '../../constants/Colors';
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
   // Main container styles
@@ -11,8 +11,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#2a3441",
   },
-
-
 
   // Scroll view
   scrollView: {
@@ -28,7 +26,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1f2935",
     borderWidth: 1,
     borderColor: "#4a5866",
-    borderRadius: 12,
+    backgroundColor: Colors.backgroundPanel,
     marginBottom: 16,
     padding: 16,
     position: "relative",

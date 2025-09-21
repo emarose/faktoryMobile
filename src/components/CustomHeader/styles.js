@@ -1,3 +1,4 @@
+import Colors from '../../constants/Colors';
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -25,17 +26,17 @@ export default StyleSheet.create({
   backButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: Colors.backgroundAccent,
   },
   rightButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: Colors.backgroundAccent,
   },
   title: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     letterSpacing: 1,
     textTransform: "uppercase",
     textAlign: "center",

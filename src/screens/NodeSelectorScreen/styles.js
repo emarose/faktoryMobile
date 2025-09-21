@@ -1,21 +1,22 @@
 import { StyleSheet } from "react-native";
+import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
   // Main container styles - Satisfactory inspired
   safeArea: {
     flex: 1,
-    backgroundColor: "#2a3441", // Industrial gray-blue background
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
   },
   
   // Header with industrial styling
   header: {
-    backgroundColor: "#1f2935", // Darker header background
+    backgroundColor: Colors.backgroundPanel,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
     paddingHorizontal: 20,
     paddingVertical: 16,
     flexDirection: "row",
@@ -25,16 +26,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#e8f4fd", // Light blue-white text
+    color: Colors.textPrimary,
     letterSpacing: 1,
     textTransform: "uppercase",
     flex: 1,
     textAlign: "center",
   },
   backButton: {
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 4,
     padding: 10,
     width: 44,
@@ -54,24 +55,24 @@ const styles = StyleSheet.create({
 
   // Industrial panels
   industrialPanel: {
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 4,
     marginBottom: 16,
     overflow: "hidden",
   },
   
   panelHeader: {
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderBottomWidth: 1,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   
   panelTitle: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -87,9 +88,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   filterButton: {
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 6,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -98,17 +99,17 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   filterButtonActive: {
-    backgroundColor: "#4a7fa7",
-    borderColor: "#6db4f0",
+    backgroundColor: Colors.backgroundAccent,
+    borderColor: Colors.backgroundAccent,
     borderWidth: 2,
   },
   filterButtonText: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     fontWeight: "500",
   },
   filterButtonTextActive: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontWeight: "700",
   },
 
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   noNodesText: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   noNodesSubtext: {
-    color: "#6b7885",
+    color: Colors.textMuted,
     fontSize: 12,
     textAlign: "center",
     fontStyle: "italic",
@@ -134,20 +135,20 @@ const styles = StyleSheet.create({
 
   // Node list items
   nodeItem: {
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 16,
     marginBottom: 12,
     flexDirection: "row",
     alignItems: "center",
     borderLeftWidth: 4,
-    borderLeftColor: "#4CAF50",
+    borderLeftColor: Colors.backgroundAccent,
   },
   nodeItemDisabled: {
     opacity: 0.6,
-    borderLeftColor: "#6b7885",
+    borderLeftColor: Colors.textMuted,
   },
   nodeIconContainer: {
     width: 48,
@@ -157,19 +158,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
   },
   nodeInfo: {
     flex: 1,
   },
   nodeName: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 4,
   },
   nodeLocation: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     marginBottom: 8,
   },
@@ -179,12 +180,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   nodeAmount: {
-    color: "#4CAF50",
+    color: Colors.backgroundAccent,
     fontSize: 12,
     fontWeight: "600",
   },
   nodeAmountDepleted: {
-    color: "#ff6b6b",
+    color: Colors.backgroundDanger,
   },
   availabilityIndicator: {
     width: 8,
@@ -194,9 +195,9 @@ const styles = StyleSheet.create({
 
   // Machine info card
   machineInfoCard: {
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 6,
     padding: 16,
     flexDirection: "row",
@@ -205,9 +206,9 @@ const styles = StyleSheet.create({
   machineIcon: {
     width: 48,
     height: 48,
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderWidth: 2,
-    borderColor: "#6db4f0",
+    borderColor: Colors.backgroundAccent,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -217,18 +218,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   machineTitle: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 4,
   },
   machineSubtitle: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     marginBottom: 2,
   },
   machineStatus: {
-    color: "#6db4f0",
+    color: Colors.backgroundAccent,
     fontSize: 12,
     fontWeight: "500",
   },

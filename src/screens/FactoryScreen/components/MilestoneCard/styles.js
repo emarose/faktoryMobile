@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import Colors from "../../../../constants/Colors";
 
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
   gridItem: {
     width: "100%",
     backgroundColor: Colors.backgroundPanel,
@@ -11,7 +11,7 @@ export default styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#4a4a6e",
+    borderColor: Colors.border,
   },
   
   // Milestone specific styles
@@ -30,7 +30,7 @@ export default styles = StyleSheet.create({
   },
   milestoneTitle: {
     fontSize: 16,
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     marginBottom: 4,
   },
@@ -51,7 +51,7 @@ export default styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: "#4a4a6e",
+    borderTopColor: Colors.border,
   },
  
   requirementRow: {
@@ -69,18 +69,18 @@ export default styles = StyleSheet.create({
     fontWeight: "500",
   },
   requirementCount: {
-    color: "#ffd700",
+    color: Colors.accentGold,
     fontSize: 12,
     fontWeight: "600",
   },
   requirementCompleted: {
-    color: "#4CAF50",
+    color: Colors.backgroundAccent,
   },
   overallProgress: {
     marginTop: 8,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#3a3a5e",
+    borderTopColor: Colors.border,
     alignItems: "center",
   },
   overallProgressText: {
@@ -90,7 +90,7 @@ export default styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   readyToComplete: {
-    color: "#4CAF50",
+    color: Colors.backgroundAccent,
     fontSize: 14,
     fontWeight: "bold",
     marginTop: 4,
@@ -99,7 +99,7 @@ export default styles = StyleSheet.create({
   // Mini progress bar styles
   miniProgressBar: {
     height: 6,
-    backgroundColor: "#2a2a2a",
+    backgroundColor: Colors.background,
     borderRadius: 3,
     overflow: "hidden",
     marginTop: 2,
@@ -110,3 +110,5 @@ export default styles = StyleSheet.create({
     transition: "width 0.3s ease",
   },
 });
+
+export default styles;

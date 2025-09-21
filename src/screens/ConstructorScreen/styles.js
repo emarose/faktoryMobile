@@ -1,21 +1,22 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
 
 export default StyleSheet.create({
   // Main container styles - Screen version (no modal overlay)
   safeArea: {
     flex: 1,
-    backgroundColor: "#2a3441", // Industrial gray-blue background
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
   },
   
   // Header with industrial styling (no close button needed)
   header: {
-    backgroundColor: "#1f2935", // Darker header background
+    backgroundColor: Colors.backgroundPanel,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
     paddingHorizontal: 20,
     paddingVertical: 16,
     alignItems: "center",
@@ -23,7 +24,7 @@ export default StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#e8f4fd", // Light blue-white text
+    color: Colors.textPrimary,
     letterSpacing: 1,
     textTransform: "uppercase",
   },
@@ -31,9 +32,9 @@ export default StyleSheet.create({
   // Tab Navigation
   tabContainer: {
     flexDirection: "row",
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
   },
   tabButton: {
     flex: 1,
@@ -42,17 +43,17 @@ export default StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
     borderRightWidth: 1,
-    borderRightColor: "#4a5866",
+    borderRightColor: Colors.border,
   },
   activeTabButton: {
-    backgroundColor: "#4a7fa7",
+    backgroundColor: Colors.backgroundAccent,
     borderBottomWidth: 3,
-    borderBottomColor: "#6db4f0",
+    borderBottomColor: Colors.backgroundAccent,
   },
   tabButtonText: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 14,
     fontWeight: "600",
     marginLeft: 8,
@@ -60,7 +61,7 @@ export default StyleSheet.create({
     letterSpacing: 0.5,
   },
   activeTabButtonText: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontWeight: "700",
   },
   
@@ -72,24 +73,24 @@ export default StyleSheet.create({
   // Recipe Tab Styles - Simplified for screen
   recipeTab: {
     flex: 1,
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     margin: 16,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 4,
     overflow: "hidden",
   },
   
   panelHeader: {
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderBottomWidth: 1,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
   
   panelTitle: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -105,17 +106,17 @@ export default StyleSheet.create({
   },
   
   recipeCard: {
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 8,
     marginBottom: 12,
     padding: 16,
   },
   selectedRecipeCard: {
-    borderColor: "#6db4f0",
+    borderColor: Colors.backgroundAccent,
     borderWidth: 2,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
   },
   recipeCardHeader: {
     flexDirection: "row",
@@ -125,7 +126,7 @@ export default StyleSheet.create({
   recipeIconContainer: {
     width: 40,
     height: 40,
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -135,23 +136,23 @@ export default StyleSheet.create({
     flex: 1,
   },
   recipeCardTitle: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 4,
   },
   selectedRecipeCardTitle: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
   },
   recipeCardTime: {
-    color: "#8a9aa8",
+    color: Colors.textMuted,
     fontSize: 12,
     fontWeight: "400",
   },
   
   recipeDetails: {
     borderTopWidth: 1,
-    borderTopColor: "#4a5866",
+    borderTopColor: Colors.border,
     paddingTop: 12,
   },
   recipeInputsOutputs: {
@@ -170,7 +171,7 @@ export default StyleSheet.create({
     marginTop: 8,
   },
   recipeDetailLabel: {
-    color: "#6db4f0",
+    color: Colors.backgroundAccent,
     fontSize: 12,
     fontWeight: "600",
     marginBottom: 4,
@@ -178,7 +179,7 @@ export default StyleSheet.create({
     letterSpacing: 0.5,
   },
   recipeDetailText: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     marginBottom: 2,
   },
@@ -195,9 +196,9 @@ export default StyleSheet.create({
   // Flow Section Styles
   flowSection: {
     flexDirection: "row",
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
@@ -217,14 +218,14 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
   },
   flowLabel: {
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 4,
     paddingHorizontal: 12,
     paddingVertical: 6,
     marginBottom: 12,
   },
   flowLabelText: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 12,
     fontWeight: "700",
     letterSpacing: 1,
@@ -247,16 +248,16 @@ export default StyleSheet.create({
     alignItems: "center",
     marginBottom: 6,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
   },
   slotAmount: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "700",
     marginBottom: 2,
   },
   slotName: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 11,
     textAlign: "center",
     marginBottom: 2,
@@ -271,9 +272,9 @@ export default StyleSheet.create({
     marginBottom: 16,
   },
   machineInfoCard: {
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 16,
   },
@@ -285,7 +286,7 @@ export default StyleSheet.create({
   machineIcon: {
     width: 48,
     height: 48,
-    backgroundColor: "#3a4856",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -295,13 +296,13 @@ export default StyleSheet.create({
     flex: 1,
   },
   machineTitle: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 2,
   },
   recipeTitle: {
-    color: "#6db4f0",
+    color: Colors.backgroundAccent,
     fontSize: 14,
     fontWeight: "500",
   },
@@ -316,14 +317,14 @@ export default StyleSheet.create({
     marginRight: 6,
   },
   statusText: {
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     fontSize: 12,
     fontWeight: "500",
   },
   productionStats: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
     borderRadius: 6,
     padding: 12,
   },
@@ -332,7 +333,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   statLabel: {
-    color: "#8a9aa8",
+    color: Colors.textMuted,
     fontSize: 10,
     fontWeight: "500",
     textTransform: "uppercase",
@@ -340,7 +341,7 @@ export default StyleSheet.create({
     marginBottom: 4,
   },
   statValue: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
   },
@@ -352,9 +353,9 @@ export default StyleSheet.create({
 
   // Controls Section
   controlsSection: {
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     borderRadius: 8,
     padding: 16,
   },
@@ -362,7 +363,7 @@ export default StyleSheet.create({
     marginBottom: 16,
   },
   controlLabel: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 12,
@@ -375,9 +376,9 @@ export default StyleSheet.create({
     marginTop: 12,
   },
   startProductionButton: {
-    backgroundColor: "#4a7fa7",
+    backgroundColor: Colors.backgroundAccent,
     borderWidth: 1,
-    borderColor: "#6db4f0",
+    borderColor: Colors.backgroundAccent,
     borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
@@ -386,11 +387,11 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
   },
   startProductionButtonDisabled: {
-    backgroundColor: "#3a4856",
-    borderColor: "#4a5866",
+    backgroundColor: Colors.backgroundSecondary,
+    borderColor: Colors.border,
   },
   startProductionButtonText: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "600",
     marginLeft: 8,
@@ -398,6 +399,6 @@ export default StyleSheet.create({
     letterSpacing: 0.5,
   },
   startProductionButtonTextDisabled: {
-    color: "#6b7885",
+    color: Colors.textMuted,
   },
 });

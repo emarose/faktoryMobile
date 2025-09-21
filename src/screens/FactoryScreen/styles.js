@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
@@ -37,7 +37,7 @@ export default styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#4a4a6e",
+    borderColor: Colors.borderLight,
   },
   gridItemTitle: {
     fontSize: 18,
@@ -53,3 +53,5 @@ export default styles = StyleSheet.create({
   },
 
 });
+
+export default styles;

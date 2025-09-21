@@ -4,15 +4,15 @@ import Colors from '../../constants/Colors';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2a3441", // Industrial gray-blue background
+    backgroundColor: Colors.background,
   },
   // Machine Type Tabs with industrial styling
   filterTabsContainer: {
-    backgroundColor: "#1f2935", // Darker background
+    backgroundColor: Colors.backgroundPanel,
     paddingVertical: 16,
     paddingHorizontal: 12,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -28,10 +28,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.background,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     gap: 8,
     minWidth: 120,
     shadowColor: "#000",
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   machineTabActive: {
-    backgroundColor: "#4a7fa7",
-    borderColor: "#6db4f0",
-    shadowColor: "#6db4f0",
+    backgroundColor: Colors.backgroundAccent,
+    borderColor: Colors.backgroundAccent,
+    shadowColor: Colors.backgroundAccent,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
   machineTabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: "#b8c7d1",
+    color: Colors.textSecondary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     flex: 1,
   },
   machineTabTextActive: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontWeight: '700',
     textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 1 },
@@ -70,16 +70,16 @@ const styles = StyleSheet.create({
   machineTabCount: {
     fontSize: 11,
     fontWeight: '700',
-    color: "#6a7a88",
-    backgroundColor: "#3a4856",
+    color: Colors.textMuted,
+    backgroundColor: Colors.backgroundSecondary,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
     overflow: 'hidden',
   },
   machineTabCountActive: {
-    color: "#e8f4fd",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    color: Colors.textPrimary,
+    backgroundColor: Colors.overlay,
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   emptyStateText: {
-    color: "#8a9aa8",
+    color: Colors.textMuted,
     textAlign: "center",
     marginTop: 60,
     fontSize: 16,

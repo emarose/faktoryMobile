@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 12, // Smaller font for item name below icon
-    color: "#fff",
+    color: Colors.textPrimary,
     marginTop: 5,
     textAlign: "center",
     position: "absolute", // Position name below icon in a fixed spot

@@ -2,17 +2,28 @@
 
 ## PRIORIDAD ALTA
 
-### Sistema de Diseño Unificado [P1]
-- [ ] Crear paleta de colores temática en Colors.js (🔑 Crear variables semánticas como primary, secondary, success, warning)
-- [ ] Establecer sistema tipográfico consistente (🔑 Crear TextStyles.js con h1-h6, body, caption)
-- [ ] Implementar sistema de espaciado constante (🔑 Utilizar múltiplos de 8px)
-- [ ] Definir sistema de sombras/elevación (🔑 3-4 niveles de elevación con sombras consistentes)
-
-### Componentes Base Reutilizables [P1]
-- [ ] Crear componente Card (🔑 Extraer lógica común de todas las tarjetas actuales)
-- [ ] Implementar ResourceDisplay (🔑 Componente para mostrar recursos con ícono, cantidad y tendencia)
-- [ ] Desarrollar StatusBadge (🔑 Reutilizar en todas las pantallas que muestran estados)
-- [ ] Refactorizar GridItem a componente reutilizable (🔑 Extraer de FactoryScreen)
+3. Plan de acción recomendado
+Paso 1: Centralizar colores
+Define una paleta simple en Colors.js (máximo 8-10 colores semánticos).
+Busca y reemplaza todos los colores hardcodeados en el proyecto por referencias a Colors.js.
+Paso 2: Refactorizar estilos
+Mueve estilos inline a archivos styles.js por componente.
+Usa constantes de colores y espaciado en los estilos.
+Paso 3: Componetización
+Identifica componentes repetidos (cards, badges, barras, tooltips).
+Crea componentes base reutilizables y reemplaza las implementaciones duplicadas.
+Paso 4: Refactorizar archivos largos con lógica
+Divide pantallas y contextos grandes en componentes/hook más pequeños.
+Mantén los archivos de datos largos si solo contienen datos.
+Paso 5: Mejorar consistencia visual
+Usa constantes para tipografía, espaciado y sombras.
+Aplica los componentes base y estilos centralizados en todas las pantallas.
+4. ¿Cómo proseguir?
+Define la paleta de colores y reemplaza hardcodeados.
+Centraliza estilos en styles.js y usa constantes.
+Componetiza UI repetida.
+Refactoriza archivos largos con lógica.
+Revisa y ajusta la consistencia visual en todas las pantallas.
 
 ### DeployedMachinesScreen [P2]
 - [ ] Mejorar visualización de máquinas (🔑 Agrupar por tipo y función)

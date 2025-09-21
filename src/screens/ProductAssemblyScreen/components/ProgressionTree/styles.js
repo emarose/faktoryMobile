@@ -10,14 +10,14 @@ const styles = StyleSheet.create({
   searchHeader: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: "#2a3441",
+    backgroundColor: Colors.backgroundPanel,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
   },
   screenTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     marginBottom: 12,
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#4a5866",
+    borderColor: Colors.border,
     paddingHorizontal: 4,
   },
   searchInput: {
@@ -37,12 +37,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
   },
   clearButton: {
     padding: 8,
     marginRight: 8,
-    backgroundColor: "#4a5866",
+    backgroundColor: Colors.backgroundAccent,
     borderRadius: 8,
     minWidth: 32,
     alignItems: 'center',
@@ -50,19 +50,19 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 16,
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
     fontWeight: 'bold',
   },
   searchSummary: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#1f2935",
+    backgroundColor: Colors.backgroundSecondary,
     borderBottomWidth: 1,
-    borderBottomColor: "#4a5866",
+    borderBottomColor: Colors.border,
   },
   searchSummaryText: {
     fontSize: 13,
-    color: "#6db4f0",
+    color: Colors.textAccent,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   machineRequirements: {
     marginTop: 8,
     padding: 10,
-    backgroundColor: "rgba(0,0,0,0.1)",
+    backgroundColor: Colors.backgroundAccent,
     borderRadius: 8,
   },
   machineRequirementsTitle: {
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   requiredItemChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.1)",
+    backgroundColor: Colors.backgroundAccent,
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,

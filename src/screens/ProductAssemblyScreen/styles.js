@@ -1,16 +1,17 @@
+import Colors from '../../constants/Colors';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: Colors.backgroundPanel,
     paddingTop: 10,
     paddingHorizontal: 15,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#e0e0e0',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   noMachinesText: {
-    color: '#aaa',
+    color: Colors.textMuted,
     fontSize: 16,
     textAlign: 'center',
     marginTop: 50,

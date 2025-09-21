@@ -14,7 +14,7 @@ export default StyleSheet.create({
     elevation: 2,
   },
   selectedCard: {
-    borderColor: "#FFD700",
+    borderColor: Colors.accentGold,
     borderWidth: 2,
   },
   icon: {
@@ -23,13 +23,13 @@ export default StyleSheet.create({
     marginBottom: 8,
   },
   name: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 16,
     marginBottom: 4,
   },
   amount: {
-    color: "#aaa",
+    color: Colors.textMuted,
     fontSize: 14,
   },
 });

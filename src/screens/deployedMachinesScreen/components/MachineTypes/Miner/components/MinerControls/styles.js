@@ -1,3 +1,4 @@
+import Colors from '../../../../../../../../constants/Colors';
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
@@ -16,18 +17,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   pauseResumeActive: {
-    backgroundColor: "#FF9800",
+    backgroundColor: Colors.backgroundWarning,
   },
   pauseResumeIdle: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.accentGreen,
   },
   pauseResumeText: {
-    color: "#fff",
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "600",
   },
   detachButton: {
-    backgroundColor: "#35354a",
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   detachText: {
-    color: "#bbb",
+    color: Colors.textMuted,
     fontSize: 14,
     fontWeight: "500",
   },
