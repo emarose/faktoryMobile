@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -22,12 +22,11 @@ const ProgressionTree = () => {
     selectedMachineId,
     selectedMachine,
     handleMachineSelect,
-    machineRecipes
+    machineRecipes,
+    autoSelectMachineWithResults
   } = useProgressionTree();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
-
   // Filter recipes based on search query
   const filteredRecipes = useMemo(() => {
     if (!selectedMachine || !searchQuery.trim()) {
@@ -79,42 +78,44 @@ const ProgressionTree = () => {
 
   const clearSearch = () => {
     setSearchQuery("");
-    setShowSearch(false);
   };
+
+  // Auto-select first machine with results when searching
+  useEffect(() => {
+    if (searchQuery.trim() && filteredMachineList.length > 0) {
+      autoSelectMachineWithResults(filteredMachineList);
+    }
+  }, [searchQuery, filteredMachineList, autoSelectMachineWithResults]);
 
   return (
     <View style={styles.container}>
-      {/* Search Header */}
+      {/* Search Header - Always Visible */}
       <View style={styles.searchHeader}>
-        {showSearch ? (
-          <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search recipes, materials, products..."
-              placeholderTextColor="#666"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              autoFocus={true}
-            />
+        <Text style={styles.screenTitle}>Assembly Recipes</Text>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search recipes, materials, products..."
+            placeholderTextColor="#666"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery.length > 0 && (
             <TouchableOpacity style={styles.clearButton} onPress={clearSearch}>
               <Text style={styles.clearButtonText}>✕</Text>
             </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.headerControls}>
-            <Text style={styles.screenTitle}>Assembly Recipes</Text>
-            <TouchableOpacity style={styles.searchButton} onPress={() => setShowSearch(true)}>
-              <Text style={styles.searchButtonText}>🔍</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          )}
+        </View>
       </View>
 
       {/* Search Results Summary */}
       {searchQuery.trim() && (
         <View style={styles.searchSummary}>
           <Text style={styles.searchSummaryText}>
-            Found {filteredRecipes.length} recipes in {filteredMachineList.length} machines
+            {filteredMachineList.length === 0 
+              ? `No results found for "${searchQuery}"`
+              : `Found ${filteredRecipes.length} recipe${filteredRecipes.length !== 1 ? 's' : ''} in ${filteredMachineList.length} machine${filteredMachineList.length !== 1 ? 's' : ''}`
+            }
           </Text>
         </View>
       )}
