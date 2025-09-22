@@ -34,17 +34,17 @@ export default StyleSheet.create({
     fontWeight: "500",
   },
   resourceErrorBadge: {
-    backgroundColor: Colors.backgroundDanger,
+    backgroundColor: Colors.textDanger,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 16,
     borderWidth: 1,
-    borderColor: Colors.backgroundDanger,
+    borderColor: Colors.textDanger,
     alignSelf: "flex-start",
   },
   resourceErrorBadgeText: {
-    color: Colors.backgroundDanger,
+    color: Colors.textDanger,
     fontSize: 12,
   },
 });

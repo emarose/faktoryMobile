@@ -90,7 +90,7 @@ const machineCardStyles = StyleSheet.create({
     fontSize: 16,
   },
   noNodesText: {
-    color: Colors.backgroundWarning,
+    color: Colors.accentGold,
     fontSize: 13,
     marginTop: 4,
   },
@@ -131,7 +131,7 @@ const machineCardStyles = StyleSheet.create({
     marginBottom: 16,
   },
   nodeDepletedText: {
-    color: Colors.backgroundDanger, // Un rojo más estándar para errores
+    color: Colors.textDanger, // Un rojo más estándar para errores
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 8,
@@ -159,7 +159,7 @@ const machineCardStyles = StyleSheet.create({
     backgroundColor: Colors.backgroundAccent,
   },
   pauseResumeActive: {
-    backgroundColor: Colors.backgroundWarning,
+    backgroundColor: Colors.accentGold,
   },
   pauseResumeText: {
     color: Colors.textPrimary,
@@ -212,7 +212,7 @@ const machineCardStyles = StyleSheet.create({
     gap: 4,
   },
   pauseButton: {
-    backgroundColor: Colors.backgroundWarning,
+    backgroundColor: Colors.accentGold,
   },
   resumeButton: {
     backgroundColor: Colors.accentGreen,

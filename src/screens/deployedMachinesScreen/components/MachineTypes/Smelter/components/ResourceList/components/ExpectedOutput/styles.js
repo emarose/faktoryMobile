@@ -6,7 +6,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 2,
-    backgroundColor: Colors.backgroundPill,
+    backgroundColor: Colors.backgroundPanel,
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,

@@ -386,7 +386,7 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="arrow-right"
                           size={16}
-                          color={Colors.warning}
+                          color={Colors.accentGold}
                           style={styles.arrowIcon}
                         />
                         <View style={styles.recipeOutputs}>

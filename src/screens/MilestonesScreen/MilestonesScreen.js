@@ -45,9 +45,9 @@ export default function MilestonesScreen() {
                   ? styles.milestoneUnlocked
                   : styles.milestoneLocked,
                 isNext && {
-                  borderColor: Colors.warning,
+                  borderColor: Colors.accentGold,
                   borderWidth: 3,
-                  shadowColor: Colors.warning,
+                  shadowColor: Colors.accentGold,
                   shadowOpacity: 0.25,
                 },
                 {
@@ -71,7 +71,7 @@ export default function MilestonesScreen() {
               >
                 {isNext && (
                   <Text
-                    style={{ fontSize: 18, color: Colors.warning, marginRight: 6 }}
+                    style={{ fontSize: 18, color: Colors.accentGold, marginRight: 6 }}
                   >
                     ★
                   </Text>
@@ -82,7 +82,7 @@ export default function MilestonesScreen() {
               </View>
               <Text
                 style={{
-                  color: milestone.unlocked ? Colors.success : Colors.warning,
+                  color: milestone.unlocked ? Colors.success : Colors.accentGold,
                   fontSize: 14,
                   marginBottom: 2,
                 }}

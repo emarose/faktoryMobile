@@ -22,11 +22,11 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
           paddingVertical: 8,
           paddingHorizontal: 16,
           borderWidth: 2,
-          borderColor: Colors.warning,
+          borderColor: Colors.accentGold,
         }}
         onPress={onRegenerateSeed}
       >
-        <Text style={{ color: Colors.warning, fontWeight: "bold" }}>
+        <Text style={{ color: Colors.accentGold, fontWeight: "bold" }}>
           Change seed
         </Text>
       </TouchableOpacity>

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   pauseResumeActive: {
-    backgroundColor: Colors.backgroundWarning,
+    backgroundColor: Colors.accentGold,
   },
   pauseResumeIdle: {
     backgroundColor: Colors.accentGreen,

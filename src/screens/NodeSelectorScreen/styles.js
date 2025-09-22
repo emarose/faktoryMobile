@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   nodeAmountDepleted: {
-    color: Colors.backgroundDanger,
+    color: Colors.textDanger,
   },
   availabilityIndicator: {
     width: 8,

@@ -22,7 +22,7 @@ const PlayerInfo = ({ visualPlayerPos, currentMilestone, nextMilestone }) => {
         <MaterialIcons
           name="my-location"
           size={18}
-          color={Colors.warning}
+          color={Colors.accentGold}
           style={{ opacity: 0.85 }}
         />
         <Text style={{ fontSize: 12, color: Colors.textPrimary }}>

@@ -33,7 +33,7 @@ export default StyleSheet.create({
   cancelButton: {
     marginTop: 8,
     alignSelf: 'center',
-    backgroundColor: Colors.backgroundDanger,
+    backgroundColor: Colors.textDanger,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 6,
