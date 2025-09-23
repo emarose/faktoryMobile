@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   resourceAmount: {
     fontSize: 18,
     fontWeight: "bold",
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
   },
 });
 

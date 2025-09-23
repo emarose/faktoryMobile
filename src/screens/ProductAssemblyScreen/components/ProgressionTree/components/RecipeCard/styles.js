@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   nodeInfoText: {
     fontSize: 12,
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     marginRight: 8,
     marginBottom: 4,
   },

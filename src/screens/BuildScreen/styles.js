@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     fontSize: 13,
     fontWeight: "600",
     marginLeft: 8,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: Colors.backgroundAccent,
     borderWidth: 1,
-    borderColor: Colors.textAccent,
+    borderColor: Colors.accentGreen,
   },
   availableBuildButton: {
     backgroundColor: Colors.success,

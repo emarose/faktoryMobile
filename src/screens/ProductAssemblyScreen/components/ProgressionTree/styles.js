@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   searchSummaryText: {
     fontSize: 13,
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     fontWeight: '600',
     letterSpacing: 0.5,
   },

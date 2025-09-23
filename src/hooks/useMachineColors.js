@@ -13,7 +13,7 @@ export const useMachineColors = () => {
     refinery: "#AB47BC", // Purple
     assembler: "#26A69A", // Teal
     manufacturer: "#FF7043", // Orange
-    miner: Colors.accentGreen, // Green from Colors
+    miner: "#2ca362ff", // Green from Colors
     oilExtractor: "#5D4037", // Brown
     // Default color for any missing machines
     default: "#90A4AE", // Grey blue

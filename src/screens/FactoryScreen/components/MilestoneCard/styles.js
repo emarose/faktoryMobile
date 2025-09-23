@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   milestoneDescription: {
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     fontSize: 12,
     lineHeight: 18,
   },

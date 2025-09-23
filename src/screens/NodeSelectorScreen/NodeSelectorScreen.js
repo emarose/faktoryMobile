@@ -273,7 +273,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       <MaterialCommunityIcons
                         name="chevron-right"
                         size={24}
-                        color={isAvailable ? Colors.textAccent : Colors.textSecondary}
+                        color={isAvailable ? Colors.accentGreen : Colors.textSecondary}
                       />
                     </TouchableOpacity>
                   );
@@ -294,7 +294,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     <MaterialCommunityIcons
                       name="pickaxe"
                       size={28}
-                      color={Colors.textAccent}
+                      color={Colors.accentGreen}
                     />
                   </View>
                   <View style={styles.machineDetails}>

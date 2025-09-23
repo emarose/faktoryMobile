@@ -1,7 +1,7 @@
 const Colors = {
   // Fondos principales
-  background: "#23233a", // Fondo principal (pantallas, tarjetas)
-  backgroundSecondary: "#2c2c44", // Fondo secundario (paneles, botones)
+  background: "#23233a", // Fondo principal (pantallas)
+  backgroundSecondary: "#2c2c44", // Fondo secundario (paneles, botones, tarjetas)
   backgroundPanel: "#1a1a2e", // Paneles o overlays
   backgroundAccent: "#4d65b4", // Fondo en Botónes principales / CTAs
 
@@ -9,7 +9,7 @@ const Colors = {
   textPrimary: "#fff", // Texto principal
   textSecondary: "#e0e0e0", // Texto secundario
   textMuted: "#aaa", // Texto deshabilitado/muted
-  textAccent: "#a0d911", // Texto de éxito/acento verde lima
+  textSuccess: "#a0d911", // Texto de éxito/acento verde lima --->> IMPLEMENTAR PARA CONFIRMACIONES Y SUCCESS MESSAGES
   textDanger: "#ff6b6b", // Texto de error
 
   // Bordes y líneas
@@ -18,7 +18,7 @@ const Colors = {
 
   // Otros acentos vibrantes
   accentGreen: "#27ae60",
-  accentBlue: "#64639e",
+  accentBlue: "#64639e",// <---- CAMBIAR PAULATINAMENTE A ESTE TONO O GENERALIZAR ACCENTS SIN COLOR EN SU NOMBRE
   accentGold: "#FFD700",
 
   // Overlay

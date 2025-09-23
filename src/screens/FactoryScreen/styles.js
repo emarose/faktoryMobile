@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     marginTop: 25,
     marginBottom: 15,
     borderBottomWidth: 1,

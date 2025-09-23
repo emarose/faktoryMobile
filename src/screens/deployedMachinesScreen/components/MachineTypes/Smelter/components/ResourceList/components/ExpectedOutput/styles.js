@@ -32,7 +32,7 @@ export default StyleSheet.create({
     fontWeight: "bold",
   },
   outputDescription: {
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     fontSize: 12,
     marginTop: 2,
   },

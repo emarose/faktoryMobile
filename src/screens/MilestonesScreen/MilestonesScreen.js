@@ -108,7 +108,7 @@ export default function MilestonesScreen() {
                   </Text>
                   {milestone.unlocks && milestone.unlocks.length > 0 && (
                     <View style={{ marginTop: 8 }}>
-                      <Text style={{ color: Colors.textAccent, fontSize: 15 }}>
+                      <Text style={{ color: Colors.accentGreen, fontSize: 15 }}>
                         Unlocks:
                       </Text>
                       <Text style={{ color: Colors.textPrimary, fontSize: 14 }}>

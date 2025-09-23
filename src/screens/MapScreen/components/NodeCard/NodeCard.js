@@ -313,7 +313,7 @@ const NodeCard = React.memo(
               <Text
                 style={[
                   styles.nodeCapability,
-                  { fontSize: 11, color: Colors.textAccent, marginTop: 2 },
+                  { fontSize: 11, color: Colors.accentGreen, marginTop: 2 },
                 ]}
               >
                 Requires: {items[machineRequired]?.name || machineRequired}
@@ -323,7 +323,7 @@ const NodeCard = React.memo(
               <Text
                 style={[
                   styles.assignedCount,
-                  { fontSize: 11, color: Colors.textAccent, marginTop: 2 },
+                  { fontSize: 11, color: Colors.accentGreen, marginTop: 2 },
                 ]}
               >
                 Machines: {assignedMachineCount}

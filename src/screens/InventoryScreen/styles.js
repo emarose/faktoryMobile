@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   itemAmount: {
     fontSize: 14,
     fontWeight: "bold",
-    color: Colors.textAccent, // Green for resource amounts, or '#fff' for white
+    color: Colors.accentGreen, // Green for resource amounts, or '#fff' for white
   },
   emptyInventoryText: {
     color: Colors.textSecondary,

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     milestoneName: { fontSize: 18, fontWeight: "bold", color: Colors.textPrimary, marginBottom: 2 },
     milestoneDescription: { fontSize: 14, color: Colors.textMuted, marginVertical: 6 },
     unlocksTitle: { fontWeight: "bold", color: Colors.textPrimary, marginTop: 8 },
-    unlockItem: { color: Colors.textAccent, marginLeft: 0, fontSize: 13, marginBottom: 2 },
+    unlockItem: { color: Colors.accentGreen, marginLeft: 0, fontSize: 13, marginBottom: 2 },
     unlockedText: { color: Colors.accentGreen, fontWeight: "bold", marginTop: 8 },
     lockedText: { color: Colors.textDanger, fontWeight: "bold", marginTop: 8 },
     unlockButton: { backgroundColor: Colors.accentGreen, borderRadius: 6, padding: 10, alignItems: 'center' },

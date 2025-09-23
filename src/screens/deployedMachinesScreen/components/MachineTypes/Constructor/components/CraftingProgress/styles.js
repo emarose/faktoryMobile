@@ -20,7 +20,7 @@ export default StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: Colors.textAccent,
+    backgroundColor: Colors.accentGreen,
     borderRadius: 4,
   },
   progressText: {

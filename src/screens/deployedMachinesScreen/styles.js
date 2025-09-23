@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   groupTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    color: Colors.textAccent,
+    color: Colors.accentGreen,
     marginBottom: 10,
     marginLeft: 5,
     borderBottomWidth: 1,

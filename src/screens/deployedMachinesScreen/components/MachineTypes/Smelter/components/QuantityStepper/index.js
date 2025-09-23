@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { View, Text, TouchableOpacity, PanResponder, Animated } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "../../../../../../../constants/Colors";
 
 const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
   // Valores calculados que no cambian con frecuencia
@@ -135,14 +136,14 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
         <TouchableOpacity
           onPress={() => updateValue(numericValue - 1)}
           style={{
-            backgroundColor: "#2c2c44",
+            backgroundColor: Colors.backgroundSecondary,
             width: 36,
             height: 36,
             borderRadius: 18,
             justifyContent: "center",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: "#444455",
+            borderColor: Colors.borderLight,
           }}
         >
           <MaterialIcons name="remove" size={20} color="#fff" />
@@ -196,7 +197,7 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
             position: "absolute",
             width: Animated.add(thumbPosition, thumbSize / 2),
             height: trackHeight,
-            backgroundColor: "#4caf50",
+            backgroundColor: Colors.accentGreen,
             borderRadius: trackHeight / 2,
           }}
         />
@@ -213,7 +214,7 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
             borderRadius: thumbSize / 2,
             backgroundColor: "#ffe082",
             borderWidth: 2,
-            borderColor: "#4caf50",
+            borderColor: Colors.accentGreen,
             elevation: 3,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
@@ -230,7 +231,7 @@ const QuantityStepper = ({ amount, setAmount, maxAmount }) => {
               width: 6, 
               height: 6, 
               borderRadius: 3, 
-              backgroundColor: "#4caf50" 
+              backgroundColor: Colors.accentGreen 
             }} 
           />
         </Animated.View>

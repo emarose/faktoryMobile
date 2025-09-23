@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     borderRadius: 8,
     borderLeftWidth: 3,
-    borderLeftColor: Colors.textAccent,
+    borderLeftColor: Colors.accentGreen,
   },
   machineBasicInfo: {
     flexDirection: "row",

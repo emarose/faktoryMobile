@@ -8,7 +8,6 @@ E:\Code\faktoryMobile\src\screens\BuildScreen\BuildScreen.js
 E:\Code\faktoryMobile\src\screens\ConstructorScreen\ConstructorScreen.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Miner\components\NodeSelectorModal_OLD\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\SmelterModal\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\DeployedMachinesScreen.js
@@ -32,65 +31,111 @@ E:\Code\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js (inlin
 E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 26)
 E:\Code\faktoryMobile\src\screens\MapScreen\components\PlayerInfo\PlayerInfo.js (inline styles: 16)
 
-=== Color summary ===
-Total unique backgroundColor: 22
-Total unique text color: 30
-Total unique colors (all): 52
+=== NODE COLORS ANALYSIS (vs nodeTypes.js) ===
+
+📚 OFFICIAL NODE COLORS (from nodeTypes.js):
+📌 bauxite_node         → #CD5C5C
+📌 cateriumOre_node     → #DAA520
+📌 coal_node            → #424040FF
+📌 copperOre_node       → #B88333FF
+📌 crudeOil_node        → #4B0082
+📌 ironOre_node         → #D8DADBFF
+📌 limestone_node       → #F5D7C5FF
+📌 rawQuartz_node       → #ADD8E6
+📌 sulfur_node          → #FFFF00
+📌 uranium_node         → #00FF00
+
+🔍 ALL COLORS FOUND IN PROJECT:
+🎨 #1C1C1C → crudeOil_node (1 file)
+🎨 #2C2C2C → coal_node (1 file)
+🎨 #8B7355 → ironOre_node (1 file)
+🎨 #B87333 → copperOre_node (1 file)
+🎨 #E6E6FA → quartz_node (1 file)
+🎨 #F5F5DC → limestone_node (1 file)
+🎨 #FFD700 → cateriumOre_node (1 file)
+
+🚨 INCONSISTENCIES DETECTED:
+❌ ironOre_node: Official=#D8DADBFF but found #8B7355 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as ironOre_node)
+❌ copperOre_node: Official=#B88333FF but found #B87333 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as copperOre_node)
+❌ coal_node: Official=#424040FF but found #2C2C2C in screens\NodeSelectorScreen\NodeSelectorScreen.js (as coal_node)
+❌ limestone_node: Official=#F5D7C5FF but found #F5F5DC in screens\NodeSelectorScreen\NodeSelectorScreen.js (as limestone_node)
+❌ rawQuartz_node: Official=#ADD8E6 but found #E6E6FA in screens\NodeSelectorScreen\NodeSelectorScreen.js (as quartz_node)
+❌ crudeOil_node: Official=#4B0082 but found #1C1C1C in screens\NodeSelectorScreen\NodeSelectorScreen.js (as crudeOil_node)
+❌ cateriumOre_node: Official=#DAA520 but found #FFD700 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as cateriumOre_node)
+
+💡 Fix: Update hardcoded colors to match nodeTypes.js or use getNodeColor() function
+
+📊 STATS: 10 official nodes | 7 colors found | 7 inconsistencies
+
+=== GLOBAL COLOR SUMMARY ===
+Total unique backgroundColor: 20
+Total unique text color: 25
+Total unique colors (all): 45
+Colors in node-related files: 34
 
 === backgroundColor usage ===
-#23233a: 6 uses (15.00%)
-#3a4856: 3 uses (7.50%)
-#4CAF50: 3 uses (7.50%)
-#1f2935: 2 uses (5.00%)
-#6db4f0: 2 uses (5.00%)
-rgba(0,0,0,0.8): 2 uses (5.00%)
-#1a1a1a: 2 uses (5.00%)
-#35354a: 2 uses (5.00%)
-#2c2c44: 2 uses (5.00%)
-#4caf50: 2 uses (5.00%)
-#2196F3: 2 uses (5.00%)
-#FF9800: 2 uses (5.00%)
-#1a1a2e: 1 uses (2.50%)
-#4a7fa7: 1 uses (2.50%)
-#ff6b6b: 1 uses (2.50%)
-#4a5866: 1 uses (2.50%)
-#e8f4fd: 1 uses (2.50%)
-#2a2a3e: 1 uses (2.50%)
-#444: 1 uses (2.50%)
-#ffe082: 1 uses (2.50%)
-#27ae60: 1 uses (2.50%)
-#ff9800: 1 uses (2.50%)
-Total unique backgroundColor usage: 22
+#2c2c2c: 7 uses (14.00%)
+#1a1a1a: 6 uses (12.00%)
+#3a3a3a: 5 uses (10.00%)
+#23233a: 4 uses (8.00%)
+#444: 4 uses (8.00%)
+#3a4856: 3 uses (6.00%)
+#ff9800: 3 uses (6.00%)
+#1f2935: 2 uses (4.00%)
+#6db4f0: 2 uses (4.00%)
+#4CAF50: 2 uses (4.00%)
+#2196F3: 2 uses (4.00%)
+#FF9800: 2 uses (4.00%)
+#4a7fa7: 1 uses (2.00%)
+#ff6b6b: 1 uses (2.00%)
+#4a5866: 1 uses (2.00%)
+#e8f4fd: 1 uses (2.00%)
+#2c2c44: 1 uses (2.00%)
+#ffe082: 1 uses (2.00%)
+rgba(0,0,0,0.8): 1 uses (2.00%)
+#27ae60: 1 uses (2.00%)
+Total unique backgroundColor usage: 20
 
 === text color usage ===
-#fff: 20 uses (31.25%)
-#bbb: 5 uses (7.81%)
-#FFD700: 3 uses (4.69%)
-#e8f4fd: 3 uses (4.69%)
-#4CAF50: 3 uses (4.69%)
-#aaa: 2 uses (3.13%)
-#6b7885: 2 uses (3.13%)
-#888: 2 uses (3.13%)
-#27ae60: 2 uses (3.13%)
-#e0e0e0: 2 uses (3.13%)
-#d8dadbff: 1 uses (1.56%)
-#b88333ff: 1 uses (1.56%)
-#f5d7c5ff: 1 uses (1.56%)
-#424040ff: 1 uses (1.56%)
-#DAA520: 1 uses (1.56%)
-#ADD8E6: 1 uses (1.56%)
-#FFFF00: 1 uses (1.56%)
-#4B0082: 1 uses (1.56%)
-#CD5C5C: 1 uses (1.56%)
-#00FF00: 1 uses (1.56%)
-#808080: 1 uses (1.56%)
-#b8c7d1: 1 uses (1.56%)
-#FF6B6B: 1 uses (1.56%)
-#333: 1 uses (1.56%)
-#ff9800: 1 uses (1.56%)
-#c00: 1 uses (1.56%)
-#00BFFF: 1 uses (1.56%)
-#ffd700: 1 uses (1.56%)
-#ffe082: 1 uses (1.56%)
-#a0d911: 1 uses (1.56%)
-Total unique text color usage: 30
+#e8f4fd: 12 uses (20.00%)
+#b8c7d1: 8 uses (13.33%)
+#fff: 7 uses (11.67%)
+#ff9800: 6 uses (10.00%)
+#6b7885: 3 uses (5.00%)
+#FFD700: 2 uses (3.33%)
+#aaa: 2 uses (3.33%)
+#4CAF50: 2 uses (3.33%)
+#888: 2 uses (3.33%)
+#d8dadbff: 1 uses (1.67%)
+#b88333ff: 1 uses (1.67%)
+#f5d7c5ff: 1 uses (1.67%)
+#424040ff: 1 uses (1.67%)
+#DAA520: 1 uses (1.67%)
+#ADD8E6: 1 uses (1.67%)
+#FFFF00: 1 uses (1.67%)
+#4B0082: 1 uses (1.67%)
+#CD5C5C: 1 uses (1.67%)
+#00FF00: 1 uses (1.67%)
+#808080: 1 uses (1.67%)
+#333: 1 uses (1.67%)
+#c00: 1 uses (1.67%)
+#27ae60: 1 uses (1.67%)
+#a0d911: 1 uses (1.67%)
+#bbb: 1 uses (1.67%)
+Total unique text color usage: 25
+
+=== OTHER COLORS IN NODE/MINING FILES ===
+Most used colors in node-related files:
+#4CAF50 → 3 files (text)
+#ff9800 → 2 files (text)
+#fff → 2 files (text)
+#d8dadbff → 1 file (text)
+#b88333ff → 1 file (text)
+#f5d7c5ff → 1 file (text)
+#424040ff → 1 file (text)
+#DAA520 → 1 file (text)
+#ADD8E6 → 1 file (text)
+#FFFF00 → 1 file (text)
+... and 24 more colors
+
+Total colors in node-related files: 34
