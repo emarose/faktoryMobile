@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader } from "../../components";
 import { useGame } from "../../contexts/GameContext";
 import { items } from "../../data/items";
+import { getNodeColor, getNodeTypeDefinition } from "../../data/nodeTypes";
 import Colors from "../../constants/Colors";
 import styles from "./styles";
 
@@ -102,34 +103,21 @@ const NodeSelectorScreen = ({ route, navigation }) => {
       copperOre_node: "circle-outline",
       coal_node: "fire",
       limestone_node: "shape-outline",
-      quartz_node: "diamond-stone",
+      rawQuartz_node: "diamond-stone",
       crudeOil_node: "oil",
       cateriumOre_node: "lightning-bolt",
+      sulfur_node: "flask-outline",
+      bauxite_node: "layers-outline",
+      uranium_node: "radioactive",
     };
     return iconMap[type] || "help-circle-outline";
   };
 
-  const getResourceColor = (type) => {
-    const colorMap = {
-      ironOre_node: "#8B7355",
-      copperOre_node: "#B87333",
-      coal_node: "#2C2C2C",
-      limestone_node: "#F5F5DC",
-      quartz_node: "#E6E6FA",
-      crudeOil_node: "#1C1C1C",
-      cateriumOre_node: "#FFD700",
-    };
-    return colorMap[type] || "#666";
-  };
 
-  const resourceTypeLabels = {
-    ironOre_node: "Iron Ore",
-    copperOre_node: "Copper Ore",
-    coal_node: "Coal",
-    limestone_node: "Limestone",
-    quartz_node: "Quartz Crystal",
-    crudeOil_node: "Crude Oil",
-    cateriumOre_node: "Caterium Ore",
+
+  const getResourceTypeLabel = (type) => {
+    const nodeDefinition = getNodeTypeDefinition(type);
+    return nodeDefinition ? nodeDefinition.name : type;
   };
 
   return (
@@ -189,7 +177,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                         styles.filterButtonText,
                         selectedResourceType === type && styles.filterButtonTextActive,
                       ]}>
-                        {resourceTypeLabels[type] || type}
+                        {getResourceTypeLabel(type)}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -240,7 +228,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     >
                       <View style={[
                         styles.nodeIconContainer,
-                        { backgroundColor: getResourceColor(node.type) }
+                        { backgroundColor: getNodeColor(node.type) }
                       ]}>
                         <MaterialCommunityIcons
                           name={getResourceIcon(node.type)}

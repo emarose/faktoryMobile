@@ -1,16 +1,21 @@
 import React from "react";
 import { View } from "react-native";
+import Colors from "../../../../constants/Colors";
 
-const DiscoveryRadius = ({ 
-  tileSize, 
-  visualPlayerPos, 
+const DiscoveryRadius = ({
+  tileSize,
+  visualPlayerPos,
   discoveryRadiusPx,
-  chunkSize
+  chunkSize,
 }) => {
-  const circleLeft = (((visualPlayerPos.x % chunkSize) + chunkSize) % chunkSize) *
-    tileSize + tileSize / 2 - discoveryRadiusPx;
-  const circleTop = (((visualPlayerPos.y % chunkSize) + chunkSize) % chunkSize) *
-    tileSize + tileSize / 2 - discoveryRadiusPx;
+  const circleLeft =
+    (((visualPlayerPos.x % chunkSize) + chunkSize) % chunkSize) * tileSize +
+    tileSize / 2 -
+    discoveryRadiusPx;
+  const circleTop =
+    (((visualPlayerPos.y % chunkSize) + chunkSize) % chunkSize) * tileSize +
+    tileSize / 2 -
+    discoveryRadiusPx;
 
   return (
     <View
@@ -22,9 +27,9 @@ const DiscoveryRadius = ({
         height: discoveryRadiusPx * 2,
         borderRadius: discoveryRadiusPx,
         borderWidth: 2,
-        borderColor: "#27ae60",
+        borderColor: Colors.accentGreen,
         opacity: 0.15,
-        backgroundColor: "#27ae60",
+        backgroundColor: Colors.accentGreen,
         zIndex: 2,
       }}
     />

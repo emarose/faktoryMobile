@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Node Color Analysis",
+			"type": "shell",
+			"command": "node tools/check.js"
+		},
+		{
+			"label": "Run Updated Analysis with Machine Colors",
+			"type": "shell",
+			"command": "node tools/check.js"
+		}
+	]
+}

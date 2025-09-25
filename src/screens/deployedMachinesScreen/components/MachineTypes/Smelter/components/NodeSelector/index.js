@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import ProgressBar from "../../../../components/ProgressBar";
 import styles from "../../styles";
+import Colors from "../../../../../../../constants/Colors";
 
 const NodeSelector = ({
   discoveredNodeOptions,
@@ -12,14 +13,9 @@ const NodeSelector = ({
 }) => {
   if (discoveredNodeOptions.length === 0) {
     return (
-      <Text
-        style={[
-          styles.detailsText,
-          { color: "#ff9800", marginTop: 16 },
-        ]}
-      >
-        You must explore the world map and discover a non-depleted
-        node before you can assign this machine.
+      <Text style={[styles.detailsText, { color: "#ff9800", marginTop: 16 }]}>
+        You must explore the world map and discover a non-depleted node before
+        you can assign this machine.
       </Text>
     );
   }
@@ -40,11 +36,7 @@ const NodeSelector = ({
       >
         <Picker.Item label="Select a node..." value={null} />
         {discoveredNodeOptions.map((node) => (
-          <Picker.Item
-            key={node.id}
-            label={node.name}
-            value={node.id}
-          />
+          <Picker.Item key={node.id} label={node.name} value={node.id} />
         ))}
       </Picker>
       {assignedNode && (
@@ -73,7 +65,7 @@ const NodeSelector = ({
             assignedNode.currentAmount <= 0 && (
               <Text
                 style={{
-                  color: "#c00",
+                  color: Colors.textDanger,
                   fontWeight: "bold",
                   textAlign: "center",
                   marginBottom: 8,

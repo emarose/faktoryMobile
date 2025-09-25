@@ -1,11 +1,11 @@
-import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../../../constants/Colors";
 
-const BUTTON_SIZE = 38;
-const ICON_SIZE = 20;
-const BUTTON_OFFSET = 10; // separación extra
+const BUTTON_SIZE = 52; // Aumentado de 38 a 52
+const ICON_SIZE = 28;   // Aumentado de 20 a 28
+const BUTTON_OFFSET = 12; // Aumentado ligeramente para mejor espaciado
 
 // D-pad config: up, down, left, right, usando flechas/caret
 const DPAD_CONFIG = [
@@ -32,76 +32,103 @@ const DPAD_CONFIG = [
 ];
 
 const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
-  const padSize = 108 + BUTTON_OFFSET * 2.5;
+  const [pressedButton, setPressedButton] = useState(null);
+  const padSize = 140 + BUTTON_OFFSET * 2.5; // Aumentado para acomodar botones más grandes
+
+  const handlePressIn = (dir) => {
+    setPressedButton(dir);
+  };
+
+  const handlePressOut = () => {
+    setPressedButton(null);
+  };
+
+  const handlePress = (dir) => {
+    if (exploreDirection) {
+      exploreDirection(dir);
+    }
+    // Pequeña vibración visual manteniendo el estado pressed un poco más
+    setTimeout(() => setPressedButton(null), 100);
+  };
 
   return (
     <View
       style={{
-        position: "absolute",
-        right: 0,
-        bottom: 0,
+        position: "relative", // Cambiado de absolute a relative
         width: padSize,
         height: padSize,
         zIndex: 20,
         alignItems: "center",
         justifyContent: "center",
-        opacity: 0.8,
+        opacity: 0.9,
       }}
     >
       {/* D-pad cross */}
-      {DPAD_CONFIG.map(({ dir, icon, style }) => (
-        <TouchableOpacity
-          key={dir}
-          style={Object.assign(
-            {
-              position: "absolute",
-              width: BUTTON_SIZE,
-              height: BUTTON_SIZE,
-              borderRadius: BUTTON_SIZE / 2,
-              backgroundColor: Colors.overlay,
-              alignItems: "center",
-              justifyContent: "center",
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: Colors.borderLight,
-              shadowColor: "#000",
-              shadowOpacity: 0.2,
-              shadowRadius: 3,
-              shadowOffset: { width: 0, height: 1 },
-            },
-            style
-          )}
-          onPress={() => exploreDirection && exploreDirection(dir)}
-          activeOpacity={0.8}
-        >
-          <MaterialCommunityIcons
-            name={icon}
-            size={ICON_SIZE}
-            color={Colors.textPrimary}
-          />
-        </TouchableOpacity>
-      ))}
-      {/* Center dot */}
+      {DPAD_CONFIG.map(({ dir, icon, style }) => {
+        const isPressed = pressedButton === dir;
+        return (
+          <TouchableOpacity
+            key={dir}
+            style={Object.assign(
+              {
+                position: "absolute",
+                width: BUTTON_SIZE,
+                height: BUTTON_SIZE,
+                borderRadius: BUTTON_SIZE / 2,
+                backgroundColor: isPressed ? Colors.backgroundAccent : Colors.overlay,
+                alignItems: "center",
+                justifyContent: "center",
+                elevation: isPressed ? 12 : 8,
+                borderWidth: isPressed ? 2 : 1,
+                borderColor: isPressed ? Colors.accentGold : Colors.borderLight,
+                shadowColor: "#000",
+                shadowOpacity: isPressed ? 0.4 : 0.2,
+                shadowRadius: isPressed ? 5 : 3,
+                shadowOffset: { width: 0, height: isPressed ? 2 : 1 },
+                transform: [{ scale: isPressed ? 0.95 : 1 }],
+              },
+              style
+            )}
+            onPress={() => handlePress(dir)}
+            onPressIn={() => handlePressIn(dir)}
+            onPressOut={handlePressOut}
+            activeOpacity={0.7}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} // Área de toque ampliada
+          >
+            <MaterialCommunityIcons
+              name={icon}
+              size={ICON_SIZE}
+              color={isPressed ? "#fff" : Colors.textPrimary}
+            />
+          </TouchableOpacity>
+        );
+      })}
+      {/* Center dot - también mejorado */}
       <View
         style={{
           position: "absolute",
           left: "50%",
           top: "50%",
-          marginLeft: -10,
-          marginTop: -10,
-          width: 20,
-          height: 20,
-          borderRadius: 10,
+          marginLeft: -12,
+          marginTop: -12,
+          width: 24,
+          height: 24,
+          borderRadius: 12,
           backgroundColor: Colors.background,
-          borderWidth: 1.2,
+          borderWidth: 1.5,
           borderColor: Colors.borderLight,
           alignItems: "center",
           justifyContent: "center",
+          elevation: 4,
+          shadowColor: "#000",
+          shadowOpacity: 0.15,
+          shadowRadius: 2,
+          shadowOffset: { width: 0, height: 1 },
         }}
       >
         <MaterialCommunityIcons
           name="circle-medium"
-          size={14}
+          size={16}
           color={Colors.textMuted}
         />
       </View>

@@ -46,96 +46,79 @@ E:\Code\faktoryMobile\src\screens\MapScreen\components\PlayerInfo\PlayerInfo.js 
 📌 uranium_node         → #00FF00
 
 🔍 ALL COLORS FOUND IN PROJECT:
-🎨 #1C1C1C → crudeOil_node (1 file)
-🎨 #2C2C2C → coal_node (1 file)
-🎨 #8B7355 → ironOre_node (1 file)
-🎨 #B87333 → copperOre_node (1 file)
-🎨 #E6E6FA → quartz_node (1 file)
-🎨 #F5F5DC → limestone_node (1 file)
-🎨 #FFD700 → cateriumOre_node (1 file)
 
-🚨 INCONSISTENCIES DETECTED:
-❌ ironOre_node: Official=#D8DADBFF but found #8B7355 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as ironOre_node)
-❌ copperOre_node: Official=#B88333FF but found #B87333 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as copperOre_node)
-❌ coal_node: Official=#424040FF but found #2C2C2C in screens\NodeSelectorScreen\NodeSelectorScreen.js (as coal_node)
-❌ limestone_node: Official=#F5D7C5FF but found #F5F5DC in screens\NodeSelectorScreen\NodeSelectorScreen.js (as limestone_node)
-❌ rawQuartz_node: Official=#ADD8E6 but found #E6E6FA in screens\NodeSelectorScreen\NodeSelectorScreen.js (as quartz_node)
-❌ crudeOil_node: Official=#4B0082 but found #1C1C1C in screens\NodeSelectorScreen\NodeSelectorScreen.js (as crudeOil_node)
-❌ cateriumOre_node: Official=#DAA520 but found #FFD700 in screens\NodeSelectorScreen\NodeSelectorScreen.js (as cateriumOre_node)
+✅ All colors match the official nodeTypes.js definitions!
 
-💡 Fix: Update hardcoded colors to match nodeTypes.js or use getNodeColor() function
+📊 STATS: 10 official nodes | 0 colors found | 0 inconsistencies
 
-📊 STATS: 10 official nodes | 7 colors found | 7 inconsistencies
+=== MACHINE COLORS ANALYSIS (vs useMachineColors) ===
+
+🏭 OFFICIAL MACHINE COLORS (from useMachineColors.js):
+🔧 assembler       → #26A69A
+🔧 constructor     → #64B5F6
+🔧 default         → #90A4AE
+🔧 foundry         → #FFD54F
+🔧 manufacturer    → #FF7043
+🔧 miner           → #2CA362FF
+🔧 oilExtractor    → #5D4037
+🔧 refinery        → #AB47BC
+🔧 smelter         → #E57373
+
+🚨 FILES WITH HARDCODED MACHINE COLORS:
+⚠️  hooks\useMachineColors.js
+
+💡 Recommendation: Replace hardcoded colors with useMachineColors() hook
+
+✅ All machine colors match the official useMachineColors definitions!
+
+📊 STATS: 9 official machines | 6 files using hook | 1 files with hardcoded colors | 0 inconsistencies
 
 === GLOBAL COLOR SUMMARY ===
-Total unique backgroundColor: 20
-Total unique text color: 25
-Total unique colors (all): 45
-Colors in node-related files: 34
+Total unique backgroundColor: 19
+Total unique text color: 20
+Total unique colors (all): 39
 
 === backgroundColor usage ===
-#2c2c2c: 7 uses (14.00%)
-#1a1a1a: 6 uses (12.00%)
-#3a3a3a: 5 uses (10.00%)
-#23233a: 4 uses (8.00%)
-#444: 4 uses (8.00%)
-#3a4856: 3 uses (6.00%)
-#ff9800: 3 uses (6.00%)
-#1f2935: 2 uses (4.00%)
-#6db4f0: 2 uses (4.00%)
-#4CAF50: 2 uses (4.00%)
-#2196F3: 2 uses (4.00%)
-#FF9800: 2 uses (4.00%)
-#4a7fa7: 1 uses (2.00%)
-#ff6b6b: 1 uses (2.00%)
-#4a5866: 1 uses (2.00%)
-#e8f4fd: 1 uses (2.00%)
-#2c2c44: 1 uses (2.00%)
-#ffe082: 1 uses (2.00%)
-rgba(0,0,0,0.8): 1 uses (2.00%)
-#27ae60: 1 uses (2.00%)
-Total unique backgroundColor usage: 20
+#2c2c2c: 7 uses (14.29%)
+#1a1a1a: 6 uses (12.24%)
+#3a3a3a: 5 uses (10.20%)
+#23233a: 4 uses (8.16%)
+#444: 4 uses (8.16%)
+#3a4856: 3 uses (6.12%)
+#ff9800: 3 uses (6.12%)
+#1f2935: 2 uses (4.08%)
+#6db4f0: 2 uses (4.08%)
+#4CAF50: 2 uses (4.08%)
+#2196F3: 2 uses (4.08%)
+#FF9800: 2 uses (4.08%)
+#4a7fa7: 1 uses (2.04%)
+#ff6b6b: 1 uses (2.04%)
+#4a5866: 1 uses (2.04%)
+#e8f4fd: 1 uses (2.04%)
+#2c2c44: 1 uses (2.04%)
+#ffe082: 1 uses (2.04%)
+rgba(0,0,0,0.8): 1 uses (2.04%)
+Total unique backgroundColor usage: 19
 
 === text color usage ===
-#e8f4fd: 12 uses (20.00%)
-#b8c7d1: 8 uses (13.33%)
-#fff: 7 uses (11.67%)
-#ff9800: 6 uses (10.00%)
-#6b7885: 3 uses (5.00%)
-#FFD700: 2 uses (3.33%)
-#aaa: 2 uses (3.33%)
-#4CAF50: 2 uses (3.33%)
-#888: 2 uses (3.33%)
-#d8dadbff: 1 uses (1.67%)
-#b88333ff: 1 uses (1.67%)
-#f5d7c5ff: 1 uses (1.67%)
-#424040ff: 1 uses (1.67%)
-#DAA520: 1 uses (1.67%)
-#ADD8E6: 1 uses (1.67%)
-#FFFF00: 1 uses (1.67%)
-#4B0082: 1 uses (1.67%)
-#CD5C5C: 1 uses (1.67%)
-#00FF00: 1 uses (1.67%)
-#808080: 1 uses (1.67%)
-#333: 1 uses (1.67%)
-#c00: 1 uses (1.67%)
-#27ae60: 1 uses (1.67%)
-#a0d911: 1 uses (1.67%)
-#bbb: 1 uses (1.67%)
-Total unique text color usage: 25
-
-=== OTHER COLORS IN NODE/MINING FILES ===
-Most used colors in node-related files:
-#4CAF50 → 3 files (text)
-#ff9800 → 2 files (text)
-#fff → 2 files (text)
-#d8dadbff → 1 file (text)
-#b88333ff → 1 file (text)
-#f5d7c5ff → 1 file (text)
-#424040ff → 1 file (text)
-#DAA520 → 1 file (text)
-#ADD8E6 → 1 file (text)
-#FFFF00 → 1 file (text)
-... and 24 more colors
-
-Total colors in node-related files: 34
+#e8f4fd: 12 uses (22.64%)
+#b8c7d1: 8 uses (15.09%)
+#ff9800: 6 uses (11.32%)
+#fff: 5 uses (9.43%)
+#6b7885: 3 uses (5.66%)
+#FFD700: 2 uses (3.77%)
+#aaa: 2 uses (3.77%)
+#4CAF50: 2 uses (3.77%)
+#888: 2 uses (3.77%)
+#d8dadbff: 1 uses (1.89%)
+#b88333ff: 1 uses (1.89%)
+#f5d7c5ff: 1 uses (1.89%)
+#424040ff: 1 uses (1.89%)
+#DAA520: 1 uses (1.89%)
+#ADD8E6: 1 uses (1.89%)
+#FFFF00: 1 uses (1.89%)
+#4B0082: 1 uses (1.89%)
+#CD5C5C: 1 uses (1.89%)
+#00FF00: 1 uses (1.89%)
+#808080: 1 uses (1.89%)
+Total unique text color usage: 20

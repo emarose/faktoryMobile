@@ -5,6 +5,7 @@ import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { items } from "../../../../../data/items";
 import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
+import Colors from "../../../../../constants/Colors";
 
 const Miner = ({ machine, navigation }) => {
   const { 
@@ -60,7 +61,7 @@ const Miner = ({ machine, navigation }) => {
           <MaterialCommunityIcons
             name="select-marker"
             size={28}
-            color="#fff"
+            color={Colors.textPrimary}
             style={{ marginRight: 6 }}
           />
           <Text style={styles.assignNodeText}>
@@ -83,7 +84,7 @@ const Miner = ({ machine, navigation }) => {
           <View style={styles.headerRow}>
             {(() => {
               const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);
-              const pillColor = nodeTypeDef ? nodeTypeDef.color : '#333';
+              const pillColor = nodeTypeDef ? nodeTypeDef.color : Colors.fallback;
               return (
                 <View style={[styles.selectedNodePill, { backgroundColor: pillColor }]}> 
                   <Text style={styles.selectedNodePillText}>{assignedNode.name}</Text>
@@ -127,7 +128,7 @@ const Miner = ({ machine, navigation }) => {
               <MaterialIcons
                 name="link-off"
                 size={16}
-                color="#bbb"
+                color={Colors.textSecondary}
                 style={{ marginRight: 4 }}
               />
               <Text style={styles.detachText}>Detach Miner</Text>

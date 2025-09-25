@@ -82,7 +82,7 @@ export default function MilestonesScreen() {
               </View>
               <Text
                 style={{
-                  color: milestone.unlocked ? Colors.success : Colors.accentGold,
+                  color: milestone.unlocked ? Colors.accentGreen : Colors.accentGold,
                   fontSize: 14,
                   marginBottom: 2,
                 }}
@@ -122,18 +122,7 @@ export default function MilestonesScreen() {
           );
         })}
       </ScrollView>
-      {/*  <View style={{ marginTop: 10, paddingHorizontal: 18 }}>
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Active Milestone:</Text>
-        <Text style={{ color: '#27ae60', fontSize: 15 }}>{activeMilestone}</Text>
-        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16, marginTop: 8 }}>Unlocked Machines:</Text>
-        {unlockedMachineNames.length > 0 ? (
-          unlockedMachineNames.map((name) => (
-            <Text key={name} style={{ color: '#a0d911', marginLeft: 8 }}>- {name}</Text>
-          ))
-        ) : (
-          <Text style={{ color: '#bbb', marginLeft: 8 }}>None yet</Text>
-        )}
-      </View> */}
+      
     </SafeAreaView>
   );
 }

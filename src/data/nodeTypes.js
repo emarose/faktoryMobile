@@ -1,5 +1,7 @@
 // Centralized node type definitions for resource nodes
 
+import Colors from "../constants/Colors";
+
 export const NODE_TYPES_MAP = [
   { type: "ironOre_node", name: "Iron Ore", color: "#d8dadbff" },
   { type: "copperOre_node", name: "Copper Ore", color: "#b88333ff" },
@@ -19,5 +21,5 @@ export function getNodeTypeDefinition(nodeType) {
 
 export function getNodeColor(nodeType) {
   const found = NODE_TYPES_MAP.find((item) => item.type === nodeType);
-  return found ? found.color : "#808080";
+  return found ? found.color : Colors.textMuted;
 }

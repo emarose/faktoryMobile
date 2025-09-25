@@ -126,6 +126,134 @@ function analyzeNodeColors() {
   return output;
 }
 
+function analyzeMachineColors() {
+  // Extraer la fuente de verdad desde useMachineColors.js
+  const machineColorsFile = path.join(SRC_DIR, 'hooks', 'useMachineColors.js');
+  let sourceOfTruth = {};
+  
+  if (fs.existsSync(machineColorsFile)) {
+    const machineColorsContent = fs.readFileSync(machineColorsFile, 'utf8');
+    // Extraer definiciones del MACHINE_COLORS
+    const machineColorRegex = /(\w+):\s*['"`](#[^'"`]+)['"`]/g;
+    let match;
+    while ((match = machineColorRegex.exec(machineColorsContent))) {
+      const machineType = match[1];
+      const color = match[2].toUpperCase();
+      // Solo incluir si no es un comentario
+      if (!machineColorsContent.substring(0, match.index).split('\n').pop().trim().startsWith('//')) {
+        sourceOfTruth[machineType] = {
+          officialColor: color,
+          usages: []
+        };
+      }
+    }
+  }
+
+  // Buscar todos los usos de colores de máquinas en el proyecto
+  const allColorUsages = {};
+  const inconsistencies = [];
+  const filesUsingHook = [];
+  const filesWithHardcodedColors = [];
+
+  allFiles.forEach(file => {
+    const content = fs.readFileSync(file, 'utf8');
+    const fileName = path.relative(SRC_DIR, file);
+
+    // Verificar si usa el hook useMachineColors
+    const usesHook = /useMachineColors|getMachineColor/.test(content);
+    if (usesHook) {
+      filesUsingHook.push(fileName);
+    }
+
+    // Buscar definiciones hardcodeadas de colores de máquinas
+    const machineColorRegex = /(smelter|constructor|foundry|refinery|assembler|manufacturer|miner|oilExtractor|extractor)\s*:\s*['"`](#[0-9a-fA-F]{3,8})['"`]/gi;
+    let match;
+    while ((match = machineColorRegex.exec(content))) {
+      const machineType = match[1];
+      const color = match[2].toUpperCase();
+      
+      if (!allColorUsages[color]) {
+        allColorUsages[color] = {
+          usedFor: [],
+          files: new Set()
+        };
+      }
+      
+      if (!allColorUsages[color].usedFor.includes(machineType)) {
+        allColorUsages[color].usedFor.push(machineType);
+      }
+      allColorUsages[color].files.add(fileName);
+      
+      if (!filesWithHardcodedColors.includes(fileName)) {
+        filesWithHardcodedColors.push(fileName);
+      }
+
+      // Verificar contra la fuente de verdad
+      if (sourceOfTruth[machineType]) {
+        sourceOfTruth[machineType].usages.push({
+          color: color,
+          file: fileName,
+          context: machineType
+        });
+
+        if (color !== sourceOfTruth[machineType].officialColor) {
+          inconsistencies.push({
+            machineType: machineType,
+            officialColor: sourceOfTruth[machineType].officialColor,
+            foundColor: color,
+            file: fileName,
+            context: machineType
+          });
+        }
+      }
+    }
+  });
+
+  let output = '\n=== MACHINE COLORS ANALYSIS (vs useMachineColors) ===\n';
+  
+  // Mostrar fuente de verdad
+  output += '\n🏭 OFFICIAL MACHINE COLORS (from useMachineColors.js):\n';
+  if (Object.keys(sourceOfTruth).length > 0) {
+    Object.keys(sourceOfTruth).sort().forEach(machineType => {
+      const info = sourceOfTruth[machineType];
+      output += `🔧 ${machineType.padEnd(15)} → ${info.officialColor}\n`;
+    });
+  } else {
+    output += '❌ Could not read useMachineColors.js\n';
+  }
+
+  // Mostrar archivos con colores hardcodeados
+  output += '\n🚨 FILES WITH HARDCODED MACHINE COLORS:\n';
+  if (filesWithHardcodedColors.length > 0) {
+    filesWithHardcodedColors.forEach(file => {
+      output += `⚠️  ${file}\n`;
+    });
+    output += '\n💡 Recommendation: Replace hardcoded colors with useMachineColors() hook\n';
+  } else {
+    output += '✅ No hardcoded machine colors found - all using centralized system!\n';
+  }
+
+  // Mostrar inconsistencias
+  if (inconsistencies.length > 0) {
+    output += '\n🚨 INCONSISTENCIES DETECTED:\n';
+    inconsistencies.forEach(inc => {
+      output += `❌ ${inc.machineType}: Official=${inc.officialColor} but found ${inc.foundColor} in ${inc.file}\n`;
+    });
+  } else {
+    output += '\n✅ All machine colors match the official useMachineColors definitions!\n';
+  }
+
+  // Estadísticas
+  const totalOfficialMachines = Object.keys(sourceOfTruth).length;
+  const totalFilesUsingHook = filesUsingHook.length;
+  const totalFilesWithHardcoded = filesWithHardcodedColors.length;
+  const inconsistentCount = inconsistencies.length;
+  
+  output += `\n📊 STATS: ${totalOfficialMachines} official machines | ${totalFilesUsingHook} files using hook | ${totalFilesWithHardcoded} files with hardcoded colors | ${inconsistentCount} inconsistencies\n`;
+
+  return output;
+}
+
 function analyzeColorsByType() {
   const bgColorRegex = /backgroundColor\s*:\s*['"`]([^'"`]+)['"`]/g;
   const textColorRegex = /[^a-zA-Z]color\s*:\s*['"`]([^'"`]+)['"`]/g; // avoid matching shadowColor
@@ -214,38 +342,13 @@ function analyzeColorsByType() {
 
   // Node-related colors summary (simplified)
   function nodeColorsToString() {
-    let out = '\n=== OTHER COLORS IN NODE/MINING FILES ===\n';
-    if (Object.keys(nodeRelatedColors).length === 0) {
-      out += 'No additional node-related colors found.\n';
-      return out;
-    }
-
-    // Group colors by frequency
-    const colorsByFrequency = Object.entries(nodeRelatedColors)
-      .map(([color, info]) => ({
-        color,
-        count: info.files.length,
-        type: info.type
-      }))
-      .sort((a, b) => b.count - a.count);
-
-    // Show top colors without file details
-    out += 'Most used colors in node-related files:\n';
-    colorsByFrequency.slice(0, 10).forEach(stat => {
-      out += `${stat.color} → ${stat.count} file${stat.count > 1 ? 's' : ''} (${stat.type})\n`;
-    });
-    
-    if (colorsByFrequency.length > 10) {
-      out += `... and ${colorsByFrequency.length - 10} more colors\n`;
-    }
-    
-    out += `\nTotal colors in node-related files: ${colorsByFrequency.length}\n`;
-    return out;
+    // Esta sección fue removida por ser poco útil
+    return '';
   }
 
   // Add a global total summary
   const totalUniqueColors = Object.keys(bgColorCount).length + Object.keys(textColorCount).length;
-  let summary = `\n=== GLOBAL COLOR SUMMARY ===\nTotal unique backgroundColor: ${Object.keys(bgColorCount).length}\nTotal unique text color: ${Object.keys(textColorCount).length}\nTotal unique colors (all): ${totalUniqueColors}\nColors in node-related files: ${Object.keys(nodeRelatedColors).length}\n`;
+  let summary = `\n=== GLOBAL COLOR SUMMARY ===\nTotal unique backgroundColor: ${Object.keys(bgColorCount).length}\nTotal unique text color: ${Object.keys(textColorCount).length}\nTotal unique colors (all): ${totalUniqueColors}\n`;
 
   return (
     summary +
@@ -335,6 +438,7 @@ filesWithManyInlineStyles.forEach(f =>
 
 // Add color analysis
 output += analyzeNodeColors();
+output += analyzeMachineColors();
 output += analyzeColorsByType();
 
 fs.writeFileSync(OUTPUT_FILE, output, 'utf8');

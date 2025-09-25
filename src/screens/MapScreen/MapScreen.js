@@ -177,16 +177,13 @@ export default function MapScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.fullScreenContainer}>
-      <CustomHeader 
+      <CustomHeader
         title="World Map"
         rightIcon="target"
         onRightIconPress={() => console.log("Map target pressed")}
       />
-      
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
+
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
         <MapToast
           visible={toastVisible}
           message={toastMessage}
@@ -194,84 +191,107 @@ export default function MapScreen({ navigation }) {
         />
 
         {/* Map Controls */}
-        <MapControls 
+        <MapControls
           onRegenerateSeed={regenerateSeed}
           onSetTestSeed={setTestSeed}
         />
 
-      <View style={styles.mapVisualContainer}>
-        <View
-          style={{
-            position: "relative",
-            width: TILE_SIZE * VIEW_SIZE,
-            height: TILE_SIZE * VIEW_SIZE,
-            alignSelf: "center",
-          }}
-        >
-          {/* Map Grid */}
-          <MapGrid
-            chunkSize={CHUNK_SIZE}
-            tileSize={TILE_SIZE}
-            visualPlayerPos={visualPlayerPos}
-            allResourceNodes={allResourceNodes}
-            discoveredNodes={discoveredNodes}
-            handleTilePress={handleTilePress}
-            navigation={navigation}
-            pinnedNodeId={pinnedNodeId}
-          />
+        <View style={styles.mapVisualContainer}>
+          <View
+            style={{
+              position: "relative",
+              width: TILE_SIZE * VIEW_SIZE,
+              height: TILE_SIZE * VIEW_SIZE,
+              alignSelf: "center",
+            }}
+          >
+            {/* Map Grid */}
+            <MapGrid
+              chunkSize={CHUNK_SIZE}
+              tileSize={TILE_SIZE}
+              visualPlayerPos={visualPlayerPos}
+              allResourceNodes={allResourceNodes}
+              discoveredNodes={discoveredNodes}
+              handleTilePress={handleTilePress}
+              navigation={navigation}
+              pinnedNodeId={pinnedNodeId}
+            />
 
-          {/* Discovery Radius */}
-          <DiscoveryRadius
-            tileSize={TILE_SIZE}
-            visualPlayerPos={visualPlayerPos}
-            discoveryRadiusPx={DISCOVERY_RADIUS_PX}
-            chunkSize={CHUNK_SIZE}
-          />
+            {/* Discovery Radius */}
+            <DiscoveryRadius
+              tileSize={TILE_SIZE}
+              visualPlayerPos={visualPlayerPos}
+              discoveryRadiusPx={DISCOVERY_RADIUS_PX}
+              chunkSize={CHUNK_SIZE}
+            />
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              width: TILE_SIZE * VIEW_SIZE,
+              minHeight: 90,
+              marginTop: 16,
+              marginBottom: 16,
+              alignSelf: "center",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+            }}
+          >
+            {/* Player Info */}
+            <View
+              style={{
+                alignSelf: "flex-start",
+                flexDirection: "column",
+                gap: 8,
+                borderWidth: 1,
+                borderColor: Colors.border,
+                borderRadius: 8,
+                padding: 8,
+                marginTop: 16,
+              }}
+            >
+              <View
+                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+              >
+                <MaterialIcons
+                  name="my-location"
+                  size={18}
+                  color={Colors.accentGold}
+                  style={{ opacity: 0.85 }}
+                />
+                <Text style={{ fontSize: 12, color: Colors.textPrimary }}>
+                  Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
+                </Text>
+              </View>
+            </View>
+
+            {/* Movement Controls - Posicionados en el área del PlayerInfo */}
+            <View style={{ position: "relative", alignSelf: "flex-end" }}>
+              <MapGridControls
+                MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
+                exploreDirection={handleExploreDirection}
+                onMove={() => setIsManualPin(false)}
+              />
+            </View>
+          </View>
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            width: TILE_SIZE * VIEW_SIZE,
-            minHeight: 90,
-            marginTop: 16,
-            marginBottom: 16,
-            alignSelf: "center",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-          }}
-        >
-          {/* Player Info */}
-          <PlayerInfo
-            visualPlayerPos={visualPlayerPos}
-       /*      currentMilestone={currentMilestone}
-            nextMilestone={nextMilestone} */
+        {displayableNodes.map((item) => (
+          <NodeCard
+            key={item.id}
+            node={item}
+            nodeDepletionAmount={item.currentAmount}
+            inventory={inventory}
+            placedMachines={placedMachines}
+            styles={styles}
+            playerPosition={playerMapPosition}
+            onDepleteNode={handleDepleteNode}
+            placeMachine={placeMachine}
+            isExpanded={pinnedNodeId === item.id}
           />
-        </View>
-
-        {/* Movement Controls */}
-        <MapGridControls
-          MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-          exploreDirection={handleExploreDirection}
-          onMove={() => setIsManualPin(false)}
-        />
-      </View>
-
-      {displayableNodes.map((item) => (
-        <NodeCard
-          key={item.id}
-          node={item}
-          nodeDepletionAmount={item.currentAmount}
-          inventory={inventory}
-          placedMachines={placedMachines}
-          styles={styles}
-          playerPosition={playerMapPosition}
-          onDepleteNode={handleDepleteNode}
-          placeMachine={placeMachine}
-          isExpanded={pinnedNodeId === item.id}
-        />
-      ))}
-      <View style={{ height: 20 }} />
+        ))}
+        <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>
   );
