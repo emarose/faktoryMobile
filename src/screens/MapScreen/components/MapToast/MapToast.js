@@ -1,53 +1,101 @@
-import React from "react";
-import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, TouchableOpacity, View } from "react-native";
 import { Text } from "../../../../components";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../../../constants/Colors";
+import styles from "./styles";
 
-const MapToast = ({ visible, message, onHide }) => {
+const MapToast = ({ visible, message, onHide, duration = 5000 }) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const slideAnim = useRef(new Animated.Value(-100)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          useNativeDriver: true,
+          tension: 100,
+          friction: 8,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      const timer = setTimeout(() => {
+        handleHide();
+      }, duration);
+
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
+
+  const handleHide = () => {
+    // Animación de salida
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: -100,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onHide && onHide();
+    });
+  };
+
   if (!visible) return null;
 
   return (
-    <Animated.View style={styles.toast}>
+    <Animated.View 
+      style={[
+        styles.toast,
+        {
+          transform: [{ translateY: slideAnim }],
+          opacity: opacityAnim,
+        }
+      ]}
+    >
+      {/* Overlay sutil para mejor contraste */}
+      <View style={styles.toastOverlay} />
+      
+      {/* Icono de success */}
+      <MaterialCommunityIcons
+        name="check-circle"
+        size={20}
+        color={Colors.textSuccess}
+        style={{ marginRight: 10 }}
+      />
+      
       <Text style={styles.text}>{message}</Text>
-      <TouchableOpacity style={styles.closeBtn} onPress={onHide}>
-        <Icon name="close" size={18} color={Colors.textSecondary} />
+      
+      <TouchableOpacity
+        style={[
+          styles.closeBtn,
+          isPressed && styles.closeBtnPressed
+        ]}
+        onPress={handleHide}
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
+        activeOpacity={0.7}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <MaterialCommunityIcons
+          name="close"
+          size={18}
+          color={Colors.textSecondary}
+        />
       </TouchableOpacity>
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  toast: {
-    position: "absolute",
-    top: 25,
-    alignSelf: "center",
-    backgroundColor: Colors.backgroundPanel,
-    paddingHorizontal: 18,
-    paddingVertical: 8,
-    borderRadius: 10,
-    elevation: 6,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.18,
-    shadowRadius: 4,
-    zIndex: 999,
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 16,
-    borderWidth: 1,
-    borderColor: Colors.accentGreen,
-  },
-  text: {
-    color: Colors.success,
-    fontWeight: "bold",
-    fontSize: 15,
-    flex: 1,
-  },
-  closeBtn: {
-    marginLeft: 10,
-    padding: 4,
-  },
-});
 
 export default MapToast;

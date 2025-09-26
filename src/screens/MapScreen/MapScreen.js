@@ -1,19 +1,11 @@
 import { useState, useEffect, useContext } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Pressable,
-  ScrollView,
-  InteractionManager,
-} from "react-native";
+import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, CustomHeader } from "../../components";
-import { getNodeColor } from "../../data/nodeTypes";
 import styles from "./styles";
 import MapControls from "./components/MapControls/MapControls";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import MapGrid from "./components/MapGrid";
-import PlayerInfo from "./components/PlayerInfo";
 import DiscoveryRadius from "./components/DiscoveryRadius";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { useMachines } from "../../hooks/useMachines";
@@ -28,7 +20,6 @@ const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
-const MAP_SIZE = CHUNK_SIZE;
 
 export default function MapScreen({ navigation }) {
   const { allResourceNodes, regenerateSeed, setTestSeed } =
@@ -291,7 +282,6 @@ export default function MapScreen({ navigation }) {
             isExpanded={pinnedNodeId === item.id}
           />
         ))}
-        <View style={{ height: 20 }} />
       </ScrollView>
     </SafeAreaView>
   );
