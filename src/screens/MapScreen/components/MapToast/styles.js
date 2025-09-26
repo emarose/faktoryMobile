@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 20,
     borderWidth: 2,
-    borderColor: Colors.accentGreen,
+    borderColor: Colors.accentBlue,
     overflow: "hidden",
   },
 
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: Colors.textSuccess, // Color de success directo
-    fontWeight: "600",
+    color: Colors.accentBlue, // Color de success directo
+    fontWeight: "500",
     fontSize: 13,
     flex: 1,
     textShadowColor: "rgba(0, 0, 0, 0.5)",

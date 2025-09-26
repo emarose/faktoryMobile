@@ -10,7 +10,7 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: 8,
+        marginTop: 8,
       }}
     >
       {/* Botón momentáneo para regenerar el seed del mundo */}
@@ -19,16 +19,14 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
           marginHorizontal: 8,
           backgroundColor: Colors.backgroundPanel,
           borderRadius: 16,
-          paddingVertical: 8,
+          paddingVertical: 4,
           paddingHorizontal: 16,
-          borderWidth: 2,
+          borderWidth: 1,
           borderColor: Colors.accentGold,
         }}
         onPress={onRegenerateSeed}
       >
-        <Text style={{ color: Colors.accentGold, fontWeight: "bold" }}>
-          Change seed
-        </Text>
+        <Text style={{ color: Colors.accentGold }}>Change seed</Text>
       </TouchableOpacity>
       {/* Botón para activar el seed de test */}
       <TouchableOpacity
@@ -36,16 +34,14 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
           marginHorizontal: 8,
           backgroundColor: Colors.backgroundPanel,
           borderRadius: 16,
-          paddingVertical: 8,
+          paddingVertical: 4,
           paddingHorizontal: 16,
-          borderWidth: 2,
-          borderColor: Colors.primary,
+          borderWidth: 1,
+          borderColor: Colors.accentBlue,
         }}
         onPress={onSetTestSeed}
       >
-        <Text style={{ color: Colors.primary, fontWeight: "bold" }}>
-          Test Seed
-        </Text>
+        <Text style={{ color: Colors.accentBlue }}>Test Seed</Text>
       </TouchableOpacity>
     </View>
   );

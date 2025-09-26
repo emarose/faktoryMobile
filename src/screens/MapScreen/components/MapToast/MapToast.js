@@ -21,7 +21,7 @@ const MapToast = ({ visible, message, onHide, duration = 5000 }) => {
         }),
         Animated.timing(opacityAnim, {
           toValue: 1,
-          duration: 500,
+          duration: 300,
           useNativeDriver: true,
         }),
       ]).start();
@@ -71,7 +71,7 @@ const MapToast = ({ visible, message, onHide, duration = 5000 }) => {
       <MaterialCommunityIcons
         name="check-circle"
         size={20}
-        color={Colors.textSuccess}
+        color={Colors.accentGreen}
         style={{ marginRight: 10 }}
       />
       

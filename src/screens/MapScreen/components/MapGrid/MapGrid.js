@@ -15,7 +15,6 @@ const MapGrid = ({
   navigation,
   pinnedNodeId,
 }) => {
-  
   const renderTiles = () => {
     const rows = [];
     const px = visualPlayerPos.x;
@@ -72,7 +71,8 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: pinnedNodeId !== node.id ? 1 : 2,
-                borderColor: pinnedNodeId !== node.id ? Colors.border : Colors.accentGold,
+                borderColor:
+                  pinnedNodeId !== node.id ? Colors.accentBlue : Colors.accentGold,
                 zIndex: 100,
               }}
               onPress={() => handleTilePress(node)}
@@ -87,7 +87,7 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: Colors.border,
+                borderColor: Colors.borderLight,
               }}
             />
           );
