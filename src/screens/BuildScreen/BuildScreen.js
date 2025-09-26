@@ -124,19 +124,18 @@ const BuildScreen = () => {
         {/* Status Badge */}
         {isLocked && (
           <View style={styles.statusBadge}>
-            <MaterialCommunityIcons name="lock" size={12} color="#fff" />
+            <MaterialCommunityIcons name="lock" size={10} color="#fff" />
             <Text style={styles.statusBadgeText}>LOCKED</Text>
           </View>
         )}
-        
 
-        {/* Machine Header */}
+        {/* Machine Header - Compact */}
         <View style={styles.machineHeader}>
           <View style={[
             styles.machineIcon,
             { 
-              backgroundColor: isLocked ? '#3a3a3a' : machineColor + '30',
-              borderColor: isLocked ? '#555' : machineColor 
+              backgroundColor: isLocked ? Colors.textMuted + '30' : machineColor + '20',
+              borderColor: isLocked ? Colors.textMuted : machineColor 
             }
           ]}>
             <Text style={styles.machineIconText}>
@@ -148,26 +147,15 @@ const BuildScreen = () => {
             <Text style={[
               styles.machineName,
               isLocked && styles.lockedMachineName
-            ]}>
+            ]} numberOfLines={1}>
               {item.name}
-            </Text>
-            <Text style={[
-              styles.machineDescription,
-              isLocked && styles.lockedMachineDescription
-            ]} numberOfLines={2}>
-              {item.description}
             </Text>
           </View>
         </View>
 
-        {/* Requirements Section */}
+        {/* Requirements Section - Compact */}
         {!isLocked && (
           <View style={styles.requirementsContainer}>
-            <View style={styles.sectionHeader}>
-              <MaterialCommunityIcons name="package-variant" size={16} color="#6db4f0" />
-              <Text style={styles.sectionTitle}>Required Materials</Text>
-            </View>
-            
             {Object.keys(item.inputs || {}).length > 0 ? (
               <View style={styles.requirementsList}>
                 {Object.entries(item.inputs || {}).map(([inputId, requiredAmount]) => {
@@ -178,9 +166,9 @@ const BuildScreen = () => {
                     <View key={inputId} style={styles.requirementItem}>
                       <View style={[
                         styles.requirementIndicator,
-                        { backgroundColor: hasEnough ? '#4CAF50' : '#ff6b47' }
+                        { backgroundColor: hasEnough ? Colors.accentGreen : Colors.textDanger }
                       ]} />
-                      <Text style={styles.requirementText}>
+                      <Text style={styles.requirementText} numberOfLines={1}>
                         {inventory[inputId]?.name || inputId}
                       </Text>
                       <Text style={[
@@ -195,36 +183,24 @@ const BuildScreen = () => {
               </View>
             ) : (
               <View style={styles.noRequirementsContainer}>
-                <MaterialCommunityIcons name="check-circle-outline" size={16} color="#4CAF50" />
+                <MaterialCommunityIcons name="check-circle-outline" size={12} color={Colors.accentGreen} />
                 <Text style={styles.noRequirementsText}>No materials required</Text>
               </View>
             )}
           </View>
         )}
 
-        {/* Locked Information */}
-        {isLocked && (
-          <View style={styles.lockedContainer}>
-            <View style={styles.sectionHeader}>
-              <MaterialCommunityIcons name="lock-outline" size={16} color="#ff6b47" />
-              <Text style={styles.sectionTitle}>Unlock Requirements</Text>
-            </View>
-            <Text style={styles.lockedText}>
-              Complete milestone: "{item.requiredMilestone?.name || 'Unknown milestone'}"
-            </Text>
-          </View>
-        )}
-
-        {/* Build Button */}
+        {/* Standard Build Button */}
         <TouchableOpacity
+          onPress={() => handleBuild(item.id)}
+          disabled={!canBuild && !isLocked}
+          activeOpacity={0.7}
           style={[
             styles.buildButton,
             isLocked && styles.lockedBuildButton,
             canBuild && styles.availableBuildButton,
             !canBuild && !isLocked && styles.disabledBuildButton
           ]}
-          onPress={() => handleBuild(item.id)}
-          disabled={!canBuild && !isLocked}
         >
           <MaterialCommunityIcons 
             name={
@@ -232,11 +208,11 @@ const BuildScreen = () => {
               canBuild ? "hammer" : 
               "alert-circle"
             } 
-            size={18} 
+            size={14} 
             color="#fff" 
           />
           <Text style={styles.buildButtonText}>
-            {isLocked ? "Locked" : canBuild ? `Build ${item.name}` : "Insufficient Resources"}
+            {isLocked ? "Locked" : canBuild ? "Build" : "Need Items"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -251,13 +227,34 @@ const BuildScreen = () => {
         onRightIconPress={() => console.log("Factory icon pressed")}
       />
       <View style={styles.container}>
-        {/* Machine Cards List */}
+        {/* Stats Overview */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="hammer-wrench" size={24} color={Colors.accentBlue} />
+            <Text style={styles.statNumber}>{allBuildableItems.filter(item => item.canBuild).length}</Text>
+            <Text style={styles.statLabel}>Available</Text>
+          </View>
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="lock" size={24} color={Colors.textDanger} />
+            <Text style={styles.statNumber}>{allBuildableItems.filter(item => !item.isUnlocked).length}</Text>
+            <Text style={styles.statLabel}>Locked</Text>
+          </View>
+          <View style={styles.statItem}>
+            <MaterialCommunityIcons name="cog" size={24} color={Colors.accentGreen} />
+            <Text style={styles.statNumber}>{Object.keys(ownedMachines).length}</Text>
+            <Text style={styles.statLabel}>Owned</Text>
+          </View>
+        </View>
+
+        {/* Machine Cards Grid */}
         <ScrollView 
           style={styles.scrollView} 
           contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={false}
         >
-          {allBuildableItems.map(item => renderMachineCard(item))}
+          <View style={styles.gridContainer}>
+            {allBuildableItems.map(item => renderMachineCard(item))}
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>
