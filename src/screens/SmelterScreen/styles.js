@@ -205,7 +205,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#2c2c2c",
-    padding: 20,
+    padding: 16,
     marginVertical: 12,
     borderRadius: 12,
     borderWidth: 2,

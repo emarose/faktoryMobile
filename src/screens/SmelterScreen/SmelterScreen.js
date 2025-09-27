@@ -345,6 +345,7 @@ const SmelterScreen = ({ route, navigation }) => {
       <CustomHeader
         title="Smelter"
         rightIcon="fire"
+        borderColor="#ff9800"
         onRightIconPress={() => console.log("Smelter tools pressed")}
       />
       <View style={styles.container}>
@@ -457,7 +458,7 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="check-circle"
                           size={20}
-                          color={Colors.accentGreen}
+                          color="#ff9800"
                         />
                       )}
                     </View>
@@ -476,8 +477,8 @@ const SmelterScreen = ({ route, navigation }) => {
                         </View>
                         <MaterialCommunityIcons
                           name="arrow-right"
-                          size={16}
-                          color={Colors.accentGold}
+                          size={24}
+                          color="#ff9800"
                           style={styles.arrowIcon}
                         />
                         <View style={styles.recipeOutputs}>
@@ -528,7 +529,7 @@ const SmelterScreen = ({ route, navigation }) => {
                                   {
                                     backgroundColor: hasEnough
                                       ? "#ff9800"
-                                      : "#a74a4a",
+                                      : Colors.textDanger,
                                   },
                                 ]}
                               >
@@ -545,7 +546,7 @@ const SmelterScreen = ({ route, navigation }) => {
                               <Text
                                 style={[
                                   styles.slotInventory,
-                                  { color: hasEnough ? "#4CAF50" : "#ff6b6b" },
+                                  { color: hasEnough ? Colors.accentGreen : Colors.textDanger },
                                 ]}
                               >
                                 {currentAmount}/{requiredAmount}
@@ -758,9 +759,7 @@ const SmelterScreen = ({ route, navigation }) => {
                             name={"infinity"}
                             size={18}
                             color={
-                              infiniteCraft
-                                ? Colors.textPrimary
-                                : "#ff9800"
+                              infiniteCraft ? Colors.textPrimary : "#ff9800"
                             }
                           />
                         </TouchableOpacity>

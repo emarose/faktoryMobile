@@ -69,14 +69,22 @@ function getMachineIcon(type, color) {
   }
 }
 
-const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResume, onCancelCrafting }) => {
+const MachineCard = ({
+  machine,
+  node,
+  children,
+  onPress,
+  navigation,
+  onPauseResume,
+  onCancelCrafting,
+}) => {
   const gameContext = useGame();
-  const { 
-    setPlacedMachines, 
-    placedMachines = [], 
-    craftingQueue = [], 
-    allResourceNodes = [], 
-    nodeAmounts = {} 
+  const {
+    setPlacedMachines,
+    placedMachines = [],
+    craftingQueue = [],
+    allResourceNodes = [],
+    nodeAmounts = {},
   } = gameContext || {};
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
 
@@ -90,63 +98,82 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
   // For miners and oil extractors - calculate node depletion progress
   const nodeDepletionData = useMemo(() => {
     try {
-      if (machine?.type !== "miner" && machine?.type !== "oilExtractor") return null;
+      if (machine?.type !== "miner" && machine?.type !== "oilExtractor")
+        return null;
       if (!node || !machine?.assignedNodeId) return null;
 
       // Find all machines assigned to this node
-      const assignedMachines = Array.isArray(placedMachines) ? placedMachines.filter(
-        (m) => m && (m.type === "miner" || m.type === "oilExtractor") && 
-               m.assignedNodeId === machine.assignedNodeId
-      ) : [];
+      const assignedMachines = Array.isArray(placedMachines)
+        ? placedMachines.filter(
+            (m) =>
+              m &&
+              (m.type === "miner" || m.type === "oilExtractor") &&
+              m.assignedNodeId === machine.assignedNodeId
+          )
+        : [];
 
-    // Get node data
-    const nodeData = allResourceNodes.find(n => n.id === machine.assignedNodeId);
-    if (!nodeData) return null;
+      // Get node data
+      const nodeData = allResourceNodes.find(
+        (n) => n.id === machine.assignedNodeId
+      );
+      if (!nodeData) return null;
 
-    const nodeCap = typeof nodeData.capacity === "number" ? nodeData.capacity : 1000;
-    const currentAmount = nodeAmounts[machine.assignedNodeId] ?? nodeCap;
-    
-    // Calculate how much has been mined (depletion progress)
-    const minedAmount = nodeCap - currentAmount;
-    const depletionProgress = nodeCap > 0 ? (minedAmount / nodeCap) * 100 : 0;
-    
-    // Count active machines
-    const activeMachines = assignedMachines.filter(m => !m.isIdle);
-    
-    // Calculate combined mining rate
-    const totalMiningRate = activeMachines.reduce((total, m) => {
-      const efficiency = m.efficiency || 1;
-      return total + efficiency; // Base rate per machine
-    }, 0);
+      const nodeCap =
+        typeof nodeData.capacity === "number" ? nodeData.capacity : 1000;
+      const currentAmount = nodeAmounts[machine.assignedNodeId] ?? nodeCap;
 
-    // Calculate time to depletion
-    const timeToDepletionMinutes = totalMiningRate > 0 ? 
-      Math.ceil(currentAmount / (totalMiningRate * 60)) : Infinity;
+      // Calculate how much has been mined (depletion progress)
+      const minedAmount = nodeCap - currentAmount;
+      const depletionProgress = nodeCap > 0 ? (minedAmount / nodeCap) * 100 : 0;
 
-    return {
-      progress: Math.min(depletionProgress, 100),
-      currentAmount,
-      maxAmount: nodeCap,
-      assignedCount: assignedMachines.length,
-      activeCount: activeMachines.length,
-      maxAllowed: MAX_MACHINES_PER_NODE,
-      combinedRate: totalMiningRate,
-      timeToDepletion: timeToDepletionMinutes,
-      isDepleted: currentAmount <= 0,
-      isNearDepletion: depletionProgress > 80,
-      canAddMore: assignedMachines.length < MAX_MACHINES_PER_NODE
-    };
+      // Count active machines
+      const activeMachines = assignedMachines.filter((m) => !m.isIdle);
+
+      // Calculate combined mining rate
+      const totalMiningRate = activeMachines.reduce((total, m) => {
+        const efficiency = m.efficiency || 1;
+        return total + efficiency; // Base rate per machine
+      }, 0);
+
+      // Calculate time to depletion
+      const timeToDepletionMinutes =
+        totalMiningRate > 0
+          ? Math.ceil(currentAmount / (totalMiningRate * 60))
+          : Infinity;
+
+      return {
+        progress: Math.min(depletionProgress, 100),
+        currentAmount,
+        maxAmount: nodeCap,
+        assignedCount: assignedMachines.length,
+        activeCount: activeMachines.length,
+        maxAllowed: MAX_MACHINES_PER_NODE,
+        combinedRate: totalMiningRate,
+        timeToDepletion: timeToDepletionMinutes,
+        isDepleted: currentAmount <= 0,
+        isNearDepletion: depletionProgress > 80,
+        canAddMore: assignedMachines.length < MAX_MACHINES_PER_NODE,
+      };
     } catch (error) {
-      console.error('Error in nodeDepletionData calculation:', error);
+      console.error("Error in nodeDepletionData calculation:", error);
       return null;
     }
-  }, [machine, node, placedMachines, allResourceNodes, nodeAmounts, machine?.assignedNodeId]);
+  }, [
+    machine,
+    node,
+    placedMachines,
+    allResourceNodes,
+    nodeAmounts,
+    machine?.assignedNodeId,
+  ]);
 
   // For crafting machines - check for active crafting processes
   const machineProcesses = useMemo(() => {
     if (machine.type === "miner" || machine.type === "oilExtractor") return [];
     return craftingQueue.filter(
-      (proc) => proc.machineId === machine.id && (proc.status === "pending" || proc.status === "paused")
+      (proc) =>
+        proc.machineId === machine.id &&
+        (proc.status === "pending" || proc.status === "paused")
     );
   }, [craftingQueue, machine.id, machine.type]);
 
@@ -185,37 +212,34 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
   }, [currentProcess, machine.type]);
 
   const openNodeSelector = () => {
-    navigation.navigate('NodeSelectorScreen', { machine });
+    navigation.navigate("NodeSelectorScreen", { machine });
   };
 
   const openSmelterScreen = () => {
-    navigation.navigate('SmelterScreen', { machine });
+    navigation.navigate("SmelterScreen", { machine });
   };
 
   const openConstructorScreen = () => {
-    console.log('openConstructorScreen called');
-    console.log('navigation:', navigation);
-    console.log('machine:', machine);
-    console.log('machine.currentRecipeId:', machine?.currentRecipeId);
-    
     try {
-      if (navigation && typeof navigation.navigate === 'function') {
-        navigation.navigate('ConstructorScreen', { 
+      if (navigation && typeof navigation.navigate === "function") {
+        navigation.navigate("ConstructorScreen", {
           machine: machine,
-          recipe: machine.currentRecipeId ? { id: machine.currentRecipeId } : null
+          recipe: machine.currentRecipeId
+            ? { id: machine.currentRecipeId }
+            : null,
         });
       } else {
-        console.error('Navigation is not available or navigate is not a function');
+        console.error(
+          "Navigation is not available or navigate is not a function"
+        );
       }
     } catch (error) {
-      console.error('Error in openConstructorScreen:', error);
+      console.error("Error in openConstructorScreen:", error);
     }
   };
 
-
-
   const handleSelectRecipe = (recipeId) => {
-    if (setPlacedMachines && typeof setPlacedMachines === 'function') {
+    if (setPlacedMachines && typeof setPlacedMachines === "function") {
       setPlacedMachines((prev) => {
         if (!Array.isArray(prev)) return [];
         return prev.map((m) =>
@@ -241,11 +265,9 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
     return child;
   });
 
-  const liveMachine = Array.isArray(placedMachines) 
+  const liveMachine = Array.isArray(placedMachines)
     ? placedMachines.find((m) => m && m.id === machine?.id) || machine
     : machine;
-
-
 
   return (
     <View
@@ -297,118 +319,151 @@ const MachineCard = ({ machine, node, children, onPress, navigation, onPauseResu
       {childrenWithProps}
 
       {/* Progress Section */}
-      {(((machine.type === "miner" || machine.type === "oilExtractor") && nodeDepletionData) || 
-       (isProcessing && currentProcess)) && (
+      {(((machine.type === "miner" || machine.type === "oilExtractor") &&
+        nodeDepletionData) ||
+        (isProcessing && currentProcess)) && (
         <View style={styles.extraInfoContainer}>
-          
           {/* Node Depletion Progress for Miners/Oil Extractors */}
-          {(machine.type === "miner" || machine.type === "oilExtractor") && nodeDepletionData && (
-            <View>
-              <View style={styles.headerRow}>
-                <View
-                  style={[
-                    styles.selectedNodePill,
-                    { 
-                      backgroundColor: nodeDepletionData.isDepleted ? "#ff6b6b" : 
-                                     nodeDepletionData.isNearDepletion ? "#ff9800" : machineColor 
-                    },
-                  ]}
-                >
-                  <Text style={styles.selectedNodePillText}>
-                    {nodeDepletionData.isDepleted ? "Depleted" : 
-                     nodeDepletionData.isNearDepletion ? "Near Depletion" : 
-                     `${machine.type === "miner" ? "Mining" : "Extracting"}`}
+          {(machine.type === "miner" || machine.type === "oilExtractor") &&
+            nodeDepletionData && (
+              <View>
+                <View style={styles.headerRow}>
+                  <View
+                    style={[
+                      styles.selectedNodePill,
+                      {
+                        backgroundColor: nodeDepletionData.isDepleted
+                          ? "#ff6b6b"
+                          : nodeDepletionData.isNearDepletion
+                          ? "#ff9800"
+                          : machineColor,
+                      },
+                    ]}
+                  >
+                    <Text style={styles.selectedNodePillText}>
+                      {nodeDepletionData.isDepleted
+                        ? "Depleted"
+                        : nodeDepletionData.isNearDepletion
+                        ? "Near Depletion"
+                        : `${
+                            machine.type === "miner" ? "Mining" : "Extracting"
+                          }`}
+                    </Text>
+                  </View>
+                  <Text style={styles.machineStatus}>
+                    {nodeDepletionData.activeCount}/
+                    {nodeDepletionData.assignedCount} active
+                    {nodeDepletionData.canAddMore
+                      ? ` (max ${nodeDepletionData.maxAllowed})`
+                      : " (full)"}
                   </Text>
                 </View>
-                <Text style={styles.machineStatus}>
-                  {nodeDepletionData.activeCount}/{nodeDepletionData.assignedCount} active 
-                  {nodeDepletionData.canAddMore ? ` (max ${nodeDepletionData.maxAllowed})` : " (full)"}
-                </Text>
-              </View>
 
-              {/* Node Depletion Bar */}
-              <View style={styles.depletionSection}>
-                <ProgressBar
-                  value={nodeDepletionData.progress}
-                  max={100}
-                  label={`Node Depletion: ${nodeDepletionData.currentAmount.toLocaleString()}/${nodeDepletionData.maxAmount.toLocaleString()} remaining`}
-                  color={nodeDepletionData.isDepleted ? "#ff6b6b" : 
-                         nodeDepletionData.isNearDepletion ? "#ff9800" : "#4CAF50"}
-                />
-                {nodeDepletionData.timeToDepletion !== Infinity && !nodeDepletionData.isDepleted && (
-                  <Text style={styles.depletionTime}>
-                    ~{nodeDepletionData.timeToDepletion} min to depletion at current rate
-                  </Text>
-                )}
+                {/* Node Depletion Bar */}
+                <View style={styles.depletionSection}>
+                  <ProgressBar
+                    value={nodeDepletionData.progress}
+                    max={100}
+                    label={`Node Depletion: ${nodeDepletionData.currentAmount.toLocaleString()}/${nodeDepletionData.maxAmount.toLocaleString()} remaining`}
+                    color={
+                      nodeDepletionData.isDepleted
+                        ? "#ff6b6b"
+                        : nodeDepletionData.isNearDepletion
+                        ? "#ff9800"
+                        : "#4CAF50"
+                    }
+                  />
+                  {nodeDepletionData.timeToDepletion !== Infinity &&
+                    !nodeDepletionData.isDepleted && (
+                      <Text style={styles.depletionTime}>
+                        ~{nodeDepletionData.timeToDepletion} min to depletion at
+                        current rate
+                      </Text>
+                    )}
+                </View>
               </View>
-            </View>
-          )}
+            )}
 
           {/* Crafting Progress for other machines */}
-          {isProcessing && currentProcess && machine.type !== "miner" && machine.type !== "oilExtractor" && (
-            <View>
-              <View style={styles.headerRow}>
-                <View
-                  style={[
-                    styles.selectedNodePill,
-                    { backgroundColor: machineColor },
-                  ]}
-                >
-                  <Text style={styles.selectedNodePillText}>
-                    Crafting: {currentProcess.itemName}
+          {isProcessing &&
+            currentProcess &&
+            machine.type !== "miner" &&
+            machine.type !== "oilExtractor" && (
+              <View>
+                <View style={styles.headerRow}>
+                  <View
+                    style={[
+                      styles.selectedNodePill,
+                      { backgroundColor: machineColor },
+                    ]}
+                  >
+                    <Text style={styles.selectedNodePillText}>
+                      Crafting: {currentProcess.itemName}
+                    </Text>
+                  </View>
+                  <Text style={styles.machineStatus}>
+                    Processing... ({machineProcesses.length} in queue)
                   </Text>
                 </View>
-                <Text style={styles.machineStatus}>
-                  Processing... ({machineProcesses.length} in queue)
-                </Text>
-              </View>
 
-              {/* Crafting Progress Bar */}
-              <View style={styles.depletionSection}>
-                <ProgressBar
-                  value={progress}
-                  max={currentProcess.processingTime}
-                  label={`Crafting Progress`}
-                  color={currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"}
-                />
-                
-                {/* Crafting Controls */}
-                <View style={styles.craftingControlsContainer}>
-                  {onPauseResume && (
-                    <TouchableOpacity
-                      style={[
-                        styles.craftingControlButton,
-                        currentProcess.status === "paused" ? styles.resumeButton : styles.pauseButton
-                      ]}
-                      onPress={onPauseResume}
-                    >
-                      <MaterialIcons
-                        name={currentProcess.status === "paused" ? "play-arrow" : "pause"}
-                        size={16}
-                        color="#fff"
-                      />
-                      <Text style={styles.craftingControlText}>
-                        {currentProcess.status === "paused" ? "Resume" : "Pause"}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                  
-                  {onCancelCrafting && (
-                    <TouchableOpacity
-                      style={[styles.craftingControlButton, styles.cancelButton]}
-                      onPress={onCancelCrafting}
-                    >
-                      <MaterialIcons name="stop" size={16} color="#fff" />
-                      <Text style={styles.craftingControlText}>Cancel</Text>
-                    </TouchableOpacity>
-                  )}
+                {/* Crafting Progress Bar */}
+                <View style={styles.depletionSection}>
+                  <ProgressBar
+                    value={progress}
+                    max={currentProcess.processingTime}
+                    label={`Crafting Progress`}
+                    color={
+                      currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"
+                    }
+                  />
+
+                  {/* Crafting Controls */}
+                  <View style={styles.craftingControlsContainer}>
+                    {onPauseResume && (
+                      <TouchableOpacity
+                        style={[
+                          styles.craftingControlButton,
+                          currentProcess.status === "paused"
+                            ? styles.resumeButton
+                            : styles.pauseButton,
+                        ]}
+                        onPress={onPauseResume}
+                      >
+                        <MaterialIcons
+                          name={
+                            currentProcess.status === "paused"
+                              ? "play-arrow"
+                              : "pause"
+                          }
+                          size={16}
+                          color="#fff"
+                        />
+                        <Text style={styles.craftingControlText}>
+                          {currentProcess.status === "paused"
+                            ? "Resume"
+                            : "Pause"}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+
+                    {onCancelCrafting && (
+                      <TouchableOpacity
+                        style={[
+                          styles.craftingControlButton,
+                          styles.cancelButton,
+                        ]}
+                        onPress={onCancelCrafting}
+                      >
+                        <MaterialIcons name="stop" size={16} color="#fff" />
+                        <Text style={styles.craftingControlText}>Cancel</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
+            )}
         </View>
       )}
-
     </View>
   );
 };
