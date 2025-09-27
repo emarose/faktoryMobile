@@ -741,22 +741,6 @@ export const items = {
     processingTime: 1.5,
     fuelConsumption: 0.3,
   },
-  basicCables: {
-    id: "basicCables",
-    name: "Basic Cables",
-    type: "intermediateProduct",
-    description: "Simple electrical cables.",
-    machine: "constructor",
-    inputs: {
-      copperSheets: 3,
-      ironRods: 1,
-    },
-    output: {
-      basicCables: 1,
-    },
-    processingTime: 1.5,
-    fuelConsumption: 0.3,
-  },
   circuitBoards: {
     id: "circuitBoards",
     name: "Circuit Boards",
@@ -1191,9 +1175,9 @@ export const items = {
     type: "machine",
     description: "Extracts crude oil from underground deposits.",
     inputs: {
-      steelPipes: 8, // From Constructor
-      concrete: 6, // From Smelter
-      wires: 10, // From Constructor
+      steelPipes: 8,
+      concrete: 6,
+      wires: 10,
     },
     output: {
       oilExtractor: 1,

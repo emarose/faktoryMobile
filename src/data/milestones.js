@@ -17,7 +17,7 @@ const milestones = [
     requirementsDescription:
       "Produce 20 Iron Ingots and 5 Concrete",
     unlocked: false,
-    unlocks: ["Constructor"],
+    unlocks: ["Constructor","Foundry"],
     requirements: { ironIngot: 20, concrete: 5 },
   },
   {
@@ -39,7 +39,7 @@ const milestones = [
     requirementsDescription:
       "Produce 15 Copper Ingots and 25 Wires",
     unlocked: false,
-    unlocks: [],
+    unlocks: ["Assembler"],
     requirements: { copperIngot: 15, wires: 25 },
   },
   {
@@ -50,7 +50,7 @@ const milestones = [
     requirementsDescription:
       "Produce 10 Reinforced Iron Plates and 5 Rotors",
     unlocked: false,
-    unlocks: ["Assembler"],
+    unlocks: [],
     requirements: { reinforcedIronPlates: 10, rotors: 5 },
   },
   {
