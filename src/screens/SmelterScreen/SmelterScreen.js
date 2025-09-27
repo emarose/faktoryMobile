@@ -26,6 +26,7 @@ import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelt
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader } from "../../components";
+import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -121,6 +122,9 @@ const SmelterScreen = ({ route, navigation }) => {
   // UI state
   const [activeCraftButton, setActiveCraftButton] = useState("1");
   const [activeTab, setActiveTab] = useState("recipe");
+  // Infinite craft mode
+  const [infiniteCraft, setInfiniteCraft] = useState(false);
+  const infiniteRunningRef = useRef(false);
 
   // Check for active crafting processes for this machine - memoized
   const machineProcesses = useMemo(() => {
@@ -209,8 +213,8 @@ const SmelterScreen = ({ route, navigation }) => {
       setProductAmount("1");
     }
 
-    // Navigate back if from a machine
-    if (machine) {
+    // Navigate back if from a machine and not in infinite craft mode
+    if (machine && !infiniteCraft) {
       navigation.goBack();
     }
   }, [selectedRecipe, inventory, removeResources, addToCraftingQueue, machine, activeCraftButton, setActiveCraftButton, setProductAmount, navigation, showMiniToast]);
@@ -268,6 +272,44 @@ const SmelterScreen = ({ route, navigation }) => {
   const handleStartCrafting = useCallback(() => {
     startCrafting(amount);
   }, [startCrafting, amount]);
+
+  const handleToggleInfinite = useCallback(() => {
+    if (!selectedRecipe) {
+      showMiniToast("Seleccione una receta antes de iniciar producción infinita");
+      return;
+    }
+    if (maxCraftable <= 0) {
+      showMiniToast("No hay recursos suficientes para producción infinita");
+      return;
+    }
+    setInfiniteCraft((v) => !v);
+  }, [selectedRecipe, maxCraftable, showMiniToast]);
+
+  // Effect to run infinite crafting loop
+  useEffect(() => {
+    let cancelled = false;
+    async function loop() {
+      // prevent multiple concurrent loops
+      if (infiniteRunningRef.current) return;
+      infiniteRunningRef.current = true;
+      while (!cancelled && infiniteCraft) {
+        if (!selectedRecipe || maxCraftable <= 0) {
+          showMiniToast("Sin recursos para producción infinita");
+          setInfiniteCraft(false);
+          break;
+        }
+        // craft a single unit
+        await startCrafting(1);
+        showMiniToast(`Producción infinita: 1x ${selectedRecipe.name}`);
+        // small delay to avoid tight loop
+        await new Promise((res) => setTimeout(res, 500));
+      }
+      infiniteRunningRef.current = false;
+    }
+
+    if (infiniteCraft) loop();
+    return () => { cancelled = true; };
+  }, [infiniteCraft, selectedRecipe, maxCraftable, startCrafting]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -561,30 +603,51 @@ const SmelterScreen = ({ route, navigation }) => {
                   <View style={styles.controlsSection}>
                     <View style={styles.quantityControls}>
                       <Text style={styles.controlLabel}>Production Quantity</Text>
-                      <View style={styles.quantityInputContainer}>
-                        <Text style={styles.quantityLabel}>Amount:</Text>
-                        <Text style={styles.quantityValue}>{amount}</Text>
-                      </View>
+                    <View style={styles.quantityStepperContainer}>
+                        <QuantityStepper
+                          amount={productAmount}
+                          setAmount={setProductAmount}
+                          maxAmount={maxCraftable}
+                        />
+                    </View>
                       
                       <View style={styles.quickButtons}>
                         <CraftButton
                           isActive={activeCraftButton === "1"}
                           label="1x"
                           onPress={handleSet1}
-                          disabled={!!isProcessing}
+                          disabled={!!isProcessing || infiniteCraft}
                         />
                         <CraftButton
                           isActive={activeCraftButton === "5"}
                           label="5x"
                           onPress={handleSet5}
-                          disabled={!!isProcessing || maxCraftable < 5}
+                          disabled={!!isProcessing || maxCraftable < 5 || infiniteCraft}
                         />
                         <CraftButton
                           isActive={activeCraftButton === "max"}
                           label={`Max (${maxCraftable})`}
                           onPress={handleSetMax}
-                          disabled={!!isProcessing || maxCraftable <= 0}
+                          disabled={!!isProcessing || maxCraftable <= 0 || infiniteCraft}
                         />
+                      </View>
+                      {/* Infinite Craft Toggle */}
+                      <View style={styles.infiniteCraftPanel}>
+                        <TouchableOpacity
+                          style={[styles.infiniteCraftButton, infiniteCraft && styles.infiniteCraftButtonActive]}
+                          onPress={handleToggleInfinite}
+                          disabled={!!isProcessing}
+                          activeOpacity={0.85}
+                        >
+                          <MaterialCommunityIcons
+                            name={infiniteCraft ? "infinity" : "infinity"}
+                            size={20}
+                            color={infiniteCraft ? Colors.accentGreen : Colors.textSecondary}
+                          />
+                          <Text style={[styles.infiniteCraftButtonText, infiniteCraft && styles.infiniteCraftButtonTextActive]}>
+                            {infiniteCraft ? "Producción infinita activa" : "Craft infinito"}
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
 

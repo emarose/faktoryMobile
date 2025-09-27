@@ -1,20 +1,17 @@
-- en smelter screen:
-agregar stepper como en contrusctor screen y ajustar estilo de los botones en product quantity.
-agregar un boton que sea "craft inifinite" que mientras esté activo, crafteará la receta, en tanto tenga los materiales necesarios
+### SmelterScreen [P2]
+- [ ] Agregar stepper (como en ConstructorScreen) y ajustar estilo de los botones en product quantity. Revisar previamente los estilos de ConstructorScreen y NodeSelectorScreen para seguir sus estructura y diseño
+- [ ] Agregar un boton que sea "craft inifinite" que mientras esté activo, crafteará la receta, en tanto tenga los materiales necesarios
 
 ### DeployedMachinesScreen [P2]
 - [ ] Mejorar visualización de máquinas (🔑 Agrupar por tipo y función)
 - [ ] Implementar filtros de estado (🔑 Activo/Inactivo/Procesando)
-- [ ] Añadir vista de mapa/grid para visualizar ubicación (🔑 Mini-mapa con posiciones relativas)
 - [ ] Crear componente de flujo de producción (🔑 Visualizar cadenas de producción)
 
 ### ProductAssemblyScreen [P2]
-- [ ] Reimplementar ProgressionTree (🔑 Usar visualización de árbol interactivo)
 - [ ] Mejorar cards de recetas (🔑 Mejor jerarquía visual de inputs/outputs)
 - [ ] Implementar diagrama de flujo (🔑 Mostrar dependencias entre recetas)
-- [ ] Añadir calculadora de ratio de producción (🔑 Ayudar a planificar cadenas eficientes)
 
-## PRIORIDAD MEDIA
+## PRIORIDAD MEDIA // DO NOT IMPLEMENT FROM HERE ON -
 
 ### BuildScreen [P3]
 - [ ] Implementar tabs categorizados (🔑 Agrupar por tipo de construcción)
