@@ -1,6 +1,8 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../../../../components";
+import Colors from "../../../../../../../constants/Colors";
 
 const CraftButton = ({
   label,
@@ -19,15 +21,15 @@ const CraftButton = ({
         backgroundColor: disabled
           ? "#3a3a48"
           : isActive
-          ? "#4CAF50"
-          : "#2c2c44",
+          ? "#ff9800"
+          : "#2c2c2c",
         borderRadius: 12,
         paddingVertical: 14,
         marginHorizontal: 4,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
-        borderColor: disabled ? "#444455" : isActive ? "#388E3C" : "#4CAF50",
+        borderColor: disabled ? Colors.border : "#ff9800",
         shadowColor: "#000",
         shadowOpacity: 0.15,
         shadowRadius: 6,
@@ -38,10 +40,8 @@ const CraftButton = ({
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
         <Text
           style={{
-            color: disabled ? "#888" : "#fff",
-            fontWeight: "bold",
+            color: disabled ? Colors.textMuted : "#fff",
             fontSize: 14,
-            letterSpacing: 0.5,
           }}
         >
           {label}

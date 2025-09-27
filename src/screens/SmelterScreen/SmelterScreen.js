@@ -5,12 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import styles from "./styles";
@@ -21,7 +16,6 @@ import useCrafting from "../../hooks/useCrafting";
 
 // Component imports
 import CraftingProgress from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftingProgress";
-import ResourceList from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/ResourceList";
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -134,11 +128,17 @@ const SmelterScreen = ({ route, navigation }) => {
     );
   }, [craftingQueue, machine]);
 
-  const isProcessing = useMemo(() => machineProcesses.length > 0, [machineProcesses]);
+  const isProcessing = useMemo(
+    () => machineProcesses.length > 0,
+    [machineProcesses]
+  );
 
   // Calculate progress for the first active process
-  const currentProcess = useMemo(() => machineProcesses[0] || null, [machineProcesses]);
-  
+  const currentProcess = useMemo(
+    () => machineProcesses[0] || null,
+    [machineProcesses]
+  );
+
   const [progress, setProgress] = useState(0);
 
   // Progress tracking effect
@@ -150,74 +150,91 @@ const SmelterScreen = ({ route, navigation }) => {
 
     const startTime = currentProcess.startedAt || Date.now();
     const totalTime = currentProcess.processingTime * 1000; // Convert to milliseconds
-    
+
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
-      const progressSeconds = Math.min(elapsed / 1000, currentProcess.processingTime);
+      const progressSeconds = Math.min(
+        elapsed / 1000,
+        currentProcess.processingTime
+      );
       setProgress(progressSeconds);
     };
 
     updateProgress(); // Initial update
     const interval = setInterval(updateProgress, 100);
-    
+
     return () => clearInterval(interval);
   }, [currentProcess, isProcessing]);
 
   const cancelCrafting = useCallback(() => {
-    // Here you could implement cancellation logic if needed
+    /* TODO: create cancellation logic */
     setProgress(0);
   }, []);
 
   // Crafting logic using global craftingQueue
-  const startCrafting = useCallback(async (amountToCraft, isMax = false) => {
-    if (!selectedRecipe) return;
-    const totalAmount = Number(amountToCraft) || 1;
+  const startCrafting = useCallback(
+    async (amountToCraft, isMax = false) => {
+      if (!selectedRecipe) return;
+      const totalAmount = Number(amountToCraft) || 1;
 
-    // Check if we can afford the inputs
-    const canAffordAll = selectedRecipe.inputs.every((input) => {
-      const available = inventory[input.item]?.currentAmount || 0;
-      return available >= input.amount * totalAmount;
-    });
+      // Check if we can afford the inputs
+      const canAffordAll = selectedRecipe.inputs.every((input) => {
+        const available = inventory[input.item]?.currentAmount || 0;
+        return available >= input.amount * totalAmount;
+      });
 
-    if (!canAffordAll) {
-      showMiniToast("Insufficient resources!");
-      return;
-    }
+      if (!canAffordAll) {
+        showMiniToast("Insufficient resources!");
+        return;
+      }
 
-    // Deduct resources immediately
-    const deductionData = {};
-    selectedRecipe.inputs.forEach((input) => {
-      deductionData[input.item] = input.amount * totalAmount;
-    });
-    
-    const success = removeResources(deductionData);
-    if (!success) {
-      showMiniToast("Failed to deduct resources!");
-      return;
-    }
+      // Deduct resources immediately
+      const deductionData = {};
+      selectedRecipe.inputs.forEach((input) => {
+        deductionData[input.item] = input.amount * totalAmount;
+      });
 
-    // Add to global crafting queue
-    addToCraftingQueue({
-      machineId: machine?.id || 'manual-smelter',
-      recipeId: selectedRecipe.id,
-      amount: totalAmount,
-      processingTime: selectedRecipe.processingTime,
-      itemName: selectedRecipe.name,
-    });
+      const success = removeResources(deductionData);
+      if (!success) {
+        showMiniToast("Failed to deduct resources!");
+        return;
+      }
 
-    showMiniToast(`Added ${totalAmount}x ${selectedRecipe.name} to queue`);
-    
-    // Reset UI state
-    if (activeCraftButton === "max") {
-      setActiveCraftButton("1");
-      setProductAmount("1");
-    }
+      // Add to global crafting queue
+      addToCraftingQueue({
+        machineId: machine?.id || "manual-smelter",
+        recipeId: selectedRecipe.id,
+        amount: totalAmount,
+        processingTime: selectedRecipe.processingTime,
+        itemName: selectedRecipe.name,
+      });
 
-    // Navigate back if from a machine and not in infinite craft mode
-    if (machine && !infiniteCraft) {
-      navigation.goBack();
-    }
-  }, [selectedRecipe, inventory, removeResources, addToCraftingQueue, machine, activeCraftButton, setActiveCraftButton, setProductAmount, navigation, showMiniToast]);
+      showMiniToast(`Added ${totalAmount}x ${selectedRecipe.name} to queue`);
+
+      // Reset UI state
+      if (activeCraftButton === "max") {
+        setActiveCraftButton("1");
+        setProductAmount("1");
+      }
+
+      // Navigate back if from a machine and not in infinite craft mode
+      if (machine && !infiniteCraft) {
+        navigation.goBack();
+      }
+    },
+    [
+      selectedRecipe,
+      inventory,
+      removeResources,
+      addToCraftingQueue,
+      machine,
+      activeCraftButton,
+      setActiveCraftButton,
+      setProductAmount,
+      navigation,
+      showMiniToast,
+    ]
+  );
 
   // Memoize expensive calculations
   const maxCraftable = useMemo(() => {
@@ -231,9 +248,18 @@ const SmelterScreen = ({ route, navigation }) => {
     return maxCraftable === Infinity ? 0 : maxCraftable;
   }, [selectedRecipe, inventory]);
 
-  const amount = useMemo(() => Math.max(1, parseInt(productAmount) || 1), [productAmount]);
-  const canCraft = useMemo(() => amount > 0 && amount <= maxCraftable, [amount, maxCraftable]);
-  const processingTime = useMemo(() => Number(selectedRecipe?.processingTime) || 1, [selectedRecipe]);
+  const amount = useMemo(
+    () => Math.max(1, parseInt(productAmount) || 1),
+    [productAmount]
+  );
+  const canCraft = useMemo(
+    () => amount > 0 && amount <= maxCraftable,
+    [amount, maxCraftable]
+  );
+  const processingTime = useMemo(
+    () => Number(selectedRecipe?.processingTime) || 1,
+    [selectedRecipe]
+  );
 
   useEffect(() => {
     setActiveCraftButton("1");
@@ -275,7 +301,9 @@ const SmelterScreen = ({ route, navigation }) => {
 
   const handleToggleInfinite = useCallback(() => {
     if (!selectedRecipe) {
-      showMiniToast("Seleccione una receta antes de iniciar producción infinita");
+      showMiniToast(
+        "Seleccione una receta antes de iniciar producción infinita"
+      );
       return;
     }
     if (maxCraftable <= 0) {
@@ -294,13 +322,12 @@ const SmelterScreen = ({ route, navigation }) => {
       infiniteRunningRef.current = true;
       while (!cancelled && infiniteCraft) {
         if (!selectedRecipe || maxCraftable <= 0) {
-          showMiniToast("Sin recursos para producción infinita");
           setInfiniteCraft(false);
           break;
         }
         // craft a single unit
         await startCrafting(1);
-        showMiniToast(`Producción infinita: 1x ${selectedRecipe.name}`);
+        showMiniToast(`Crafted: 1x ${selectedRecipe.name}`);
         // small delay to avoid tight loop
         await new Promise((res) => setTimeout(res, 500));
       }
@@ -308,56 +335,69 @@ const SmelterScreen = ({ route, navigation }) => {
     }
 
     if (infiniteCraft) loop();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [infiniteCraft, selectedRecipe, maxCraftable, startCrafting]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <CustomHeader 
+      <CustomHeader
         title="Smelter"
         rightIcon="fire"
         onRightIconPress={() => console.log("Smelter tools pressed")}
       />
       <View style={styles.container}>
-
         {/* Tab Navigation */}
         <View style={styles.tabContainer}>
           <TouchableOpacity
             style={[
               styles.tabButton,
-              activeTab === "recipe" && styles.activeTabButton
+              activeTab === "recipe" && styles.activeTabButton,
             ]}
             onPress={handleRecipeTab}
           >
             <MaterialCommunityIcons
               name="book-open-variant"
               size={18}
-              color={activeTab === "recipe" ? Colors.textPrimary : Colors.textSecondary}
+              color={
+                activeTab === "recipe"
+                  ? Colors.textPrimary
+                  : Colors.textSecondary
+              }
             />
-            <Text style={[
-              styles.tabButtonText,
-              activeTab === "recipe" && styles.activeTabButtonText
-            ]}>
+            <Text
+              style={[
+                styles.tabButtonText,
+                activeTab === "recipe" && styles.activeTabButtonText,
+              ]}
+            >
               Recipe
             </Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[
               styles.tabButton,
-              activeTab === "production" && styles.activeTabButton
+              activeTab === "production" && styles.activeTabButton,
             ]}
             onPress={handleProductionTab}
           >
             <MaterialCommunityIcons
               name="fire"
               size={18}
-              color={activeTab === "production" ? Colors.textPrimary : Colors.textSecondary}
+              color={
+                activeTab === "production"
+                  ? Colors.textPrimary
+                  : Colors.textSecondary
+              }
             />
-            <Text style={[
-              styles.tabButtonText,
-              activeTab === "production" && styles.activeTabButtonText
-            ]}>
+            <Text
+              style={[
+                styles.tabButtonText,
+                activeTab === "production" && styles.activeTabButtonText,
+              ]}
+            >
               Production
             </Text>
           </TouchableOpacity>
@@ -381,7 +421,8 @@ const SmelterScreen = ({ route, navigation }) => {
                   <TouchableOpacity
                     style={[
                       styles.recipeCard,
-                      selectedRecipeId === recipeItem.id && styles.selectedRecipeCard,
+                      selectedRecipeId === recipeItem.id &&
+                        styles.selectedRecipeCard,
                     ]}
                     onPress={() => setSelectedRecipeId(recipeItem.id)}
                     activeOpacity={0.7}
@@ -391,14 +432,21 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="fire"
                           size={24}
-                          color={selectedRecipeId === recipeItem.id ? Colors.textPrimary : Colors.textSecondary}
+                          color={
+                            selectedRecipeId === recipeItem.id
+                              ? Colors.textPrimary
+                              : Colors.textSecondary
+                          }
                         />
                       </View>
                       <View style={styles.recipeInfo}>
-                        <Text style={[
-                          styles.recipeCardTitle,
-                          selectedRecipeId === recipeItem.id && styles.selectedRecipeCardTitle
-                        ]}>
+                        <Text
+                          style={[
+                            styles.recipeCardTitle,
+                            selectedRecipeId === recipeItem.id &&
+                              styles.selectedRecipeCardTitle,
+                          ]}
+                        >
                           {recipeItem.name}
                         </Text>
                         <Text style={styles.recipeCardTime}>
@@ -409,11 +457,11 @@ const SmelterScreen = ({ route, navigation }) => {
                         <MaterialCommunityIcons
                           name="check-circle"
                           size={20}
-                          color={Colors.success}
+                          color={Colors.accentGreen}
                         />
                       )}
                     </View>
-                    
+
                     {/* Recipe Details */}
                     <View style={styles.recipeDetails}>
                       <View style={styles.recipeInputsOutputs}>
@@ -421,7 +469,8 @@ const SmelterScreen = ({ route, navigation }) => {
                           <Text style={styles.recipeDetailLabel}>Inputs:</Text>
                           {recipeItem.inputs.map((input, idx) => (
                             <Text key={idx} style={styles.recipeDetailText}>
-                              {input.amount}x {items[input.item]?.name || input.item}
+                              {input.amount}x{" "}
+                              {items[input.item]?.name || input.item}
                             </Text>
                           ))}
                         </View>
@@ -435,7 +484,8 @@ const SmelterScreen = ({ route, navigation }) => {
                           <Text style={styles.recipeDetailLabel}>Outputs:</Text>
                           {recipeItem.outputs.map((output, idx) => (
                             <Text key={idx} style={styles.recipeDetailText}>
-                              {output.amount}x {items[output.item]?.name || output.item}
+                              {output.amount}x{" "}
+                              {items[output.item]?.name || output.item}
                             </Text>
                           ))}
                         </View>
@@ -447,13 +497,12 @@ const SmelterScreen = ({ route, navigation }) => {
             </View>
           ) : (
             // PRODUCTION TAB - Same as Constructor but with smelter theming
-            <ScrollView 
-              style={styles.productionTab} 
+            <ScrollView
+              style={styles.productionTab}
               showsVerticalScrollIndicator={false}
             >
               {/* Main Production Area */}
               <View style={styles.productionMainArea}>
-                
                 {/* Input/Output Flow Section */}
                 {selectedRecipe && (
                   <View style={styles.flowSection}>
@@ -465,28 +514,40 @@ const SmelterScreen = ({ route, navigation }) => {
                       <View style={styles.inputSlots}>
                         {selectedRecipe.inputs.map((input, index) => {
                           const requiredAmount = input.amount * amount;
-                          const currentAmount = inventory[input.item]?.currentAmount || 0;
+                          const currentAmount =
+                            inventory[input.item]?.currentAmount || 0;
                           const hasEnough = currentAmount >= requiredAmount;
-                          const itemName = items[input.item]?.name || input.item;
-                          
+                          const itemName =
+                            items[input.item]?.name || input.item;
+
                           return (
                             <View key={input.item} style={styles.resourceSlot}>
-                              <View style={[
-                                styles.slotIcon,
-                                { backgroundColor: hasEnough ? "#ff9800" : "#a74a4a" }
-                              ]}>
+                              <View
+                                style={[
+                                  styles.slotIcon,
+                                  {
+                                    backgroundColor: hasEnough
+                                      ? "#ff9800"
+                                      : "#a74a4a",
+                                  },
+                                ]}
+                              >
                                 <MaterialCommunityIcons
                                   name="cube-outline"
                                   size={20}
                                   color="#e8f4fd"
                                 />
                               </View>
-                              <Text style={styles.slotAmount}>{requiredAmount}</Text>
+                              <Text style={styles.slotAmount}>
+                                {requiredAmount}
+                              </Text>
                               <Text style={styles.slotName}>{itemName}</Text>
-                              <Text style={[
-                                styles.slotInventory,
-                                { color: hasEnough ? "#4CAF50" : "#ff6b6b" }
-                              ]}>
+                              <Text
+                                style={[
+                                  styles.slotInventory,
+                                  { color: hasEnough ? "#4CAF50" : "#ff6b6b" },
+                                ]}
+                              >
                                 {currentAmount}/{requiredAmount}
                               </Text>
                             </View>
@@ -502,6 +563,18 @@ const SmelterScreen = ({ route, navigation }) => {
                         size={32}
                         color="#ff9800"
                       />
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <MaterialCommunityIcons
+                          name="timer-sand"
+                          size={18}
+                          color="#ff9800"
+                        />
+                        <Text style={styles.flowLabelText}>
+                          {selectedRecipe.processingTime}s
+                        </Text>
+                      </View>
                     </View>
 
                     {/* Output Side */}
@@ -512,22 +585,28 @@ const SmelterScreen = ({ route, navigation }) => {
                       <View style={styles.outputSlots}>
                         {selectedRecipe.outputs.map((output, index) => {
                           const outputAmount = output.amount * amount;
-                          const itemName = items[output.item]?.name || output.item;
-                          const currentInventory = inventory[output.item]?.currentAmount || 0;
-                          
+                          const itemName =
+                            items[output.item]?.name || output.item;
+                          const currentInventory =
+                            inventory[output.item]?.currentAmount || 0;
+
                           return (
                             <View key={output.item} style={styles.resourceSlot}>
-                              <View style={[
-                                styles.slotIcon,
-                                { backgroundColor: "#ff9800" }
-                              ]}>
+                              <View
+                                style={[
+                                  styles.slotIcon,
+                                  { backgroundColor: "#ff9800" },
+                                ]}
+                              >
                                 <MaterialCommunityIcons
                                   name="package-variant"
                                   size={20}
                                   color="#e8f4fd"
                                 />
                               </View>
-                              <Text style={styles.slotAmount}>{outputAmount}</Text>
+                              <Text style={styles.slotAmount}>
+                                {outputAmount}
+                              </Text>
                               <Text style={styles.slotName}>{itemName}</Text>
                               <Text style={styles.slotInventory}>
                                 Current: {currentInventory}
@@ -554,23 +633,33 @@ const SmelterScreen = ({ route, navigation }) => {
                         </View>
                         <View style={styles.machineInfo}>
                           <Text style={styles.machineTitle}>Smelter</Text>
-                          <Text style={styles.recipeTitle}>{selectedRecipe.name}</Text>
+                          <Text style={styles.recipeTitle}>
+                            {selectedRecipe.name}
+                          </Text>
                         </View>
                         <View style={styles.machineStatus}>
-                          <View style={[
-                            styles.statusIndicator,
-                            { backgroundColor: isProcessing ? "#4CAF50" : "#ff9800" }
-                          ]} />
+                          <View
+                            style={[
+                              styles.statusIndicator,
+                              {
+                                backgroundColor: isProcessing
+                                  ? Colors.accentGreen
+                                  : "#ff9800",
+                              },
+                            ]}
+                          />
                           <Text style={styles.statusText}>
                             {isProcessing ? "Processing" : "Ready"}
                           </Text>
                         </View>
                       </View>
-                      
+
                       <View style={styles.productionStats}>
                         <View style={styles.statItem}>
                           <Text style={styles.statLabel}>Processing Time</Text>
-                          <Text style={styles.statValue}>{processingTime}s</Text>
+                          <Text style={styles.statValue}>
+                            {processingTime}s
+                          </Text>
                         </View>
                         <View style={styles.statItem}>
                           <Text style={styles.statLabel}>Max Craftable</Text>
@@ -578,7 +667,9 @@ const SmelterScreen = ({ route, navigation }) => {
                         </View>
                         <View style={styles.statItem}>
                           <Text style={styles.statLabel}>Total Time</Text>
-                          <Text style={styles.statValue}>{processingTime * amount}s</Text>
+                          <Text style={styles.statValue}>
+                            {processingTime * amount}s
+                          </Text>
                         </View>
                       </View>
                     </View>
@@ -602,15 +693,17 @@ const SmelterScreen = ({ route, navigation }) => {
                 {selectedRecipe && (
                   <View style={styles.controlsSection}>
                     <View style={styles.quantityControls}>
-                      <Text style={styles.controlLabel}>Production Quantity</Text>
-                    <View style={styles.quantityStepperContainer}>
+                      <Text style={styles.controlLabel}>
+                        Production Quantity
+                      </Text>
+                      <View style={styles.quantityStepperContainer}>
                         <QuantityStepper
                           amount={productAmount}
                           setAmount={setProductAmount}
                           maxAmount={maxCraftable}
                         />
-                    </View>
-                      
+                      </View>
+
                       <View style={styles.quickButtons}>
                         <CraftButton
                           isActive={activeCraftButton === "1"}
@@ -622,31 +715,54 @@ const SmelterScreen = ({ route, navigation }) => {
                           isActive={activeCraftButton === "5"}
                           label="5x"
                           onPress={handleSet5}
-                          disabled={!!isProcessing || maxCraftable < 5 || infiniteCraft}
+                          disabled={
+                            !!isProcessing || maxCraftable < 5 || infiniteCraft
+                          }
                         />
                         <CraftButton
                           isActive={activeCraftButton === "max"}
                           label={`Max (${maxCraftable})`}
                           onPress={handleSetMax}
-                          disabled={!!isProcessing || maxCraftable <= 0 || infiniteCraft}
+                          disabled={
+                            !!isProcessing || maxCraftable <= 0 || infiniteCraft
+                          }
                         />
                       </View>
                       {/* Infinite Craft Toggle */}
                       <View style={styles.infiniteCraftPanel}>
                         <TouchableOpacity
-                          style={[styles.infiniteCraftButton, infiniteCraft && styles.infiniteCraftButtonActive]}
+                          style={[
+                            styles.infiniteCraftButton,
+                            infiniteCraft && styles.infiniteCraftButtonActive,
+                          ]}
                           onPress={handleToggleInfinite}
-                          disabled={!!isProcessing}
+                          disabled={
+                            !!isProcessing ||
+                            !selectedRecipe ||
+                            maxCraftable <= 0
+                          }
                           activeOpacity={0.85}
                         >
-                          <MaterialCommunityIcons
-                            name={infiniteCraft ? "infinity" : "infinity"}
-                            size={20}
-                            color={infiniteCraft ? Colors.accentGreen : Colors.textSecondary}
-                          />
-                          <Text style={[styles.infiniteCraftButtonText, infiniteCraft && styles.infiniteCraftButtonTextActive]}>
-                            {infiniteCraft ? "Producción infinita activa" : "Craft infinito"}
+                          <Text
+                            style={[
+                              styles.infiniteCraftButtonText,
+                              infiniteCraft &&
+                                styles.infiniteCraftButtonTextActive,
+                            ]}
+                          >
+                            {infiniteCraft
+                              ? `Crafting ${selectedRecipe.name}`
+                              : "Craft "}
                           </Text>
+                          <MaterialCommunityIcons
+                            name={"infinity"}
+                            size={18}
+                            color={
+                              infiniteCraft
+                                ? Colors.textPrimary
+                                : "#ff9800"
+                            }
+                          />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -655,7 +771,8 @@ const SmelterScreen = ({ route, navigation }) => {
                     <TouchableOpacity
                       style={[
                         styles.startProductionButton,
-                        (!canCraft || !!isProcessing) && styles.startProductionButtonDisabled,
+                        (!canCraft || !!isProcessing) &&
+                          styles.startProductionButtonDisabled,
                       ]}
                       onPress={handleStartCrafting}
                       disabled={!canCraft || !!isProcessing}
@@ -664,15 +781,20 @@ const SmelterScreen = ({ route, navigation }) => {
                       <MaterialCommunityIcons
                         name={isProcessing ? "fire" : "play-circle"}
                         size={24}
-                        color={canCraft && !isProcessing ? "#e8f4fd" : "#6b7885"}
+                        color={
+                          canCraft && !isProcessing ? "#e8f4fd" : "#6b7885"
+                        }
                       />
                       <Text
                         style={[
                           styles.startProductionButtonText,
-                          (!canCraft || !!isProcessing) && styles.startProductionButtonTextDisabled,
+                          (!canCraft || !!isProcessing) &&
+                            styles.startProductionButtonTextDisabled,
                         ]}
                       >
-                        {isProcessing ? "Processing..." : `Start Production (${amount}x)`}
+                        {isProcessing
+                          ? "Processing..."
+                          : `Start Production (${amount}x)`}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -681,7 +803,7 @@ const SmelterScreen = ({ route, navigation }) => {
             </ScrollView>
           )}
         </View>
-        
+
         <MiniToast visible={miniToastVisible} message={miniToastMsg} />
       </View>
     </SafeAreaView>

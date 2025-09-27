@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
 
 export default StyleSheet.create({
   safeArea: {
@@ -286,8 +287,8 @@ export default StyleSheet.create({
   },
   slotInventory: {
     fontSize: 11,
-    fontWeight: "500",
     textAlign: "center",
+    color: Colors.textMuted,
   },
 
   // Machine status section
@@ -432,24 +433,23 @@ export default StyleSheet.create({
   infiniteCraftButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#3a3a3a",
-    borderRadius: 10,
+    backgroundColor: "#2c2c2c",
+    borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 14,
     borderWidth: 1,
-    borderColor: "#555",
+    borderColor: "#ff9800",
   },
   infiniteCraftButtonActive: {
-    backgroundColor: "#1b5e20",
-    borderColor: "#1b5e20",
+    backgroundColor: "#ff9800",
   },
   infiniteCraftButtonText: {
-    color: "#b8c7d1",
+    fontWeight: "bold",
+    color: Colors.textPrimary,
     marginLeft: 8,
-    fontWeight: "600",
   },
   infiniteCraftButtonTextActive: {
-    color: "#e8f4fd",
+    color: Colors.textPrimary,
   },
   startProductionButton: {
     backgroundColor: "#ff9800",

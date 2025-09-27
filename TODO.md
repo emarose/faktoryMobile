@@ -1,7 +1,3 @@
-### SmelterScreen [P2]
-- [ ] Agregar stepper (como en ConstructorScreen) y ajustar estilo de los botones en product quantity. Revisar previamente los estilos de ConstructorScreen y NodeSelectorScreen para seguir sus estructura y diseño
-- [ ] Agregar un boton que sea "craft inifinite" que mientras esté activo, crafteará la receta, en tanto tenga los materiales necesarios
-
 ### DeployedMachinesScreen [P2]
 - [ ] Mejorar visualización de máquinas (🔑 Agrupar por tipo y función)
 - [ ] Implementar filtros de estado (🔑 Activo/Inactivo/Procesando)
@@ -11,7 +7,7 @@
 - [ ] Mejorar cards de recetas (🔑 Mejor jerarquía visual de inputs/outputs)
 - [ ] Implementar diagrama de flujo (🔑 Mostrar dependencias entre recetas)
 
-## PRIORIDAD MEDIA // DO NOT IMPLEMENT FROM HERE ON -
+## PRIORIDAD MEDIA
 
 ### BuildScreen [P3]
 - [ ] Implementar tabs categorizados (🔑 Agrupar por tipo de construcción)
@@ -20,16 +16,10 @@
 - [ ] Implementar vista de comparación (🔑 Permitir comparar máquinas similares)
 
 ### MapScreen [P3]
-- [ ] Implementar minimap para navegación rápida (🔑 Vista general en una esquina)
 - [ ] Mejorar visualización de nodos (🔑 Indicadores de tipo/cantidad más claros)
 - [ ] Añadir filtros por tipo de recurso (🔑 Permitir mostrar solo ciertos recursos)
 - [ ] Mejorar controles de zoom (🔑 Gestos más intuitivos y suaves)
 
-### FactoryScreen [P3]
-- [ ] Implementar animaciones sutiles (🔑 Transiciones entre acciones)
-- [ ] Mejorar diseño responsivo (🔑 Adaptación a diferentes tamaños)
-- [ ] Agregar vista de "favoritos" (🔑 Acceso rápido a máquinas frecuentes)
-- [ ] Optimizar rendimiento (🔑 Usar React.memo para componentes pesados)
 
 ## PRIORIDAD BAJA
 
