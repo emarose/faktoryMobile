@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import Colors from '../../../../constants/Colors';
+import Colors from "../../../../constants/Colors";
 
 const machineCardStyles = StyleSheet.create({
   machineCard: {
@@ -18,15 +18,9 @@ const machineCardStyles = StyleSheet.create({
     elevation: 3,
   },
   machineName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 4,
-  },
-  machineInfo: {
-    flex: 1,
-    fontWeight: "bold",
-    fontSize: 13,
-    marginBottom: 2,
   },
   emptyText: {
     color: Colors.textMuted,
@@ -57,17 +51,12 @@ const machineCardStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    // Enhanced shadow for icon container
-    shadowColor: '#000',
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 3,
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
-  },
-  loupeButton: {
-    padding: 8,
-    alignSelf: "flex-start",
   },
   marginVertical10: {
     marginVertical: 10,
@@ -76,10 +65,10 @@ const machineCardStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.backgroundAccent,
     backgroundColor: Colors.backgroundSecondary,
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: 8,
+    borderRadius: 12,
     alignItems: "center",
-    marginBottom: 8,
+    marginVertical: 12,
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
@@ -104,7 +93,13 @@ const machineCardStyles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: Colors.border,
-    marginBottom:16
+    marginBottom: 16,
+  },
+  extraInfoContainer: {
+    paddingVertical: 4,
+    backgroundColor: Colors.backgroundPanel,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
   headerRow: {
     flexDirection: "row",
@@ -150,7 +145,7 @@ const machineCardStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 3,
@@ -177,7 +172,7 @@ const machineCardStyles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: Colors.border,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
@@ -218,7 +213,7 @@ const machineCardStyles = StyleSheet.create({
     backgroundColor: Colors.accentGreen,
   },
   cancelButton: {
-    backgroundColor: '#ff6b6b',
+    backgroundColor: "#ff6b6b",
   },
   craftingControlText: {
     color: Colors.textPrimary,
