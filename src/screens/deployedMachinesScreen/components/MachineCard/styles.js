@@ -207,13 +207,14 @@ const machineCardStyles = StyleSheet.create({
     gap: 4,
   },
   pauseButton: {
-    backgroundColor: Colors.accentGold,
+    backgroundColor: Colors.accentBlue,
   },
   resumeButton: {
     backgroundColor: Colors.accentGreen,
   },
   cancelButton: {
-    backgroundColor: "#ff6b6b",
+    borderWidth: 1,
+    borderColor: "#ff6b6b",
   },
   craftingControlText: {
     color: Colors.textPrimary,

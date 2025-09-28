@@ -177,7 +177,7 @@ const MachineCard = ({
 
       {/* Render children components (specific machine type content) */}
       {childrenWithProps}
-
+      {/* Esta logica sirve para todas las maquians que no sean smelter asique si sirve para constructor y demás, puede servir a nivel layout */}
       {/* Crafting Progress (non-miner machines) */}
       {isProcessing &&
         currentProcess &&
@@ -186,10 +186,19 @@ const MachineCard = ({
           <View style={styles.extraInfoContainer}>
             <View>
               <View style={styles.headerRow}>
-                <View style={[styles.selectedNodePill, { backgroundColor: machineColor }]}> 
-                  <Text style={styles.selectedNodePillText}>Crafting: {currentProcess.itemName}</Text>
+                <View
+                  style={[
+                    styles.selectedNodePill,
+                    { backgroundColor: machineColor },
+                  ]}
+                >
+                  <Text style={styles.selectedNodePillText}>
+                    Crafting: {currentProcess.itemName}
+                  </Text>
                 </View>
-                <Text style={styles.machineStatus}>Processing... ({machineProcesses.length} in queue)</Text>
+                <Text style={styles.machineStatus}>
+                  Processing... ({machineProcesses.length} in queue)
+                </Text>
               </View>
 
               <View style={styles.depletionSection}>
@@ -197,7 +206,9 @@ const MachineCard = ({
                   value={progress}
                   max={currentProcess.processingTime}
                   label={`Crafting Progress`}
-                  color={currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"}
+                  color={
+                    currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"
+                  }
                 />
 
                 <View style={styles.craftingControlsContainer}>
@@ -205,17 +216,37 @@ const MachineCard = ({
                     <TouchableOpacity
                       style={[
                         styles.craftingControlButton,
-                        currentProcess.status === "paused" ? styles.resumeButton : styles.pauseButton,
+                        currentProcess.status === "paused"
+                          ? styles.resumeButton
+                          : styles.pauseButton,
                       ]}
                       onPress={onPauseResume}
                     >
-                      <MaterialIcons name={currentProcess.status === "paused" ? "play-arrow" : "pause"} size={16} color="#fff" />
-                      <Text style={styles.craftingControlText}>{currentProcess.status === "paused" ? "Resume" : "Pause"}</Text>
+                      <MaterialIcons
+                        name={
+                          currentProcess.status === "paused"
+                            ? "play-arrow"
+                            : "pause"
+                        }
+                        size={16}
+                        color="#fff"
+                      />
+                      <Text style={styles.craftingControlText}>
+                        {currentProcess.status === "paused"
+                          ? "Resume"
+                          : "Pause"}
+                      </Text>
                     </TouchableOpacity>
                   )}
 
                   {onCancelCrafting && (
-                    <TouchableOpacity style={[styles.craftingControlButton, styles.cancelButton]} onPress={onCancelCrafting}>
+                    <TouchableOpacity
+                      style={[
+                        styles.craftingControlButton,
+                        styles.cancelButton,
+                      ]}
+                      onPress={onCancelCrafting}
+                    >
                       <MaterialIcons name="stop" size={16} color="#fff" />
                       <Text style={styles.craftingControlText}>Cancel</Text>
                     </TouchableOpacity>
