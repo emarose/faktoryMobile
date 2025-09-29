@@ -1,2 +1,2 @@
-const RESOURCE_CAP = 1000;
+const RESOURCE_CAP = 10000;
 export default RESOURCE_CAP;

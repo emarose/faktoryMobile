@@ -426,30 +426,9 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
   },
-  infiniteCraftPanel: {
+  CraftPanel: {
     marginTop: 12,
     alignItems: "center",
-  },
-  infiniteCraftButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#2c2c2c",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: "#ff9800",
-  },
-  infiniteCraftButtonActive: {
-    backgroundColor: "#ff9800",
-  },
-  infiniteCraftButtonText: {
-    fontWeight: "bold",
-    color: Colors.textPrimary,
-    marginLeft: 8,
-  },
-  infiniteCraftButtonTextActive: {
-    color: Colors.textPrimary,
   },
   startProductionButton: {
     backgroundColor: "#ff9800",

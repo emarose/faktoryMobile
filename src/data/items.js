@@ -5,7 +5,7 @@ export const items = {
     type: "rawMaterial",
     description: "A deposit of basic mineral.",
     manualMineable: true,
-    output: { ironOre: 5 },
+    output: { ironOre: 2 },
     processingTime: 1,
   },
   copperOre_node: {
@@ -14,7 +14,7 @@ export const items = {
     type: "rawMaterial",
     description: "A deposit of copper.",
     manualMineable: true,
-    output: { copperOre: 5 },
+    output: { copperOre: 2 },
     processingTime: 1,
   },
   coal_node: {
@@ -23,7 +23,7 @@ export const items = {
     type: "rawMaterial",
     description: "A deposit of primary fuel source.",
     manualMineable: true,
-    output: { coal: 10 },
+    output: { coal: 2 },
     processingTime: 1,
   },
   limestone_node: {
@@ -33,7 +33,7 @@ export const items = {
     description:
       "A deposit of limestone. Primarily used for concrete production.",
     manualMineable: true,
-    output: { limestone: 6 },
+    output: { limestone: 2 },
     processingTime: 1,
   },
   cateriumOre_node: {
@@ -43,7 +43,7 @@ export const items = {
     description: "A deposit of versatile ore.",
     manualMineable: false,
     machineRequired: "miner",
-    output: { cateriumOre: 3 },
+    output: { cateriumOre: 2 },
     processingTime: 1,
   },
   rawQuartz_node: {
@@ -53,7 +53,7 @@ export const items = {
     description: "A deposit of quartz.",
     manualMineable: false,
     machineRequired: "miner",
-    output: { rawQuartz: 4 },
+    output: { rawQuartz: 2 },
     processingTime: 1,
   },
   sulfur_node: {
@@ -73,7 +73,7 @@ export const items = {
     description: "An oil deposit.",
     manualMineable: false,
     machineRequired: "oilExtractor",
-    output: { crudeOil: 10 },
+    output: { crudeOil: 2 },
     processingTime: 2,
   },
   bauxite_node: {
@@ -83,7 +83,7 @@ export const items = {
     description: "A deposit of bauxite.",
     manualMineable: false,
     machineRequired: "miner",
-    output: { bauxite: 4 },
+    output: { bauxite: 2 },
     processingTime: 1,
   },
   uranium_node: {
@@ -205,12 +205,12 @@ export const items = {
     description: "Refined copper bar.",
     machine: "smelter",
     inputs: {
-      copperOre: 1,
+      copperOre:20,
     },
     output: {
       copperIngot: 1,
     },
-    processingTime: 10,
+    processingTime: 5,
     fuelConsumption: 0.1,
   },
   heavyOilResidue: {
@@ -236,7 +236,7 @@ export const items = {
     description: "Basic building material.",
     machine: "constructor",
     inputs: {
-      ironIngot: 3,
+      ironIngot: 2,
     },
     output: {
       ironRods: 1,
@@ -251,12 +251,12 @@ export const items = {
     description: "Flat sheets of iron.",
     machine: "constructor",
     inputs: {
-      ironIngot: 4,
+      ironIngot: 2,
     },
     output: {
       ironPlates: 1,
     },
-    processingTime: 1,
+    processingTime: 2,
     fuelConsumption: 0.2,
   },
   steelBeams: {
@@ -296,7 +296,7 @@ export const items = {
     description: "Small fasteners for assembly.",
     machine: "constructor",
     inputs: {
-      ironRods: 2,
+      ironRods: 1,
     },
     output: {
       screws: 10,
@@ -402,10 +402,10 @@ export const items = {
     description: "Electrical conductors.",
     machine: "constructor",
     inputs: {
-      copperIngot: 2,
+      copperIngot: 1,
     },
     output: {
-      wires: 1,
+      wires: 3,
     },
     processingTime: 1,
     fuelConsumption: 0.2,

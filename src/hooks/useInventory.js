@@ -17,14 +17,14 @@ export const useInventory = () => {
         };
       }
     });
-    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
+/*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 30;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 30;
     if (initialItems.coal) initialItems.coal.currentAmount = 30;
     if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 100;
     if (initialItems.ironRods) initialItems.ironRods.currentAmount = 10;
     if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 100;
-    if (initialItems.concrete) initialItems.concrete.currentAmount = 50;
+    if (initialItems.concrete) initialItems.concrete.currentAmount = 50; */
     //if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
     // --- DEBUG/TEST: Initial resources for building (apply to initialItems now) ---
     // Ensure these IDs match exactly what's in your items.js

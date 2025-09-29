@@ -116,9 +116,6 @@ const SmelterScreen = ({ route, navigation }) => {
   // UI state
   const [activeCraftButton, setActiveCraftButton] = useState("1");
   const [activeTab, setActiveTab] = useState("recipe");
-  // Infinite craft mode
-  const [infiniteCraft, setInfiniteCraft] = useState(false);
-  const infiniteRunningRef = useRef(false);
 
   // Check for active crafting processes for this machine - memoized
   const machineProcesses = useMemo(() => {
@@ -216,11 +213,6 @@ const SmelterScreen = ({ route, navigation }) => {
         setActiveCraftButton("1");
         setProductAmount("1");
       }
-
-      // Navigate back if from a machine and not in infinite craft mode
-      if (machine && !infiniteCraft) {
-        navigation.goBack();
-      }
     },
     [
       selectedRecipe,
@@ -298,47 +290,6 @@ const SmelterScreen = ({ route, navigation }) => {
   const handleStartCrafting = useCallback(() => {
     startCrafting(amount);
   }, [startCrafting, amount]);
-
-  const handleToggleInfinite = useCallback(() => {
-    if (!selectedRecipe) {
-      showMiniToast(
-        "Seleccione una receta antes de iniciar producción infinita"
-      );
-      return;
-    }
-    if (maxCraftable <= 0) {
-      showMiniToast("No hay recursos suficientes para producción infinita");
-      return;
-    }
-    setInfiniteCraft((v) => !v);
-  }, [selectedRecipe, maxCraftable, showMiniToast]);
-
-  // Effect to run infinite crafting loop
-  useEffect(() => {
-    let cancelled = false;
-    async function loop() {
-      // prevent multiple concurrent loops
-      if (infiniteRunningRef.current) return;
-      infiniteRunningRef.current = true;
-      while (!cancelled && infiniteCraft) {
-        if (!selectedRecipe || maxCraftable <= 0) {
-          setInfiniteCraft(false);
-          break;
-        }
-        // craft a single unit
-        await startCrafting(1);
-        showMiniToast(`Crafted: 1x ${selectedRecipe.name}`);
-        // small delay to avoid tight loop
-        await new Promise((res) => setTimeout(res, 500));
-      }
-      infiniteRunningRef.current = false;
-    }
-
-    if (infiniteCraft) loop();
-    return () => {
-      cancelled = true;
-    };
-  }, [infiniteCraft, selectedRecipe, maxCraftable, startCrafting]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -546,7 +497,11 @@ const SmelterScreen = ({ route, navigation }) => {
                               <Text
                                 style={[
                                   styles.slotInventory,
-                                  { color: hasEnough ? Colors.accentGreen : Colors.textDanger },
+                                  {
+                                    color: hasEnough
+                                      ? Colors.accentGreen
+                                      : Colors.textDanger,
+                                  },
                                 ]}
                               >
                                 {currentAmount}/{requiredAmount}
@@ -710,59 +665,20 @@ const SmelterScreen = ({ route, navigation }) => {
                           isActive={activeCraftButton === "1"}
                           label="1x"
                           onPress={handleSet1}
-                          disabled={!!isProcessing || infiniteCraft}
+                          disabled={!!isProcessing}
                         />
                         <CraftButton
                           isActive={activeCraftButton === "5"}
                           label="5x"
                           onPress={handleSet5}
-                          disabled={
-                            !!isProcessing || maxCraftable < 5 || infiniteCraft
-                          }
+                          disabled={!!isProcessing || maxCraftable < 5}
                         />
                         <CraftButton
                           isActive={activeCraftButton === "max"}
                           label={`Max (${maxCraftable})`}
                           onPress={handleSetMax}
-                          disabled={
-                            !!isProcessing || maxCraftable <= 0 || infiniteCraft
-                          }
+                          disabled={!!isProcessing || maxCraftable <= 0}
                         />
-                      </View>
-                      {/* Infinite Craft Toggle */}
-                      <View style={styles.infiniteCraftPanel}>
-                        <TouchableOpacity
-                          style={[
-                            styles.infiniteCraftButton,
-                            infiniteCraft && styles.infiniteCraftButtonActive,
-                          ]}
-                          onPress={handleToggleInfinite}
-                          disabled={
-                            !!isProcessing ||
-                            !selectedRecipe ||
-                            maxCraftable <= 0
-                          }
-                          activeOpacity={0.85}
-                        >
-                          <Text
-                            style={[
-                              styles.infiniteCraftButtonText,
-                              infiniteCraft &&
-                                styles.infiniteCraftButtonTextActive,
-                            ]}
-                          >
-                            {infiniteCraft
-                              ? `Crafting ${selectedRecipe.name}`
-                              : "Craft "}
-                          </Text>
-                          <MaterialCommunityIcons
-                            name={"infinity"}
-                            size={18}
-                            color={
-                              infiniteCraft ? Colors.textPrimary : "#ff9800"
-                            }
-                          />
-                        </TouchableOpacity>
                       </View>
                     </View>
 
