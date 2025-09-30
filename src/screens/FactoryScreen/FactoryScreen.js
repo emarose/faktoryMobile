@@ -38,7 +38,7 @@ export default function FactoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView ref={scrollRef} contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false} ref={scrollRef} contentContainerStyle={styles.scrollViewContent}>
         <ResourceOverviewHeader />
         <View style={{}}>
           <MilestoneCard
@@ -47,7 +47,6 @@ export default function FactoryScreen() {
             discoveredNodes={discoveredNodes}
             onPress={() => navigation.navigate("MilestonesScreen")}
           />
-          {/* Row: World Map + Machine Builder */}
           <View style={styles.rowSplit}>
             <TouchableOpacity
               style={[styles.gridItem, styles.halfItem]}

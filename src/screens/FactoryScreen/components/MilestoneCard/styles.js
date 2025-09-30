@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   milestoneHeader: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginBottom: 8,
+    marginBottom: 4,
   },
   milestoneInfo: {
     flex: 1,
@@ -77,10 +77,6 @@ const styles = StyleSheet.create({
     color: Colors.backgroundAccent,
   },
   overallProgress: {
-    marginTop: 8,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
     alignItems: "center",
   },
   overallProgressText: {
