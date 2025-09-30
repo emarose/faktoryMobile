@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useCallback } from "react";
 import { GameContext } from "../../contexts/GameContext";
 import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
 import { Text, CustomHeader } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ResourceOverviewHeader from "./components/ResourceOverviewHeader/ResourceOverviewHeader";
@@ -22,9 +22,23 @@ export default function FactoryScreen() {
     allResourceNodes,
   } = useContext(GameContext);
 
+  const scrollRef = useRef(null);
+
+  // Scroll to top whenever the screen receives focus
+  useFocusEffect(
+    useCallback(() => {
+      if (scrollRef.current) {
+        try {
+          scrollRef.current.scrollTo({ y: 0, animated: true });
+        } catch (e) {
+        }
+      }
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView ref={scrollRef} contentContainerStyle={styles.scrollViewContent}>
         <ResourceOverviewHeader />
         <View style={{}}>
           <MilestoneCard

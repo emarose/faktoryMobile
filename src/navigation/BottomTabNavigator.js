@@ -7,12 +7,13 @@ import FactoryScreen from "../screens/FactoryScreen/FactoryScreen";
 import MapScreen from "../screens/MapScreen/MapScreen";
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BuildScreen from "../screens/BuildScreen/BuildScreen";
+import InventoryScreen from "../screens/InventoryScreen/InventoryScreen";
 
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
-  function TabBarIcon(props) {
-    return <MaterialCommunityIcons size={30} style={{ marginBottom: -3 }} {...props} />;
+  function TabBarIcon({ name, color, size = 30 }) {
+    return <MaterialCommunityIcons name={name} size={size} color={color} style={{ marginBottom: -3 }} />;
   }
 
   return (
@@ -25,11 +26,12 @@ export default function BottomTabNavigator() {
         tabBarStyle: {
           backgroundColor: Colors.backgroundPanel,
           paddingVertical: 10,
-          height: 70,
+          height: 78,
         },
         tabBarLabelStyle: { fontSize: 12, paddingBottom: 8 },
       }}
     >
+      {/* Order chosen so Factory is in the center */}
       <BottomTab.Screen
         name="WorldMap"
         component={MapScreen}
@@ -38,18 +40,6 @@ export default function BottomTabNavigator() {
           tabBarLabel: "World",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="map-outline" color={color} />
-          ),
-        }}
-      />
-
-      <BottomTab.Screen
-        name="Factory"
-        component={FactoryScreen}
-        options={{
-          title: "Factory",
-          tabBarLabel: "Factory",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="factory" color={color} />
           ),
         }}
       />
@@ -67,6 +57,19 @@ export default function BottomTabNavigator() {
       />
 
       <BottomTab.Screen
+        name="Factory"
+        component={FactoryScreen}
+        options={{
+          title: "Factory",
+          tabBarLabel: "Factory",
+          tabBarIcon: ({ color, focused }) => (
+            // Factory gets a slightly larger icon when focused (center emphasis)
+            <TabBarIcon name="factory" color={color} size={focused ? 40 : 34} />
+          ),
+        }}
+      />
+
+      <BottomTab.Screen
         name="Machines"
         component={DeployedMachinesScreen}
         options={{
@@ -74,6 +77,18 @@ export default function BottomTabNavigator() {
           tabBarLabel: "Machines",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="robot-industrial" color={color} />
+          ),
+        }}
+      />
+
+      <BottomTab.Screen
+        name="Inventory"
+        component={InventoryScreen}
+        options={{
+          title: "Inventory",
+          tabBarLabel: "Inventory",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="baguette" color={color} />
           ),
         }}
       />

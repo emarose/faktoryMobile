@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
-    padding: 15,
+    paddingHorizontal: 8,
+    paddingVertical: 16,
     marginBottom: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     width: "48%",
   },
   gridItemTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: Colors.textSecondary,
     textAlign: "center",
@@ -59,7 +60,6 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     textAlign: "center",
   },
-
 });
 
 export default styles;
