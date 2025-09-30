@@ -24,12 +24,10 @@ export default StyleSheet.create({
     alignItems: "flex-end",
   },
   backButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: Colors.backgroundAccent,
+    padding: 10,
   },
   rightButton: {
-    padding: 8,
+    padding: 10,
     borderRadius: 8,
     backgroundColor: Colors.backgroundAccent,
   },

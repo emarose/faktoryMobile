@@ -174,18 +174,11 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   noMachinesText: {
-    color: Colors.textMuted,
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: "500",
     textAlign: "center",
     marginTop: 8,
-  },
-  noMachinesSubtext: {
-    color: Colors.textMuted,
-    fontSize: 11,
-    textAlign: "center",
-    marginTop: 4,
-    opacity: 0.7,
   },
 });
 

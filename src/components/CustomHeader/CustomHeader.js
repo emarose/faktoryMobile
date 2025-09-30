@@ -4,20 +4,21 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from "../index";
 import styles from "./styles";
+import Colors from "../../constants/Colors";
 
 const CustomHeader = ({ 
   title, 
   showBackButton = true, 
   rightIcon = null, 
   onRightIconPress = null,
-  rightIconColor = "#e8f4fd",
-  backgroundColor = "#1f2935",
-  borderColor = "#4a5866"
+  rightIconColor = Colors.textPrimary,
+  backgroundColor = Colors.background,
+  borderColor = Colors.borderLight
 }) => {
   const navigation = useNavigation();
 
   const handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate("Factory");
   };
 
   return (
@@ -34,12 +35,12 @@ const CustomHeader = ({
           <TouchableOpacity 
             style={styles.backButton}
             onPress={handleBackPress}
-            activeOpacity={0.7}
+          
           >
             <MaterialCommunityIcons 
               name="arrow-left" 
               size={24} 
-              color="#e8f4fd" 
+              color={Colors.textPrimary} 
             />
           </TouchableOpacity>
         )}

@@ -1,84 +1,82 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useColorScheme } from "react-native";
-
 import Colors from "../constants/Colors";
 
 import FactoryScreen from "../screens/FactoryScreen/FactoryScreen";
+import MapScreen from "../screens/MapScreen/MapScreen";
+import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
+import BuildScreen from "../screens/BuildScreen/BuildScreen";
 
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
-  const colorScheme = useColorScheme();
+  function TabBarIcon(props) {
+    return <MaterialCommunityIcons size={30} style={{ marginBottom: -3 }} {...props} />;
+  }
 
   return (
     <BottomTab.Navigator
       initialRouteName="Factory"
-      screenOptions={{ tabBarActiveTintColor: Colors.background}}
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: Colors.accentGreen,
+        tabBarInactiveTintColor: Colors.textPrimary,
+        tabBarStyle: {
+          backgroundColor: Colors.backgroundPanel,
+          paddingVertical: 10,
+          height: 70,
+        },
+        tabBarLabelStyle: { fontSize: 12, paddingBottom: 8 },
+      }}
     >
       <BottomTab.Screen
-        name="Production"
-        component={FactoryScreen}
+        name="WorldMap"
+        component={MapScreen}
         options={{
-          headerShown: false,
+          title: "World Map",
+          tabBarLabel: "World",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="analytics" color={color} />
+            <TabBarIcon name="map-outline" color={color} />
           ),
         }}
       />
+
       <BottomTab.Screen
         name="Factory"
         component={FactoryScreen}
         options={{
-          headerShown: false,
+          title: "Factory",
+          tabBarLabel: "Factory",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="home" color={color} />
+            <TabBarIcon name="factory" color={color} />
           ),
         }}
       />
+
       <BottomTab.Screen
-        name="Machinery"
-        component={FactoryScreen}
+        name="Builder"
+        component={BuildScreen}
         options={{
-          headerShown: false,
+          title: "Builder",
+          tabBarLabel: "Builder",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="cog" color={color} />
+            <TabBarIcon name="hammer" color={color} />
+          ),
+        }}
+      />
+
+      <BottomTab.Screen
+        name="Machines"
+        component={DeployedMachinesScreen}
+        options={{
+          title: "Machines",
+          tabBarLabel: "Machines",
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="robot-industrial" color={color} />
           ),
         }}
       />
     </BottomTab.Navigator>
-  );
-}
-
-function TabBarIcon(props) {
-  return <Ionicons size={30} style={{ marginBottom: -3 }} {...props} />;
-}
-
-const TabOneStack = createStackNavigator();
-
-function TabOneNavigator() {
-  return (
-    <TabOneStack.Navigator>
-      <TabOneStack.Screen
-        name="Production"
-        component={FactoryScreen}
-        options={{ headerTitle: "Production" }}
-      />
-    </TabOneStack.Navigator>
-  );
-}
-
-const TabTwoStack = createStackNavigator();
-
-function TabTwoNavigator() {
-  return (
-    <TabTwoStack.Navigator>
-      <TabTwoStack.Screen
-        name="Machinery"
-        component={FactoryScreen}
-        options={{ headerTitle: "Machinery" }}
-      />
-    </TabTwoStack.Navigator>
   );
 }

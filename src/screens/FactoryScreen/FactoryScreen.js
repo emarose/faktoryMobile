@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { GameContext } from "../../contexts/GameContext";
 import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
 import { Text, CustomHeader } from "../../components";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -32,19 +33,34 @@ export default function FactoryScreen() {
             discoveredNodes={discoveredNodes}
             onPress={() => navigation.navigate("MilestonesScreen")}
           />
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("MapScreen")}
-          >
-            <Text style={styles.gridItemTitle}>World Map</Text>
-          </TouchableOpacity>
+          {/* Row: World Map + Machine Builder */}
+          <View style={styles.rowSplit}>
+            <TouchableOpacity
+              style={[styles.gridItem, styles.halfItem]}
+              onPress={() => navigation.navigate("MapScreen")}
+            >
+              <MaterialCommunityIcons
+                name="map-outline"
+                size={28}
+                color={"#fff"}
+                style={{ marginBottom: 8 }}
+              />
+              <Text style={styles.gridItemTitle}>World Map</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("BuildScreen")}
-          >
-            <Text style={styles.gridItemTitle}>Machine Builder</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.gridItem, styles.halfItem]}
+              onPress={() => navigation.navigate("BuildScreen")}
+            >
+              <MaterialCommunityIcons
+                name="hammer"
+                size={28}
+                color={"#fff"}
+                style={{ marginBottom: 8 }}
+              />
+              <Text style={styles.gridItemTitle}>Machine Builder</Text>
+            </TouchableOpacity>
+          </View>
 
           <DeployedMachinesCard
             placedMachines={placedMachines}

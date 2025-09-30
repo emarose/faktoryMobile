@@ -28,6 +28,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 15,
   },
+  rowSplit: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
   gridItem: {
     width: "100%",
     backgroundColor: Colors.backgroundPanel,
@@ -38,6 +43,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: Colors.borderLight,
+  },
+  halfItem: {
+    width: "48%",
   },
   gridItemTitle: {
     fontSize: 18,
