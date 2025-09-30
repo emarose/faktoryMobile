@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import milestones from "../../../../data/milestones";
 import { items } from "../../../../data/items";
 import styles from "./styles";
+import Colors from "../../../../constants/Colors";
 
 const MilestoneCard = ({
   currentMilestone,
@@ -12,6 +13,7 @@ const MilestoneCard = ({
   discoveredNodes,
   onPress,
 }) => {
+  const [expanded, setExpanded] = useState(false);
   // Busca el milestone completo para acceder a requirementsDescription
   const milestoneFull = currentMilestone
     ? milestones.find((m) => m.id === currentMilestone.id)
@@ -66,25 +68,44 @@ const MilestoneCard = ({
   );
 
   return (
-    <TouchableOpacity
-      style={[styles.gridItem, styles.milestoneCard]}
-      onPress={onPress}
-    >
+    <View style={[styles.gridItem, styles.milestoneCard]}>
       <View style={styles.milestoneHeader}>
-        <MaterialCommunityIcons
-          name={isMilestoneCompleted ? "check-circle" : "star"}
-          size={28}
-          color={isMilestoneCompleted ? "#4CAF50" : "#ffd700"}
-        />
+        <TouchableOpacity onPress={onPress}>
+          <MaterialCommunityIcons
+            name={"star"}
+            size={30}
+            color={Colors.accentGold}
+          />
+        </TouchableOpacity>
         {currentMilestone && !currentMilestone.unlocked && (
-          <View style={styles.milestoneInfo}>
-            <Text style={styles.milestoneTitle}>{currentMilestone.name}</Text>
-          </View>
+          <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.nameAndCaret}>
+            <Text style={[styles.milestoneTitle, {flex: 1, textAlign: 'center'}]}>{currentMilestone.name}</Text>
+            <MaterialCommunityIcons
+              name={expanded ? "chevron-up" : "chevron-down"}
+              size={20}
+              color={Colors.textPrimary}
+            />
+          </TouchableOpacity>
         )}
       </View>
 
+      {/* Overall completion indicator in non-expanded state */}
+      {currentMilestone && !currentMilestone.unlocked && !expanded && (
+        <View style={styles.overallProgress}>
+          <Text style={styles.overallProgressText}>
+            {milestoneProgress.filter((r) => r.completed).length}/
+            {milestoneProgress.length} completed
+          </Text>
+          {isMilestoneCompleted && (
+            <Text style={styles.readyToComplete}>
+              Ready to complete! 🎉
+            </Text>
+          )}
+        </View>
+      )}
+
       {/* Progress bars for each requirement */}
-      {currentMilestone &&
+      {expanded && currentMilestone &&
         !currentMilestone.unlocked &&
         milestoneProgress.length > 0 && (
           <View style={styles.progressSection}>
@@ -131,7 +152,7 @@ const MilestoneCard = ({
             </View>
           </View>
         )}
-    </TouchableOpacity>
+    </View>
   );
 };
 

@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
   },
   milestoneHeader: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    justifyContent: 'space-between',
     marginBottom: 4,
   },
   milestoneInfo: {
@@ -33,6 +34,12 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     fontWeight: "bold",
     marginBottom: 4,
+  },
+  nameAndCaret: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   milestoneDescription: {
     color: Colors.accentGreen,
