@@ -7,6 +7,7 @@ import { items } from "../../../../../data/items";
 import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
 import Colors from "../../../../../constants/Colors";
 import ProgressBar from "../../../../../components/ProgressBar";
+import MinerControls from "./components/MinerControls";
 
 const Miner = ({ machine, navigation }) => {
   const {
@@ -118,100 +119,8 @@ const Miner = ({ machine, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Node Information and Controls */}
-      {assignedNode && (
-        <View style={styles.extraInfoContainer}>
-          <View style={styles.headerRow}>
-            {(() => {
-              const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);
-              const pillColor = nodeTypeDef
-                ? nodeTypeDef.color
-                : Colors.fallback;
-              return (
-                <View
-                  style={[
-                    styles.selectedNodePill,
-                    { backgroundColor: pillColor },
-                  ]}
-                >
-                  <Text style={styles.selectedNodePillText}>
-                    {assignedNode.name}
-                  </Text>
-                </View>
-              );
-            })()}
-            <Text style={styles.machineStatus}>
-              {isIdle ? "Miner is on hold" : liveMachine.statusText}
-            </Text>
-          </View>
-
-          {/* Node depletion UI (moved from MachineCard) */}
-          {nodeDepletionData && (
-            <View style={{ marginTop: 10 }}>
-              <View style={styles.headerRow}>
-                <Text style={styles.machineStatus}>
-                  {nodeDepletionData.assignedCount}/{nodeDepletionData.assignedCount} assigned
-                  {nodeDepletionData.canAddMore ? ` (max ${nodeDepletionData.maxAllowed})` : " (full)"}
-                </Text>
-              </View>
-
-              <View style={styles.depletionSection}>
-                <ProgressBar
-                  value={nodeDepletionData.currentAmount}
-                  max={nodeDepletionData.maxAmount}
-                  label={""}
-                  color={
-                    nodeDepletionData.isDepleted
-                      ? "#ff6b6b"
-                      : nodeDepletionData.isNearDepletion
-                      ? "#ff9800"
-                      : "#4CAF50"
-                  }
-                />
-                {nodeDepletionData.timeToDepletion !== Infinity && !nodeDepletionData.isDepleted && (
-                  <Text style={styles.depletionTime}>
-                    ~{nodeDepletionData.timeToDepletion} min to depletion at current rate
-                  </Text>
-                )}
-              </View>
-            </View>
-          )}
-
-          <View style={styles.controlButtonsContainer}>
-            <TouchableOpacity
-              style={[
-                styles.pauseResumeButton,
-                isIdle ? styles.pauseResumeIdle : styles.pauseResumeActive,
-              ]}
-              onPress={handlePauseResume}
-              activeOpacity={0.85}
-            >
-              <MaterialIcons
-                name={isIdle ? "play-arrow" : "pause"}
-                size={18}
-                color="#fff"
-                style={{ marginRight: 4 }}
-              />
-              <Text style={styles.pauseResumeText}>
-                {isIdle ? "Resume Mining" : "Pause Miner"}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.detachButton}
-              onPress={handleDetachNode}
-              activeOpacity={0.85}
-            >
-              <MaterialIcons
-                name="link-off"
-                size={16}
-                color={Colors.textSecondary}
-                style={{ marginRight: 4 }}
-              />
-              <Text style={styles.detachText}>Detach Miner</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      {/* Delegate node info and controls to MinerControls (avoids duplication) */}
+      <MinerControls machine={liveMachine} navigation={navigation} />
     </>
   );
 };
