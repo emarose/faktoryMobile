@@ -210,9 +210,9 @@ export const GameProvider = ({ children }) => {
         const nodeCap = typeof node.capacity === "number" ? node.capacity : 1000;
         const nodeAmount = nodeAmounts[node.id] ?? nodeCap;
         if (nodeAmount <= 0) {
-          // Node depleted - pause all machines on this node
-          assignedMachines.forEach(machine => {
-            pauseMiner(machine.id);
+          // Node depleted - system pause all machines on this node
+          assignedMachines.forEach((machine) => {
+            pauseMiner(machine.id, { system: true });
           });
           return;
         }
@@ -227,10 +227,10 @@ export const GameProvider = ({ children }) => {
         const isStorageFull = currentAmount >= RESOURCE_CAP;
         
         if (isStorageFull) {
-          // Storage is full, pause all miners on this node
-          assignedMachines.forEach(machine => {
+          // Storage is full, system pause all miners on this node
+          assignedMachines.forEach((machine) => {
             if (!machine.isIdle) {
-              pauseMiner(machine.id);
+              pauseMiner(machine.id, { system: true });
             }
           });
           return; // Skip resource generation
@@ -251,8 +251,8 @@ export const GameProvider = ({ children }) => {
         
         // If node becomes depleted, pause all machines
         if (newNodeAmount <= 0) {
-          assignedMachines.forEach(machine => {
-            pauseMiner(machine.id);
+          assignedMachines.forEach((machine) => {
+            pauseMiner(machine.id, { system: true });
           });
         }
       });
@@ -298,7 +298,7 @@ export const GameProvider = ({ children }) => {
         machine.assignedNodeId
       );
 
-      idleMiners.forEach(machine => {
+      idleMiners.forEach((machine) => {
         const node = allResourceNodes.find(n => n.id === machine.assignedNodeId);
         if (!node) return;
 
@@ -311,7 +311,8 @@ export const GameProvider = ({ children }) => {
 
         // Resume if storage has space and node is not depleted
         if (currentAmount < RESOURCE_CAP && nodeAmount > 0) {
-          resumeMiner(machine.id);
+          // Only resume systems-paused machines; user-paused machines remain paused
+          resumeMiner(machine.id, { system: true });
         }
       });
     }, 2000); // Check every 2 seconds
@@ -413,8 +414,10 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   const pauseCrafting = useCallback((machineId) => {
+    console.log(`[GameContext] pauseCrafting called for machineId=${machineId} at ${Date.now()}`);
     setCraftingQueue((prev) => prev.map(proc => {
       if (proc.machineId === machineId && proc.status === "pending") {
+        console.log(`[GameContext] pausing proc id=${proc.id} startedAt=${proc.startedAt} endsAt=${proc.endsAt}`);
         return { ...proc, status: "paused", pausedAt: Date.now() };
       }
       return proc;
@@ -422,18 +425,33 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   const resumeCrafting = useCallback((machineId) => {
+    console.log(`[GameContext] resumeCrafting called for machineId=${machineId} at ${Date.now()}`);
     setCraftingQueue((prev) => prev.map(proc => {
       if (proc.machineId === machineId && proc.status === "paused") {
         const pauseDuration = Date.now() - (proc.pausedAt || 0);
+        const newStartedAt = (proc.startedAt || proc.endsAt - proc.processingTime * 1000) + pauseDuration;
+        const newEndsAt = (proc.endsAt || newStartedAt + proc.processingTime * 1000) + pauseDuration;
+        console.log(`[GameContext] resuming proc id=${proc.id} before startedAt=${proc.startedAt} endsAt=${proc.endsAt} pausedAt=${proc.pausedAt}`);
+        console.log(`[GameContext] resuming proc id=${proc.id} after startedAt=${newStartedAt} endsAt=${newEndsAt}`);
         return { 
           ...proc, 
           status: "pending", 
-          endsAt: proc.endsAt + pauseDuration,
+          startedAt: newStartedAt,
+          endsAt: newEndsAt,
           pausedAt: undefined
         };
       }
       return proc;
     }));
+  }, []);
+
+  // Detach a machine from its node and mark as user-paused
+  const detachMachine = useCallback((machineId) => {
+    setPlacedMachines((prev) =>
+      prev.map((m) =>
+        m.id === machineId ? { ...m, assignedNodeId: undefined, isIdle: true, pausedByUser: true } : m
+      )
+    );
   }, []);
 
   const contextValue = useMemo(
@@ -485,6 +503,7 @@ export const GameProvider = ({ children }) => {
       resumeCrafting,
       pauseMiner,
       resumeMiner,
+  detachMachine,
       regenerateSeed,
       setTestSeed,
     }),
@@ -513,6 +532,9 @@ export const GameProvider = ({ children }) => {
       setPlayerMapPosition,
       discoveredNodes,
       setDiscoveredNodes,
+      craftingQueue,
+      setCraftingQueue,
+      nodeAmounts,
       milestones,
       canCompleteCurrentMilestone,
       completeCurrentMilestone,

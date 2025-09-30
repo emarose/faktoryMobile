@@ -104,7 +104,6 @@ const BuildScreen = () => {
 
   const handleBuild = (itemId) => {
     const itemToBuild = allBuildableItems.find((item) => item.id === itemId);
-    console.log("🚀 ~ handleBuild ~ unlockedMachineNames:", unlockedMachineNames)
     if (!itemToBuild?.isUnlocked) {
       Alert.alert(
         "Machine Locked",

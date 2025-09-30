@@ -216,7 +216,7 @@ const DeployedMachinesScreen = () => {
                       if (machine.type === "miner" || machine.type === "oilExtractor") {
                         // Handle miners/extractors
                         console.log("Machine isIdle:", machine.isIdle);
-                        machine.isIdle ? resumeMiner(machine.id) : pauseMiner(machine.id);
+                        machine.isIdle ? resumeMiner(machine.id, { user: true }) : pauseMiner(machine.id, { user: true });
                       } else {
                         // Handle crafting machines
                         const machineProcesses = craftingQueue.filter(
@@ -224,21 +224,22 @@ const DeployedMachinesScreen = () => {
                         );
                         console.log("Machine processes:", machineProcesses);
                         
-                        const hasActiveProcesses = machineProcesses.some(proc => proc.status === "pending");
-                        const hasPausedProcesses = machineProcesses.some(proc => proc.status === "paused");
-                        
-                        console.log("Has active processes:", hasActiveProcesses);
-                        console.log("Has paused processes:", hasPausedProcesses);
-                        
-                        if (hasActiveProcesses) {
-                          console.log("Pausing crafting for machine:", machine.id);
-                          pauseCrafting(machine.id);
-                        } else if (hasPausedProcesses) {
-                          console.log("Resuming crafting for machine:", machine.id);
-                          resumeCrafting(machine.id);
-                        } else {
-                          console.log("No active or paused processes found for machine:", machine.id);
-                        }
+                          // Determine the current process (pending or paused) for this machine
+                          const currentProc = craftingQueue.find(
+                            (proc) => proc.machineId === machine.id && (proc.status === 'pending' || proc.status === 'paused')
+                          );
+
+                          if (currentProc) {
+                            if (currentProc.status === 'paused') {
+                              console.log('Resuming crafting for machine:', machine.id, currentProc.id);
+                              resumeCrafting(machine.id);
+                            } else {
+                              console.log('Pausing crafting for machine:', machine.id, currentProc.id);
+                              pauseCrafting(machine.id);
+                            }
+                          } else {
+                            console.log('No active or paused processes found for machine:', machine.id);
+                          }
                       }
                     }}
                     onCancelCrafting={() => {

@@ -5,22 +5,21 @@ import { useGame } from "../../../../../../../contexts/GameContext";
 import styles from "./styles";
 
 const MinerControls = ({ machine, assignedNodeId }) => {
-  const { setPlacedMachines } = useGame();
+  const { pauseMiner, resumeMiner, detachMachine } = useGame();
 
   const handlePauseResume = () => {
-    setPlacedMachines((prevPlaced) =>
-      prevPlaced.map((m) =>
-        m.id === machine.id ? { ...m, isIdle: !m.isIdle } : m
-      )
-    );
+    if (machine.isIdle) {
+      // User requested resume
+      resumeMiner(machine.id, { user: true });
+    } else {
+      // User requested pause
+      pauseMiner(machine.id, { user: true });
+    }
   };
 
   const handleDetachNode = () => {
-    setPlacedMachines((prevPlaced) =>
-      prevPlaced.map((m) =>
-        m.id === machine.id ? { ...m, assignedNodeId: undefined, isIdle: true } : m
-      )
-    );
+    // Detach the machine from node and mark as user-paused
+    detachMachine(machine.id);
   };
 
   if (!assignedNodeId) return null;

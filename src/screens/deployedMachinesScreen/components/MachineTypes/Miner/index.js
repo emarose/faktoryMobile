@@ -11,12 +11,12 @@ import ProgressBar from "../../../../../components/ProgressBar";
 const Miner = ({ machine, navigation }) => {
   const {
     placedMachines,
-    setPlacedMachines,
     allResourceNodes,
     discoveredNodes,
     nodeAmounts,
     pauseMiner,
     resumeMiner,
+    detachMachine,
   } = useGame();
 
   const liveMachine =
@@ -84,20 +84,14 @@ const Miner = ({ machine, navigation }) => {
 
   const handlePauseResume = () => {
     if (isIdle) {
-      resumeMiner(liveMachine.id);
+      resumeMiner(liveMachine.id, { user: true });
     } else {
-      pauseMiner(liveMachine.id);
+      pauseMiner(liveMachine.id, { user: true });
     }
   };
 
   const handleDetachNode = () => {
-    setPlacedMachines((prevPlaced) =>
-      prevPlaced.map((m) =>
-        m.id === liveMachine.id
-          ? { ...m, assignedNodeId: undefined, isIdle: true }
-          : m
-      )
-    );
+    detachMachine(liveMachine.id);
   };
 
   return (

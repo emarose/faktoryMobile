@@ -1,7 +1,3 @@
-SmelterScreen:
-- al presionar craft inifinite no debe volver atras, 
-- agregar el cancelar
-
 ### DeployedMachinesScreen [P2]
 - [ ] Mejorar visualización de máquinas (🔑 Agrupar por tipo y función)
 - [ ] Implementar filtros de estado (🔑 Activo/Inactivo/Procesando)

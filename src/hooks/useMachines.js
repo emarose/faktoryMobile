@@ -149,30 +149,61 @@ export const useMachines = (
 
 
   // Función para pausar una máquina de extracción (miner o oilExtractor)
-  const pauseMachine = useCallback((machineId) => {
-    setPlacedMachines((prev) => prev.map(m => {
-      if (m.id === machineId) {
-        return { ...m, isIdle: true };
-      }
-      // Si la máquina no tiene isIdle, lo agrega por robustez
-      if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
-        return { ...m, isIdle: false };
-      }
-      return m;
-    }));
+  // Pause a machine. opts: { system: boolean, user: boolean }
+  const pauseMachine = useCallback((machineId, opts = {}) => {
+    const { system = false, user = false } = opts;
+    setPlacedMachines((prev) =>
+      prev.map((m) => {
+        if (m.id !== machineId) {
+          // ensure miners have isIdle defined for robustness
+          if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
+            return { ...m, isIdle: false };
+          }
+          return m;
+        }
+
+        const pausedBySystem = system ? true : !!m.pausedBySystem;
+        const pausedByUser = user ? true : !!m.pausedByUser;
+        return {
+          ...m,
+          isIdle: true,
+          pausedBySystem,
+          pausedByUser,
+        };
+      })
+    );
   }, []);
 
   // Función para reanudar una máquina de extracción (miner o oilExtractor)
-  const resumeMachine = useCallback((machineId) => {
-    setPlacedMachines((prev) => prev.map(m => {
-      if (m.id === machineId) {
-        return { ...m, isIdle: false };
-      }
-      if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
-        return { ...m, isIdle: false };
-      }
-      return m;
-    }));
+  // Resume a machine. opts: { system: boolean, user: boolean }
+  const resumeMachine = useCallback((machineId, opts = {}) => {
+    const { system = false, user = false } = opts;
+    setPlacedMachines((prev) =>
+      prev.map((m) => {
+        if (m.id !== machineId) {
+          if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
+            return { ...m, isIdle: false };
+          }
+          return m;
+        }
+
+        const prevPausedBySystem = !!m.pausedBySystem;
+        const prevPausedByUser = !!m.pausedByUser;
+
+        const newPausedBySystem = system ? false : prevPausedBySystem;
+        const newPausedByUser = user ? false : prevPausedByUser;
+
+        // machine is idle if any pause flag remains true
+        const newIsIdle = newPausedBySystem || newPausedByUser;
+
+        return {
+          ...m,
+          isIdle: !!newIsIdle,
+          pausedBySystem: newPausedBySystem,
+          pausedByUser: newPausedByUser,
+        };
+      })
+    );
   }, []);
 
   // Legacy functions for backward compatibility

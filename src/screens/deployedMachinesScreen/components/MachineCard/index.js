@@ -99,13 +99,30 @@ const MachineCard = ({
       return;
     }
 
+    const getSafeStartedAt = (proc) => {
+      if (proc.startedAt) return proc.startedAt;
+      // If startedAt missing, derive it from endsAt - processingTime
+      if (proc.endsAt && proc.processingTime) {
+        return proc.endsAt - proc.processingTime * 1000;
+      }
+      return Date.now();
+    };
+
     const updateProgress = () => {
       const now = Date.now();
-      const elapsed = (now - currentProcess.startedAt) / 1000;
-      const totalTime = currentProcess.processingTime;
-      const currentProgress = Math.min(elapsed, totalTime);
+      const startedAt = getSafeStartedAt(currentProcess);
+      const elapsed = (now - startedAt) / 1000;
+      const totalTime = currentProcess.processingTime || 1;
+      const currentProgress = Math.min(Math.max(elapsed, 0), totalTime);
       setProgress(currentProgress);
     };
+
+    // Debug log to help trace pause/resume issues
+    try {
+      console.log(`[MachineCard] progress effect run for proc id=${currentProcess.id} status=${currentProcess.status} startedAt=${currentProcess.startedAt} endsAt=${currentProcess.endsAt}`);
+    } catch (e) {
+      // ignore
+    }
 
     // Update immediately
     updateProgress();
@@ -113,7 +130,8 @@ const MachineCard = ({
     // Set up interval to update progress
     const interval = setInterval(updateProgress, 100);
     return () => clearInterval(interval);
-  }, [currentProcess, machine.type]);
+    // Key effect to specific process attributes so it restarts on resume/pause
+  }, [currentProcess?.id, currentProcess?.status, currentProcess?.startedAt, machine.type]);
 
   const openNodeSelector = () => {
     navigation.navigate("NodeSelectorScreen", { machine });
