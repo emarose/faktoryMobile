@@ -15,7 +15,6 @@ import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
 
 // Component imports
-import CraftingProgress from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftingProgress";
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -136,36 +135,10 @@ const SmelterScreen = ({ route, navigation }) => {
     [machineProcesses]
   );
 
-  const [progress, setProgress] = useState(0);
 
-  // Progress tracking effect
-  useEffect(() => {
-    if (!currentProcess || !isProcessing) {
-      setProgress(0);
-      return;
-    }
-
-    const startTime = currentProcess.startedAt || Date.now();
-    const totalTime = currentProcess.processingTime * 1000; // Convert to milliseconds
-
-    const updateProgress = () => {
-      const elapsed = Date.now() - startTime;
-      const progressSeconds = Math.min(
-        elapsed / 1000,
-        currentProcess.processingTime
-      );
-      setProgress(progressSeconds);
-    };
-
-    updateProgress(); // Initial update
-    const interval = setInterval(updateProgress, 100);
-
-    return () => clearInterval(interval);
-  }, [currentProcess, isProcessing]);
 
   const cancelCrafting = useCallback(() => {
     /* TODO: create cancellation logic */
-    setProgress(0);
   }, []);
 
   // Crafting logic using global craftingQueue
@@ -287,9 +260,11 @@ const SmelterScreen = ({ route, navigation }) => {
   }, [maxCraftable]);
 
   // Optimize start crafting handler
-  const handleStartCrafting = useCallback(() => {
-    startCrafting(amount);
-  }, [startCrafting, amount]);
+  const handleStartCrafting = useCallback(async () => {
+    await startCrafting(amount);
+    // After enqueuing production, navigate to DeployedMachines so progress/controls are visible
+    navigation.navigate("DeployedMachinesScreen");
+  }, [startCrafting, amount, navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -632,18 +607,7 @@ const SmelterScreen = ({ route, navigation }) => {
                   </View>
                 )}
 
-                {/* Progress Display */}
-                {isProcessing && currentProcess && (
-                  <View style={styles.progressSection}>
-                    <CraftingProgress
-                      isProcessing={isProcessing}
-                      progress={progress}
-                      processingTime={currentProcess.processingTime}
-                      onCancel={cancelCrafting}
-                      totalAmount={currentProcess.amount}
-                    />
-                  </View>
-                )}
+                {/* Progress Display is handled in the MachineCard; removed from SmelterScreen */}
 
                 {/* Production Controls */}
                 {selectedRecipe && (

@@ -68,9 +68,6 @@ const MachineCard = ({
   const machineColor = getMachineColor(machine.type);
   const machineColorBackground = getMachineColorWithOpacity(machine.type, 0.1);
 
-  // Node depletion logic was moved to the Miner component.
-  // If you need it here again, re-add the useMemo calculation.
-
   // For crafting machines - check for active crafting processes
   const machineProcesses = useMemo(() => {
     if (machine.type === "miner" || machine.type === "oilExtractor") return [];
@@ -116,13 +113,6 @@ const MachineCard = ({
       const currentProgress = Math.min(Math.max(elapsed, 0), totalTime);
       setProgress(currentProgress);
     };
-
-    // Debug log to help trace pause/resume issues
-    try {
-      console.log(`[MachineCard] progress effect run for proc id=${currentProcess.id} status=${currentProcess.status} startedAt=${currentProcess.startedAt} endsAt=${currentProcess.endsAt}`);
-    } catch (e) {
-      // ignore
-    }
 
     // Update immediately
     updateProgress();

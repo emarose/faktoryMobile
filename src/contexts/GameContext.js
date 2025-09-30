@@ -414,10 +414,8 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   const pauseCrafting = useCallback((machineId) => {
-    console.log(`[GameContext] pauseCrafting called for machineId=${machineId} at ${Date.now()}`);
     setCraftingQueue((prev) => prev.map(proc => {
       if (proc.machineId === machineId && proc.status === "pending") {
-        console.log(`[GameContext] pausing proc id=${proc.id} startedAt=${proc.startedAt} endsAt=${proc.endsAt}`);
         return { ...proc, status: "paused", pausedAt: Date.now() };
       }
       return proc;
@@ -425,14 +423,11 @@ export const GameProvider = ({ children }) => {
   }, []);
 
   const resumeCrafting = useCallback((machineId) => {
-    console.log(`[GameContext] resumeCrafting called for machineId=${machineId} at ${Date.now()}`);
     setCraftingQueue((prev) => prev.map(proc => {
       if (proc.machineId === machineId && proc.status === "paused") {
         const pauseDuration = Date.now() - (proc.pausedAt || 0);
         const newStartedAt = (proc.startedAt || proc.endsAt - proc.processingTime * 1000) + pauseDuration;
         const newEndsAt = (proc.endsAt || newStartedAt + proc.processingTime * 1000) + pauseDuration;
-        console.log(`[GameContext] resuming proc id=${proc.id} before startedAt=${proc.startedAt} endsAt=${proc.endsAt} pausedAt=${proc.pausedAt}`);
-        console.log(`[GameContext] resuming proc id=${proc.id} after startedAt=${newStartedAt} endsAt=${newEndsAt}`);
         return { 
           ...proc, 
           status: "pending", 
