@@ -86,7 +86,6 @@ const DeployedMachinesCard = ({
         } else {
           // Miner exists but no node assigned
           status = "idle";
-          activity = "Waiting for assignment";
           outputInfo = "No node assigned";
         }
       } else {

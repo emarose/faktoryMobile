@@ -39,12 +39,12 @@ const DeployedMachinesScreen = () => {
   const navigation = useNavigation();
 
   const allMachines = [
-    ...placedMachines,
-    ...ownedMachines.filter((m) => !placedMachines.some((p) => p.id === m.id)),
+    ...((placedMachines || []).filter(Boolean)),
+    ...((ownedMachines || []).filter((m) => !(placedMachines || []).filter(Boolean).some((p) => p.id === m.id))),
   ];
 
   // Group all machines by type
-  const machinesByType = allMachines.reduce((acc, machine) => {
+  const machinesByType = (allMachines || []).filter(Boolean).reduce((acc, machine) => {
     const typeName = items[machine.type]?.name || machine.type;
     if (!acc[typeName]) acc[typeName] = [];
     acc[typeName].push(machine);
@@ -57,8 +57,8 @@ const DeployedMachinesScreen = () => {
 
   // Get machines for current tab
   const currentTabMachines = activeTab === "All" 
-    ? allMachines 
-    : machinesByType[activeTab] || [];
+    ? (allMachines || []).filter(Boolean)
+    : (machinesByType[activeTab] || []).filter(Boolean);
 
   // Machine type icons
   const getMachineTypeIcon = (typeName) => {
@@ -187,7 +187,8 @@ const DeployedMachinesScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {currentTabMachines.length > 0 ? (
           <MachineGroup key={activeTab} typeName={activeTab}>
-            {currentTabMachines.map((machine) => {
+            {(currentTabMachines || []).filter(Boolean).map((machine) => {
+                if (!machine || !machine.id) return null;
                 const node = getNodeInfo(machine);
                 const recipe = machine.currentRecipeId
                   ? items[machine.currentRecipeId]
@@ -211,6 +212,7 @@ const DeployedMachinesScreen = () => {
                       })
                     } */
                     onPauseResume={() => {
+                      if (!machine || !machine.id) return;
                       console.log("Pause/Resume clicked for machine:", machine.id, machine.type);
                       
                       if (machine.type === "miner" || machine.type === "oilExtractor") {
@@ -219,14 +221,14 @@ const DeployedMachinesScreen = () => {
                         machine.isIdle ? resumeMiner(machine.id, { user: true }) : pauseMiner(machine.id, { user: true });
                       } else {
                         // Handle crafting machines
-                        const machineProcesses = craftingQueue.filter(
-                          proc => proc.machineId === machine.id
+                        const machineProcesses = (craftingQueue || []).filter(
+                          proc => proc && proc.machineId === machine.id
                         );
                         console.log("Machine processes:", machineProcesses);
                         
                           // Determine the current process (pending or paused) for this machine
-                          const currentProc = craftingQueue.find(
-                            (proc) => proc.machineId === machine.id && (proc.status === 'pending' || proc.status === 'paused')
+                          const currentProc = (craftingQueue || []).find(
+                            (proc) => proc && proc.machineId === machine.id && (proc.status === 'pending' || proc.status === 'paused')
                           );
 
                           if (currentProc) {
@@ -243,11 +245,12 @@ const DeployedMachinesScreen = () => {
                       }
                     }}
                     onCancelCrafting={() => {
+                      if (!machine || !machine.id) return;
                       console.log("Cancel crafting clicked for machine:", machine.id, machine.type);
                       
                       if (machine.type !== "miner" && machine.type !== "oilExtractor") {
-                        const machineProcesses = craftingQueue.filter(
-                          proc => proc.machineId === machine.id
+                        const machineProcesses = (craftingQueue || []).filter(
+                          proc => proc && proc.machineId === machine.id
                         );
                         console.log("Cancelling processes:", machineProcesses);
                         cancelCrafting(machine.id);

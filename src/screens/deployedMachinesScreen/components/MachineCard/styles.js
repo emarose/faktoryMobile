@@ -154,7 +154,7 @@ const machineCardStyles = StyleSheet.create({
     backgroundColor: Colors.backgroundAccent,
   },
   pauseResumeActive: {
-    backgroundColor: Colors.accentGold,
+    backgroundColor: Colors.backgroundSecondary,
   },
   pauseResumeText: {
     color: Colors.textPrimary,
