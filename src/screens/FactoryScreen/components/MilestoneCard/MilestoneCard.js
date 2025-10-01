@@ -70,7 +70,7 @@ const MilestoneCard = ({
   return (
     <View style={[styles.gridItem, styles.milestoneCard]}>
       <View style={styles.milestoneHeader}>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
           <MaterialCommunityIcons
             name={"star"}
             size={30}

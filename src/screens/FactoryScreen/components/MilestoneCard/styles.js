@@ -41,6 +41,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  starTouchable: {
+    borderWidth: 1,
+    borderColor: Colors.accentGold,
+    elevation: 5,
+    borderRadius: 5,
+    padding: 5,
+  },
   milestoneDescription: {
     color: Colors.accentGreen,
     fontSize: 12,
