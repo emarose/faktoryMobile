@@ -8,7 +8,7 @@ import MapGridControls from "./components/MapGridControls/MapGridControls";
 import MapGrid from "./components/MapGrid";
 import DiscoveryRadius from "./components/DiscoveryRadius";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
-import { useMachines } from "../../hooks/useMachines";
+// import { useMachines } from "../../hooks/useMachines";
 import { GameContext } from "../../contexts/GameContext";
 import NodeCard from "./components/NodeCard/NodeCard";
 import MapToast from "./components/MapToast/MapToast";
@@ -35,6 +35,9 @@ export default function MapScreen({ navigation }) {
     removeResources,
     nodeAmounts,
     handleDepleteNode,
+    placedMachines,
+    placeMachine,
+    mineableNodes,
   } = useContext(GameContext);
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
@@ -107,11 +110,11 @@ export default function MapScreen({ navigation }) {
   ]);
 
   // Machines and mining logic
-  const { mineableNodes, placeMachine, placedMachines } = useMachines(
-    inventory,
-    removeResources,
-    allResourceNodes
-  );
+  // const { mineableNodes, placeMachine, placedMachines } = useMachines(
+  //   inventory,
+  //   removeResources,
+  //   allResourceNodes
+  // );
 
   // Compute closest node for auto-pin
   let closestNodeId = null;
@@ -206,6 +209,7 @@ export default function MapScreen({ navigation }) {
               handleTilePress={handleTilePress}
               navigation={navigation}
               pinnedNodeId={pinnedNodeId}
+              placedMachines={placedMachines}
             />
 
             {/* Discovery Radius */}

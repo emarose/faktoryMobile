@@ -14,6 +14,7 @@ const MapGrid = ({
   handleTilePress,
   navigation,
   pinnedNodeId,
+  placedMachines,
 }) => {
   const renderTiles = () => {
     const rows = [];
@@ -63,6 +64,12 @@ const MapGrid = ({
             </View>
           );
         } else if (node && discovered) {
+          const hasMiner = placedMachines.some(
+            (m) =>
+              (m.type === "miner" || m.type === "oilExtractor") &&
+              m.assignedNodeId === node.id
+          );
+
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
@@ -72,11 +79,28 @@ const MapGrid = ({
                 backgroundColor: color,
                 borderWidth: pinnedNodeId !== node.id ? 1 : 2,
                 borderColor:
-                  pinnedNodeId !== node.id ? Colors.accentBlue : Colors.accentGold,
+                  pinnedNodeId !== node.id
+                    ? Colors.accentBlue
+                    : Colors.accentGold,
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
                 zIndex: 100,
               }}
               onPress={() => handleTilePress(node)}
-            />
+            >
+              {hasMiner && (
+                <MaterialCommunityIcons
+                  name="factory"
+                  size={20}
+                  color={
+                    node.id.includes("coal_node")
+                      ? Colors.accentGold
+                      : Colors.background
+                  }
+                />
+              )}
+            </TouchableOpacity>
           );
         } else {
           cols.push(

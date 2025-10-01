@@ -4,6 +4,7 @@ E:\Code\faktoryMobile\src\contexts\GameContext.js
 E:\Code\faktoryMobile\src\data\items.js
 E:\Code\faktoryMobile\src\data\milestones.js
 E:\Code\faktoryMobile\src\hooks\useInventory.js
+E:\Code\faktoryMobile\src\hooks\useMachines.js
 E:\Code\faktoryMobile\src\screens\BuildScreen\BuildScreen.js
 E:\Code\faktoryMobile\src\screens\ConstructorScreen\ConstructorScreen.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard\index.js
@@ -19,17 +20,15 @@ E:\Code\faktoryMobile\src\screens\ProductAssemblyScreen\components\ProgressionTr
 E:\Code\faktoryMobile\src\screens\SmelterScreen\SmelterScreen.js
 
 === Files with many inline styles and NO styles.js in the same folder ===
-E:\Code\faktoryMobile\src\components\ProgressBar\index.js (inline styles: 8)
+E:\Code\faktoryMobile\src\components\ProgressBar\index.js (inline styles: 10)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\CraftButton\index.js (inline styles: 6)
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js (inline styles: 30)
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Miner\index.js (inline styles: 6)
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js (inline styles: 28)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\CraftButton\index.js (inline styles: 6)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\NodeSelector\index.js (inline styles: 6)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js (inline styles: 30)
 E:\Code\faktoryMobile\src\screens\MapScreen\components\MapControls\MapControls.js (inline styles: 10)
-E:\Code\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js (inline styles: 10)
+E:\Code\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js (inline styles: 18)
 E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 26)
-E:\Code\faktoryMobile\src\screens\MapScreen\components\PlayerInfo\PlayerInfo.js (inline styles: 16)
 
 === NODE COLORS ANALYSIS (vs nodeTypes.js) ===
 
@@ -74,51 +73,48 @@ E:\Code\faktoryMobile\src\screens\MapScreen\components\PlayerInfo\PlayerInfo.js 
 📊 STATS: 9 official machines | 6 files using hook | 1 files with hardcoded colors | 0 inconsistencies
 
 === GLOBAL COLOR SUMMARY ===
-Total unique backgroundColor: 19
-Total unique text color: 20
-Total unique colors (all): 39
+Total unique backgroundColor: 17
+Total unique text color: 19
+Total unique colors (all): 36
 
 === backgroundColor usage ===
-#2c2c2c: 7 uses (14.29%)
+#2c2c2c: 9 uses (18.37%)
+#3a3a3a: 7 uses (14.29%)
 #1a1a1a: 6 uses (12.24%)
-#3a3a3a: 5 uses (10.20%)
 #23233a: 4 uses (8.16%)
+#ff9800: 4 uses (8.16%)
 #444: 4 uses (8.16%)
-#3a4856: 3 uses (6.12%)
-#ff9800: 3 uses (6.12%)
 #1f2935: 2 uses (4.08%)
-#6db4f0: 2 uses (4.08%)
 #4CAF50: 2 uses (4.08%)
 #2196F3: 2 uses (4.08%)
 #FF9800: 2 uses (4.08%)
 #4a7fa7: 1 uses (2.04%)
-#ff6b6b: 1 uses (2.04%)
-#4a5866: 1 uses (2.04%)
-#e8f4fd: 1 uses (2.04%)
+#3a4856: 1 uses (2.04%)
 #2c2c44: 1 uses (2.04%)
 #ffe082: 1 uses (2.04%)
 rgba(0,0,0,0.8): 1 uses (2.04%)
-Total unique backgroundColor usage: 19
+rgba(255, 255, 255, 0.1): 1 uses (2.04%)
+rgba(255, 255, 255, 0.2): 1 uses (2.04%)
+Total unique backgroundColor usage: 17
 
 === text color usage ===
-#e8f4fd: 12 uses (22.64%)
-#b8c7d1: 8 uses (15.09%)
-#ff9800: 6 uses (11.32%)
-#fff: 5 uses (9.43%)
-#6b7885: 3 uses (5.66%)
-#FFD700: 2 uses (3.77%)
-#aaa: 2 uses (3.77%)
-#4CAF50: 2 uses (3.77%)
-#888: 2 uses (3.77%)
-#d8dadbff: 1 uses (1.89%)
-#b88333ff: 1 uses (1.89%)
-#f5d7c5ff: 1 uses (1.89%)
-#424040ff: 1 uses (1.89%)
-#DAA520: 1 uses (1.89%)
-#ADD8E6: 1 uses (1.89%)
-#FFFF00: 1 uses (1.89%)
-#4B0082: 1 uses (1.89%)
-#CD5C5C: 1 uses (1.89%)
-#00FF00: 1 uses (1.89%)
-#808080: 1 uses (1.89%)
-Total unique text color usage: 20
+#e8f4fd: 12 uses (23.53%)
+#b8c7d1: 7 uses (13.73%)
+#ff9800: 6 uses (11.76%)
+#fff: 5 uses (9.80%)
+#6b7885: 3 uses (5.88%)
+#FFD700: 2 uses (3.92%)
+#aaa: 2 uses (3.92%)
+#4CAF50: 2 uses (3.92%)
+#888: 2 uses (3.92%)
+#d8dadbff: 1 uses (1.96%)
+#b88333ff: 1 uses (1.96%)
+#f5d7c5ff: 1 uses (1.96%)
+#424040ff: 1 uses (1.96%)
+#DAA520: 1 uses (1.96%)
+#ADD8E6: 1 uses (1.96%)
+#FFFF00: 1 uses (1.96%)
+#4B0082: 1 uses (1.96%)
+#CD5C5C: 1 uses (1.96%)
+#00FF00: 1 uses (1.96%)
+Total unique text color usage: 19

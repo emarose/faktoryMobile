@@ -30,7 +30,7 @@ const NodeCard = React.memo(
     const producedItemName =
       (producedItemId && items[producedItemId]?.name) || producedItemId;
     const assignedMachinesOnNode = placedMachines.filter(
-      (m) => m.assignedNodeId === nodeId && m.type === machineRequired
+      (m) => m.assignedNodeId === nodeId && (m.type === "miner" || m.type === "oilExtractor")
     );
     const assignedMachineCount = assignedMachinesOnNode.length;
 
@@ -42,26 +42,7 @@ const NodeCard = React.memo(
       },
       0
     );
-    const minerCountInInventory = inventory.miner?.currentAmount || 0;
 
-    const oilExtractorCountInInventory =
-      inventory.oilExtractor?.currentAmount || 0;
-
-    const idleMiners = placedMachines.filter(
-      (m) => m.type === "miner" && !m.assignedNodeId
-    ).length;
-
-    const canPlaceMiner =
-      minerCountInInventory > 0 &&
-      idleMiners > 0 &&
-      (machineRequired === "miner" || manualMineable) &&
-      assignedMachineCount === 0 &&
-      !isDepleted;
-
-    const canPlaceOilExtractor =
-      oilExtractorCountInInventory > 0 &&
-      machineRequired === "oilExtractor" &&
-      assignedMachineCount === 0;
 
     const showManualMineButton = manualMineable;
     const nodeCapacity = node.capacity || 1000;
@@ -185,18 +166,28 @@ const NodeCard = React.memo(
         {/* Fila principal */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text
-              style={[
-                styles.nodeName,
-                {
-                  fontSize: isExpanded ? 17 : 14,
-                  fontWeight: isExpanded ? "bold" : "normal",
-                },
-              ]}
-              numberOfLines={1}
-            >
-              {name}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={[
+                  styles.nodeName,
+                  {
+                    fontSize: isExpanded ? 17 : 14,
+                    fontWeight: isExpanded ? "bold" : "normal",
+                  },
+                ]}
+                numberOfLines={1}
+              >
+                {name}
+              </Text>
+              {assignedMachineCount > 0 && (
+                <Icon
+                  name="factory"
+                  size={isExpanded ? 18 : 16}
+                  color={Colors.accentGreen}
+                  style={{ marginLeft: 6, opacity: 0.8 }}
+                />
+              )}
+            </View>
             <Text
               style={[
                 styles.nodeDescription,
@@ -235,47 +226,9 @@ const NodeCard = React.memo(
                 Move closer to mine
               </Text>
             )}
-            {canPlaceMiner && (
-              <TouchableOpacity
-                style={{
-                  marginLeft: 8,
-                  padding: 6,
-                  backgroundColor: Colors.backgroundPanel,
-                  borderRadius: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                onPress={() => handlePlaceMachine("miner", nodeId)}
-              >
-                <Icon name="cogs" size={18} color={Colors.textPrimary} />
-                {isExpanded && (
-                  <Text style={{ color: Colors.textPrimary, fontSize: 13, marginLeft: 4 }}>
-                    Miner
-                  </Text>
-                )}
-              </TouchableOpacity>
-            )}
+           
 
-            {machineRequired === "oilExtractor" && canPlaceOilExtractor && (
-              <TouchableOpacity
-                style={{
-                  marginLeft: 8,
-                  padding: 6,
-                  backgroundColor: Colors.backgroundPanel,
-                  borderRadius: 6,
-                  flexDirection: "row",
-                  alignItems: "center",
-                }}
-                onPress={() => handlePlaceMachine("oilExtractor", nodeId)}
-              >
-                <Icon name="tint" size={18} color={Colors.textPrimary} />
-                {isExpanded && (
-                  <Text style={{ color: Colors.textPrimary, fontSize: 13, marginLeft: 4 }}>
-                    Extractor
-                  </Text>
-                )}
-              </TouchableOpacity>
-            )}
+        
           </View>
         </View>
 
