@@ -31,16 +31,18 @@ const DPAD_CONFIG = [
   },
 ];
 
-const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection }) => {
+const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection, onDirectionChange }) => {
   const [pressedButton, setPressedButton] = useState(null);
   const padSize = 140 + BUTTON_OFFSET * 2.5; // Aumentado para acomodar botones más grandes
 
   const handlePressIn = (dir) => {
     setPressedButton(dir);
+    if (onDirectionChange) onDirectionChange(dir);
   };
 
   const handlePressOut = () => {
     setPressedButton(null);
+    // Do not clear heading here; keep the last direction until user presses another direction.
   };
 
   const handlePress = (dir) => {

@@ -3,7 +3,6 @@ import { View, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
-//import NodeCard from "../NodeCard";
 
 const MapGrid = ({
   chunkSize,
@@ -15,6 +14,7 @@ const MapGrid = ({
   navigation,
   pinnedNodeId,
   placedMachines,
+  currentDirection,
 }) => {
   const renderTiles = () => {
     const rows = [];
@@ -22,7 +22,6 @@ const MapGrid = ({
     const py = visualPlayerPos.y;
     const cx = Math.floor(px / chunkSize);
     const cy = Math.floor(py / chunkSize);
-
     // Para cada tile visible en la grilla
     for (let y = 0; y < chunkSize; y++) {
       const cols = [];
@@ -49,18 +48,31 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor: Colors.accentGold,
+                borderColor: Colors.borderLight,
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
                 zIndex: 200,
               }}
             >
-              <MaterialCommunityIcons
-                name="account-circle"
-                size={24}
-                color={Colors.accentGold}
-              />
+              <View
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: [
+                    { translateX: -12 },
+                    { translateY: -12 },
+                    { scaleX: currentDirection === "left" ? -1 : 1 },
+                  ],
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="run"
+                  size={24}
+                  color={Colors.accentGold}
+                />
+              </View>
             </View>
           );
         } else if (node && discovered) {
@@ -80,7 +92,7 @@ const MapGrid = ({
                 borderWidth: pinnedNodeId !== node.id ? 1 : 2,
                 borderColor:
                   pinnedNodeId !== node.id
-                    ? Colors.accentBlue
+                    ? Colors.borderLight
                     : Colors.accentGold,
                 alignItems: "center",
                 justifyContent: "center",

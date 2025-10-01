@@ -42,6 +42,7 @@ export default function MapScreen({ navigation }) {
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
   const [moveLocked, setMoveLocked] = useState(false);
+  const [currentDirection, setCurrentDirection] = useState(null);
 
   useEffect(() => {
     setVisualPlayerPos(playerMapPosition);
@@ -210,6 +211,7 @@ export default function MapScreen({ navigation }) {
               navigation={navigation}
               pinnedNodeId={pinnedNodeId}
               placedMachines={placedMachines}
+              currentDirection={currentDirection}
             />
 
             {/* Discovery Radius */}
@@ -267,6 +269,7 @@ export default function MapScreen({ navigation }) {
                 MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
                 exploreDirection={handleExploreDirection}
                 onMove={() => setIsManualPin(false)}
+                onDirectionChange={(dir) => setCurrentDirection(dir)}
               />
             </View>
           </View>
