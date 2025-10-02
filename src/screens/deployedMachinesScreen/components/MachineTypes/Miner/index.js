@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { useGame } from "../../../../../contexts/GameContext";
 import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { getNodeTypeDefinition } from "../../../../../data/nodeTypes";
 import Colors from "../../../../../constants/Colors";
 import ProgressBar from "../../../../../components/ProgressBar";
 import MinerControls from "./components/MinerControls";
+import { Text } from "../../../../../components";
 
 const Miner = ({ machine, navigation }) => {
   const {
@@ -49,7 +50,10 @@ const Miner = ({ machine, navigation }) => {
           )
         : [];
 
-      const nodeCap = typeof assignedNode.capacity === "number" ? assignedNode.capacity : 1000;
+      const nodeCap =
+        typeof assignedNode.capacity === "number"
+          ? assignedNode.capacity
+          : 1000;
       const currentAmount = nodeAmounts[assignedNode.id] ?? nodeCap;
 
       const minedAmount = nodeCap - currentAmount;
@@ -62,7 +66,9 @@ const Miner = ({ machine, navigation }) => {
       }, 0);
 
       const timeToDepletionMinutes =
-        totalMiningRate > 0 ? Math.ceil(currentAmount / (totalMiningRate * 60)) : Infinity;
+        totalMiningRate > 0
+          ? Math.ceil(currentAmount / (totalMiningRate * 60))
+          : Infinity;
 
       return {
         progress: Math.min(depletionProgress, 100),
@@ -97,7 +103,7 @@ const Miner = ({ machine, navigation }) => {
 
   return (
     <>
-      <View>
+      <View style={styles.marginVertical10}>
         <TouchableOpacity
           style={styles.assignNodeButton}
           onPress={() =>
@@ -113,8 +119,8 @@ const Miner = ({ machine, navigation }) => {
           />
           <Text style={styles.assignNodeText}>
             {liveMachine.assignedNodeId
-              ? "Change resource node"
-              : "Assign resource node"}
+              ? "Change"
+              : "Assign"}
           </Text>
         </TouchableOpacity>
       </View>

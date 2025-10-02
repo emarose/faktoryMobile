@@ -5,22 +5,14 @@ const machineCardStyles = StyleSheet.create({
   machineCard: {
     backgroundColor: Colors.background,
     marginBottom: 8,
-    /*    paddingVertical: 8, */
     paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.backgroundAccent,
-    // Enhanced shadow for machine cards
-    shadowColor: Colors.shadow,
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
   },
   machineName: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 4,
   },
   emptyText: {
     color: Colors.textMuted,
@@ -31,13 +23,13 @@ const machineCardStyles = StyleSheet.create({
   rowAlignCenter: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   rowSpaceBetween: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 16,
   },
   rowAlignCenterGap: {
     flexDirection: "row",
@@ -49,14 +41,7 @@ const machineCardStyles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.backgroundSecondary,
     padding: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 2,
+    borderRadius: 12,
   },
   marginVertical10: {
     marginVertical: 10,
@@ -65,10 +50,10 @@ const machineCardStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.backgroundAccent,
     backgroundColor: Colors.backgroundSecondary,
-    paddingVertical: 8,
+    padding: 8,
     borderRadius: 12,
     alignItems: "center",
-    marginVertical: 12,
+
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
@@ -96,31 +81,25 @@ const machineCardStyles = StyleSheet.create({
     marginBottom: 16,
   },
   extraInfoContainer: {
-    paddingVertical: 4,
-    backgroundColor: Colors.backgroundPanel,
-    paddingHorizontal: 12,
-    borderRadius: 20,
+    backgroundColor: Colors.background,
+    padding: 16,
+    borderRadius: 12,
   },
   headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: "column",
     marginBottom: 12,
   },
   selectedNodePill: {
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 20,
+    marginBottom: 6,
+    borderRadius: 12,
   },
   selectedNodePillText: {
-    color: Colors.fallback,
-    fontWeight: "600",
+    color: Colors.textPrimary,
     fontSize: 14,
   },
   machineStatus: {
-    color: Colors.textMuted, // Un gris suave para el estado
-    fontSize: 13,
-    fontStyle: "italic",
+    color: Colors.textMuted,
+    fontSize: 12,
   },
   depletionSection: {
     marginBottom: 16,
@@ -200,7 +179,7 @@ const machineCardStyles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 16,
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -214,11 +193,11 @@ const machineCardStyles = StyleSheet.create({
   },
   cancelButton: {
     borderWidth: 1,
-    borderColor: "#ff6b6b",
+    borderColor: Colors.textDanger,
   },
   craftingControlText: {
     color: Colors.textPrimary,
-    fontWeight: "600",
+    fontWeight: "500",
     fontSize: 12,
   },
 });

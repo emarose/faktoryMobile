@@ -72,7 +72,7 @@ export default StyleSheet.create({
   resourceIconContainer: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,

@@ -5,7 +5,7 @@ import { Text } from "../../../../components";
 
 const MachineGroup = ({ typeName, children }) => (
   <View style={styles.machineTypeSection}>
-    <Text style={styles.groupTitle}>{typeName}s</Text>
+    {typeName !== "All" && <Text style={styles.groupTitle}>{typeName}s</Text>}
     {children}
   </View>
 );

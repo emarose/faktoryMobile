@@ -18,7 +18,7 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
         style={{
           marginHorizontal: 8,
           backgroundColor: Colors.backgroundPanel,
-          borderRadius: 16,
+          borderRadius: 12,
           paddingVertical: 4,
           paddingHorizontal: 16,
           borderWidth: 1,
@@ -33,7 +33,7 @@ const MapControls = ({ onRegenerateSeed, onSetTestSeed }) => {
         style={{
           marginHorizontal: 8,
           backgroundColor: Colors.backgroundPanel,
-          borderRadius: 16,
+          borderRadius: 12,
           paddingVertical: 4,
           paddingHorizontal: 16,
           borderWidth: 1,

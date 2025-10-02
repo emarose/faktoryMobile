@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   selectedNodePill: {
     backgroundColor: Colors.success,
-    borderRadius: 16,
+    borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 12,
     flex: 1,

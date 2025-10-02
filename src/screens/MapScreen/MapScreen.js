@@ -221,12 +221,12 @@ export default function MapScreen({ navigation }) {
             />
 
             {/* Discovery Radius */}
-            <DiscoveryRadius
+           {/*  <DiscoveryRadius
               tileSize={TILE_SIZE}
               visualPlayerPos={visualPlayerPos}
               discoveryRadiusPx={DISCOVERY_RADIUS_PX}
               chunkSize={CHUNK_SIZE}
-            />
+            /> */}
           </View>
 
           <View

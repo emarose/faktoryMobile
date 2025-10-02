@@ -5,6 +5,7 @@ import { useGame } from "../../../../../contexts/GameContext";
 import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "../../../../../components";
+import Colors from "../../../../../constants/Colors";
 
 const Constructor = ({ machine, onOpenModal }) => {
   const { placedMachines, craftingQueue } = useGame();
@@ -23,22 +24,21 @@ const Constructor = ({ machine, onOpenModal }) => {
 
   return (
     <>
-      <View style={styles.marginVertical10}>
+      <View style={[styles.rowSpaceBetween, styles.marginVertical10]}>
+        <View style={styles.machineIconContainer}>
+          <MaterialCommunityIcons name="factory" size={28} color="#fff" />
+        </View>
+        <Text style={styles.machineName}>{machine.name}</Text>
         <TouchableOpacity
-          style={styles.assignNodeButton}
           onPress={onOpenModal}
           activeOpacity={0.85}
+          style={{ padding: 6 }}
         >
           <MaterialCommunityIcons
-            name="factory"
+            name={isProcessing || liveMachine.currentRecipeId ? "playlist-edit" : "plus-circle"}
             size={28}
-            color="#fff"
-            style={{ marginRight: 6 }}
+            color={isProcessing || liveMachine.currentRecipeId ? "#fff" : Colors.accentGreen}
           />
-          <Text style={styles.assignNodeText}>
-            {isProcessing ? "Change Recipe" : 
-             liveMachine.currentRecipeId ? "Change Recipe" : "Assign Recipe"}
-          </Text>
         </TouchableOpacity>
       </View>
       {recipe && (

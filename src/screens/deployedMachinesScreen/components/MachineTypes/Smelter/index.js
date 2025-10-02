@@ -5,6 +5,7 @@ import { items } from "../../../../../data/items";
 import { useGame } from "../../../../../contexts/GameContext";
 import styles from "../../MachineCard/styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../../../../../constants/Colors";
 
 const Smelter = ({ machine, onOpenModal }) => {
   const { placedMachines, craftingQueue } = useGame();
@@ -30,22 +31,20 @@ const Smelter = ({ machine, onOpenModal }) => {
           activeOpacity={0.85}
         >
           <MaterialCommunityIcons
-            name="select-marker"
+            name="octahedron"
             size={28}
-            color="#fff"
+            color={Colors.textPrimary}
             style={{ marginRight: 6 }}
           />
           <Text style={styles.assignNodeText}>
-            {isProcessing ? "Change Recipe" : 
-             liveMachine.currentRecipeId ? "Change Recipe" : "Assign Recipe"}
+            {isProcessing
+              ? "Change"
+              : liveMachine.currentRecipeId
+              ? "Change"
+              : "Assign"}
           </Text>
         </TouchableOpacity>
       </View>
-      {recipe && (
-        <View>
-          <Text style={{ color: "white" }}>Recipe: {recipe.name}</Text>
-        </View>
-      )}
     </>
   );
 };

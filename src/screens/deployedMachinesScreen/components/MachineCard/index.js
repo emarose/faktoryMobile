@@ -66,7 +66,7 @@ const MachineCard = ({
 
   // Get machine color
   const machineColor = getMachineColor(machine.type);
-  const machineColorBackground = getMachineColorWithOpacity(machine.type, 0.1);
+  const machineColorWithOpacity = getMachineColorWithOpacity(machine.type);
 
   // For crafting machines - check for active crafting processes
   const machineProcesses = useMemo(() => {
@@ -118,10 +118,15 @@ const MachineCard = ({
     updateProgress();
 
     // Set up interval to update progress
-    const interval = setInterval(updateProgress, 100);
+    const interval = setInterval(updateProgress, 10);
     return () => clearInterval(interval);
     // Key effect to specific process attributes so it restarts on resume/pause
-  }, [currentProcess?.id, currentProcess?.status, currentProcess?.startedAt, machine.type]);
+  }, [
+    currentProcess?.id,
+    currentProcess?.status,
+    currentProcess?.startedAt,
+    machine.type,
+  ]);
 
   const openNodeSelector = () => {
     navigation.navigate("NodeSelectorScreen", { machine });
@@ -159,7 +164,7 @@ const MachineCard = ({
         styles.machineCard,
         {
           borderColor: machineColor,
-          backgroundColor: machineColorBackground,
+          backgroundColor: Colors.backgroundPanel,
         },
       ]}
     >
@@ -181,10 +186,11 @@ const MachineCard = ({
             </View>
           </View>
         </View>
+        {childrenWithProps}
       </View>
 
       {/* Render children components (specific machine type content) */}
-      {childrenWithProps}
+
       {/* Esta logica sirve para todas las maquians que no sean smelter asique si sirve para constructor y demás, puede servir a nivel layout */}
       {/* Crafting Progress (non-miner machines) */}
       {isProcessing &&
@@ -194,19 +200,13 @@ const MachineCard = ({
           <View style={styles.extraInfoContainer}>
             <View>
               <View style={styles.headerRow}>
-                <View
-                  style={[
-                    styles.selectedNodePill,
-                    { backgroundColor: machineColor },
-                  ]}
-                >
+                <View style={styles.selectedNodePill}>
                   <Text style={styles.selectedNodePillText}>
-                    Crafting: {currentProcess.itemName}
+                    Crafting: {currentProcess.itemName}(
+                    {machineProcesses.length} in queue)
                   </Text>
                 </View>
-                <Text style={styles.machineStatus}>
-                  Processing... ({machineProcesses.length} in queue)
-                </Text>
+                <Text style={styles.machineStatus}>Processing...</Text>
               </View>
 
               <View style={styles.depletionSection}>
@@ -215,7 +215,9 @@ const MachineCard = ({
                   max={currentProcess.processingTime}
                   label={`Crafting Progress`}
                   color={
-                    currentProcess.status === "paused" ? "#ff9800" : "#4CAF50"
+                    currentProcess.status === "paused"
+                      ? Colors.accentBlue
+                      : Colors.accentGreen
                   }
                 />
 

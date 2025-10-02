@@ -6,7 +6,7 @@ const Text = ({ style, children, ...props }) => {
       ? Object.assign({}, ...combinedStyle) 
       : combinedStyle || {};
     
-    const isBold = flatStyle.fontWeight === 'bold' || flatStyle.fontWeight === '700';
+    const isBold = flatStyle.fontWeight === 'bold' || flatStyle.fontWeight === '700'| flatStyle.fontWeight === '600';
     const isItalic = flatStyle.fontStyle === 'italic';
     
     if (isBold && isItalic) {

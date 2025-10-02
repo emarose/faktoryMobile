@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   machineTabText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: Colors.textSecondary,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -62,16 +62,11 @@ const styles = StyleSheet.create({
   },
   machineTabTextActive: {
     color: Colors.textPrimary,
-    fontWeight: '700',
-    textShadowColor: "rgba(0,0,0,0.3)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 1,
+    fontWeight: 'bold',
   },
   machineTabCount: {
     fontSize: 11,
-    fontWeight: '700',
     color: Colors.textMuted,
-    backgroundColor: Colors.backgroundSecondary,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,

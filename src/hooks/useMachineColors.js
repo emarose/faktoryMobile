@@ -7,16 +7,16 @@ import Colors from "../constants/Colors";
 export const useMachineColors = () => {
   // Machine color mapping for consistent visual identity
   const MACHINE_COLORS = {
-    smelter: "#E57373", // Reddish
-    constructor: "#64B5F6", // Light blue
-    foundry: "#FFD54F", // Yellow
-    refinery: "#AB47BC", // Purple
-    assembler: "#26A69A", // Teal
-    manufacturer: "#FF7043", // Orange
-    miner: "#2ca362ff", // Green from Colors
-    oilExtractor: "#5D4037", // Brown
+    smelter: "#ff9800",
+    constructor: "#50a553ff",
+    foundry: "#C1446F",
+    refinery: "#1E88E5",
+    assembler: "#9C27B0",
+    manufacturer: "#c8d41dff",
+    miner: "#aaa8a4ff",
+    oilExtractor: "#614f4fff",
     // Default color for any missing machines
-    default: "#90A4AE", // Grey blue
+    default: "#90A4AE",
   };
 
   /**
@@ -36,14 +36,16 @@ export const useMachineColors = () => {
    */
   const getMachineColorWithOpacity = (machineId, opacity = 0.2) => {
     const color = getMachineColor(machineId);
-    const hexOpacity = Math.round(opacity * 255).toString(16).padStart(2, '0');
+    const hexOpacity = Math.round(opacity * 255)
+      .toString(16)
+      .padStart(2, "0");
     return `${color}${hexOpacity}`;
   };
 
   return {
     MACHINE_COLORS,
     getMachineColor,
-    getMachineColorWithOpacity
+    getMachineColorWithOpacity,
   };
 };
 
