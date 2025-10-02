@@ -103,7 +103,7 @@ const MapGrid = ({
             >
               {hasMiner && (
                 <MaterialCommunityIcons
-                  name="factory"
+                  name="robot-industrial"
                   size={20}
                   color={
                     node.id.includes("coal_node")

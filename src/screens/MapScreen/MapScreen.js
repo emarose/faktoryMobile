@@ -62,6 +62,12 @@ export default function MapScreen({ navigation }) {
     if (dir === "down") y += 1;
     if (dir === "left") x -= 1;
     if (dir === "right") x += 1;
+    // Prevent moving into tiles that contain any resource node
+    const nodeAtTarget = allResourceNodes.find((n) => n.x === x && n.y === y);
+    if (nodeAtTarget) {
+      // block movement into node tile
+      return;
+    }
     setVisualPlayerPos({ x, y });
     setMoveLocked(true);
     setIsManualPinActive(false);
