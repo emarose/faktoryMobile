@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated } from "react-native";
+import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
@@ -16,27 +17,34 @@ const MapGrid = ({
   placedMachines,
   currentDirection,
   manualMineFeedback,
-  manualMineSignal
+  manualMineSignal,
+  miniToast,
 }) => {
-  // Animated values for the mining ripple (match NodeCard pickaxe animation)
-  const rippleScale = useRef(new Animated.Value(1)).current;
-  const rippleOpacity = useRef(new Animated.Value(0)).current;
+  // Animated value for a quick color pulse overlay on the tile.
+  // We animate the overlay's opacity in a short sequence to create a pulse effect.
+  const pulseOpacity = useRef(new Animated.Value(0)).current;
 
   // Re-run animation when either the nodeId or the signal changes. This
-  // allows rapid repeated mines on the same node to retrigger the ripple.
+  // allows rapid repeated mines on the same node to retrigger the pulse.
   useEffect(() => {
     if (!manualMineFeedback) return;
-    rippleScale.setValue(0.9);
-    rippleOpacity.setValue(0.5);
-    Animated.parallel([
-      Animated.timing(rippleScale, {
-        toValue: 1.8,
-        duration: 300,
+    // reset
+    pulseOpacity.setValue(0.0);
+    Animated.sequence([
+      Animated.timing(pulseOpacity, {
+        toValue: 0.7,
+        duration: 90,
         useNativeDriver: true,
       }),
-      Animated.timing(rippleOpacity, {
+      Animated.timing(pulseOpacity, {
+        toValue: 0.25,
+        duration: 90,
+        useNativeDriver: true,
+      }),
+
+      Animated.timing(pulseOpacity, {
         toValue: 0,
-        duration: 300,
+        duration: 140,
         useNativeDriver: true,
       }),
     ]).start();
@@ -77,7 +85,7 @@ const MapGrid = ({
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
-                zIndex: 200,
+                //zIndex: 200,
               }}
             >
               <View
@@ -136,24 +144,37 @@ const MapGrid = ({
                   }
                 />
               )}
-              {/* Manual mine ripple overlay */}
+              {/* Manual mine pulse overlay (full tile color change) */}
               {manualMineFeedback === node.id && (
                 <Animated.View
                   pointerEvents="none"
                   style={{
                     position: "absolute",
-                    width: 56,
-                    height: 56,
-                    left: (tileSize - 56) / 2,
-                    top: (tileSize - 56) / 2,
-                    borderRadius: 28,
+
+                    right: 0 - 2,
+                    top: 0 - 2,
+                    width: tileSize,
+                    height: tileSize,
                     backgroundColor: Colors.accentGold,
-                    opacity: rippleOpacity,
-                    transform: [{ scale: rippleScale }],
+                    opacity: pulseOpacity,
                     zIndex: 999,
                     elevation: 10,
                   }}
                 />
+              )}
+              {/* mini toast in top-right of tile */}
+              {miniToast && miniToast.nodeId === node.id && (
+                <View
+                  key={`mt-${miniToast.signal}`}
+                  style={{
+                    position: "absolute",
+                    right: 4,
+                    top: 4,
+                    zIndex: 1000,
+                  }}
+                >
+                  <MiniToast visible={true} message={miniToast.message} />
+                </View>
               )}
             </TouchableOpacity>
           );

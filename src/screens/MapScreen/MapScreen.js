@@ -6,6 +6,7 @@ import styles from "./styles";
 import MapControls from "./components/MapControls/MapControls";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import MapGrid from "./components/MapGrid";
+import MiniToast from "../../components/MiniToast";
 import DiscoveryRadius from "./components/DiscoveryRadius";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 // import { useMachines } from "../../hooks/useMachines";
@@ -15,8 +16,8 @@ import MapToast from "./components/MapToast/MapToast";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useMilestone } from "../../hooks/useMilestone";
 import Colors from "../../constants/Colors";
+import { TILE_SIZE } from "../../constants/Consts";
 
-const TILE_SIZE = 30;
 const CHUNK_SIZE = 11;
 const VIEW_SIZE = CHUNK_SIZE;
 const DISCOVERY_RADIUS_PX = 47;
@@ -45,6 +46,9 @@ export default function MapScreen({ navigation }) {
   const manualMineTimeoutRef = useRef(null);
   // signal counter to force re-triggering the ripple even for same nodeId
   const [manualMineSignal, setManualMineSignal] = useState(0);
+  // mini toast state: { nodeId, message, signal }
+  const [miniToast, setMiniToast] = useState(null);
+  const miniToastTimeoutRef = useRef(null);
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
   const [moveLocked, setMoveLocked] = useState(false);
@@ -181,6 +185,8 @@ export default function MapScreen({ navigation }) {
     setManualMineFeedback(nodeId);
     // bump signal so MapGrid restarts animation even if nodeId === previous
     setManualMineSignal((s) => s + 1);
+    // show mini toast on the node tile
+    showMiniToastOnNode(nodeId, "+1");
     if (manualMineTimeoutRef.current) {
       clearTimeout(manualMineTimeoutRef.current);
     }
@@ -189,6 +195,17 @@ export default function MapScreen({ navigation }) {
       setManualMineFeedback(null);
       manualMineTimeoutRef.current = null;
     }, 650);
+  };
+
+  // Show a small '+1' MiniToast on the given node's tile
+  const showMiniToastOnNode = (nodeId, message = "+1") => {
+    if (!nodeId) return;
+    setMiniToast({ nodeId, message, signal: (miniToast?.signal || 0) + 1 });
+    if (miniToastTimeoutRef.current) clearTimeout(miniToastTimeoutRef.current);
+    miniToastTimeoutRef.current = setTimeout(() => {
+      setMiniToast(null);
+      miniToastTimeoutRef.current = null;
+    }, 700);
   };
 
   return (
@@ -233,17 +250,10 @@ export default function MapScreen({ navigation }) {
               pinnedNodeId={pinnedNodeId}
               placedMachines={placedMachines}
               currentDirection={currentDirection}
-                manualMineFeedback={manualMineFeedback}
-                manualMineSignal={manualMineSignal}
+              manualMineFeedback={manualMineFeedback}
+              manualMineSignal={manualMineSignal}
+              miniToast={miniToast}
             />
-
-            {/* Discovery Radius */}
-            {/*  <DiscoveryRadius
-              tileSize={TILE_SIZE}
-              visualPlayerPos={visualPlayerPos}
-              discoveryRadiusPx={DISCOVERY_RADIUS_PX}
-              chunkSize={CHUNK_SIZE}
-            /> */}
           </View>
 
           <View
