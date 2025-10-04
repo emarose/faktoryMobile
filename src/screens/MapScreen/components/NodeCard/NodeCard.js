@@ -9,21 +9,18 @@ import Colors from "../../../../constants/Colors";
 const NodeCard = React.memo(
   ({
     node,
-    inventory,
     placedMachines,
     styles,
     playerPosition,
     discoveryRadius,
     onDepleteNode,
     onManualMine,
-    placeMachine,
     isExpanded,
     onPressExpand,
   }) => {
     const { id: nodeId, name, x, y, type: nodeType } = node;
 
     const nodeDefinition = items[nodeType];
-    const [miningFeedback, setMiningFeedback] = useState(false);
     const rippleScale = useRef(new Animated.Value(1)).current;
     const rippleOpacity = useRef(new Animated.Value(0)).current;
     const { manualMineable, machineRequired, output } = nodeDefinition;
@@ -77,7 +74,6 @@ const NodeCard = React.memo(
     const isDepleted = nodeDepletionAmount === 0;
 
     const handleManualMine = () => {
-      console.log("Manual mine node", nodeId);
       if (
         !isDepleted &&
         typeof nodeDepletionAmount === "number" &&
