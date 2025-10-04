@@ -1,5 +1,5 @@
-import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, TouchableOpacity, Animated } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
@@ -15,7 +15,32 @@ const MapGrid = ({
   pinnedNodeId,
   placedMachines,
   currentDirection,
+  manualMineFeedback,
+  manualMineSignal
 }) => {
+  // Animated values for the mining ripple (match NodeCard pickaxe animation)
+  const rippleScale = useRef(new Animated.Value(1)).current;
+  const rippleOpacity = useRef(new Animated.Value(0)).current;
+
+  // Re-run animation when either the nodeId or the signal changes. This
+  // allows rapid repeated mines on the same node to retrigger the ripple.
+  useEffect(() => {
+    if (!manualMineFeedback) return;
+    rippleScale.setValue(0.9);
+    rippleOpacity.setValue(0.5);
+    Animated.parallel([
+      Animated.timing(rippleScale, {
+        toValue: 1.8,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rippleOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [manualMineFeedback, manualMineSignal]);
   const renderTiles = () => {
     const rows = [];
     const px = visualPlayerPos.x;
@@ -81,7 +106,6 @@ const MapGrid = ({
               (m.type === "miner" || m.type === "oilExtractor") &&
               m.assignedNodeId === node.id
           );
-
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
@@ -110,6 +134,25 @@ const MapGrid = ({
                       ? Colors.accentGold
                       : Colors.background
                   }
+                />
+              )}
+              {/* Manual mine ripple overlay */}
+              {manualMineFeedback === node.id && (
+                <Animated.View
+                  pointerEvents="none"
+                  style={{
+                    position: "absolute",
+                    width: 56,
+                    height: 56,
+                    left: (tileSize - 56) / 2,
+                    top: (tileSize - 56) / 2,
+                    borderRadius: 28,
+                    backgroundColor: Colors.accentGold,
+                    opacity: rippleOpacity,
+                    transform: [{ scale: rippleScale }],
+                    zIndex: 999,
+                    elevation: 10,
+                  }}
                 />
               )}
             </TouchableOpacity>

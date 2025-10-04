@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { View, ScrollView } from "react-native";
+import { useState, useEffect, useContext, useRef } from "react";
+import { View, ScrollView, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, CustomHeader } from "../../components";
 import styles from "./styles";
@@ -40,6 +40,12 @@ export default function MapScreen({ navigation }) {
     mineableNodes,
   } = useContext(GameContext);
 
+  // manual mine feedback: stores last manually mined node id to show ripple on grid
+  const [manualMineFeedback, setManualMineFeedback] = useState(null);
+  const manualMineTimeoutRef = useRef(null);
+  // signal counter to force re-triggering the ripple even for same nodeId
+  const [manualMineSignal, setManualMineSignal] = useState(0);
+
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
   const [moveLocked, setMoveLocked] = useState(false);
   const [currentDirection, setCurrentDirection] = useState(null);
@@ -53,7 +59,6 @@ export default function MapScreen({ navigation }) {
   const [toastMessage, setToastMessage] = useState("");
   const [manualPinnedNodeId, setManualPinnedNodeId] = useState(null);
   const [isManualPinActive, setIsManualPinActive] = useState(false);
-  const { currentMilestone, progress, nextMilestone } = useMilestone();
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
@@ -116,13 +121,6 @@ export default function MapScreen({ navigation }) {
     setToastShownNodeIds,
   ]);
 
-  // Machines and mining logic
-  // const { mineableNodes, placeMachine, placedMachines } = useMachines(
-  //   inventory,
-  //   removeResources,
-  //   allResourceNodes
-  // );
-
   // Compute closest node for auto-pin
   let closestNodeId = null;
   let minDist = Infinity;
@@ -137,6 +135,7 @@ export default function MapScreen({ navigation }) {
       }
     }
   });
+
   // Nodo actualmente "pinned" (manual o auto)
   const pinnedNodeId =
     isManualPinActive && manualPinnedNodeId
@@ -174,6 +173,22 @@ export default function MapScreen({ navigation }) {
   const handleTilePress = (node) => {
     setManualPinnedNodeId(node.id);
     setIsManualPinActive(true);
+  };
+
+  // Called by NodeCard when user manually mines a node
+  const handleManualMine = (nodeId) => {
+    // set id to trigger MapGrid overlay; clear previous timeout if present
+    setManualMineFeedback(nodeId);
+    // bump signal so MapGrid restarts animation even if nodeId === previous
+    setManualMineSignal((s) => s + 1);
+    if (manualMineTimeoutRef.current) {
+      clearTimeout(manualMineTimeoutRef.current);
+    }
+    // keep feedback for 600ms then clear
+    manualMineTimeoutRef.current = setTimeout(() => {
+      setManualMineFeedback(null);
+      manualMineTimeoutRef.current = null;
+    }, 650);
   };
 
   return (
@@ -218,10 +233,12 @@ export default function MapScreen({ navigation }) {
               pinnedNodeId={pinnedNodeId}
               placedMachines={placedMachines}
               currentDirection={currentDirection}
+                manualMineFeedback={manualMineFeedback}
+                manualMineSignal={manualMineSignal}
             />
 
             {/* Discovery Radius */}
-           {/*  <DiscoveryRadius
+            {/*  <DiscoveryRadius
               tileSize={TILE_SIZE}
               visualPlayerPos={visualPlayerPos}
               discoveryRadiusPx={DISCOVERY_RADIUS_PX}
@@ -291,6 +308,7 @@ export default function MapScreen({ navigation }) {
             styles={styles}
             playerPosition={playerMapPosition}
             onDepleteNode={handleDepleteNode}
+            onManualMine={handleManualMine}
             placeMachine={placeMachine}
             isExpanded={pinnedNodeId === item.id}
           />

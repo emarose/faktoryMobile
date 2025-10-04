@@ -15,6 +15,7 @@ const NodeCard = React.memo(
     playerPosition,
     discoveryRadius,
     onDepleteNode,
+    onManualMine,
     placeMachine,
     isExpanded,
     onPressExpand,
@@ -30,7 +31,9 @@ const NodeCard = React.memo(
     const producedItemName =
       (producedItemId && items[producedItemId]?.name) || producedItemId;
     const assignedMachinesOnNode = placedMachines.filter(
-      (m) => m.assignedNodeId === nodeId && (m.type === "miner" || m.type === "oilExtractor")
+      (m) =>
+        m.assignedNodeId === nodeId &&
+        (m.type === "miner" || m.type === "oilExtractor")
     );
     const assignedMachineCount = assignedMachinesOnNode.length;
 
@@ -43,15 +46,14 @@ const NodeCard = React.memo(
       0
     );
 
-
     const showManualMineButton = manualMineable;
     const nodeCapacity = node.capacity || 1000;
     const nodeDepletionAmount =
       typeof node.nodeDepletionAmount !== "undefined"
         ? node.nodeDepletionAmount
         : typeof node.currentAmount !== "undefined"
-          ? node.currentAmount
-          : nodeCapacity;
+        ? node.currentAmount
+        : nodeCapacity;
 
     let canManualMine = false;
 
@@ -75,6 +77,7 @@ const NodeCard = React.memo(
     const isDepleted = nodeDepletionAmount === 0;
 
     const handleManualMine = () => {
+      console.log("Manual mine node", nodeId);
       if (
         !isDepleted &&
         typeof nodeDepletionAmount === "number" &&
@@ -82,11 +85,11 @@ const NodeCard = React.memo(
       ) {
         if (onDepleteNode) {
           onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
-          
+
           // Trigger ripple animation en el icono
           rippleOpacity.setValue(0.5);
           rippleScale.setValue(0.9);
-          
+
           Animated.parallel([
             // Animación del icono
             Animated.timing(rippleScale, {
@@ -98,16 +101,11 @@ const NodeCard = React.memo(
               toValue: 0,
               duration: 300,
               useNativeDriver: true,
-            })
+            }),
           ]).start();
-        }
-      }
-    };
 
-    // Helper to update node amount for miner placement
-    const handlePlaceMachine = (machineType, nodeId) => {
-      if (placeMachine) {
-        placeMachine(machineType, nodeId);
+          onManualMine(nodeId);
+        }
       }
     };
 
@@ -158,10 +156,7 @@ const NodeCard = React.memo(
       <TouchableOpacity
         activeOpacity={0.93}
         onPress={onPressExpand}
-        style={[
-          styles.nodeCard,
-          isExpanded && styles.selectedCard,
-        ]}
+        style={[styles.nodeCard, isExpanded && styles.selectedCard]}
       >
         {/* Fila principal */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -222,13 +217,12 @@ const NodeCard = React.memo(
               canManualMine &&
               mineIcon}
             {!isDepleted && showManualMineButton && !canManualMine && (
-              <Text style={{ color: Colors.textDanger, fontSize: 12, marginTop: 2 }}>
+              <Text
+                style={{ color: Colors.textDanger, fontSize: 12, marginTop: 2 }}
+              >
                 Move closer to mine
               </Text>
             )}
-           
-
-        
           </View>
         </View>
 
@@ -240,27 +234,17 @@ const NodeCard = React.memo(
                 value={nodeDepletionAmount}
                 max={nodeCapacity}
                 label={null}
-                style={{
-                  marginTop: 6,
-                  marginBottom: 4,
-                  height: 10,
-                  opacity: isDepleted ? 0.5 : 1,
-                }}
               />
             )}
             {isDepleted && (
               <Text
                 style={{
                   color: Colors.textDanger,
-                  fontWeight: "bold",
-                  fontSize: 13,
-                  marginBottom: 2,
                 }}
               >
-                Depleted
+                Node Depleted
               </Text>
             )}
-
 
             {machineRequired && (
               <Text
