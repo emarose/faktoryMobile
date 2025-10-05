@@ -186,6 +186,7 @@ const MachineCard = ({
             </View>
           </View>
         </View>
+
         {childrenWithProps}
       </View>
 
@@ -206,7 +207,9 @@ const MachineCard = ({
                     {machineProcesses.length} in queue)
                   </Text>
                 </View>
-                <Text style={styles.machineStatus}>Processing...</Text>
+                <Text style={styles.machineStatus}>
+                  Machine is {currentProcess.status}...
+                </Text>
               </View>
 
               <View style={styles.depletionSection}>

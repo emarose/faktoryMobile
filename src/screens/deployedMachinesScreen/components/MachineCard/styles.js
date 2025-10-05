@@ -21,8 +21,8 @@ const machineCardStyles = StyleSheet.create({
     fontSize: 14,
   },
   rowAlignCenter: {
-    flexDirection: "row",
-    alignItems: "center",
+    //flexDirection: "row",
+    //alignItems: "center",
     justifyContent: "space-between",
   },
   rowSpaceBetween: {
@@ -44,7 +44,7 @@ const machineCardStyles = StyleSheet.create({
     borderRadius: 12,
   },
   marginVertical10: {
-    marginVertical: 10,
+    marginVertical: 16,
   },
   assignNodeButton: {
     borderWidth: 1,

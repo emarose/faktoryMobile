@@ -125,7 +125,6 @@ const Miner = ({ machine, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Delegate node info and controls to MinerControls (avoids duplication) */}
       <MinerControls machine={liveMachine} navigation={navigation} />
     </>
   );
