@@ -16,7 +16,6 @@ import BasicResourcesScreen from "../screens/BasicResourcesScreen/BasicResources
 import MilestonesScreen from "../screens/MilestonesScreen/MilestonesScreen";
 import ConstructorScreen from "../screens/ConstructorScreen/ConstructorScreen";
 import SmelterScreen from "../screens/SmelterScreen/SmelterScreen";
-import FoundryScreen from "../screens/FoundryScreen/FoundryScreen";
 import NodeSelectorScreen from "../screens/NodeSelectorScreen/NodeSelectorScreen";
 import Colors from "../constants/Colors";
 
@@ -50,7 +49,6 @@ function RootNavigator() {
       <Stack.Screen name="MilestonesScreen" component={MilestonesScreen} />
       <Stack.Screen name="ConstructorScreen" component={ConstructorScreen} />
       <Stack.Screen name="SmelterScreen" component={SmelterScreen} />
-      <Stack.Screen name="FoundryScreen" component={FoundryScreen} />
       <Stack.Screen name="NodeSelectorScreen" component={NodeSelectorScreen} />
     </Stack.Navigator>
   );

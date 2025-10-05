@@ -2,5 +2,4 @@
 export { default as MinerCard } from './MinerCard';
 export { default as SmelterCard } from './SmelterCard';
 export { default as ConstructorCard } from './ConstructorCard';
-export { default as FoundryCard } from './FoundryCard';
 export { default as DefaultMachineCard } from './DefaultMachineCard';
