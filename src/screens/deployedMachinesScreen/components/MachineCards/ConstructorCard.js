@@ -6,7 +6,7 @@ import ProgressBar from '../../../../components/ProgressBar';
 import Colors from '../../../../constants/Colors';
 import { useConstructorCard } from '../../hooks';
 import { getMachineIcon } from '../../hooks/useMachineCard';
-import styles from '../MachineCard/styles';
+import styles from '../../styles';
 
 const ConstructorCard = ({ machine, navigation }) => {
   const {

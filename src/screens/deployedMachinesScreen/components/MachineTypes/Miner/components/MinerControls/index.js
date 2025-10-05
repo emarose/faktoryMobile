@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useGame } from "../../../../../../../contexts/GameContext";
-import styles from "../../../../MachineCard/styles";
+import styles from "../../../../../styles";
 import Colors from "../../../../../../../constants/Colors";
 import { getNodeTypeDefinition } from "../../../../../../../data/nodeTypes";
 import ProgressBar from "../../../../../../../components/ProgressBar";
