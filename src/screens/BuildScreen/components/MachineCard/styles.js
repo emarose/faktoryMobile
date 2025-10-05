@@ -1,36 +1,7 @@
 import { StyleSheet } from "react-native";
-import Colors from "../../constants/Colors";
+import Colors from "../../../../constants/Colors";
 
 const styles = StyleSheet.create({
-  // Main container styles
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.backgroundPanel, // Industrial gray-blue background like ConstructorScreen
-  },
-  container: {
-    flex: 1,
-    backgroundColor: Colors.backgroundPanel,
-  },
-
-  // Scroll view
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    padding: 16,
-    paddingBottom: 40,
-  },
-
-  // Grid container
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-
-  // Stats container moved to component-level styles
-
-  // Machine card styles - Compact Grid Version
   machineCard: {
     backgroundColor: Colors.backgroundSecondary,
     borderWidth: 1.5,
@@ -44,7 +15,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 4,
-    width: "48%", // Grid layout - 2 columns
+    width: "48%",
     minHeight: 160,
     justifyContent: "space-between",
   },
@@ -64,8 +35,6 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 6,
   },
-
-  // Status badge - Smaller version
   statusBadge: {
     position: "absolute",
     top: 8,
@@ -90,8 +59,6 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     letterSpacing: 0.5,
   },
-
-  // Machine header - Compact version
   machineHeader: {
     alignItems: "center",
     marginBottom: 8,
@@ -130,8 +97,6 @@ const styles = StyleSheet.create({
   lockedMachineName: {
     color: Colors.textMuted,
   },
-
-  // Compact requirements container
   requirementsContainer: {
     backgroundColor: Colors.background,
     borderRadius: 8,
@@ -140,9 +105,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  requirementsList: {
-    // No additional margin needed
-  },
+  requirementsList: {},
   requirementItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -177,13 +140,13 @@ const styles = StyleSheet.create({
   },
   hasEnoughAmount: {
     color: Colors.textPrimary,
-    backgroundColor: Colors.accentGreen + '30',
+    backgroundColor: Colors.accentGreen + "30",
     borderWidth: 1,
     borderColor: Colors.accentGreen,
   },
   needsAmount: {
     color: Colors.textPrimary,
-    backgroundColor: Colors.textDanger + '30',
+    backgroundColor: Colors.textDanger + "30",
     borderWidth: 1,
     borderColor: Colors.textDanger,
   },
@@ -193,7 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 4,
     paddingHorizontal: 6,
-    backgroundColor: Colors.accentGreen + '20',
+    backgroundColor: Colors.accentGreen + "20",
     borderRadius: 6,
     borderWidth: 1,
     borderColor: Colors.accentGreen,
@@ -205,8 +168,6 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     textAlign: "center",
   },
-
-  // Compact build button
   buildButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -224,6 +185,28 @@ const styles = StyleSheet.create({
     elevation: 3,
     minHeight: 36,
   },
+  buildingButton: {
+    opacity: 0.95,
+    transform: [{ translateY: -1 }],
+  },
+  buildingOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    opacity: 0.25,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingBottom: 8,
+  },
+  buildingText: {
+    color: Colors.textPrimary,
+    fontSize: 11,
+    fontWeight: "800",
+    backgroundColor: "transparent",
+  },
   availableBuildButton: {
     backgroundColor: Colors.accentGreen,
     borderColor: Colors.accentGreen,
@@ -234,13 +217,13 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   lockedBuildButton: {
-    backgroundColor: Colors.textMuted + '40',
+    backgroundColor: Colors.textMuted + "40",
     borderColor: Colors.textMuted,
     shadowOpacity: 0.1,
     elevation: 1,
   },
   disabledBuildButton: {
-    backgroundColor: Colors.textDanger + '30',
+    backgroundColor: Colors.textDanger + "30",
     borderColor: Colors.textDanger,
     shadowColor: Colors.textDanger,
     shadowOpacity: 0.15,

@@ -1120,7 +1120,7 @@ export const items = {
     output: {
       miner: 1,
     },
-    buildTime: 5,
+    buildTime: 2,
   },
   constructor: {
     id: "constructor",
@@ -1135,7 +1135,7 @@ export const items = {
     output: {
       constructor: 1,
     },
-    buildTime: 10,
+    buildTime: 5,
   },
   smelter: {
     id: "smelter",
@@ -1150,7 +1150,7 @@ export const items = {
     output: {
       smelter: 1,
     },
-    buildTime: 8,
+    buildTime: 5,
   },
   foundry: {
     id: "foundry",
@@ -1167,7 +1167,7 @@ export const items = {
     output: {
       foundry: 1,
     },
-    buildTime: 15,
+    buildTime: 5,
   },
   oilExtractor: {
     id: "oilExtractor",
@@ -1182,7 +1182,7 @@ export const items = {
     output: {
       oilExtractor: 1,
     },
-    buildTime: 12,
+    buildTime: 5,
   },
   refinery: {
     id: "refinery",
@@ -1197,7 +1197,7 @@ export const items = {
     output: {
       refinery: 1,
     },
-    buildTime: 20,
+    buildTime: 5,
   },
   assembler: {
     id: "assembler",
@@ -1213,7 +1213,7 @@ export const items = {
     output: {
       assembler: 1,
     },
-    buildTime: 25,
+    buildTime: 5,
   },
   manufacturer: {
     id: "manufacturer",
