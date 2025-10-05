@@ -17,24 +17,22 @@ export const useInventory = () => {
         };
       }
     });
-/*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
+    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 30;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 30;
     if (initialItems.coal) initialItems.coal.currentAmount = 30;
     if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 100;
     if (initialItems.ironRods) initialItems.ironRods.currentAmount = 10;
     if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 100;
-    if (initialItems.concrete) initialItems.concrete.currentAmount = 50; */
-    //if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
-    // --- DEBUG/TEST: Initial resources for building (apply to initialItems now) ---
-    // Ensure these IDs match exactly what's in your items.js
-    /*     if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
+    if (initialItems.concrete) initialItems.concrete.currentAmount = 50;
+    if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
+    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
 
     if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
-  if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 1000;
+    if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 1000;
     if (initialItems.ironPlates) initialItems.ironPlates.currentAmount = 50;
     if (initialItems.ironRods) initialItems.ironRods.currentAmount = 50;
     if (initialItems.wires) initialItems.wires.currentAmount = 50;
@@ -47,7 +45,7 @@ export const useInventory = () => {
     if (initialItems.manufacturer) initialItems.manufacturer.currentAmount = 0;
     if (initialItems.refinery) initialItems.refinery.currentAmount = 0;
     if (initialItems.foundry) initialItems.foundry.currentAmount = 0;
-    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0; */
+    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0;
 
     const initialOwnedMachines = [];
     // For testing, add a 'smelter' instance to ownedMachines if you want to see recipes immediately.
@@ -217,9 +215,7 @@ export const useInventory = () => {
     updateOwnedMachine: (machineId, updates) => {
       setInventoryState((prevInventory) => {
         const updatedMachines = prevInventory.ownedMachines.map((machine) =>
-          machine.id === machineId
-            ? { ...machine, ...updates }
-            : machine
+          machine.id === machineId ? { ...machine, ...updates } : machine
         );
         return {
           ...prevInventory,

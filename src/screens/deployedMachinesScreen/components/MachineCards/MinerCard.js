@@ -6,7 +6,7 @@ import ProgressBar from '../../../../components/ProgressBar';
 import Colors from '../../../../constants/Colors';
 import { useMinerCard } from '../../hooks';
 import { getMachineIcon } from '../../hooks/useMachineCard';
-import styles from '../MachineCard/styles';
+import styles from '../../styles';
 import resStyles from '../MachineTypes/Smelter/components/ResourceList/styles';
 import { getNodeTypeDefinition } from '../../../../data/nodeTypes';
 

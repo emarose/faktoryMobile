@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Text } from '../../../../components';
 import Colors from '../../../../constants/Colors';
 import { useMachineCard, getMachineIcon } from '../../hooks/useMachineCard';
-import styles from '../MachineCard/styles';
+import styles from '../../styles';
 
 const DefaultMachineCard = ({ machine, navigation }) => {
   const { machineColor, displayName } = useMachineCard(machine);

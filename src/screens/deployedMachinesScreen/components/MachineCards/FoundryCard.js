@@ -4,11 +4,11 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '../../../../components';
 import ProgressBar from '../../../../components/ProgressBar';
 import Colors from '../../../../constants/Colors';
-import { useSmelterCard } from '../../hooks';
+import { useFoundryCard } from '../../hooks';
 import { getMachineIcon } from '../../hooks/useMachineCard';
 import styles from '../../styles';
 
-const SmelterCard = ({ machine, navigation }) => {
+const FoundryCard = ({ machine, navigation }) => {
   const {
     liveMachine,
     currentRecipe,
@@ -18,10 +18,13 @@ const SmelterCard = ({ machine, navigation }) => {
     machineColor,
     displayName,
     actions,
-  } = useSmelterCard(machine);
+  } = useFoundryCard(machine);
 
-  const openSmelterScreen = () => {
-    navigation.navigate("SmelterScreen", { machine: liveMachine });
+  const openFoundryScreen = () => {
+    navigation.navigate("FoundryScreen", {
+      machine: liveMachine,
+      recipe: liveMachine.currentRecipeId ? { id: liveMachine.currentRecipeId } : null,
+    });
   };
 
   return (
@@ -58,11 +61,11 @@ const SmelterCard = ({ machine, navigation }) => {
         <View style={styles.marginVertical10}>
           <TouchableOpacity
             style={styles.assignNodeButton}
-            onPress={openSmelterScreen}
+            onPress={openFoundryScreen}
             activeOpacity={0.85}
           >
             <MaterialCommunityIcons
-              name="octahedron"
+              name="anvil"
               size={28}
               color={Colors.textPrimary}
               style={{ marginRight: 6 }}
@@ -81,7 +84,7 @@ const SmelterCard = ({ machine, navigation }) => {
             <View style={styles.headerRow}>
               <View style={styles.selectedNodePill}>
                 <Text style={styles.selectedNodePillText}>
-                  Crafting: {currentProcess.itemName} (Queue: {currentProcess.queueLength || 1})
+                  Forging: {currentProcess.itemName} (Queue: {currentProcess.queueLength || 1})
                 </Text>
               </View>
               <Text style={[styles.machineStatus, { color: status.color }]}>
@@ -93,7 +96,7 @@ const SmelterCard = ({ machine, navigation }) => {
               <ProgressBar
                 value={progress}
                 max={currentProcess.processingTime}
-                label="Crafting Progress"
+                label="Forging Progress"
                 color={
                   currentProcess.status === "paused"
                     ? Colors.accentBlue
@@ -149,7 +152,7 @@ const SmelterCard = ({ machine, navigation }) => {
           </Text>
           {currentRecipe && (
             <Text style={styles.recipeInfo}>
-              Ready to craft: {currentRecipe.name}
+              Ready to forge: {currentRecipe.name}
             </Text>
           )}
         </View>
@@ -158,4 +161,4 @@ const SmelterCard = ({ machine, navigation }) => {
   );
 };
 
-export default SmelterCard;
+export default FoundryCard;

@@ -111,9 +111,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderWidth: 1,
     borderColor: Colors.borderLight,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "column",
   },
   machineInfo: {
     flex: 1,
@@ -150,6 +148,171 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  
+  // Machine icon container
+  machineIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  // Layout helpers
+  rowAlignCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  rowAlignCenterGap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  rowSpaceBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  
+  // Spacing utilities
+  marginVertical10: {
+    marginVertical: 10,
+  },
+  
+  // Buttons
+  assignNodeButton: {
+    backgroundColor: Colors.accentBlue,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  assignNodeText: {
+    color: Colors.textPrimary,
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  
+  // Extra info container
+  extraInfoContainer: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border || "#333",
+  },
+  
+  // Selected node pill
+  selectedNodePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: Colors.accentBlue,
+  },
+  selectedNodePillText: {
+    color: Colors.textPrimary,
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  
+  // Depletion section
+  depletionSection: {
+    marginTop: 8,
+  },
+  depletionTime: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginTop: 6,
+  },
+  
+  // Control buttons
+  controlButtonsContainer: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 12,
+  },
+  pauseResumeButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pauseResumeActive: {
+    backgroundColor: Colors.accentGold,
+  },
+  pauseResumeIdle: {
+    backgroundColor: Colors.accentGreen,
+  },
+  pauseResumeText: {
+    color: Colors.textPrimary,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  detachButton: {
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: Colors.border || "#333",
+  },
+  detachText: {
+    color: Colors.textMuted,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  
+  // Crafting controls (for Smelter, Constructor, Foundry)
+  craftingControlsContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 12,
+  },
+  craftingControlButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  pauseButton: {
+    backgroundColor: Colors.accentGold,
+  },
+  resumeButton: {
+    backgroundColor: Colors.accentGreen,
+  },
+  cancelButton: {
+    backgroundColor: "#d32f2f",
+  },
+  craftingControlText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  
+  // Recipe info
+  recipeInfo: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: 6,
   },
 });
 
