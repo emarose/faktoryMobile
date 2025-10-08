@@ -6,7 +6,12 @@ import { Text } from "../../../../components";
 import Colors from "../../../../constants/Colors";
 import { getMachineIcon } from "../../hooks";
 
-export default function MachineCard({ item, inventory, getMachineColor, onBuild }) {
+export default function MachineCard({
+  item,
+  inventory,
+  getMachineColor,
+  onBuild,
+}) {
   const machineColor = getMachineColor(item.id);
   const isLocked = !item.isUnlocked;
   const canBuild = item.isUnlocked && item.canBuild;
@@ -33,7 +38,7 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
     // tick every 100ms for smoothness
     intervalRef.current = setInterval(() => {
       setElapsed((prev) => prev + 0.1);
-    }, 100);
+    }, 50);
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -80,7 +85,9 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
           style={[
             styles.machineIcon,
             {
-              backgroundColor: isLocked ? Colors.textMuted + "30" : machineColor + "20",
+              backgroundColor: isLocked
+                ? Colors.textMuted + "30"
+                : machineColor + "20",
               borderColor: isLocked ? Colors.textMuted : machineColor,
             },
           ]}
@@ -89,7 +96,10 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
         </View>
 
         <View style={styles.machineInfo}>
-          <Text style={[styles.machineName, isLocked && styles.lockedMachineName]} numberOfLines={1}>
+          <Text
+            style={[styles.machineName, isLocked && styles.lockedMachineName]}
+            numberOfLines={1}
+          >
             {item.name}
           </Text>
         </View>
@@ -100,31 +110,52 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
         <View style={styles.requirementsContainer}>
           {Object.keys(item.inputs || {}).length > 0 ? (
             <View style={styles.requirementsList}>
-              {Object.entries(item.inputs || {}).map(([inputId, requiredAmount]) => {
-                const currentAmount = Math.floor(inventory[inputId]?.currentAmount || 0);
-                const hasEnough = currentAmount >= requiredAmount;
-                return (
-                  <View key={inputId} style={styles.requirementItem}>
-                    <View
-                      style={[
-                        styles.requirementIndicator,
-                        { backgroundColor: hasEnough ? Colors.accentGreen : Colors.textDanger },
-                      ]}
-                    />
-                    <Text style={styles.requirementText} numberOfLines={1}>
-                      {inventory[inputId]?.name || inputId}
-                    </Text>
-                    <Text style={[styles.requirementAmount, hasEnough ? styles.hasEnoughAmount : styles.needsAmount]}>
-                      {currentAmount}/{requiredAmount}
-                    </Text>
-                  </View>
-                );
-              })}
+              {Object.entries(item.inputs || {}).map(
+                ([inputId, requiredAmount]) => {
+                  const currentAmount = Math.floor(
+                    inventory[inputId]?.currentAmount || 0
+                  );
+                  const hasEnough = currentAmount >= requiredAmount;
+                  return (
+                    <View key={inputId} style={styles.requirementItem}>
+                      <View
+                        style={[
+                          styles.requirementIndicator,
+                          {
+                            backgroundColor: hasEnough
+                              ? Colors.accentGreen
+                              : Colors.textDanger,
+                          },
+                        ]}
+                      />
+                      <Text style={styles.requirementText} numberOfLines={1}>
+                        {inventory[inputId]?.name || inputId}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.requirementAmount,
+                          hasEnough
+                            ? styles.hasEnoughAmount
+                            : styles.needsAmount,
+                        ]}
+                      >
+                        {currentAmount}/{requiredAmount}
+                      </Text>
+                    </View>
+                  );
+                }
+              )}
             </View>
           ) : (
             <View style={styles.noRequirementsContainer}>
-              <MaterialCommunityIcons name="check-circle-outline" size={12} color={Colors.accentGreen} />
-              <Text style={styles.noRequirementsText}>No materials required</Text>
+              <MaterialCommunityIcons
+                name="check-circle-outline"
+                size={12}
+                color={Colors.accentGreen}
+              />
+              <Text style={styles.noRequirementsText}>
+                No materials required
+              </Text>
             </View>
           )}
         </View>
@@ -143,18 +174,25 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
           setBuilding(true);
           setElapsed(0);
         }}
-        disabled={( !canBuild && !isLocked) || building}
-        activeOpacity={0.7}
+        disabled={(!canBuild && !isLocked) || building}
         style={[
           styles.buildButton,
-          isLocked && styles.lockedBuildButton,
+         /*  isLocked && styles.lockedBuildButton,
           canBuild && styles.availableBuildButton,
           !canBuild && !isLocked && styles.disabledBuildButton,
-          building && styles.buildingButton,
+          building && styles.buildingButton, */
         ]}
       >
-        <MaterialCommunityIcons name={isLocked ? "lock" : canBuild ? "hammer" : "alert-circle"} size={14} color="#fff" />
-        <Text style={styles.buildButtonText}>{isLocked ? "Locked" : building ? `Building ${Math.ceil(Math.max(0, buildTime - elapsed))}s` : canBuild ? "Build" : "Need Items"}</Text>
+       
+        <Text style={styles.buildButtonText}>
+          {isLocked
+            ? "Locked"
+            : building
+            ? `Building...`
+            : canBuild
+            ? "Build"
+            : "Missing Items"}
+        </Text>
       </TouchableOpacity>
 
       {/* Building overlay (visual progress) */}
@@ -163,11 +201,9 @@ export default function MachineCard({ item, inventory, getMachineColor, onBuild 
           pointerEvents="none"
           style={[
             styles.buildingOverlay,
-            { height: `${progress * 100}%`, backgroundColor: machineColor + "30" },
+            { height: `${progress * 100}%`, backgroundColor: machineColor },
           ]}
-        >
-          <Text style={styles.buildingText}>{Math.ceil(Math.max(0, buildTime - elapsed))}s</Text>
-        </View>
+        />
       )}
     </View>
   );
