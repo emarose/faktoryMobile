@@ -4,8 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
-import { items } from "../../../../data/items";
 import { GameAssets } from "../../../../components/AppLoader";
+import NineSliceFrame from "../../../../utils/NineSliceFrame";
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from "react-native-responsive-screen";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();
@@ -17,39 +21,47 @@ const ResourceOverviewHeader = () => {
     <>
       <TouchableOpacity
         onPress={() => navigation.navigate("BasicResourcesScreen")}
-        style={styles.headerContainer}
+     /*    style={styles.headerContainer} */
       >
-        <Text style={styles.title}>Basic Resources</Text>
-
-        <View style={styles.resourcesWrapper}>
-          {displayedResourceIds.map((resourceId) => {
-            const item = inventory[resourceId];
-            if (!item || item.currentAmount === undefined) {
-              return null;
-            }
-            return (
-              <View key={item.id} style={styles.resourceItem}>
-                {GameAssets.icons[item.id] ? (
-                  <View style={styles.iconContainer}>
-                    <Image
-                      source={GameAssets.icons[item.id]}
-                      style={styles.iconImage}
-                    />
-                  </View>
-                ) : (
-                  <View style={[styles.iconPlaceholder, { backgroundColor: getNodeColor(item.id + '_node') }]}>
-                    <Text style={styles.iconText}>
-                      {item.name.charAt(0).toUpperCase()}
-                    </Text>
-                  </View>
-                )}
-                <Text style={styles.resourceAmount}>
-                  {Math.floor(item.currentAmount)}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
+        <NineSliceFrame
+          width={widthPercentageToDP(90)}
+          height={heightPercentageToDP(5)}
+        >
+          <View style={styles.resourcesWrapper}>
+            {displayedResourceIds.map((resourceId) => {
+              const item = inventory[resourceId];
+              if (!item || item.currentAmount === undefined) {
+                return null;
+              }
+              return (
+                <View key={item.id} style={styles.resourceItem}>
+                  {GameAssets.icons[item.id] ? (
+                    <View style={styles.iconContainer}>
+                      <Image
+                        source={GameAssets.icons[item.id]}
+                        style={styles.iconImage}
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={[
+                        styles.iconPlaceholder,
+                        { backgroundColor: getNodeColor(item.id + "_node") },
+                      ]}
+                    >
+                      <Text style={styles.iconText}>
+                        {item.name.charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                  )}
+                  <Text style={styles.resourceAmount}>
+                    {Math.floor(item.currentAmount)}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        </NineSliceFrame>
       </TouchableOpacity>
     </>
   );
@@ -80,13 +92,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     flexWrap: "wrap",
+    gap: 15,
   },
   resourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 10,
-    marginBottom: 5,
-
+    marginTop: 5,
+    //marginHorizontal: 10,
   },
 
   iconContainer: {
