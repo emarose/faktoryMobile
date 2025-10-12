@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import Colors from "../../../../../../constants/Colors";
 import styles from "./styles";
+import { GameAssets } from "../../../../../../components/AppLoader";
 
 /**
  * Machine Tab component for the tab navigation
@@ -21,6 +22,12 @@ const MachineTab = ({ machine, isSelected, onPress }) => {
       ]}
       onPress={() => onPress(machine.id)}
     >
+      {GameAssets.icons[machine.id] && (
+        <Image
+          source={GameAssets.icons[machine.id]}
+          style={styles.machineIcon}
+        />
+      )}
       <Text
         style={[
           styles.machineTabText,

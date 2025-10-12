@@ -56,9 +56,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     ? groupedNodes[selectedResourceType] || []
     : discoveredNodeOptions;
 
-  const handleSelectNode = useCallback((node) => {
-    console.log(`Assigning node ${node.id} to machine ${machine.id}`);
-    
+  const handleSelectNode = useCallback((node) => {    
     // Si la máquina ya está en placedMachines, actualizar su nodo
     const existingMachine = placedMachines.find(m => m.id === machine.id);
     if (existingMachine) {

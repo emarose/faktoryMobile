@@ -1,7 +1,9 @@
-import { TouchableOpacity, View, StyleSheet } from "react-native";
+import { TouchableOpacity, View, StyleSheet, Image } from "react-native";
 import { Text } from "../../../../components";
 import { useMachineColors } from "../../../../hooks";
 import Colors from "../../../../constants/Colors";
+// Global assets
+import { GameAssets } from "../../../../components/AppLoader";
 
 const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId, onPress }) => {
   const { getMachineColor, getMachineColorWithOpacity } = useMachineColors();
@@ -21,9 +23,16 @@ const MachineGridItem = ({ machineId, machineType, machineName, currentRecipeId,
       ]}
       onPress={() => onPress(machineId)}
     >
-      <View style={[styles.iconPlaceholder, { backgroundColor: machineColor }]}>
-        <Text style={styles.iconText}>{machineName.charAt(0)}</Text>
-      </View>
+      {GameAssets.icons[machineId] ? (
+        <Image 
+          source={GameAssets.icons[machineId]}
+          style={styles.icon}
+        />
+      ) : (
+        <View style={[styles.iconPlaceholder, { backgroundColor: machineColor }]}>
+          <Text style={styles.iconText}>{machineName.charAt(0)}</Text>
+        </View>
+      )}
       <Text style={[styles.name, { color: machineColor }]}>{machineName}</Text>
       {currentRecipeId && (
         <Text style={styles.recipeText}>Recipe: {currentRecipeId}</Text>

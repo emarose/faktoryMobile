@@ -7,6 +7,7 @@ export const items = {
     manualMineable: true,
     output: { ironOre: 2 },
     processingTime: 1,
+    icon:"./assets/icons/ironOreNode16x16.png",
   },
   copperOre_node: {
     id: "copperOre_node",
@@ -16,6 +17,7 @@ export const items = {
     manualMineable: true,
     output: { copperOre: 2 },
     processingTime: 1,
+    icon:"./assets/icons/copperOreNode16x16.png",
   },
   coal_node: {
     id: "coal_node",
@@ -25,6 +27,7 @@ export const items = {
     manualMineable: true,
     output: { coal: 2 },
     processingTime: 1,
+    icon:"./assets/icons/coal16x16.png",
   },
   limestone_node: {
     id: "limestone_node",
@@ -35,6 +38,7 @@ export const items = {
     manualMineable: true,
     output: { limestone: 2 },
     processingTime: 1,
+    icon:"./assets/icons/limestoneOreNode16x16.png",
   },
   cateriumOre_node: {
     id: "cateriumOre_node",
@@ -45,6 +49,7 @@ export const items = {
     machineRequired: "miner",
     output: { cateriumOre: 2 },
     processingTime: 1,
+    icon:"./assets/icons/cateriumOreNode16x16.png",
   },
   rawQuartz_node: {
     id: "rawQuartz_node",
@@ -55,6 +60,7 @@ export const items = {
     machineRequired: "miner",
     output: { rawQuartz: 2 },
     processingTime: 1,
+    icon:"./assets/icons/rawQuartz16x16.png",
   },
   sulfur_node: {
     id: "sulfur_node",
@@ -102,6 +108,7 @@ export const items = {
     type: "rawMaterial",
     description: "Basic mineral used in smelting.",
     machine: "miner",
+    icon:"./assets/icons/ironOre16x16.png",
   },
   coal: {
     id: "coal",

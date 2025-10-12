@@ -11,6 +11,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
   },
+  machineIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 6,
+    resizeMode: "contain",
+  },
   machineTabText: {
     fontSize: 14,
     fontWeight: '500',

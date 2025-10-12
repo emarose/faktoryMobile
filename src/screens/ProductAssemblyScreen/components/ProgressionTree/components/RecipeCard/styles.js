@@ -20,6 +20,16 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.border,
     paddingBottom:8
   },
+  recipeTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  recipeTitleIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    resizeMode: "contain",
+  },
   recipeTitle: {
     fontSize: 16,
     fontWeight: "bold",
@@ -50,12 +60,25 @@ const styles = StyleSheet.create({
     padding: 10,
     borderLeftWidth: 3,
   },
+  nodeInfoHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 6,
+  },
+  nodeIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 8,
+    marginTop: 2,
+    resizeMode: "contain",
+  },
   nodeInfoDescription: {
     fontSize: 13,
     color: Colors.textSecondary,
     marginBottom: 8,
     fontStyle: "italic",
     lineHeight: 18,
+    flex: 1,
   },
   nodeInfoDetails: {
     flexDirection: "row",
@@ -109,6 +132,12 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginRight: 6,
+  },
+  itemIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 6,
+    resizeMode: "contain",
   },
   itemName: {
     fontSize: 13,

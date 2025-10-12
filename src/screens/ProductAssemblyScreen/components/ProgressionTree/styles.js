@@ -142,6 +142,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 6,
   },
+  requiredItemIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: "contain",
+    marginRight: 6,
+  },
   emptyState: {
     padding: 40,
     alignItems: "center",

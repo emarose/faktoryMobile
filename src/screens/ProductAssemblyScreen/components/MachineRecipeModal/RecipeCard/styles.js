@@ -25,10 +25,20 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 3,
   },
+  resourceItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 3,
+  },
   resourceText: {
     fontSize: 14,
     color: Colors.textMuted,
-    marginLeft: 10,
+  },
+  itemIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 5,
+    resizeMode: "contain",
   },
   timerContainer: {
     marginTop: 10,

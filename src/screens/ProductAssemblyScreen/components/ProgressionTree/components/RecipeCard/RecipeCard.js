@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import Colors from "../../../../../../constants/Colors";
 import styles from "./styles";
+// Global assets
+import { GameAssets } from "../../../../../../components/AppLoader";
 
 /**
  * Recipe card component to show a single recipe
@@ -20,7 +22,20 @@ const RecipeCard = ({ recipe, machineColor, machineName }) => {
       exiting={FadeOut.duration(200)}
     >
       <View style={styles.recipeHeader}>
-        <Text style={styles.recipeTitle}>{recipe.name}</Text>
+        <View style={styles.recipeTitleContainer}>
+          {GameAssets.icons && GameAssets.icons[recipe.id] ? (
+            <Image 
+              source={GameAssets.icons[recipe.id]} 
+              style={styles.recipeTitleIcon} 
+            />
+          ) : recipe.outputs && recipe.outputs.length > 0 && GameAssets.icons[recipe.outputs[0].id] ? (
+            <Image 
+              source={GameAssets.icons[recipe.outputs[0].id]} 
+              style={styles.recipeTitleIcon} 
+            />
+          ) : null}
+          <Text style={styles.recipeTitle}>{recipe.name}</Text>
+        </View>
       </View>
 
       <View style={styles.recipeContent}>
@@ -31,9 +46,17 @@ const RecipeCard = ({ recipe, machineColor, machineName }) => {
               <View key={output.id} style={styles.miningOutputItem}>
                 {output.nodeInfo && (
                   <View style={[styles.nodeInfoContainer, { borderLeftColor: machineColor }]}>
-                    <Text style={styles.nodeInfoDescription}>
-                      "{output.nodeInfo.description}"
-                    </Text>
+                    <View style={styles.nodeInfoHeader}>
+                      {GameAssets.icons[`${output.id}_node`] ? (
+                        <Image 
+                          source={GameAssets.icons[`${output.id}_node`]} 
+                          style={styles.nodeIcon} 
+                        />
+                      ) : null}
+                      <Text style={styles.nodeInfoDescription}>
+                        "{output.nodeInfo.description}"
+                      </Text>
+                    </View>
                     <View style={styles.nodeInfoDetails}>
                       <View style={styles.nodeInfoTagContainer}>
                         <Text
@@ -67,12 +90,19 @@ const RecipeCard = ({ recipe, machineColor, machineName }) => {
             <View style={styles.recipeInputs}>
               {recipe.inputs.map((input) => (
                 <View key={input.id} style={styles.recipeItem}>
-                  <View
-                    style={[
-                      styles.itemColorIndicator,
-                      { backgroundColor: input.color },
-                    ]}
-                  />
+                  {GameAssets.icons[input.id] ? (
+                    <Image
+                      source={GameAssets.icons[input.id]}
+                      style={styles.itemIcon}
+                    />
+                  ) : (
+                    <View
+                      style={[
+                        styles.itemColorIndicator,
+                        { backgroundColor: input.color },
+                      ]}
+                    />
+                  )}
                   <Text style={styles.itemName}>{input.name}</Text>
                   <Text style={styles.itemQuantity}>× {input.quantity}</Text>
                 </View>
@@ -88,12 +118,19 @@ const RecipeCard = ({ recipe, machineColor, machineName }) => {
             <View style={styles.recipeOutputs}>
               {recipe.outputs.map((output) => (
                 <View key={output.id} style={styles.recipeItem}>
-                  <View
-                    style={[
-                      styles.itemColorIndicator,
-                      { backgroundColor: output.color },
-                    ]}
-                  />
+                  {GameAssets.icons[output.id] ? (
+                    <Image
+                      source={GameAssets.icons[output.id]}
+                      style={styles.itemIcon}
+                    />
+                  ) : (
+                    <View
+                      style={[
+                        styles.itemColorIndicator,
+                        { backgroundColor: output.color },
+                      ]}
+                    />
+                  )}
                   <Text style={styles.itemName}>{output.name}</Text>
                   <Text style={styles.itemQuantity}>× {output.quantity}</Text>
                 </View>

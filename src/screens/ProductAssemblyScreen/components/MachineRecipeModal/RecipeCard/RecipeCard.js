@@ -4,6 +4,8 @@ import { Text } from "../../../../../components";
 import { items } from "../../../../../data/items";
 import Colors from "../../../../../constants/Colors";
 import styles from "./styles";
+// Global assets
+import { GameAssets } from "../../../../../components/AppLoader";
 
 const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
   if (!recipe) {
@@ -60,27 +62,43 @@ const RecipeCard = ({ recipe, inventory, craftItem, activeCrafts }) => {
 
       <Text style={styles.sectionTitle}>Inputs:</Text>
       {Object.entries(recipe.inputs || {}).map(([inputId, amount]) => (
-        <Text key={inputId} style={styles.resourceText}>
-          - {currentItems[inputId]?.name || inputId}: {amount} (
-          <Text
-            style={{
-              color:
-                (currentItems[inputId]?.currentAmount || 0) >= amount
-                  ? Colors.success
-                  : Colors.error,
-            }}
-          >
-            {Math.floor(currentItems[inputId]?.currentAmount || 0)}
+        <View key={inputId} style={styles.resourceItem}>
+          {GameAssets.icons[inputId] ? (
+            <Image
+              source={GameAssets.icons[inputId]}
+              style={styles.itemIcon}
+            />
+          ) : null}
+          <Text style={styles.resourceText}>
+            {currentItems[inputId]?.name || inputId}: {amount} (
+            <Text
+              style={{
+                color:
+                  (currentItems[inputId]?.currentAmount || 0) >= amount
+                    ? Colors.success
+                    : Colors.error,
+              }}
+            >
+              {Math.floor(currentItems[inputId]?.currentAmount || 0)}
+            </Text>
+            /{amount})
           </Text>
-          /{amount})
-        </Text>
+        </View>
       ))}
 
       <Text style={styles.sectionTitle}>Output:</Text>
       {outputItemKey ? (
-        <Text style={styles.resourceText}>
-          - {items[outputItemKey]?.name || outputItemKey}: {outputQuantity}
-        </Text>
+        <View style={styles.resourceItem}>
+          {GameAssets.icons[outputItemKey] ? (
+            <Image
+              source={GameAssets.icons[outputItemKey]}
+              style={styles.itemIcon}
+            />
+          ) : null}
+          <Text style={styles.resourceText}>
+            {items[outputItemKey]?.name || outputItemKey}: {outputQuantity}
+          </Text>
+        </View>
       ) : (
         <Text style={styles.resourceText}>
           No output defined for this recipe.

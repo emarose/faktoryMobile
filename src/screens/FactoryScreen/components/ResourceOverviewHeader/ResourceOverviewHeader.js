@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
+import { items } from "../../../../data/items";
+import { GameAssets } from "../../../../components/AppLoader";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();
@@ -27,15 +29,20 @@ const ResourceOverviewHeader = () => {
             }
             return (
               <View key={item.id} style={styles.resourceItem}>
-                {/* Placeholder for Icon (e.g., an Image component) */}
-                <View style={[styles.iconPlaceholder, { backgroundColor: getNodeColor(item.id + '_node') }]}>
-                  {/* You can replace this with actual images later, e.g.:
-                  <Image source={item.icon} style={styles.iconImage} />
-                  Make sure your 'items' data includes an 'icon' property with require('./path/to/image.png') */}
-                  <Text style={styles.iconText}>
-                    {item.name.charAt(0).toUpperCase()}
-                  </Text>
-                </View>
+                {GameAssets.icons[item.id] ? (
+                  <View style={styles.iconContainer}>
+                    <Image
+                      source={GameAssets.icons[item.id]}
+                      style={styles.iconImage}
+                    />
+                  </View>
+                ) : (
+                  <View style={[styles.iconPlaceholder, { backgroundColor: getNodeColor(item.id + '_node') }]}>
+                    <Text style={styles.iconText}>
+                      {item.name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                )}
                 <Text style={styles.resourceAmount}>
                   {Math.floor(item.currentAmount)}
                 </Text>
@@ -79,22 +86,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 10,
     marginBottom: 5,
+
   },
-  iconPlaceholder: {
+
+  iconContainer: {
     width: 24,
     height: 24,
-    borderRadius: 4,
+    borderRadius: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 5,
+    marginRight: 6,
   },
   iconText: {
     color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: "bold",
   },
+  iconImage: {
+    width: 16,
+    height: 16,
+  },
   resourceAmount: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: Colors.accentGreen,
   },

@@ -4,10 +4,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Image
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
+import { GameAssets } from "../../../../components/AppLoader";
 
 // Import componentized subcomponents
 import RecipeCard from "./components/RecipeCard";
@@ -159,12 +161,19 @@ const ProgressionTree = () => {
               <View style={styles.machineRequirementsItems}>
                 {selectedMachine.recipes[0].inputs.map((input) => (
                   <View key={input.id} style={styles.requiredItemChip}>
-                    <View
-                      style={[
-                        styles.itemColorIndicator,
-                        { backgroundColor: input.color },
-                      ]}
-                    />
+                    {GameAssets.icons[input.id] ? (
+                      <Image 
+                        source={GameAssets.icons[input.id]}
+                        style={styles.requiredItemIcon}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.itemColorIndicator,
+                          { backgroundColor: input.color || Colors.accentBlue },
+                        ]}
+                      />
+                    )}
                     <Text style={styles.requiredItemName}>{input.name}</Text>
                     <Text style={styles.requiredItemQuantity}>× {input.quantity}</Text>
                   </View>

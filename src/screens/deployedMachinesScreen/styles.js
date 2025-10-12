@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accentGold,
   },
   pauseResumeIdle: {
-    backgroundColor: Colors.accentGreen,
+    backgroundColor: Colors.accentBlue,
   },
   pauseResumeText: {
     color: Colors.textPrimary,
