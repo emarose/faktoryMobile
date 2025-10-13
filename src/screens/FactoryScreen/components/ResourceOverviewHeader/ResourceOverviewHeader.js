@@ -21,11 +21,12 @@ const ResourceOverviewHeader = () => {
     <>
       <TouchableOpacity
         onPress={() => navigation.navigate("BasicResourcesScreen")}
-     /*    style={styles.headerContainer} */
+        style={styles.headerContainer}
       >
         <NineSliceFrame
           width={widthPercentageToDP(90)}
-          height={heightPercentageToDP(5)}
+          height={64}
+          
         >
           <View style={styles.resourcesWrapper}>
             {displayedResourceIds.map((resourceId) => {
@@ -35,25 +36,13 @@ const ResourceOverviewHeader = () => {
               }
               return (
                 <View key={item.id} style={styles.resourceItem}>
-                  {GameAssets.icons[item.id] ? (
-                    <View style={styles.iconContainer}>
-                      <Image
-                        source={GameAssets.icons[item.id]}
-                        style={styles.iconImage}
-                      />
-                    </View>
-                  ) : (
-                    <View
-                      style={[
-                        styles.iconPlaceholder,
-                        { backgroundColor: getNodeColor(item.id + "_node") },
-                      ]}
-                    >
-                      <Text style={styles.iconText}>
-                        {item.name.charAt(0).toUpperCase()}
-                      </Text>
-                    </View>
-                  )}
+                  <View style={styles.iconContainer}>
+                    <Image
+                      source={GameAssets.icons[item.id]}
+                      style={styles.iconImage}
+                    />
+                  </View>
+
                   <Text style={styles.resourceAmount}>
                     {Math.floor(item.currentAmount)}
                   </Text>
@@ -69,38 +58,27 @@ const ResourceOverviewHeader = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.backgroundPanel,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderRadius: 8,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-    marginTop: 16,
+    marginVertical: 8,
+    alignItems: 'center',
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     color: Colors.textSecondary,
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 8,
   },
   resourcesWrapper: {
     flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 15,
+    justifyContent: "space-around",
+    width: '100%',
+    paddingHorizontal: 4,
   },
   resourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 5,
-    //marginHorizontal: 10,
+    marginHorizontal: 5,
   },
-
   iconContainer: {
     width: 24,
     height: 24,
@@ -109,11 +87,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 6,
-  },
-  iconText: {
-    color: Colors.textPrimary,
-    fontSize: 16,
-    fontWeight: "bold",
   },
   iconImage: {
     width: 16,
