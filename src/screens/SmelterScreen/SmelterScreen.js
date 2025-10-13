@@ -5,7 +5,14 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { View, ScrollView, TouchableOpacity, FlatList } from "react-native";
+import { 
+  View, 
+  ScrollView, 
+  TouchableOpacity, 
+  FlatList, 
+  Image,
+  ImageBackground 
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import styles from "./styles";
@@ -268,10 +275,15 @@ const SmelterScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground 
+        source={require('../../../assets/images/backgrounds/smelter.jpeg')}
+        style={styles.backgroundImage}
+      />
       <CustomHeader
         title="Smelter"
         rightIcon="fire"
         borderColor="#ff9800"
+        onBackPress="DeployedMachinesScreen"
         onRightIconPress={() => console.log("Smelter tools pressed")}
       />
       <View style={styles.container}>

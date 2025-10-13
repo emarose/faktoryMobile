@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader } from "../../components";
@@ -124,11 +124,16 @@ const NodeSelectorScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ImageBackground 
+        source={require('../../../assets/images/backgrounds/miner.jpeg')}
+        style={styles.backgroundImage}
+      />
       <CustomHeader
         onBackPress={"DeployedMachinesScreen"}
         title="Select Resource Node"
         showBackButton={true}
         rightIcon="crosshairs-gps"
+        borderColor="#2196F3"
         onRightIconPress={() => console.log("Node selector tools pressed")}
       />
       <View style={styles.container}>
@@ -289,7 +294,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                         size={24}
                         color={
                           isAvailable
-                            ? Colors.accentGreen
+                            ? Colors.miner
                             : Colors.textSecondary
                         }
                       />
@@ -312,7 +317,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     <MaterialCommunityIcons
                       name="pickaxe"
                       size={28}
-                      color={Colors.accentGreen}
+                      color={Colors.miner}
                     />
                   </View>
                   <View style={styles.machineDetails}>
