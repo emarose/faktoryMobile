@@ -496,11 +496,7 @@ const SmelterScreen = ({ route, navigation }) => {
                               <View
                                 style={[
                                   styles.slotIcon,
-                                  {
-                                    backgroundColor: hasEnough
-                                      ? "#ff9800"
-                                      : Colors.textDanger,
-                                  },
+                                  hasEnough ? {} : {borderColor: Colors.textDanger}
                                 ]}
                               >
                                 {GameAssets.icons[input.item] ? (
@@ -582,12 +578,7 @@ const SmelterScreen = ({ route, navigation }) => {
 
                           return (
                             <View key={output.item} style={styles.resourceSlot}>
-                              <View
-                                style={[
-                                  styles.slotIcon,
-                                  { backgroundColor: "#ff9800" },
-                                ]}
-                              >
+                              <View style={styles.slotIcon}>
                                 {GameAssets.icons[output.item] ? (
                                   <Image 
                                     source={GameAssets.icons[output.item]} 
