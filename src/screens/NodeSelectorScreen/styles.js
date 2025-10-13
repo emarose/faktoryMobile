@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // Semi-transparent overlay
+    backgroundColor: 'rgba(0,0,0,0.7)', // Darker semi-transparent overlay
   },
   
   // Header with industrial styling
@@ -119,13 +119,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     minWidth: 120,
-    ...addAndroidShadow(3),
   },
   filterButtonActive: {
-    backgroundColor: "rgba(33, 150, 243, 0.7)",
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    borderWidth: 1.5,
-    ...addAndroidShadow(5),
+    backgroundColor: Colors.overlay,
+    borderColor: Colors.borderLight,
+    borderWidth: 1,
   },
   filterButtonText: {
     color: "#b8c7d1",
@@ -165,12 +163,12 @@ const styles = StyleSheet.create({
 
   // Node list items
   nodeItem: {
-    backgroundColor: "rgba(35, 35, 35, 0.65)",
+    backgroundColor: "rgba(40, 44, 52, 0.85)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.15)",
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
     flexDirection: "row",
     alignItems: "center",
     borderLeftWidth: 3,
@@ -182,22 +180,23 @@ const styles = StyleSheet.create({
     borderLeftColor: Colors.textMuted,
   },
   nodeIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 16,
-    borderWidth: 2,
+    marginRight: 12,
+    borderWidth: 1,
     borderColor: "rgba(33, 150, 243, 0.6)",
-    ...addAndroidShadow(3),
+    padding: 3,
+    ...addAndroidShadow(2),
   },
   nodeInfo: {
     flex: 1,
   },
   nodeName: {
     color: "#e8f4fd",
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
     marginBottom: 4,
     textShadowColor: "rgba(0,0,0,0.5)",
@@ -207,17 +206,70 @@ const styles = StyleSheet.create({
   nodeLocation: {
     color: "#b8c7d1",
     fontSize: 12,
-    marginBottom: 8,
+    marginBottom: 6,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  locationIcon: {
+    marginRight: 4,
+  },
+
+  divider: {
+    color: "rgba(184, 199, 209, 0.5)",
+    marginHorizontal: 6,
   },
   nodeStats: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+  statIcon: {
+    marginRight: 4,
+  },
+  nodeAmountContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   nodeAmount: {
     color: "#2196F3",
     fontSize: 12,
     fontWeight: "600",
+  },
+  outputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 6,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.1)",
+    paddingTop: 6,
+  },
+  outputLabelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 8,
+  },
+  outputLabel: {
+    color: "#b8c7d1",
+    fontSize: 11,
+    marginLeft: 4,
+  },
+  outputIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+  },
+  outputName: {
+    color: "#e8f4fd",
+    fontSize: 11,
+  },
+  outputItemContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(33, 150, 243, 0.15)",
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    marginRight: 8,
   },
   nodeAmountDepleted: {
     color: Colors.textDanger,
@@ -249,6 +301,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 16,
+    padding: 6,
     ...addAndroidShadow(3),
   },
   machineDetails: {
@@ -272,6 +325,19 @@ const styles = StyleSheet.create({
     color: "#2196F3",
     fontSize: 12,
     fontWeight: "500",
+  },
+  
+  // Resource icon styles
+  resourceIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
+  },
+  filterResourceIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    marginRight: 8,
   },
 });
 

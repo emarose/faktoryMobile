@@ -15,7 +15,7 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)', // Semi-transparent overlay
+    backgroundColor: 'rgba(0,0,0,0.7)', // Darker semi-transparent overlay
   },
   header: {
     backgroundColor: "#2c2c2c",
@@ -158,6 +158,19 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255, 152, 0, 0.6)",
+    padding: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  recipeIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
   },
   recipeInfo: {
     flex: 1,
@@ -198,11 +211,24 @@ export default StyleSheet.create({
     fontWeight: "600",
     color: "#ff9800",
     marginBottom: 4,
+    flexDirection: "row",
+    alignItems: "center",
   },
   recipeDetailText: {
     fontSize: 11,
     color: "#b8c7d1",
     marginBottom: 2,
+  },
+  recipeResourceItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  recipeResourceIcon: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+    resizeMode: 'contain',
   },
   arrowIcon: {
     marginHorizontal: 12,
@@ -298,6 +324,21 @@ export default StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  slotIconImage: {
+    width: 32,
+    height: 32,
+    resizeMode: 'contain',
+  },
+  slotInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  slotInfoIcon: {
+    marginRight: 4,
   },
   slotAmount: {
     fontSize: 16,
@@ -349,6 +390,12 @@ export default StyleSheet.create({
     marginRight: 16,
     borderWidth: 2,
     borderColor: "#ff9800",
+    padding: 5,
+  },
+  machineIconImage: {
+    width: 36,
+    height: 36,
+    resizeMode: 'contain',
   },
   machineInfo: {
     flex: 1,
@@ -393,6 +440,11 @@ export default StyleSheet.create({
     fontSize: 11,
     color: "#b8c7d1",
     marginBottom: 4,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statIcon: {
+    marginRight: 4,
   },
   statValue: {
     fontSize: 14,
