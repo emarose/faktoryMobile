@@ -23,11 +23,7 @@ const ResourceOverviewHeader = () => {
         onPress={() => navigation.navigate("BasicResourcesScreen")}
         style={styles.headerContainer}
       >
-        <NineSliceFrame
-          width={widthPercentageToDP(90)}
-          height={64}
-          
-        >
+        <NineSliceFrame width={widthPercentageToDP(90)} height={96}>
           <View style={styles.resourcesWrapper}>
             {displayedResourceIds.map((resourceId) => {
               const item = inventory[resourceId];
@@ -59,34 +55,31 @@ const ResourceOverviewHeader = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     marginVertical: 8,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: Colors.textSecondary,
-    textAlign: "center",
-    marginBottom: 8,
+    alignItems: "center",
+    
   },
   resourcesWrapper: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    width: '100%',
-    paddingHorizontal: 4,
+    justifyContent: "space-evenly",
+    width: "100%",
+    gap: 10,
+   
   },
   resourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 5,
+    alignSelf: "center",
   },
   iconContainer: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     borderRadius: 6,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 6,
+    marginRight: 4,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   iconImage: {
     width: 16,

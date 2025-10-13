@@ -2,7 +2,7 @@ import React from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { FrameSlices } from "../../assets/images/UI/frame";
 
-const TILE = 16; // tamaño original de tus slices
+const TILE = 32; // tamaño original de tus slices
 
 const NineSliceFrame = ({ width, height, children }) => {
   const horizontalTiles = Math.ceil(width / TILE) - 2;
