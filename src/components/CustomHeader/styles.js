@@ -1,4 +1,4 @@
-import Colors from '../../constants/Colors';
+import Colors from "../../constants/Colors";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -7,8 +7,9 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 2,
+    paddingVertical: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+
     minHeight: 60,
   },
   leftContainer: {
@@ -25,11 +26,13 @@ export default StyleSheet.create({
   },
   backButton: {
     padding: 10,
+    borderRadius: 50,
+    backgroundColor: " rgba(255, 255, 255, 0.1)",
   },
   rightButton: {
     padding: 10,
-    borderRadius: 8,
-    backgroundColor: Colors.backgroundAccent,
+    borderRadius: 50,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
   title: {
     fontSize: 18,

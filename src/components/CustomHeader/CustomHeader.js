@@ -27,15 +27,7 @@ const CustomHeader = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-          borderBottomColor: borderColor,
-        },
-      ]}
-    >
+    <View style={styles.container}>
       {/* Left Side - Back Button */}
       <View style={styles.leftContainer}>
         {showBackButton && (

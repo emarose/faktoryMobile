@@ -8,14 +8,14 @@ export default StyleSheet.create({
     flex: 1,
   },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     width: width,
     height: height,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)', // Darker semi-transparent overlay
+    backgroundColor: "rgba(0,0,0,0.7)", // Darker semi-transparent overlay
   },
   header: {
     backgroundColor: "#2c2c2c",
@@ -42,12 +42,9 @@ export default StyleSheet.create({
   // Tab navigation styles
   tabContainer: {
     flexDirection: "row",
-    backgroundColor: "rgba(44, 44, 44, 0.75)",
-    paddingHorizontal: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    paddingHorizontal: 10,
     paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(68, 68, 68, 0.6)",
-    backdropFilter: "blur(10px)",
   },
   tabButton: {
     flex: 1,
@@ -58,32 +55,22 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 4,
     borderRadius: 8,
-    backgroundColor: "rgba(58, 58, 58, 0.7)",
     borderWidth: 1,
-    borderColor: "rgba(85, 85, 85, 0.8)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    borderColor: Colors.borderLight,
   },
   activeTabButton: {
-    backgroundColor: "rgba(255, 152, 0, 0.85)",
-    borderColor: "rgba(255, 152, 0, 0.9)",
-    shadowColor: "#ff9800",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    borderColor: "#ff9800",
   },
   tabButtonText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#b8c7d1",
+    color: Colors.textPrimary,
     marginLeft: 6,
   },
   activeTabButtonText: {
-    color: "#e8f4fd",
-    textShadowColor: "rgba(0,0,0,0.3)",
+    color: Colors.textPrimary,
+    textShadowColor: "rgba(0,0,0,0.7)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 1,
   },
@@ -99,12 +86,10 @@ export default StyleSheet.create({
     backgroundColor: "transparent",
   },
   panelHeader: {
-    backgroundColor: "rgba(44, 44, 44, 0.75)",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(68, 68, 68, 0.6)",
-    backdropFilter: "blur(8px)",
   },
   panelTitle: {
     fontSize: 16,
@@ -123,26 +108,22 @@ export default StyleSheet.create({
     paddingHorizontal: 16,
   },
   recipeCard: {
-    backgroundColor: "rgba(44, 44, 44, 0.75)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     marginVertical: 6,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(68, 68, 68, 0.8)",
+    borderColor: Colors.borderLight,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 4,
-    backdropFilter: "blur(12px)",
   },
   selectedRecipeCard: {
-    backgroundColor: "rgba(58, 58, 58, 0.85)",
-    borderColor: "rgba(255, 152, 0, 0.9)",
-    borderWidth: 2,
-    shadowColor: "#ff9800",
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    borderColor: "#ff9800",
+    borderWidth: 1,
     elevation: 5,
   },
   recipeCardHeader: {
@@ -170,7 +151,7 @@ export default StyleSheet.create({
   recipeIcon: {
     width: 28,
     height: 28,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   recipeInfo: {
     flex: 1,
@@ -198,6 +179,9 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    padding: 4,
+    borderRadius: 8,
   },
   recipeInputs: {
     flex: 1,
@@ -222,13 +206,17 @@ export default StyleSheet.create({
   recipeResourceItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 2,
   },
   recipeResourceIcon: {
     width: 16,
     height: 16,
+    borderRadius: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 4,
-    resizeMode: 'contain',
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   arrowIcon: {
     marginHorizontal: 12,
@@ -331,7 +319,7 @@ export default StyleSheet.create({
   slotIconImage: {
     width: 32,
     height: 32,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   slotInfoContainer: {
     flexDirection: "row",
@@ -396,7 +384,7 @@ export default StyleSheet.create({
   machineIconImage: {
     width: 36,
     height: 36,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   machineInfo: {
     flex: 1,

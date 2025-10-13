@@ -5,13 +5,14 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { 
-  View, 
-  ScrollView, 
-  TouchableOpacity, 
-  FlatList, 
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
   Image,
-  ImageBackground 
+  ImageBackground,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -142,8 +143,6 @@ const SmelterScreen = ({ route, navigation }) => {
     () => machineProcesses[0] || null,
     [machineProcesses]
   );
-
-
 
   const cancelCrafting = useCallback(() => {
     /* TODO: create cancellation logic */
@@ -276,8 +275,8 @@ const SmelterScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ImageBackground 
-        source={require('../../../assets/images/backgrounds/smelter.jpeg')}
+      <ImageBackground
+        source={require("../../../assets/images/backgrounds/smelter.jpeg")}
         style={styles.backgroundImage}
       />
       <CustomHeader
@@ -312,7 +311,7 @@ const SmelterScreen = ({ route, navigation }) => {
                 activeTab === "recipe" && styles.activeTabButtonText,
               ]}
             >
-              Recipe
+              Recipes
             </Text>
           </TouchableOpacity>
 
@@ -358,7 +357,7 @@ const SmelterScreen = ({ route, navigation }) => {
                 style={styles.recipeList}
                 contentContainerStyle={styles.recipeListContent}
                 renderItem={({ item: recipeItem }) => (
-                  <TouchableOpacity
+                  <Pressable
                     style={[
                       styles.recipeCard,
                       selectedRecipeId === recipeItem.id &&
@@ -369,9 +368,13 @@ const SmelterScreen = ({ route, navigation }) => {
                   >
                     <View style={styles.recipeCardHeader}>
                       <View style={styles.recipeIconContainer}>
-                        {recipeItem.outputs && recipeItem.outputs[0] && GameAssets.icons[recipeItem.outputs[0].item] ? (
-                          <Image 
-                            source={GameAssets.icons[recipeItem.outputs[0].item]}
+                        {recipeItem.outputs &&
+                        recipeItem.outputs[0] &&
+                        GameAssets.icons[recipeItem.outputs[0].item] ? (
+                          <Image
+                            source={
+                              GameAssets.icons[recipeItem.outputs[0].item]
+                            }
                             style={styles.recipeIcon}
                           />
                         ) : (
@@ -396,39 +399,47 @@ const SmelterScreen = ({ route, navigation }) => {
                         >
                           {recipeItem.name}
                         </Text>
-                        <Text style={styles.recipeCardTime}>
-                          {recipeItem.processingTime}s processing time
-                        </Text>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          <MaterialCommunityIcons
+                            name="timer-sand"
+                            size={16}
+                            color="#ff9800"
+                          />
+                          <Text style={styles.recipeCardTime}>
+                            {recipeItem.processingTime}s processing time
+                          </Text>
+                        </View>
                       </View>
-                      {selectedRecipeId === recipeItem.id && (
-                        <MaterialCommunityIcons
-                          name="check-circle"
-                          size={20}
-                          color="#ff9800"
-                        />
-                      )}
                     </View>
 
                     {/* Recipe Details */}
                     <View style={styles.recipeDetails}>
                       <View style={styles.recipeInputsOutputs}>
                         <View style={styles.recipeInputs}>
-                          <Text style={styles.recipeDetailLabel}>
-                            <MaterialCommunityIcons name="arrow-down-box" size={14} color="#ff9800" style={{marginRight: 4}}/>
-                            Inputs:
-                          </Text>
                           {recipeItem.inputs.map((input, idx) => (
                             <View key={idx} style={styles.recipeResourceItem}>
                               {GameAssets.icons[input.item] ? (
-                                <Image 
-                                  source={GameAssets.icons[input.item]} 
+                                <Image
+                                  source={GameAssets.icons[input.item]}
                                   style={styles.recipeResourceIcon}
                                 />
                               ) : (
-                                <MaterialCommunityIcons name="cube-outline" size={14} color="#b8c7d1" style={{marginRight: 4}}/>
+                                <MaterialCommunityIcons
+                                  name="cube-outline"
+                                  size={14}
+                                  color="#b8c7d1"
+                                  style={{ marginRight: 4 }}
+                                />
                               )}
                               <Text style={styles.recipeDetailText}>
-                                {input.amount}x {items[input.item]?.name || input.item}
+                                {input.amount}x{" "}
+                                {items[input.item]?.name || input.item}
                               </Text>
                             </View>
                           ))}
@@ -440,29 +451,31 @@ const SmelterScreen = ({ route, navigation }) => {
                           style={styles.arrowIcon}
                         />
                         <View style={styles.recipeOutputs}>
-                          <Text style={styles.recipeDetailLabel}>
-                            <MaterialCommunityIcons name="arrow-up-box" size={14} color="#ff9800" style={{marginRight: 4}}/>
-                            Outputs:
-                          </Text>
                           {recipeItem.outputs.map((output, idx) => (
                             <View key={idx} style={styles.recipeResourceItem}>
                               {GameAssets.icons[output.item] ? (
-                                <Image 
-                                  source={GameAssets.icons[output.item]} 
+                                <Image
+                                  source={GameAssets.icons[output.item]}
                                   style={styles.recipeResourceIcon}
                                 />
                               ) : (
-                                <MaterialCommunityIcons name="package-variant" size={14} color="#b8c7d1" style={{marginRight: 4}}/>
+                                <MaterialCommunityIcons
+                                  name="package-variant"
+                                  size={14}
+                                  color="#b8c7d1"
+                                  style={{ marginRight: 4 }}
+                                />
                               )}
                               <Text style={styles.recipeDetailText}>
-                                {output.amount}x {items[output.item]?.name || output.item}
+                                {output.amount}x{" "}
+                                {items[output.item]?.name || output.item}
                               </Text>
                             </View>
                           ))}
                         </View>
                       </View>
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 )}
               />
             </View>
@@ -496,12 +509,14 @@ const SmelterScreen = ({ route, navigation }) => {
                               <View
                                 style={[
                                   styles.slotIcon,
-                                  hasEnough ? {} : {borderColor: Colors.textDanger}
+                                  hasEnough
+                                    ? {}
+                                    : { borderColor: Colors.textDanger },
                                 ]}
                               >
                                 {GameAssets.icons[input.item] ? (
-                                  <Image 
-                                    source={GameAssets.icons[input.item]} 
+                                  <Image
+                                    source={GameAssets.icons[input.item]}
                                     style={styles.slotIconImage}
                                   />
                                 ) : (
@@ -520,7 +535,11 @@ const SmelterScreen = ({ route, navigation }) => {
                                 <MaterialCommunityIcons
                                   name="database"
                                   size={12}
-                                  color={hasEnough ? Colors.accentGreen : Colors.textDanger}
+                                  color={
+                                    hasEnough
+                                      ? Colors.accentGreen
+                                      : Colors.textDanger
+                                  }
                                   style={styles.slotInfoIcon}
                                 />
                                 <Text
@@ -580,8 +599,8 @@ const SmelterScreen = ({ route, navigation }) => {
                             <View key={output.item} style={styles.resourceSlot}>
                               <View style={styles.slotIcon}>
                                 {GameAssets.icons[output.item] ? (
-                                  <Image 
-                                    source={GameAssets.icons[output.item]} 
+                                  <Image
+                                    source={GameAssets.icons[output.item]}
                                     style={styles.slotIconImage}
                                   />
                                 ) : (
@@ -622,8 +641,8 @@ const SmelterScreen = ({ route, navigation }) => {
                       <View style={styles.machineHeader}>
                         <View style={styles.machineIcon}>
                           {GameAssets.icons["smelter"] ? (
-                            <Image 
-                              source={GameAssets.icons["smelter"]} 
+                            <Image
+                              source={GameAssets.icons["smelter"]}
                               style={styles.machineIconImage}
                             />
                           ) : (
@@ -636,13 +655,31 @@ const SmelterScreen = ({ route, navigation }) => {
                         </View>
                         <View style={styles.machineInfo}>
                           <Text style={styles.machineTitle}>Smelter</Text>
-                          <View style={{flexDirection: "row", alignItems: "center"}}>
-                            {selectedRecipe.outputs && selectedRecipe.outputs[0] && GameAssets.icons[selectedRecipe.outputs[0].item] && (
-                              <Image 
-                                source={GameAssets.icons[selectedRecipe.outputs[0].item]} 
-                                style={{width: 16, height: 16, marginRight: 6, resizeMode: 'contain'}}
-                              />
-                            )}
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                            }}
+                          >
+                            {selectedRecipe.outputs &&
+                              selectedRecipe.outputs[0] &&
+                              GameAssets.icons[
+                                selectedRecipe.outputs[0].item
+                              ] && (
+                                <Image
+                                  source={
+                                    GameAssets.icons[
+                                      selectedRecipe.outputs[0].item
+                                    ]
+                                  }
+                                  style={{
+                                    width: 16,
+                                    height: 16,
+                                    marginRight: 6,
+                                    resizeMode: "contain",
+                                  }}
+                                />
+                              )}
                             <Text style={styles.recipeTitle}>
                               {selectedRecipe.name}
                             </Text>
@@ -668,8 +705,15 @@ const SmelterScreen = ({ route, navigation }) => {
                       <View style={styles.productionStats}>
                         <View style={styles.statItem}>
                           <View style={styles.statLabel}>
-                            <MaterialCommunityIcons name="timer-outline" size={14} color="#b8c7d1" style={styles.statIcon}/>
-                            <Text style={{color: "#b8c7d1", fontSize: 11}}>Processing Time</Text>
+                            <MaterialCommunityIcons
+                              name="timer-outline"
+                              size={14}
+                              color="#b8c7d1"
+                              style={styles.statIcon}
+                            />
+                            <Text style={{ color: "#b8c7d1", fontSize: 11 }}>
+                              Processing Time
+                            </Text>
                           </View>
                           <Text style={styles.statValue}>
                             {processingTime}s
@@ -677,15 +721,29 @@ const SmelterScreen = ({ route, navigation }) => {
                         </View>
                         <View style={styles.statItem}>
                           <View style={styles.statLabel}>
-                            <MaterialCommunityIcons name="package-variant-closed" size={14} color="#b8c7d1" style={styles.statIcon}/>
-                            <Text style={{color: "#b8c7d1", fontSize: 11}}>Max Craftable</Text>
+                            <MaterialCommunityIcons
+                              name="package-variant-closed"
+                              size={14}
+                              color="#b8c7d1"
+                              style={styles.statIcon}
+                            />
+                            <Text style={{ color: "#b8c7d1", fontSize: 11 }}>
+                              Max Craftable
+                            </Text>
                           </View>
                           <Text style={styles.statValue}>{maxCraftable}</Text>
                         </View>
                         <View style={styles.statItem}>
                           <View style={styles.statLabel}>
-                            <MaterialCommunityIcons name="clock-outline" size={14} color="#b8c7d1" style={styles.statIcon}/>
-                            <Text style={{color: "#b8c7d1", fontSize: 11}}>Total Time</Text>
+                            <MaterialCommunityIcons
+                              name="clock-outline"
+                              size={14}
+                              color="#b8c7d1"
+                              style={styles.statIcon}
+                            />
+                            <Text style={{ color: "#b8c7d1", fontSize: 11 }}>
+                              Total Time
+                            </Text>
                           </View>
                           <Text style={styles.statValue}>
                             {processingTime * amount}s
