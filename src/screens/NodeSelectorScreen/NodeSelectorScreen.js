@@ -1,9 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import {
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader } from "../../components";
@@ -22,31 +18,35 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     discoveredNodes,
     nodeAmounts,
     setPlacedMachines,
-    playerMapPosition, 
+    playerMapPosition,
     placedMachines,
     ownedMachines,
-    updateOwnedMachine
+    updateOwnedMachine,
   } = useGame();
 
   const [selectedResourceType, setSelectedResourceType] = useState(null);
 
   // Filter discovered and available nodes
-  const discoveredNodeOptions = useMemo(() => 
-    allResourceNodes.filter(
-      (n) =>
-        discoveredNodes[n.id] &&
-        (typeof n.currentAmount !== "number" || n.currentAmount > 0)
-    ), [allResourceNodes, discoveredNodes]
+  const discoveredNodeOptions = useMemo(
+    () =>
+      allResourceNodes.filter(
+        (n) =>
+          discoveredNodes[n.id] &&
+          (typeof n.currentAmount !== "number" || n.currentAmount > 0)
+      ),
+    [allResourceNodes, discoveredNodes]
   );
 
   // Group nodes by type
-  const groupedNodes = useMemo(() => 
-    discoveredNodeOptions.reduce((acc, node) => {
-      const type = node.type || 'unknown';
-      if (!acc[type]) acc[type] = [];
-      acc[type].push(node);
-      return acc;
-    }, {}), [discoveredNodeOptions]
+  const groupedNodes = useMemo(
+    () =>
+      discoveredNodeOptions.reduce((acc, node) => {
+        const type = node.type || "unknown";
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(node);
+        return acc;
+      }, {}),
+    [discoveredNodeOptions]
   );
 
   const resourceTypes = Object.keys(groupedNodes);
@@ -56,44 +56,50 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     ? groupedNodes[selectedResourceType] || []
     : discoveredNodeOptions;
 
-  const handleSelectNode = useCallback((node) => {    
-    // Si la máquina ya está en placedMachines, actualizar su nodo
-    const existingMachine = placedMachines.find(m => m.id === machine.id);
-    if (existingMachine) {
-      setPlacedMachines((prevPlaced) =>
-        prevPlaced.map((m) =>
-          m.id === machine.id
-            ? { ...m, assignedNodeId: node.id, isIdle: false }
-            : m
-        )
-      );
-    } else {
-      // Si no está en placedMachines, moverla de ownedMachines a placedMachines
-      const machineToPlace = {
-        ...machine,
-        assignedNodeId: node.id,
-        isIdle: false
-      };
-      
-      // Agregar a placedMachines
-      setPlacedMachines((prevPlaced) => [...prevPlaced, machineToPlace]);
-      
-      // Marcar como colocada en ownedMachines para evitar duplicados
-      if (updateOwnedMachine) {
-        updateOwnedMachine(machine.id, { isPlaced: true });
-      }
-    }
-    
-    // Navigate back
-    navigation.goBack();
-  }, [machine, placedMachines, setPlacedMachines, updateOwnedMachine, navigation]);
+  const handleSelectNode = useCallback(
+    (node) => {
+      // Si la máquina ya está en placedMachines, actualizar su nodo
+      const existingMachine = placedMachines.find((m) => m.id === machine.id);
+      if (existingMachine) {
+        setPlacedMachines((prevPlaced) =>
+          prevPlaced.map((m) =>
+            m.id === machine.id
+              ? { ...m, assignedNodeId: node.id, isIdle: false }
+              : m
+          )
+        );
+      } else {
+        // Si no está en placedMachines, moverla de ownedMachines a placedMachines
+        const machineToPlace = {
+          ...machine,
+          assignedNodeId: node.id,
+          isIdle: false,
+        };
 
-  const calculateDistance = useCallback((node) => {
-    if (!playerMapPosition || !node) return 0;
-    const dx = node.x - playerMapPosition.x;
-    const dy = node.y - playerMapPosition.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }, [playerMapPosition]);
+        // Agregar a placedMachines
+        setPlacedMachines((prevPlaced) => [...prevPlaced, machineToPlace]);
+
+        // Marcar como colocada en ownedMachines para evitar duplicados
+        if (updateOwnedMachine) {
+          updateOwnedMachine(machine.id, { isPlaced: true });
+        }
+      }
+
+      // Navigate back
+      navigation.goBack();
+    },
+    [machine, placedMachines, setPlacedMachines, updateOwnedMachine, navigation]
+  );
+
+  const calculateDistance = useCallback(
+    (node) => {
+      if (!playerMapPosition || !node) return 0;
+      const dx = node.x - playerMapPosition.x;
+      const dy = node.y - playerMapPosition.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    },
+    [playerMapPosition]
+  );
 
   const getResourceIcon = (type) => {
     const iconMap = {
@@ -111,8 +117,6 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     return iconMap[type] || "help-circle-outline";
   };
 
-
-
   const getResourceTypeLabel = (type) => {
     const nodeDefinition = getNodeTypeDefinition(type);
     return nodeDefinition ? nodeDefinition.name : type;
@@ -120,14 +124,14 @@ const NodeSelectorScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <CustomHeader 
+      <CustomHeader
+        onBackPress={"DeployedMachinesScreen"}
         title="Select Resource Node"
         showBackButton={true}
         rightIcon="crosshairs-gps"
         onRightIconPress={() => console.log("Node selector tools pressed")}
       />
       <View style={styles.container}>
-
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Resource Type Filter */}
           {resourceTypes.length > 1 && (
@@ -148,10 +152,12 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     ]}
                     onPress={() => setSelectedResourceType(null)}
                   >
-                    <Text style={[
-                      styles.filterButtonText,
-                      !selectedResourceType && styles.filterButtonTextActive,
-                    ]}>
+                    <Text
+                      style={[
+                        styles.filterButtonText,
+                        !selectedResourceType && styles.filterButtonTextActive,
+                      ]}
+                    >
                       All Resources
                     </Text>
                   </TouchableOpacity>
@@ -161,20 +167,28 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       key={type}
                       style={[
                         styles.filterButton,
-                        selectedResourceType === type && styles.filterButtonActive,
+                        selectedResourceType === type &&
+                          styles.filterButtonActive,
                       ]}
                       onPress={() => setSelectedResourceType(type)}
                     >
                       <MaterialCommunityIcons
                         name={getResourceIcon(type)}
                         size={16}
-                        color={selectedResourceType === type ? Colors.textPrimary : Colors.textSecondary}
+                        color={
+                          selectedResourceType === type
+                            ? Colors.textPrimary
+                            : Colors.textSecondary
+                        }
                         style={{ marginRight: 8 }}
                       />
-                      <Text style={[
-                        styles.filterButtonText,
-                        selectedResourceType === type && styles.filterButtonTextActive,
-                      ]}>
+                      <Text
+                        style={[
+                          styles.filterButtonText,
+                          selectedResourceType === type &&
+                            styles.filterButtonTextActive,
+                        ]}
+                      >
                         {getResourceTypeLabel(type)}
                       </Text>
                     </TouchableOpacity>
@@ -209,7 +223,8 @@ const NodeSelectorScreen = ({ route, navigation }) => {
               ) : (
                 nodesToDisplay.map((node) => {
                   const nodeDefinition = node.type ? items[node.type] : null;
-                  const nodeAmount = nodeAmounts[node.id] ?? node.capacity ?? 1000;
+                  const nodeAmount =
+                    nodeAmounts[node.id] ?? node.capacity ?? 1000;
                   const isAvailable = nodeAmount > 0;
                   const distance = calculateDistance(node);
 
@@ -224,10 +239,12 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       disabled={!isAvailable}
                       activeOpacity={0.7}
                     >
-                      <View style={[
-                        styles.nodeIconContainer,
-                        { backgroundColor: getNodeColor(node.type) }
-                      ]}>
+                      <View
+                        style={[
+                          styles.nodeIconContainer,
+                          { backgroundColor: getNodeColor(node.type) },
+                        ]}
+                      >
                         <MaterialCommunityIcons
                           name={getResourceIcon(node.type)}
                           size={24}
@@ -237,29 +254,44 @@ const NodeSelectorScreen = ({ route, navigation }) => {
 
                       <View style={styles.nodeInfo}>
                         <Text style={styles.nodeName}>
-                          {nodeDefinition?.name || node.type || "Unknown Resource"}
+                          {nodeDefinition?.name ||
+                            node.type ||
+                            "Unknown Resource"}
                         </Text>
                         <Text style={styles.nodeLocation}>
-                          Location: ({node.x}, {node.y}) • Distance: {distance.toFixed(1)}
+                          Location: ({node.x}, {node.y}) • Distance:{" "}
+                          {distance.toFixed(1)}
                         </Text>
                         <View style={styles.nodeStats}>
-                          <Text style={[
-                            styles.nodeAmount,
-                            !isAvailable && styles.nodeAmountDepleted
-                          ]}>
+                          <Text
+                            style={[
+                              styles.nodeAmount,
+                              !isAvailable && styles.nodeAmountDepleted,
+                            ]}
+                          >
                             Available: {nodeAmount} / {node.capacity || 1000}
                           </Text>
-                          <View style={[
-                            styles.availabilityIndicator,
-                            { backgroundColor: isAvailable ? Colors.success : Colors.error }
-                          ]} />
+                          <View
+                            style={[
+                              styles.availabilityIndicator,
+                              {
+                                backgroundColor: isAvailable
+                                  ? Colors.success
+                                  : Colors.error,
+                              },
+                            ]}
+                          />
                         </View>
                       </View>
 
                       <MaterialCommunityIcons
                         name="chevron-right"
                         size={24}
-                        color={isAvailable ? Colors.accentGreen : Colors.textSecondary}
+                        color={
+                          isAvailable
+                            ? Colors.accentGreen
+                            : Colors.textSecondary
+                        }
                       />
                     </TouchableOpacity>
                   );
@@ -287,11 +319,10 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     <Text style={styles.machineTitle}>
                       {items[machine.type]?.name || machine.type}
                     </Text>
-                    <Text style={styles.machineSubtitle}>
-                      ID: {machine.id}
-                    </Text>
+                    <Text style={styles.machineSubtitle}>ID: {machine.id}</Text>
                     <Text style={styles.machineStatus}>
-                      Status: {machine.assignedNodeId ? "Deployed" : "Unassigned"}
+                      Status:{" "}
+                      {machine.assignedNodeId ? "Deployed" : "Unassigned"}
                     </Text>
                   </View>
                 </View>

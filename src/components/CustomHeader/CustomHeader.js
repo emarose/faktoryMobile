@@ -6,41 +6,44 @@ import { Text } from "../index";
 import styles from "./styles";
 import Colors from "../../constants/Colors";
 
-const CustomHeader = ({ 
-  title, 
-  showBackButton = true, 
-  rightIcon = null, 
+const CustomHeader = ({
+  title,
+  showBackButton = true,
+  rightIcon = null,
   onRightIconPress = null,
   rightIconColor = Colors.textPrimary,
   backgroundColor = Colors.background,
-  borderColor = Colors.borderLight
+  borderColor = Colors.borderLight,
+  onBackPress = "",
 }) => {
   const navigation = useNavigation();
 
   const handleBackPress = () => {
-    navigation.navigate("Factory");
+    if (onBackPress) {
+      navigation.navigate(onBackPress);
+    } else {
+      navigation.navigate("Factory");
+    }
   };
 
   return (
-    <View style={[
-      styles.container,
-      { 
-        backgroundColor,
-        borderBottomColor: borderColor
-      }
-    ]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor,
+          borderBottomColor: borderColor,
+        },
+      ]}
+    >
       {/* Left Side - Back Button */}
       <View style={styles.leftContainer}>
         {showBackButton && (
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={handleBackPress}
-          
-          >
-            <MaterialCommunityIcons 
-              name="arrow-left" 
-              size={24} 
-              color={Colors.textPrimary} 
+          <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={24}
+              color={Colors.textPrimary}
             />
           </TouchableOpacity>
         )}
@@ -54,15 +57,15 @@ const CustomHeader = ({
       {/* Right Side - Optional Icon */}
       <View style={styles.rightContainer}>
         {rightIcon && onRightIconPress && (
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.rightButton}
             onPress={onRightIconPress}
             activeOpacity={0.7}
           >
-            <MaterialCommunityIcons 
-              name={rightIcon} 
-              size={24} 
-              color={rightIconColor} 
+            <MaterialCommunityIcons
+              name={rightIcon}
+              size={24}
+              color={rightIconColor}
             />
           </TouchableOpacity>
         )}

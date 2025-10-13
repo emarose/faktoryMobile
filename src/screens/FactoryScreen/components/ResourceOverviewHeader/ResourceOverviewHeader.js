@@ -23,30 +23,30 @@ const ResourceOverviewHeader = () => {
         onPress={() => navigation.navigate("BasicResourcesScreen")}
         style={styles.headerContainer}
       >
-        <NineSliceFrame width={widthPercentageToDP(90)} height={96}>
-          <View style={styles.resourcesWrapper}>
-            {displayedResourceIds.map((resourceId) => {
-              const item = inventory[resourceId];
-              if (!item || item.currentAmount === undefined) {
-                return null;
-              }
-              return (
-                <View key={item.id} style={styles.resourceItem}>
-                  <View style={styles.iconContainer}>
-                    <Image
-                      source={GameAssets.icons[item.id]}
-                      style={styles.iconImage}
-                    />
-                  </View>
-
-                  <Text style={styles.resourceAmount}>
-                    {Math.floor(item.currentAmount)}
-                  </Text>
+        {/*  <NineSliceFrame width={widthPercentageToDP(90)} height={96}> */}
+        <View style={styles.resourcesWrapper}>
+          {displayedResourceIds.map((resourceId) => {
+            const item = inventory[resourceId];
+            if (!item || item.currentAmount === undefined) {
+              return null;
+            }
+            return (
+              <View key={item.id} style={styles.resourceItem}>
+                <View style={styles.iconContainer}>
+                  <Image
+                    source={GameAssets.icons[item.id]}
+                    style={styles.iconImage}
+                  />
                 </View>
-              );
-            })}
-          </View>
-        </NineSliceFrame>
+
+                <Text style={styles.resourceAmount}>
+                  {Math.floor(item.currentAmount)}
+                </Text>
+              </View>
+            );
+          })}
+        </View>
+        {/*  </NineSliceFrame> */}
       </TouchableOpacity>
     </>
   );
@@ -54,16 +54,18 @@ const ResourceOverviewHeader = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    marginVertical: 8,
+    marginVertical: 16,
     alignItems: "center",
-    
+    paddingVertical: 12,
+    backgroundColor: Colors.backgroundSecondary,
+    borderColor: Colors.borderLight,
+    borderRadius: 8,
   },
   resourcesWrapper: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: "100%",
     gap: 10,
-   
   },
   resourceItem: {
     flexDirection: "row",
