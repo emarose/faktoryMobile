@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '../../../../components';
+import { GameAssets } from '../../../../components/AppLoader';
 import ProgressBar from '../../../../components/ProgressBar';
 import Colors from '../../../../constants/Colors';
 import { useFoundryCard } from '../../hooks';

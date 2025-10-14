@@ -18,6 +18,7 @@ import ConstructorScreen from "../screens/ConstructorScreen/ConstructorScreen";
 import SmelterScreen from "../screens/SmelterScreen/SmelterScreen";
 import NodeSelectorScreen from "../screens/NodeSelectorScreen/NodeSelectorScreen";
 import Colors from "../constants/Colors";
+import FoundryScreen from "../screens/FoundryScreen/FoundryScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -40,16 +41,26 @@ function RootNavigator() {
       }}
     >
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen name="BasicResourcesScreen" component={BasicResourcesScreen} />
+      <Stack.Screen
+        name="BasicResourcesScreen"
+        component={BasicResourcesScreen}
+      />
       <Stack.Screen name="BuildScreen" component={BuildScreen} />
       <Stack.Screen name="MapScreen" component={MapScreen} />
       <Stack.Screen name="InventoryScreen" component={InventoryScreen} />
-      <Stack.Screen name="ProductAssemblyScreen" component={ProductAssemblyScreen} />
-      <Stack.Screen name="DeployedMachinesScreen" component={DeployedMachinesScreen} />
+      <Stack.Screen
+        name="ProductAssemblyScreen"
+        component={ProductAssemblyScreen}
+      />
+      <Stack.Screen
+        name="DeployedMachinesScreen"
+        component={DeployedMachinesScreen}
+      />
       <Stack.Screen name="MilestonesScreen" component={MilestonesScreen} />
       <Stack.Screen name="ConstructorScreen" component={ConstructorScreen} />
       <Stack.Screen name="SmelterScreen" component={SmelterScreen} />
       <Stack.Screen name="NodeSelectorScreen" component={NodeSelectorScreen} />
+      <Stack.Screen name="FoundryScreen" component={FoundryScreen} />
     </Stack.Navigator>
   );
 }

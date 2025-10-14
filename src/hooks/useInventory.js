@@ -30,13 +30,14 @@ export const useInventory = () => {
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
-
+    
     if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
     if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 1000;
     if (initialItems.ironPlates) initialItems.ironPlates.currentAmount = 50;
     if (initialItems.ironRods) initialItems.ironRods.currentAmount = 50;
     if (initialItems.wires) initialItems.wires.currentAmount = 50;
     if (initialItems.concrete) initialItems.concrete.currentAmount = 20;
+    if (initialItems.screws) initialItems.screws.currentAmount = 200;
 
     if (initialItems.miner) initialItems.miner.currentAmount = 0;
     if (initialItems.smelter) initialItems.smelter.currentAmount = 0;

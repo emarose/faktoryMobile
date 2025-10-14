@@ -28,7 +28,6 @@ const BuildScreen = () => {
 
   const handleBuild = (itemId) => {
     const success = buildItem(itemId);
-    console.log("handleBuild ~ success:", success);
   };
 
   return (
