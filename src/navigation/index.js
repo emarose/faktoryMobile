@@ -22,6 +22,7 @@ import FoundryScreen from "../screens/FoundryScreen/FoundryScreen";
 import AssemblerScreen from "../screens/AssemblerScreen/AssemblerScreen";
 import RefineryScreen from "../screens/RefineryScreen/RefineryScreen";
 import ManufacturerScreen from "../screens/ManufacturerScreen/ManufacturerScreen";
+import OilExtractorScreen from "../screens/OilExtractorScreen/OilExtractorScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -67,6 +68,7 @@ function RootNavigator() {
       <Stack.Screen name="AssemblerScreen" component={AssemblerScreen} />
       <Stack.Screen name="RefineryScreen" component={RefineryScreen} />
       <Stack.Screen name="ManufacturerScreen" component={ManufacturerScreen} />
+      <Stack.Screen name="OilExtractorScreen" component={OilExtractorScreen} />
     </Stack.Navigator>
   );
 }

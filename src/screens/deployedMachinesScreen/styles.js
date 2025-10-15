@@ -276,6 +276,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
+  configureButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   
   // Crafting controls (for Smelter, Constructor, Foundry)
   craftingControlsContainer: {

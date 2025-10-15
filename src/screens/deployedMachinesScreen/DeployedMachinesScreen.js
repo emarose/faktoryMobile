@@ -6,7 +6,7 @@ import styles from "./styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
-import { MinerCard, SmelterCard, ConstructorCard, DefaultMachineCard, FoundryCard, AssemblerCard, RefineryCard, ManufacturerCard } from "./components/MachineCards";
+import { MinerCard, OilExtractorCard, SmelterCard, ConstructorCard, DefaultMachineCard, FoundryCard, AssemblerCard, RefineryCard, ManufacturerCard } from "./components/MachineCards";
 import MachineGroup from "./components/MachineGroup";
 
 // Map machine types to their dedicated card components
@@ -18,7 +18,7 @@ const machineCardComponents = {
   foundry: FoundryCard,
   manufacturer: ManufacturerCard,
   refinery: RefineryCard,
-  oilExtractor: MinerCard, // Oil extractor can use the same logic as miner
+  oilExtractor: OilExtractorCard,
 };
 
 const DeployedMachinesScreen = () => {
