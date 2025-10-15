@@ -5,3 +5,4 @@ export { default as ConstructorCard } from './ConstructorCard';
 export { default as DefaultMachineCard } from './DefaultMachineCard';
 export { default as FoundryCard } from './FoundryCard';
 export { default as AssemblerCard } from './AssemblerCard';
+export { default as RefineryCard } from './RefineryCard';

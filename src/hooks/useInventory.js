@@ -38,6 +38,12 @@ export const useInventory = () => {
     if (initialItems.wires) initialItems.wires.currentAmount = 50;
     if (initialItems.concrete) initialItems.concrete.currentAmount = 20;
     if (initialItems.screws) initialItems.screws.currentAmount = 200;
+    if (initialItems.steelBeams) initialItems.steelBeams.currentAmount = 200;
+    if (initialItems.reinforcedIronPlates) initialItems.reinforcedIronPlates.currentAmount = 200;
+    if (initialItems.rotors) initialItems.rotors.currentAmount = 200;
+    if (initialItems.steelPipes) initialItems.steelPipes.currentAmount = 200;
+    if (initialItems.steelIngot) initialItems.steelIngot.currentAmount = 200;
+    if (initialItems.sulfur) initialItems.sulfur.currentAmount = 200;
 
     if (initialItems.miner) initialItems.miner.currentAmount = 0;
     if (initialItems.smelter) initialItems.smelter.currentAmount = 0;
