@@ -4,3 +4,4 @@ export { default as useSmelterCard } from './useSmelterCard';
 export { default as useConstructorCard } from './useConstructorCard';
 export { default as useMachineCard } from './useMachineCard';
 export { default as useFoundryCard } from './useFoundryCard';
+export { default as useAssemblerCard } from './useAssemblerCard';

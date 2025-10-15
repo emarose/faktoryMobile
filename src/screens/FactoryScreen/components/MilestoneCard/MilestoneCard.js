@@ -13,7 +13,7 @@ const MilestoneCard = ({
   discoveredNodes,
   onPress,
 }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   // Busca el milestone completo para acceder a requirementsDescription
   const milestoneFull = currentMilestone
     ? milestones.find((m) => m.id === currentMilestone.id)

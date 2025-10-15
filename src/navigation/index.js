@@ -19,6 +19,7 @@ import SmelterScreen from "../screens/SmelterScreen/SmelterScreen";
 import NodeSelectorScreen from "../screens/NodeSelectorScreen/NodeSelectorScreen";
 import Colors from "../constants/Colors";
 import FoundryScreen from "../screens/FoundryScreen/FoundryScreen";
+import AssemblerScreen from "../screens/AssemblerScreen/AssemblerScreen";
 
 export default function Navigation({ colorScheme }) {
   return (
@@ -61,6 +62,7 @@ function RootNavigator() {
       <Stack.Screen name="SmelterScreen" component={SmelterScreen} />
       <Stack.Screen name="NodeSelectorScreen" component={NodeSelectorScreen} />
       <Stack.Screen name="FoundryScreen" component={FoundryScreen} />
+      <Stack.Screen name="AssemblerScreen" component={AssemblerScreen} />
     </Stack.Navigator>
   );
 }

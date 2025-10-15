@@ -187,7 +187,7 @@ export const items = {
     output: {
       ironIngot: 1,
     },
-    processingTime: 5,
+    processingTime: 2,
     fuelConsumption: 0.1,
   },
   cateriumIngot: {
@@ -202,7 +202,7 @@ export const items = {
     output: {
       cateriumIngot: 1,
     },
-    processingTime: 5,
+    processingTime: 2,
     fuelConsumption: 0.1,
   },
   copperIngot: {
@@ -212,12 +212,12 @@ export const items = {
     description: "Refined copper bar.",
     machine: "smelter",
     inputs: {
-      copperOre:20,
+      copperOre:2,
     },
     output: {
       copperIngot: 1,
     },
-    processingTime: 5,
+    processingTime: 2,
     fuelConsumption: 0.1,
   },
   heavyOilResidue: {
