@@ -276,7 +276,7 @@ const SmelterScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
-        source={require("../../../assets/images/backgrounds/smelter.jpeg")}
+        source={require("../../../assets/images/backgrounds/smelter-small.jpeg")}
         style={styles.backgroundImage}
       />
       <CustomHeader

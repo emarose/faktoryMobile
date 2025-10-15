@@ -4,7 +4,8 @@ const milestones = [
     name: "Basic Resource Gathering",
     description:
       "Reach your first milestone by discovering 2 resource nodes. The materials you gather will help you build your first machines.",
-    requirementsDescription: "Discover 2 resource nodes and gather basic materials: 10 Iron Ore, 10 Copper Ore and 5 Coal",
+    requirementsDescription:
+      "Discover 2 resource nodes and gather basic materials: 10 Iron Ore, 10 Copper Ore and 5 Coal",
     unlocked: false,
     unlocks: ["Smelter", "Miner"],
     requirements: { discoveredNodes: 2, ironOre: 10, copperOre: 10, coal: 5 },
@@ -14,10 +15,9 @@ const milestones = [
     name: "Basic Manufacturing",
     description:
       "Master basic smelting by producing iron ingots and concrete. These materials will be used to construct your first Constructor.",
-    requirementsDescription:
-      "Produce 20 Iron Ingots and 5 Concrete",
+    requirementsDescription: "Produce 20 Iron Ingots and 5 Concrete",
     unlocked: false,
-    unlocks: ["Constructor","Foundry"],
+    unlocks: ["Constructor"],
     requirements: { ironIngot: 20, concrete: 5 },
   },
   {
@@ -28,7 +28,7 @@ const milestones = [
     requirementsDescription:
       "Produce 15 Iron Rods, 10 Iron Plates, and 20 Screws",
     unlocked: false,
-    unlocks: [],
+    unlocks: ["Assembler"],
     requirements: { ironRods: 15, ironPlates: 10, screws: 20 },
   },
   {
@@ -36,10 +36,9 @@ const milestones = [
     name: "Copper Technology",
     description:
       "Expand into copper processing to create electrical components. Master copper ingots and basic wiring systems.",
-    requirementsDescription:
-      "Produce 15 Copper Ingots and 25 Wires",
+    requirementsDescription: "Produce 15 Copper Ingots and 25 Wires",
     unlocked: false,
-    unlocks: ["Assembler"],
+    unlocks: ["Foundry", "Oil Extractor"],
     requirements: { copperIngot: 15, wires: 25 },
   },
   {
@@ -47,8 +46,7 @@ const milestones = [
     name: "Advanced Parts Assembly",
     description:
       "Unlock the Assembler to create complex multi-component items. Produce reinforced materials and mechanical components.",
-    requirementsDescription:
-      "Produce 10 Reinforced Iron Plates and 5 Rotors",
+    requirementsDescription: "Produce 10 Reinforced Iron Plates and 5 Rotors",
     unlocked: false,
     unlocks: [],
     requirements: { reinforcedIronPlates: 10, rotors: 5 },
@@ -58,9 +56,10 @@ const milestones = [
     name: "Steel Production Foundation",
     description:
       "Advance to steel production with the Foundry. Prepare the materials needed to build this advanced machine.",
-    requirementsDescription: "Gather materials for Foundry: 10 Iron Rods, 20 Iron Plates, 15 Wires, 10 Screws",
+    requirementsDescription:
+      "Gather materials for Foundry: 10 Iron Rods, 20 Iron Plates, 15 Wires, 10 Screws",
     unlocked: false,
-    unlocks: ["Foundry"],
+    unlocks: [],
     requirements: { ironRods: 10, ironPlates: 20, wires: 15, screws: 10 },
   },
   {
@@ -71,7 +70,7 @@ const milestones = [
     requirementsDescription:
       "Produce 10 Steel Ingots, 8 Steel Beams, and 6 Steel Pipes",
     unlocked: false,
-    unlocks: [],
+    unlocks: ["Refinery"],
     requirements: { steelIngot: 10, steelBeams: 8, steelPipes: 6 },
   },
   {
@@ -82,7 +81,7 @@ const milestones = [
     requirementsDescription:
       "Discover 5 nodes total and prepare: 8 Steel Pipes, 6 Concrete, 10 Wires",
     unlocked: false,
-    unlocks: ["oilExtractor", "Refinery"],
+    unlocks: ["Manufacturer"],
     requirements: { discoveredNodes: 5, steelPipes: 8, concrete: 6, wires: 10 },
   },
   {
@@ -90,8 +89,7 @@ const milestones = [
     name: "Basic Petroleum Products",
     description:
       "Master basic oil refining by producing plastics, rubber, and fuel for advanced manufacturing.",
-    requirementsDescription:
-      "Produce 10 Plastic, 10 Rubber, and 8 Fuel",
+    requirementsDescription: "Produce 10 Plastic, 10 Rubber, and 8 Fuel",
     unlocked: false,
     unlocks: [],
     requirements: { plastic: 10, rubber: 8, fuel: 8 },
@@ -104,7 +102,7 @@ const milestones = [
     requirementsDescription:
       "Produce 5 Modular Frames, 3 Motors, and 5 Circuit Boards",
     unlocked: false,
-    unlocks: ["Manufacturer"],
+    unlocks: [],
     requirements: { modularFrames: 5, motors: 3, circuitBoards: 5 },
   },
   {
@@ -112,8 +110,7 @@ const milestones = [
     name: "Advanced Computing",
     description:
       "Master advanced electronics by producing your first computers and high-tech components.",
-    requirementsDescription:
-      "Produce 3 Computers and 10 Quickwire",
+    requirementsDescription: "Produce 3 Computers and 10 Quickwire",
     unlocked: false,
     unlocks: [],
     requirements: { computers: 3, quickwire: 10 },
@@ -201,8 +198,7 @@ const milestones = [
     name: "Advanced Power Systems",
     description:
       "Create sophisticated power and control systems with batteries and thermal management.",
-    requirementsDescription:
-      "Produce 2 Batteries and 2 Heat Sinks",
+    requirementsDescription: "Produce 2 Batteries and 2 Heat Sinks",
     unlocked: false,
     unlocks: [],
     requirements: { battery: 2, heatSink: 2 },
@@ -227,7 +223,8 @@ const milestones = [
     name: "Nuclear Mastery",
     description:
       "Master nuclear technology with fuel rod production for ultimate power generation.",
-    requirementsDescription: "Produce 1 Nuclear Fuel Rod and discover all 10 resource node types",
+    requirementsDescription:
+      "Produce 1 Nuclear Fuel Rod and discover all 10 resource node types",
     unlocked: false,
     unlocks: ["Master Industrialist"],
     requirements: { nuclearFuelRods: 1, discoveredNodes: 10 },

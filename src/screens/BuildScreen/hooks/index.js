@@ -21,7 +21,6 @@ export const getSortedBuildable = (buildableItems = [], unlockedMachineNames = [
         (milestone) =>
           milestone.unlockedMachines && milestone.unlockedMachines.includes(item.name)
       );
-
       return {
         ...item,
         isUnlocked,

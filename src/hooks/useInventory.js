@@ -44,6 +44,12 @@ export const useInventory = () => {
     if (initialItems.steelPipes) initialItems.steelPipes.currentAmount = 200;
     if (initialItems.steelIngot) initialItems.steelIngot.currentAmount = 200;
     if (initialItems.sulfur) initialItems.sulfur.currentAmount = 200;
+    if (initialItems.fuel) initialItems.fuel.currentAmount = 200;
+    if (initialItems.rubber) initialItems.rubber.currentAmount = 200;
+    if (initialItems.plastic) initialItems.plastic.currentAmount = 200;
+    if (initialItems.circuitBoards) initialItems.circuitBoards.currentAmount = 200;
+    if (initialItems.motors) initialItems.motors.currentAmount = 200;
+    if (initialItems.modularFrames) initialItems.modularFrames.currentAmount = 200;
 
     if (initialItems.miner) initialItems.miner.currentAmount = 0;
     if (initialItems.smelter) initialItems.smelter.currentAmount = 0;

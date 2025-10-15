@@ -6,3 +6,4 @@ export { default as useMachineCard } from './useMachineCard';
 export { default as useFoundryCard } from './useFoundryCard';
 export { default as useAssemblerCard } from './useAssemblerCard';
 export { default as useRefineryCard } from './useRefineryCard';
+export { default as useManufacturerCard } from './useManufacturerCard';
