@@ -621,6 +621,41 @@ export const GameProvider = ({ children }) => {
     };
   }, [isGameLoaded, saveData]);
 
+  // Function for manual saving
+  const saveGameManually = useCallback(async () => {
+    try {
+      setIsSaving(true);
+      
+      await Promise.all([
+        saveData(STORAGE_KEYS.PLAYER_POSITION, playerMapPosition),
+        saveData(STORAGE_KEYS.DISCOVERED_NODES, discoveredNodes),
+        saveData(STORAGE_KEYS.NODE_AMOUNTS, nodeAmounts),
+        saveData(STORAGE_KEYS.MILESTONES, {
+          milestones,
+          activeMilestone
+        }),
+        saveData(STORAGE_KEYS.INVENTORY, {
+          items: inventory,
+          ownedMachines
+        }),
+        saveData(STORAGE_KEYS.MACHINES, placedMachines),
+        saveData(STORAGE_KEYS.CRAFTING_QUEUE, craftingQueue),
+        saveData(STORAGE_KEYS.MAP_SEED, seed),
+        saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds))
+      ]);
+      
+      setSaveTimestamp(new Date());
+      return true;
+    } catch (error) {
+      console.error('Error saving game manually:', error);
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
+  }, [saveData, playerMapPosition, discoveredNodes, nodeAmounts, milestones, 
+      activeMilestone, inventory, ownedMachines, placedMachines, craftingQueue, 
+      seed, toastShownNodeIds]);
+
   // Reset game data (for starting a new game)
   const resetGameData = useCallback(async () => {
     try {
@@ -731,7 +766,8 @@ export const GameProvider = ({ children }) => {
       isGameLoaded,
       loadGameData,
       resetGameData,
-      saveTimestamp
+      saveTimestamp,
+      saveGameManually
     }),
     [
       inventory,
@@ -774,7 +810,8 @@ export const GameProvider = ({ children }) => {
       isGameLoaded,
       loadGameData,
       resetGameData,
-      saveTimestamp
+      saveTimestamp,
+      saveGameManually
     ]
   );
 

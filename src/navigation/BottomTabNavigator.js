@@ -7,7 +7,7 @@ import FactoryScreen from "../screens/FactoryScreen/FactoryScreen";
 import MapScreen from "../screens/MapScreen/MapScreen";
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BuildScreen from "../screens/BuildScreen/BuildScreen";
-import InventoryScreen from "../screens/InventoryScreen/InventoryScreen";
+import OptionsScreen from "../screens/OptionsScreen/OptionsScreen";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -82,13 +82,13 @@ export default function BottomTabNavigator() {
       />
 
       <BottomTab.Screen
-        name="Inventory"
-        component={InventoryScreen}
+        name="Options"
+        component={OptionsScreen}
         options={{
-          title: "Inventory",
-          tabBarLabel: "Inventory",
+          title: "Options",
+          tabBarLabel: "Options",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="baguette" color={color} />
+            <TabBarIcon name="cog" color={color} />
           ),
         }}
       />
