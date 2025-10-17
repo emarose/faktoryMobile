@@ -338,7 +338,7 @@ export const GameProvider = ({ children }) => {
     if (isSaving && saveTimestamp !== null) {
       // Use setTimeout to avoid synchronous toast updates
       const toastTimer = setTimeout(() => {
-        showToast("Saving game...", 3000);
+        showToast("Saving game", 3000);
       }, 0);
       
       return () => clearTimeout(toastTimer);
