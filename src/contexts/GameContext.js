@@ -619,7 +619,22 @@ export const GameProvider = ({ children }) => {
       };
       unmountSave();
     };
-  }, [isGameLoaded, saveData]);
+  }, [
+    isGameLoaded, 
+    saveData, 
+    playerMapPosition,
+    discoveredNodes,
+    nodeAmounts,
+    milestones,
+    activeMilestone,
+    inventory,
+    ownedMachines,
+    placedMachines,
+    craftingQueue,
+    seed,
+    toastShownNodeIds,
+    showToast
+  ]);
 
   // Function for manual saving
   const saveGameManually = useCallback(async () => {
