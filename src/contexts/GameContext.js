@@ -4,7 +4,8 @@ import React, {
   useContext,
   useMemo,
   useState,
-  useCallback
+  useCallback,
+  useRef
 } from "react";
 import { useInventory } from "../hooks/useInventory";
 import { useMachines } from "../hooks/useMachines";
@@ -27,6 +28,7 @@ export const GameProvider = ({ children }) => {
   const { saveData, loadData, isLoading: isStorageLoading, deleteAllGameData } = useStorage();
   const [isGameLoaded, setIsGameLoaded] = useState(false);
   const [saveTimestamp, setSaveTimestamp] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Inicializa nodeAmounts de forma síncrona cuando cambian los nodos
   const didMountNodes = React.useRef(false);
@@ -329,6 +331,19 @@ export const GameProvider = ({ children }) => {
     
     return () => clearInterval(interval);
   }, [placedMachines.length, ownedMachines.length, JSON.stringify(inventory), JSON.stringify(nodeAmounts)]);
+  
+  // Show toast when saving state changes
+  useEffect(() => {
+    // Skip showing toast on first load and only show when an autosave has happened
+    if (isSaving && saveTimestamp !== null) {
+      // Use setTimeout to avoid synchronous toast updates
+      const toastTimer = setTimeout(() => {
+        showToast("Saving game...", 3000);
+      }, 0);
+      
+      return () => clearTimeout(toastTimer);
+    }
+  }, [isSaving, saveTimestamp, showToast]);
 
   // Cola de crafting global
   const [craftingQueue, setCraftingQueue] = useState([]);
@@ -538,6 +553,8 @@ export const GameProvider = ({ children }) => {
 
     const saveGameState = async () => {
       try {
+        // Flag that saving has started but don't show toast immediately
+        setIsSaving(true);
         
         await Promise.all([
           saveData(STORAGE_KEYS.PLAYER_POSITION, playerMapPosition),
@@ -560,34 +577,49 @@ export const GameProvider = ({ children }) => {
         setSaveTimestamp(new Date());
       } catch (error) {
         console.error('Error saving game state:', error);
+        // Only show error toast, not success toast
+        showToast("Error saving game!", 3000);
+      } finally {
+        setIsSaving(false);
       }
     };
 
     // Save every 30 seconds
     const saveInterval = setInterval(saveGameState, 30000);
     
-    // Save on first load
-    saveGameState();
+    // Save on first load with a slight delay
+    const initialSaveTimeout = setTimeout(saveGameState, 1000);
 
     return () => {
       clearInterval(saveInterval);
-      saveGameState(); // Save when unmounting
+      clearTimeout(initialSaveTimeout);
+      // Save when unmounting - but don't trigger the toast
+      const unmountSave = async () => {
+        try {
+          await Promise.all([
+            saveData(STORAGE_KEYS.PLAYER_POSITION, playerMapPosition),
+            saveData(STORAGE_KEYS.DISCOVERED_NODES, discoveredNodes),
+            saveData(STORAGE_KEYS.NODE_AMOUNTS, nodeAmounts),
+            saveData(STORAGE_KEYS.MILESTONES, {
+              milestones,
+              activeMilestone
+            }),
+            saveData(STORAGE_KEYS.INVENTORY, {
+              items: inventory,
+              ownedMachines
+            }),
+            saveData(STORAGE_KEYS.MACHINES, placedMachines),
+            saveData(STORAGE_KEYS.CRAFTING_QUEUE, craftingQueue),
+            saveData(STORAGE_KEYS.MAP_SEED, seed),
+            saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds))
+          ]);
+        } catch (error) {
+          console.error('Error saving game state on unmount:', error);
+        }
+      };
+      unmountSave();
     };
-  }, [
-    isGameLoaded,
-    playerMapPosition,
-    discoveredNodes,
-    nodeAmounts,
-    milestones,
-    activeMilestone,
-    inventory,
-    ownedMachines,
-    placedMachines,
-    craftingQueue,
-    seed,
-    toastShownNodeIds,
-    saveData
-  ]);
+  }, [isGameLoaded, saveData]);
 
   // Reset game data (for starting a new game)
   const resetGameData = useCallback(async () => {
