@@ -12,6 +12,7 @@ const SmelterCard = ({ machine, navigation }) => {
   const {
     liveMachine,
     currentRecipe,
+    machineProcesses,
     currentProcess,
     progress,
     status,
@@ -79,12 +80,12 @@ const SmelterCard = ({ machine, navigation }) => {
         <View style={styles.extraInfoContainer}>
           <View>
             <View style={styles.headerRow}>
-              <View style={styles.selectedNodePill}>
-                <Text style={styles.selectedNodePillText}>
-                  Crafting: {currentProcess.itemName} (Queue: {currentProcess.queueLength || 1})
+              <View style={[styles.selectedNodePill, { maxWidth: '70%' }]}>
+                <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
+                  Crafting: {currentProcess.itemName} (Queue: {machineProcesses?.length || 1})
                 </Text>
               </View>
-              <Text style={[styles.machineStatus, { color: status.color }]}>
+              <Text style={[styles.machineStatus, { color: status.color }]} numberOfLines={1} ellipsizeMode="tail">
                 {status.text}
               </Text>
             </View>

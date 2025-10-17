@@ -4,6 +4,7 @@ import { useMachineColors } from '../../../hooks';
 import { items } from '../../../data/items';
 import { getNodeTypeDefinition } from '../../../data/nodeTypes';
 import RESOURCE_CAP from '../../../constants/ResourceCap';
+import Colors from '../../../constants/Colors';
 
 export default function useMinerCard(machine) {
   const {
@@ -88,8 +89,8 @@ export default function useMinerCard(machine) {
     if (isIdle) {
       if (assignedNode) {
         if (assignedNode.currentAmount <= 0) {
-          statusText = `Depleted: ${assignedNode.name}`;
-          statusColor = "#ff6b6b";
+          statusText = `Node Depleted`;
+          statusColor = Colors.textDanger;
         } else {
           // Check if storage is full
           const nodeDefinition = assignedNode.type ? items[assignedNode.type] : null;
@@ -100,11 +101,11 @@ export default function useMinerCard(machine) {
               statusText = `Storage Full: ${inventory[resourceId]?.name || resourceId}`;
               statusColor = "#ff9800";
             } else {
-              statusText = "Idle (Paused)";
+              statusText = "Paused";
               statusColor = "#ff9800";
             }
           } else {
-            statusText = "Idle (Paused)";
+            statusText = "Idle";
             statusColor = "#ff9800";
           }
         }

@@ -1,7 +1,7 @@
-import { useMemo, useState, useEffect } from 'react';
-import { useGame } from '../../../contexts/GameContext';
-import { useMachineColors } from '../../../hooks';
-import { items } from '../../../data/items';
+import { useMemo, useState, useEffect } from "react";
+import { useGame } from "../../../contexts/GameContext";
+import { useMachineColors } from "../../../hooks";
+import { items } from "../../../data/items";
 
 export default function useSmelterCard(machine) {
   const {
@@ -21,7 +21,9 @@ export default function useSmelterCard(machine) {
 
   // Get current recipe
   const currentRecipe = useMemo(() => {
-    return liveMachine.currentRecipeId ? items[liveMachine.currentRecipeId] : null;
+    return liveMachine.currentRecipeId
+      ? items[liveMachine.currentRecipeId]
+      : null;
   }, [liveMachine.currentRecipeId]);
 
   // Get crafting processes for this machine
@@ -65,11 +67,7 @@ export default function useSmelterCard(machine) {
     updateProgress();
     const interval = setInterval(updateProgress, 10);
     return () => clearInterval(interval);
-  }, [
-    currentProcess?.id,
-    currentProcess?.status,
-    currentProcess?.startedAt,
-  ]);
+  }, [currentProcess?.id, currentProcess?.status, currentProcess?.startedAt]);
 
   // Calculate machine status
   const status = useMemo(() => {
@@ -78,14 +76,14 @@ export default function useSmelterCard(machine) {
 
     if (isProcessing && currentProcess) {
       if (currentProcess.status === "paused") {
-        statusText = `Paused: ${currentProcess.itemName}`;
+        statusText = `Paused`;
         statusColor = "#ff9800";
       } else {
-        statusText = `Crafting: ${currentProcess.itemName}`;
+        statusText = `Crafting`;
         statusColor = "#4CAF50";
       }
     } else if (currentRecipe) {
-      statusText = `Ready: ${currentRecipe.name}`;
+      statusText = `Ready`;
       statusColor = "#2196F3";
     } else {
       statusText = "No recipe assigned";

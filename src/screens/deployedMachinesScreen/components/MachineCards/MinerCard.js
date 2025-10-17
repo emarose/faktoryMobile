@@ -83,12 +83,14 @@ const MinerCard = ({ machine, navigation }) => {
               const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);
               const pillColor = nodeTypeDef ? nodeTypeDef.color : Colors.fallback;
               return (
-                <View style={[styles.selectedNodePill, { backgroundColor: pillColor }]}>
-                  <Text style={styles.selectedNodePillText}>{assignedNode.name}</Text>
+                <View style={[styles.selectedNodePill, { backgroundColor: pillColor, maxWidth: '65%' }]}>
+                  <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
+                    {assignedNode.name}
+                  </Text>
                 </View>
               );
             })()}
-            <Text style={[styles.machineStatus, { color: status.color }]}>
+            <Text style={[styles.machineStatus, { color: status.color, flex: 1, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
               {status.text}
             </Text>
           </View>
@@ -135,7 +137,7 @@ const MinerCard = ({ machine, navigation }) => {
                 style={{ marginRight: 4 }}
               />
               <Text style={styles.pauseResumeText}>
-                {status.isIdle ? "Resume Mining" : "Pause Miner"}
+                {status.isIdle ? "Resume" : "Pause"}
               </Text>
             </TouchableOpacity>
 

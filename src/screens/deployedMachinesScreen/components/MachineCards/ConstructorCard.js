@@ -82,12 +82,12 @@ const ConstructorCard = ({ machine, navigation }) => {
         <View style={styles.extraInfoContainer}>
           <View>
             <View style={styles.headerRow}>
-              <View style={styles.selectedNodePill}>
-                <Text style={styles.selectedNodePillText}>
+              <View style={[styles.selectedNodePill, { maxWidth: '65%' }]}>
+                <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
                   Crafting: {currentProcess.itemName} (Queue: {currentProcess.queueLength || 1})
                 </Text>
               </View>
-              <Text style={[styles.machineStatus, { color: status.color }]}>
+              <Text style={[styles.machineStatus, { color: status.color, flex: 1, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
                 {status.text}
               </Text>
             </View>
@@ -147,11 +147,11 @@ const ConstructorCard = ({ machine, navigation }) => {
       {/* Recipe Status (when not processing) */}
       {!status.isProcessing && (
         <View style={styles.extraInfoContainer}>
-          <Text style={[styles.machineStatus, { color: status.color }]}>
+          <Text style={[styles.machineStatus, { color: status.color }]} numberOfLines={1} ellipsizeMode="tail">
             {status.text}
           </Text>
           {currentRecipe && (
-            <Text style={styles.recipeInfo}>
+            <Text style={styles.recipeInfo} numberOfLines={1} ellipsizeMode="tail">
               Ready to craft: {currentRecipe.name}
             </Text>
           )}
