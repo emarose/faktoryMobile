@@ -1,14 +1,15 @@
-import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text } from '../../../../components';
-import ProgressBar from '../../../../components/ProgressBar';
-import Colors from '../../../../constants/Colors';
-import { useMinerCard } from '../../hooks';
-import { getMachineIcon } from '../../hooks/useMachineCard';
-import styles from '../../styles';
-import resStyles from '../MachineTypes/Smelter/components/ResourceList/styles';
-import { getNodeTypeDefinition } from '../../../../data/nodeTypes';
+import React from "react";
+import { View, TouchableOpacity, Image } from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../components";
+import ProgressBar from "../../../../components/ProgressBar";
+import Colors from "../../../../constants/Colors";
+import { useMinerCard } from "../../hooks";
+import { getMachineIcon } from "../../hooks/useMachineCard";
+import styles from "../../styles";
+import resStyles from "../MachineTypes/Smelter/components/ResourceList/styles";
+import { getNodeTypeDefinition } from "../../../../data/nodeTypes";
+import { GameAssets } from "../../../../components/AppLoader";
 
 const MinerCard = ({ machine, navigation }) => {
   const {
@@ -56,7 +57,9 @@ const MinerCard = ({ machine, navigation }) => {
           <TouchableOpacity
             style={styles.assignNodeButton}
             onPress={() =>
-              navigation.navigate("NodeSelectorScreen", { machine: liveMachine })
+              navigation.navigate("NodeSelectorScreen", {
+                machine: liveMachine,
+              })
             }
             activeOpacity={0.85}
           >
@@ -77,27 +80,33 @@ const MinerCard = ({ machine, navigation }) => {
       {assignedNode && (
         <View style={resStyles.card}>
           {/* Assigned node header */}
-          <Text style={resStyles.sectionTitle}>Assigned Node</Text>
           <View style={styles.headerRow}>
-            {(() => {
-              const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);
-              const pillColor = nodeTypeDef ? nodeTypeDef.color : Colors.fallback;
-              return (
-                <View style={[styles.selectedNodePill, { backgroundColor: pillColor, maxWidth: '65%' }]}>
-                  <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
-                    {assignedNode.name}
-                  </Text>
-                </View>
-              );
-            })()}
-            <Text style={[styles.machineStatus, { color: status.color, flex: 1, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
-              {status.text}
-            </Text>
+            <Text style={resStyles.sectionTitle}>Assigned Node</Text>
+
+            <View style={styles.iconContainer}>
+              {assignedNode.type &&
+                GameAssets.icons[`${assignedNode.type}`] && (
+                  <Image
+                    source={GameAssets.icons[`${assignedNode.type}`]}
+                    style={{ width: 16, height: 16 }}
+                  />
+                )}
+            </View>
           </View>
+          <Text
+            style={[
+              styles.machineStatus,
+              { color: status.color, flex: 1, textAlign: "center" },
+            ]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {status.text}
+          </Text>
 
           {/* Depletion info */}
           {nodeDepletionData && (
-            <View style={{ marginTop: 8 }}>
+            <View>
               <View style={styles.depletionSection}>
                 <ProgressBar
                   value={nodeDepletionData.currentAmount}
@@ -111,11 +120,13 @@ const MinerCard = ({ machine, navigation }) => {
                       : "#4CAF50"
                   }
                 />
-                {nodeDepletionData.timeToDepletion !== Infinity && !nodeDepletionData.isDepleted && (
-                  <Text style={styles.depletionTime}>
-                    ~{nodeDepletionData.timeToDepletion} min to depletion at current rate
-                  </Text>
-                )}
+                {nodeDepletionData.timeToDepletion !== Infinity &&
+                  !nodeDepletionData.isDepleted && (
+                    <Text style={styles.depletionTime}>
+                      ~{nodeDepletionData.timeToDepletion} min to depletion at
+                      current rate
+                    </Text>
+                  )}
               </View>
             </View>
           )}
@@ -125,7 +136,9 @@ const MinerCard = ({ machine, navigation }) => {
             <TouchableOpacity
               style={[
                 styles.pauseResumeButton,
-                status.isIdle ? styles.pauseResumeIdle : styles.pauseResumeActive,
+                status.isIdle
+                  ? styles.pauseResumeIdle
+                  : styles.pauseResumeActive,
               ]}
               onPress={actions.handlePauseResume}
               activeOpacity={0.85}

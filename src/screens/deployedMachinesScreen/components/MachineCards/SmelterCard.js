@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Image } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '../../../../components';
 import ProgressBar from '../../../../components/ProgressBar';
@@ -7,6 +7,7 @@ import Colors from '../../../../constants/Colors';
 import { useSmelterCard } from '../../hooks';
 import { getMachineIcon } from '../../hooks/useMachineCard';
 import styles from '../../styles';
+import { GameAssets } from '../../../../components/AppLoader';
 
 const SmelterCard = ({ machine, navigation }) => {
   const {
@@ -80,7 +81,13 @@ const SmelterCard = ({ machine, navigation }) => {
         <View style={styles.extraInfoContainer}>
           <View>
             <View style={styles.headerRow}>
-              <View style={[styles.selectedNodePill, { maxWidth: '70%' }]}>
+              <View style={[styles.selectedNodePill, { maxWidth: '70%', flexDirection: 'row', alignItems: 'center' }]}>
+                {currentProcess?.itemId && GameAssets.icons[currentProcess.itemId] && (
+                  <Image 
+                    source={GameAssets.icons[currentProcess.itemId]} 
+                    style={{ width: 16, height: 16, marginRight: 4 }}
+                  />
+                )}
                 <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
                   Crafting: {currentProcess.itemName} (Queue: {machineProcesses?.length || 1})
                 </Text>
@@ -149,9 +156,17 @@ const SmelterCard = ({ machine, navigation }) => {
             {status.text}
           </Text>
           {currentRecipe && (
-            <Text style={styles.recipeInfo}>
-              Ready to craft: {currentRecipe.name}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {GameAssets.icons[currentRecipe.id] && (
+                <Image 
+                  source={GameAssets.icons[currentRecipe.id]} 
+                  style={{ width: 16, height: 16, marginRight: 4 }}
+                />
+              )}
+              <Text style={styles.recipeInfo}>
+                Ready to craft: {currentRecipe.name}
+              </Text>
+            </View>
           )}
         </View>
       )}

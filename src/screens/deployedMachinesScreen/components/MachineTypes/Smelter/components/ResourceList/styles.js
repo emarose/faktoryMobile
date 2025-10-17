@@ -37,10 +37,7 @@ export default StyleSheet.create({
   },
   sectionTitle: {
     color: Colors.textPrimary,
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 10,
-    letterSpacing: 0.2,
+    fontSize: 14,
   },
   emptyContainer: {
     flexDirection: "row",

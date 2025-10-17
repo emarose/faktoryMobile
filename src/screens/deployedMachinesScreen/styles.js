@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import Colors from '../../constants/Colors';
+import Colors from "../../constants/Colors";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   machineTab: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: Colors.background,
@@ -54,15 +54,15 @@ const styles = StyleSheet.create({
   },
   machineTabText: {
     fontSize: 13,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: Colors.textSecondary,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
     letterSpacing: 0.5,
     flex: 1,
   },
   machineTabTextActive: {
     color: Colors.textPrimary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   machineTabCount: {
     fontSize: 11,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   machineTabCountActive: {
     color: Colors.textPrimary,
@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 60,
     fontSize: 16,
-    fontWeight: '500',
-    fontStyle: 'italic',
+    fontWeight: "500",
+    fontStyle: "italic",
   },
   machineGroup: {
     marginBottom: 20,
@@ -124,9 +124,7 @@ const styles = StyleSheet.create({
   },
   machineName: {
     fontSize: 18,
-    fontWeight: "bold",
     color: Colors.textPrimary,
-    marginBottom: 5,
   },
   machineDescription: {
     fontSize: 13,
@@ -149,16 +147,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
   },
-  
+
   // Machine icon container
-  machineIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 4,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
-  
+
   // Layout helpers
   rowAlignCenter: {
     flexDirection: "row",
@@ -179,14 +181,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    backgroundColor:"rgba(255, 255, 255, 0.05)",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
-  
+
   // Spacing utilities
   marginVertical10: {
-    marginVertical: 10,
+    /*  marginVertical: 10, */
   },
-  
+
   // Buttons
   assignNodeButton: {
     backgroundColor: Colors.accentBlue,
@@ -199,10 +206,9 @@ const styles = StyleSheet.create({
   },
   assignNodeText: {
     color: Colors.textPrimary,
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 14,
   },
-  
+
   // Extra info container
   extraInfoContainer: {
     marginTop: 12,
@@ -210,7 +216,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: Colors.border || "#333",
   },
-  
+
   // Selected node pill
   selectedNodePill: {
     paddingHorizontal: 12,
@@ -223,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
-  
+
   // Depletion section
   depletionSection: {
     marginTop: 8,
@@ -233,7 +239,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     marginTop: 6,
   },
-  
+
   // Control buttons
   controlButtonsContainer: {
     flexDirection: "row",
@@ -285,7 +291,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  
+
   // Crafting controls (for Smelter, Constructor, Foundry)
   craftingControlsContainer: {
     flexDirection: "row",
@@ -316,7 +322,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-  
+
   // Recipe info
   recipeInfo: {
     fontSize: 13,
