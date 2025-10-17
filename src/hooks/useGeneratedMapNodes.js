@@ -102,7 +102,12 @@ function generateNodesForChunk(cx, cy, seed) {
 export function useMapNodes(playerMapPosition) {
   const [allResourceNodes, setAllResourceNodes] = useState([]);
   // Usar un seed entero grande para mayor variabilidad
-  const [seed, setSeed] = useState(() => Math.floor(Math.random() * 1e9));
+  const [seed, setSeedInternal] = useState(() => Math.floor(Math.random() * 1e9));
+  
+  // Expose setSeed to external components for save/load
+  const setSeed = useCallback((newSeed) => {
+    setSeedInternal(newSeed);
+  }, []);
 
   useEffect(() => {
     if (!playerMapPosition || typeof playerMapPosition.x !== 'number' || typeof playerMapPosition.y !== 'number') {
@@ -124,13 +129,20 @@ export function useMapNodes(playerMapPosition) {
 
   // Función para regenerar el seed (nuevo seed entero grande)
   const regenerateSeed = useCallback(() => {
-    setSeed(Math.floor(Math.random() * 1e9));
+    setSeedInternal(Math.floor(Math.random() * 1e9));
   }, []);
 
   // Función para setear un seed de test fijo
   const setTestSeed = useCallback(() => {
-    setSeed(123456789); // Puedes ajustar este valor si quieres otro patrón
+    setSeedInternal(123456789); // Puedes ajustar este valor si quieres otro patrón
   }, []);
 
-  return { allResourceNodes, NODE_TYPES_MAP, regenerateSeed, setTestSeed };
+  return { 
+    allResourceNodes, 
+    NODE_TYPES_MAP, 
+    regenerateSeed, 
+    setTestSeed, 
+    seed, 
+    setSeed 
+  };
 }

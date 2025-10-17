@@ -3,7 +3,7 @@ import { items } from "../data/items";
 import RESOURCE_CAP from "../constants/ResourceCap";
 
 export const useInventory = () => {
-  const [inventoryState, setInventoryState] = useState(() => {
+  const getInitialState = () => {
     const initialItems = {};
     Object.keys(items).forEach((key) => {
       if (!key.endsWith("_node")) {
@@ -17,7 +17,7 @@ export const useInventory = () => {
         };
       }
     });
-    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
+   /*  if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 30;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 30;
     if (initialItems.coal) initialItems.coal.currentAmount = 30;
@@ -30,7 +30,7 @@ export const useInventory = () => {
     if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
     if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
     if (initialItems.coal) initialItems.coal.currentAmount = 200;
-    
+
     if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
     if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 1000;
     if (initialItems.ironPlates) initialItems.ironPlates.currentAmount = 50;
@@ -39,7 +39,8 @@ export const useInventory = () => {
     if (initialItems.concrete) initialItems.concrete.currentAmount = 20;
     if (initialItems.screws) initialItems.screws.currentAmount = 200;
     if (initialItems.steelBeams) initialItems.steelBeams.currentAmount = 200;
-    if (initialItems.reinforcedIronPlates) initialItems.reinforcedIronPlates.currentAmount = 200;
+    if (initialItems.reinforcedIronPlates)
+      initialItems.reinforcedIronPlates.currentAmount = 200;
     if (initialItems.rotors) initialItems.rotors.currentAmount = 200;
     if (initialItems.steelPipes) initialItems.steelPipes.currentAmount = 200;
     if (initialItems.steelIngot) initialItems.steelIngot.currentAmount = 200;
@@ -47,9 +48,11 @@ export const useInventory = () => {
     if (initialItems.fuel) initialItems.fuel.currentAmount = 200;
     if (initialItems.rubber) initialItems.rubber.currentAmount = 200;
     if (initialItems.plastic) initialItems.plastic.currentAmount = 200;
-    if (initialItems.circuitBoards) initialItems.circuitBoards.currentAmount = 200;
+    if (initialItems.circuitBoards)
+      initialItems.circuitBoards.currentAmount = 200;
     if (initialItems.motors) initialItems.motors.currentAmount = 200;
-    if (initialItems.modularFrames) initialItems.modularFrames.currentAmount = 200;
+    if (initialItems.modularFrames)
+      initialItems.modularFrames.currentAmount = 200;
 
     if (initialItems.miner) initialItems.miner.currentAmount = 0;
     if (initialItems.smelter) initialItems.smelter.currentAmount = 0;
@@ -58,7 +61,7 @@ export const useInventory = () => {
     if (initialItems.manufacturer) initialItems.manufacturer.currentAmount = 0;
     if (initialItems.refinery) initialItems.refinery.currentAmount = 0;
     if (initialItems.foundry) initialItems.foundry.currentAmount = 0;
-    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0;
+    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0; */
 
     const initialOwnedMachines = [];
     // For testing, add a 'smelter' instance to ownedMachines if you want to see recipes immediately.
@@ -68,10 +71,12 @@ export const useInventory = () => {
       items: initialItems,
       ownedMachines: initialOwnedMachines,
     };
-  });
+  };
+
+  const [inventoryState, setInventory] = useState(getInitialState);
 
   const addResource = useCallback((resourceId, amount) => {
-    setInventoryState((prevInventory) => {
+    setInventory((prevInventory) => {
       const newItems = { ...prevInventory.items };
       // Ensure the item exists before trying to update it
       if (!newItems[resourceId]) {
@@ -116,7 +121,7 @@ export const useInventory = () => {
       }
 
       // Remove resources
-      setInventoryState((prev) => {
+      setInventory((prev) => {
         const newItems = { ...prev.items };
         Object.entries(resourcesToRemove).forEach(([item, amount]) => {
           const before = newItems[item]?.currentAmount || 0;
@@ -133,7 +138,7 @@ export const useInventory = () => {
     [inventoryState]
   );
   const addMachine = useCallback((machineType) => {
-    setInventoryState((prevInventory) => {
+    setInventory((prevInventory) => {
       // Always add a new machine instance with a unique id
       const newMachine = {
         id: `${machineType}-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
@@ -213,7 +218,7 @@ export const useInventory = () => {
     canAfford,
     buildableItems,
     assignRecipeToMachine: (machineId, recipeId) => {
-      setInventoryState((prevInventory) => {
+      setInventory((prevInventory) => {
         const updatedMachines = prevInventory.ownedMachines.map((machine) =>
           machine.id === machineId
             ? { ...machine, currentRecipeId: recipeId }
@@ -226,7 +231,7 @@ export const useInventory = () => {
       });
     },
     updateOwnedMachine: (machineId, updates) => {
-      setInventoryState((prevInventory) => {
+      setInventory((prevInventory) => {
         const updatedMachines = prevInventory.ownedMachines.map((machine) =>
           machine.id === machineId ? { ...machine, ...updates } : machine
         );
@@ -236,5 +241,6 @@ export const useInventory = () => {
         };
       });
     },
+    setInventory,
   };
 };

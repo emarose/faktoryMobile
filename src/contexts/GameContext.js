@@ -16,11 +16,18 @@ import useProductionRate from "../hooks/useProductionRate";
 import { useMapNodes } from "../hooks/useGeneratedMapNodes";
 import useMilestone from "../hooks/useMilestone";
 import { useToastContext } from "./ToastContext";
+import useStorage, { STORAGE_KEYS } from "../hooks/useStorage";
 import RESOURCE_CAP from "../constants/ResourceCap";
+import { items } from "../data/items";
 
 export const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
+  // Storage system for saving/loading game data
+  const { saveData, loadData, isLoading: isStorageLoading, deleteAllGameData } = useStorage();
+  const [isGameLoaded, setIsGameLoaded] = useState(false);
+  const [saveTimestamp, setSaveTimestamp] = useState(null);
+
   // Inicializa nodeAmounts de forma síncrona cuando cambian los nodos
   const didMountNodes = React.useRef(false);
   useEffect(() => {
@@ -64,6 +71,8 @@ export const GameProvider = ({ children }) => {
     allResourceNodes,
     regenerateSeed: baseRegenerateSeed,
     setTestSeed: baseSetTestSeed,
+    seed,
+    setSeed
   } = useMapNodes(playerMapPosition);
 
   // Función extendida para regenerar el seed y limpiar el estado relacionado
@@ -115,6 +124,7 @@ export const GameProvider = ({ children }) => {
     buildableItems,
     addMachine,
     updateOwnedMachine,
+    setInventory
   } = useInventory(placedMachines, allResourceNodes);
 
   const {
@@ -449,6 +459,190 @@ export const GameProvider = ({ children }) => {
     );
   }, []);
 
+  // Load game data
+  const loadGameData = useCallback(async () => {
+    try {
+      console.log('Loading game data...');
+      
+      // Load player position
+      const savedPlayerPosition = await loadData(STORAGE_KEYS.PLAYER_POSITION);
+      if (savedPlayerPosition) {
+        setPlayerMapPosition(savedPlayerPosition);
+      }
+      
+      // Load map seed
+      const savedSeed = await loadData(STORAGE_KEYS.MAP_SEED);
+      if (savedSeed !== null && typeof savedSeed === 'number') {
+        // Call setSeed function from useMapNodes
+        // This should be accessed through our exposed function
+        setSeed(savedSeed);
+      }
+      
+      // Load discovered nodes
+      const savedDiscoveredNodes = await loadData(STORAGE_KEYS.DISCOVERED_NODES, {});
+      if (savedDiscoveredNodes) {
+        setDiscoveredNodes(savedDiscoveredNodes);
+      }
+      
+      // Load toast shown nodes
+      const savedToastShownNodeIds = await loadData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, []);
+      if (savedToastShownNodeIds) {
+        setToastShownNodeIds(new Set(savedToastShownNodeIds));
+      }
+      
+      // Wait for nodes to be generated before loading node amounts
+      await new Promise(resolve => setTimeout(resolve, 500)); 
+      
+      // Load node amounts
+      const savedNodeAmounts = await loadData(STORAGE_KEYS.NODE_AMOUNTS, {});
+      if (savedNodeAmounts && Object.keys(savedNodeAmounts).length > 0) {
+        setNodeAmounts(prev => ({...prev, ...savedNodeAmounts}));
+      }
+      
+      // Load milestones
+      const savedMilestones = await loadData(STORAGE_KEYS.MILESTONES);
+      if (savedMilestones) {
+        setMilestones(savedMilestones.milestones);
+        setActiveMilestone(savedMilestones.activeMilestone);
+      }
+      
+      // Load inventory and machines
+      const savedInventory = await loadData(STORAGE_KEYS.INVENTORY);
+      if (savedInventory) {
+        // These are set through the useInventory hook
+        setInventory(savedInventory);
+      }
+      
+      // Load placed machines
+      const savedMachines = await loadData(STORAGE_KEYS.MACHINES, []);
+      if (savedMachines) {
+        setPlacedMachines(savedMachines);
+      }
+      
+      // Load crafting queue
+      const savedCraftingQueue = await loadData(STORAGE_KEYS.CRAFTING_QUEUE, []);
+      if (savedCraftingQueue) {
+        setCraftingQueue(savedCraftingQueue);
+      }
+      
+      console.log('Game data loaded successfully');
+      setIsGameLoaded(true);
+    } catch (error) {
+      console.error('Error loading game data:', error);
+    }
+  }, [loadData]);
+
+  // Auto-save game data periodically
+  useEffect(() => {
+    if (!isGameLoaded) return;
+
+    const saveGameState = async () => {
+      try {
+        
+        await Promise.all([
+          saveData(STORAGE_KEYS.PLAYER_POSITION, playerMapPosition),
+          saveData(STORAGE_KEYS.DISCOVERED_NODES, discoveredNodes),
+          saveData(STORAGE_KEYS.NODE_AMOUNTS, nodeAmounts),
+          saveData(STORAGE_KEYS.MILESTONES, {
+            milestones,
+            activeMilestone
+          }),
+          saveData(STORAGE_KEYS.INVENTORY, {
+            items: inventory,
+            ownedMachines
+          }),
+          saveData(STORAGE_KEYS.MACHINES, placedMachines),
+          saveData(STORAGE_KEYS.CRAFTING_QUEUE, craftingQueue),
+          saveData(STORAGE_KEYS.MAP_SEED, seed),
+          saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds))
+        ]);
+
+        setSaveTimestamp(new Date());
+      } catch (error) {
+        console.error('Error saving game state:', error);
+      }
+    };
+
+    // Save every 30 seconds
+    const saveInterval = setInterval(saveGameState, 30000);
+    
+    // Save on first load
+    saveGameState();
+
+    return () => {
+      clearInterval(saveInterval);
+      saveGameState(); // Save when unmounting
+    };
+  }, [
+    isGameLoaded,
+    playerMapPosition,
+    discoveredNodes,
+    nodeAmounts,
+    milestones,
+    activeMilestone,
+    inventory,
+    ownedMachines,
+    placedMachines,
+    craftingQueue,
+    seed,
+    toastShownNodeIds,
+    saveData
+  ]);
+
+  // Reset game data (for starting a new game)
+  const resetGameData = useCallback(async () => {
+    try {
+      console.log('Resetting game data...');
+      await deleteAllGameData();
+      
+      // Reset all state to initial values
+      setPlayerMapPosition({ x: 5, y: 5 });
+      setDiscoveredNodes({});
+      setToastShownNodeIds(new Set());
+      regenerateSeed();
+      
+      // Reset inventory to initial state
+      const initialInventoryState = {
+        items: {},
+        ownedMachines: []
+      };
+      
+      // Initialize items with default values
+      Object.keys(items).forEach((key) => {
+        if (!key.endsWith("_node")) {
+          initialInventoryState.items[key] = {
+            id: key,
+            name: items[key].name,
+            description: items[key].description,
+            icon: items[key].icon,
+            type: items[key].type,
+            currentAmount: 0,
+          };
+        }
+      });
+
+      // Reset inventory using the setter from useInventory
+      setInventory(initialInventoryState);
+      
+      // Reset placed machines
+      setPlacedMachines([]);
+      
+      // Reset crafting queue
+      setCraftingQueue([]);
+      
+      // Reset milestones
+      const defaultMilestones = require('../data/milestones').default;
+      setMilestones(defaultMilestones);
+      setActiveMilestone(defaultMilestones[0].id);
+      
+      console.log('Game data reset successfully');
+      return true;
+    } catch (error) {
+      console.error('Error resetting game data:', error);
+      return false;
+    }
+  }, [deleteAllGameData]);
+
   const contextValue = useMemo(
     () => ({
       inventory,
@@ -498,9 +692,14 @@ export const GameProvider = ({ children }) => {
       resumeCrafting,
       pauseMiner,
       resumeMiner,
-  detachMachine,
+      detachMachine,
       regenerateSeed,
       setTestSeed,
+      // New save-related functionality
+      isGameLoaded,
+      loadGameData,
+      resetGameData,
+      saveTimestamp
     }),
     [
       inventory,
@@ -540,6 +739,10 @@ export const GameProvider = ({ children }) => {
       setActiveMilestone,
       toastShownNodeIds,
       setToastShownNodeIds,
+      isGameLoaded,
+      loadGameData,
+      resetGameData,
+      saveTimestamp
     ]
   );
 

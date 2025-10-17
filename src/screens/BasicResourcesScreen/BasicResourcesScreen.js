@@ -7,6 +7,7 @@ import useBasicResources from "../../hooks/useBasicResources";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ResourceVisualCard from "./components/ResourceVisualCard";
 import ResourceAnalysisChart from "./components/ResourceAnalysisChart";
+import GameDataManager from "./components/GameDataManager";
 import RESOURCE_CAP from "../../constants/ResourceCap";
 // TODO: Replace with actual icons for each resource
 import { Image } from "react-native";
@@ -71,6 +72,8 @@ const BasicResourcesScreen = () => {
           />
         )}
       </View>
+      
+      <GameDataManager />
     </SafeAreaView>
   );
 };

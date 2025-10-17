@@ -38,9 +38,10 @@ export const GameAssets = {
   },
 };
 
-const AppLoader = ({ children, onLoaded }) => {
+const AppLoader = ({ children, onLoaded, loadGameData }) => {
   const [loading, setLoading] = useState(true);
   const [loadingStep, setLoadingStep] = useState("Initializing...");
+  const [showStartNewGameDialog, setShowStartNewGameDialog] = useState(false);
 
   useEffect(() => {
     preloadAllAssets();
@@ -68,6 +69,16 @@ const AppLoader = ({ children, onLoaded }) => {
       setLoadingStep("Preparing game data...");
       // Precalcular datos que necesites
       await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      // Load saved game data if available
+      if (loadGameData) {
+        setLoadingStep("Loading saved game...");
+        try {
+          await loadGameData();
+        } catch (error) {
+          console.error('Error loading game data:', error);
+        }
+      }
 
       setLoadingStep("Ready!");
       await new Promise((resolve) => setTimeout(resolve, 300));

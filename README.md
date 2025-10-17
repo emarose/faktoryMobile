@@ -27,3 +27,18 @@ Pero la automatización no es ilimitada. Los nodos tienen una capacidad finita, 
 
 The screens the player will be interacting with are:
 [FACTORY] - This is the player "home", where he can see a clear state of machines built, inventory and items beign produced. No real interaction can be made here but its where the player will be navigating to and from to connect to other sections
+
+## Save System
+
+The game automatically saves your progress every 30 seconds and when exiting the app. Saved data includes:
+
+- Current milestones and progress
+- Player position on the world map
+- Discovered resource nodes
+- Placed machines and their operational state
+- Player inventory and resources
+- Node depletion states
+- Crafting queue
+
+To start a new game, navigate to the Basic Resources screen and tap the "New Game" button. This will delete all saved data and reset the game to its initial state.
+
