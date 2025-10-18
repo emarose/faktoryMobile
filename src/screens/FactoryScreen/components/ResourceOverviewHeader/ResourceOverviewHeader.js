@@ -2,14 +2,9 @@ import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Text } from "../../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
-import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
 import { GameAssets } from "../../../../components/AppLoader";
-import NineSliceFrame from "../../../../utils/NineSliceFrame";
-import {
-  heightPercentageToDP,
-  widthPercentageToDP,
-} from "react-native-responsive-screen";
+/* import NineSliceFrame from "../../../../utils/NineSliceFrame"; */
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();

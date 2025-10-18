@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { View, TouchableOpacity, Animated } from "react-native";
+import { View, TouchableOpacity, Animated, Image } from "react-native";
 import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
+import { GameAssets } from "../../../../components/AppLoader";
 
 const MapGrid = ({
   chunkSize,
@@ -133,6 +134,17 @@ const MapGrid = ({
               }}
               onPress={() => handleTilePress(node)}
             >
+              {/* Display the GameAssets icon for the node */}
+              {!hasMiner && (
+                <Image
+                  source={GameAssets.icons[node.type] || GameAssets.icons.default}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    opacity: 0.85,
+                  }}
+                />
+              )}
               {hasMiner && (
                 <MaterialCommunityIcons
                   name="robot-industrial"
