@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { Text } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import milestones from "../../../../data/milestones";
 import { items } from "../../../../data/items";
+// Global assets (preloaded icons)
+import { GameAssets } from "../../../../components/AppLoader";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
 
@@ -46,6 +48,15 @@ const MilestoneCard = ({
     return inventory[requirementKey]?.currentAmount || 0;
   };
 
+  // Resolve icon source for a requirement key
+  const getIconForRequirement = (key) => {
+    // Use default icon for discovered nodes
+    if (key === "discoveredNodes") return null;
+    // Prefer explicit game asset icons when available
+    if (GameAssets.icons && GameAssets.icons[key]) return GameAssets.icons[key];
+    return null;
+  };
+
   // Calculate milestone progress requirements
   const milestoneProgress = useMemo(() => {
     if (!milestoneFull?.requirements) return [];
@@ -78,8 +89,15 @@ const MilestoneCard = ({
           />
         </TouchableOpacity>
         {currentMilestone && !currentMilestone.unlocked && (
-          <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.nameAndCaret}>
-            <Text style={[styles.milestoneTitle, {flex: 1, textAlign: 'center'}]}>{currentMilestone.name}</Text>
+          <TouchableOpacity
+            onPress={() => setExpanded(!expanded)}
+            style={styles.nameAndCaret}
+          >
+            <Text
+              style={[styles.milestoneTitle, { flex: 1, textAlign: "center" }]}
+            >
+              {currentMilestone.name}
+            </Text>
             <MaterialCommunityIcons
               name={expanded ? "chevron-up" : "chevron-down"}
               size={20}
@@ -97,22 +115,31 @@ const MilestoneCard = ({
             {milestoneProgress.length} completed
           </Text>
           {isMilestoneCompleted && (
-            <Text style={styles.readyToComplete}>
-              Ready to complete! 🎉
-            </Text>
+            <Text style={styles.readyToComplete}>Ready to complete!</Text>
           )}
         </View>
       )}
 
       {/* Progress bars for each requirement */}
-      {expanded && currentMilestone &&
+      {expanded &&
+        currentMilestone &&
         !currentMilestone.unlocked &&
         milestoneProgress.length > 0 && (
           <View style={styles.progressSection}>
             {milestoneProgress.map((requirement) => (
               <View key={requirement.key} style={styles.requirementRow}>
                 <View style={styles.requirementHeader}>
-                  <Text style={styles.requirementName}>{requirement.name}</Text>
+                  <View style={styles.requirementLeft}>
+                    {getIconForRequirement(requirement.key) ? (
+                      <Image
+                        source={getIconForRequirement(requirement.key)}
+                        style={styles.requirementIcon}
+                      />
+                    ) : null}
+                    <Text style={styles.requirementName}>
+                      {requirement.name}
+                    </Text>
+                  </View>
                   <Text
                     style={[
                       styles.requirementCount,

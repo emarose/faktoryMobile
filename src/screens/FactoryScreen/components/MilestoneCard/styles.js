@@ -77,6 +77,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 6,
   },
+  requirementLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  requirementIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
+    resizeMode: "contain",
+  },
   requirementName: {
     color: Colors.textPrimary,
     fontSize: 13,
