@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated } from "react-native";
 import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
+import { IconContainer } from "../../../../components";
 
 const MapGrid = ({
   chunkSize,
@@ -64,11 +64,12 @@ const MapGrid = ({
         const node = allResourceNodes.find((n) => n.x === gx && n.y === gy);
 
         const isPlayer = gx === px && gy === py;
+        // Always use the background color for tiles regardless of node type
         let color = Colors.background;
         let discovered = false;
 
         if (node && discoveredNodes[node.id]) {
-          color = getNodeColor(node.type);
+          // No longer setting color based on node type
           discovered = true;
         }
 
@@ -121,7 +122,7 @@ const MapGrid = ({
                 width: tileSize,
                 height: tileSize,
                 backgroundColor: color,
-                borderWidth: pinnedNodeId !== node.id ? 1 : 2,
+                borderWidth: 1,
                 borderColor:
                   pinnedNodeId !== node.id
                     ? Colors.borderLight
@@ -133,6 +134,16 @@ const MapGrid = ({
               }}
               onPress={() => handleTilePress(node)}
             >
+              {/* Display the GameAssets icon for the node when no miner is placed */}
+              {!hasMiner && (
+                <IconContainer
+                  iconId={node.type}
+                  size={24}
+                  iconSize={64}
+                  style={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                />
+              )}
+              {/* Show miner icon when a miner is placed */}
               {hasMiner && (
                 <MaterialCommunityIcons
                   name="robot-industrial"

@@ -26,9 +26,8 @@ import useCrafting from "../../hooks/useCrafting";
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text, CustomHeader } from "../../components";
+import { Text, CustomHeader, IconContainer } from "../../components";
 import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
-import { GameAssets } from "../../components/AppLoader";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -369,13 +368,12 @@ const SmelterScreen = ({ route, navigation }) => {
                     <View style={styles.recipeCardHeader}>
                       <View style={styles.recipeIconContainer}>
                         {recipeItem.outputs &&
-                        recipeItem.outputs[0] &&
-                        GameAssets.icons[recipeItem.outputs[0].item] ? (
-                          <Image
-                            source={
-                              GameAssets.icons[recipeItem.outputs[0].item]
-                            }
-                            style={styles.recipeIcon}
+                        recipeItem.outputs[0] ? (
+                          <IconContainer
+                            iconId={recipeItem.outputs[0].item}
+                            size={32}
+                            iconSize={24}
+                            style={styles.recipeIconContainer}
                           />
                         ) : (
                           <MaterialCommunityIcons

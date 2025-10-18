@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
-import { Text } from "../../../../components";
+import { Text, IconContainer } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import milestones from "../../../../data/milestones";
 import { items } from "../../../../data/items";
@@ -112,7 +112,28 @@ const MilestoneCard = ({
             {milestoneProgress.map((requirement) => (
               <View key={requirement.key} style={styles.requirementRow}>
                 <View style={styles.requirementHeader}>
-                  <Text style={styles.requirementName}>{requirement.name}</Text>
+                  <View style={styles.requirementNameWithIcon}>
+                    {/* Display GameAssets icon if available, otherwise don't show icon */}
+                    {requirement.key !== "discoveredNodes" && (
+                      <IconContainer 
+                        iconId={requirement.key} 
+                        size={20}
+                        iconSize={16}
+                        style={styles.requirementIconContainer} 
+                      />
+                    )}
+                    {/* Special icon for discovered nodes */}
+                    {requirement.key === "discoveredNodes" && (
+                      <View style={styles.requirementIconContainer}>
+                        <MaterialCommunityIcons
+                          name="map-marker-multiple"
+                          size={16}
+                          color={Colors.accentGold}
+                        />
+                      </View>
+                    )}
+                    <Text style={styles.requirementName}>{requirement.name}</Text>
+                  </View>
                   <Text
                     style={[
                       styles.requirementCount,

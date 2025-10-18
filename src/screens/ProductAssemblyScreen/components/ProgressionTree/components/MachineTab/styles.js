@@ -11,11 +11,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
   },
-  machineIcon: {
-    width: 16,
-    height: 16,
+  machineIconContainer: {
+    width: 24,
+    height: 24,
     marginRight: 6,
-    resizeMode: "contain",
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   machineTabText: {
     fontSize: 14,

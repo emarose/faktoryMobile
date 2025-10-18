@@ -24,11 +24,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  recipeTitleIcon: {
-    width: 20,
-    height: 20,
+  recipeTitleIconContainer: {
     marginRight: 8,
-    resizeMode: "contain",
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   recipeTitle: {
     fontSize: 16,
@@ -65,12 +64,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 6,
   },
-  nodeIcon: {
-    width: 24,
-    height: 24,
+  nodeIconContainer: {
     marginRight: 8,
     marginTop: 2,
-    resizeMode: "contain",
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   nodeInfoDescription: {
     fontSize: 13,
@@ -133,11 +131,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 6,
   },
-  itemIcon: {
-    width: 16,
-    height: 16,
+  itemIconContainer: {
+    width: 20,
+    height: 20,
     marginRight: 6,
-    resizeMode: "contain",
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   itemName: {
     fontSize: 13,

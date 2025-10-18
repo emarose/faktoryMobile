@@ -1,10 +1,9 @@
-import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { Text } from "../../../../components";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, IconContainer } from "../../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
 import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
-import { GameAssets } from "../../../../components/AppLoader";
 import NineSliceFrame from "../../../../utils/NineSliceFrame";
 import {
   heightPercentageToDP,
@@ -32,12 +31,12 @@ const ResourceOverviewHeader = () => {
             }
             return (
               <View key={item.id} style={styles.resourceItem}>
-                <View style={styles.iconContainer}>
-                  <Image
-                    source={GameAssets.icons[item.id]}
-                    style={styles.iconImage}
-                  />
-                </View>
+                <IconContainer 
+                  iconId={item.id} 
+                  size={32}
+                  iconSize={16}
+                  style={styles.iconContainerStyle}
+                />
 
                 <Text style={styles.resourceAmount}>
                   {Math.floor(item.currentAmount)}
@@ -72,20 +71,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
   },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    justifyContent: "center",
-    alignItems: "center",
+  iconContainerStyle: {
     marginRight: 4,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-  },
-  iconImage: {
-    width: 16,
-    height: 16,
   },
   resourceAmount: {
     fontSize: 16,
