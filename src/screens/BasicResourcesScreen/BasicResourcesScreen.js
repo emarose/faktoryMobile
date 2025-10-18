@@ -39,7 +39,7 @@ const BasicResourcesScreen = () => {
   }, [selectedResource, basicResources]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <CustomHeader 
         title="Basic Resources"
         rightIcon="chart-line"

@@ -8,12 +8,20 @@ import MapScreen from "../screens/MapScreen/MapScreen";
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BuildScreen from "../screens/BuildScreen/BuildScreen";
 import OptionsScreen from "../screens/OptionsScreen/OptionsScreen";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
   function TabBarIcon({ name, color, size = 30 }) {
-    return <MaterialCommunityIcons name={name} size={size} color={color} style={{ marginBottom: -3 }} />;
+    return (
+      <MaterialCommunityIcons
+        name={name}
+        size={size}
+        color={color}
+        style={{ marginBottom: -3 }}
+      />
+    );
   }
 
   return (
@@ -26,8 +34,10 @@ export default function BottomTabNavigator() {
         tabBarStyle: {
           backgroundColor: Colors.backgroundPanel,
           paddingVertical: 10,
-          height: 78,
+          height: heightPercentageToDP("16%"),
         },
+        safeAreaInsets: { bottom: 0 },
+
         tabBarLabelStyle: { fontSize: 12, paddingBottom: 8 },
       }}
     >
@@ -50,9 +60,7 @@ export default function BottomTabNavigator() {
         options={{
           title: "Builder",
           tabBarLabel: "Builder",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="hammer" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="hammer" color={color} />,
         }}
       />
 
@@ -87,9 +95,7 @@ export default function BottomTabNavigator() {
         options={{
           title: "Options",
           tabBarLabel: "Options",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="cog" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
     </BottomTab.Navigator>

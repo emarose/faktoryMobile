@@ -209,7 +209,7 @@ export default function MapScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.fullScreenContainer}>
+    <SafeAreaView style={styles.fullScreenContainer} edges={["top", "left", "right"]}>
       <CustomHeader
         title="World Map"
         rightIcon="target"

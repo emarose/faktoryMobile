@@ -31,7 +31,7 @@ const BuildScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <CustomHeader
         title="Machine Builder"
         rightIcon="factory"

@@ -241,7 +241,7 @@ const AssemblerScreen = ({ route, navigation }) => {
   }, [startCrafting, amount]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <CustomHeader 
         title="Assembler"
         rightIcon="cog"

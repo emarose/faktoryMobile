@@ -30,17 +30,21 @@ export default function FactoryScreen() {
       if (scrollRef.current) {
         try {
           scrollRef.current.scrollTo({ y: 0, animated: true });
-        } catch (e) {
-        }
+        } catch (e) {}
       }
     }, [])
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false} ref={scrollRef} contentContainerStyle={styles.scrollViewContent}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        ref={scrollRef}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         <ResourceOverviewHeader />
-        <View style={{}}>
+        <View>
           <MilestoneCard
             currentMilestone={currentMilestone}
             inventory={inventory}
