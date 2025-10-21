@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   recipeTitleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 12,
   },
   recipeTitleIconContainer: {
     marginRight: 8,
@@ -35,69 +36,6 @@ const styles = StyleSheet.create({
   recipeContent: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  // Special layout for miners and oil extractors
-  miningRecipeContent: {
-    flex: 1,
-  },
-  miningOutputItem: {
-    paddingBottom: 12,
-  },
-  miningOutputHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  nodeInfoContainer: {
-    backgroundColor: Colors.background,
-    borderRadius: 8,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-  },
-  nodeInfoHeader: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 6,
-  },
-  nodeIconContainer: {
-    marginRight: 8,
-    marginTop: 2,
-    backgroundColor: "transparent",
-    borderWidth: 0,
-  },
-  nodeInfoDescription: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginBottom: 8,
-    fontStyle: "italic",
-    lineHeight: 18,
-    flex: 1,
-  },
-  nodeInfoDetails: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-  },
-  nodeInfoTagContainer: {
-    marginRight: 8,
-    marginBottom: 6,
-  },
-  nodeInfoTag: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 12,
-    fontSize: 11,
-    fontWeight: "bold",
-    color: Colors.textPrimary,
-    marginBottom: 2,
-    overflow: "hidden",
-  },
-  nodeInfoText: {
-    fontSize: 12,
-    color: Colors.accentGreen,
-    marginRight: 8,
-    marginBottom: 4,
   },
   recipeInputs: {
     flex: 1,
@@ -119,7 +57,7 @@ const styles = StyleSheet.create({
   recipeItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 4,
+    gap: 6,
   },
   itemColorIndicator: {
     width: 10,

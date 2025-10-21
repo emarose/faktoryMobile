@@ -18,7 +18,8 @@ export const GameAssets = {
     crudeOil: require("../../../assets/images/icons/crudeOil16x16.png"),
     bauxite: require("../../../assets/images/icons/bauxite16x16.png"),
     sulfur: require("../../../assets/images/icons/sulfur16x16.png"),
-    quartzCrystals: require("../../../assets/images/icons/quartzCrystals16x16.png"),
+    rawQuartz: require("../../../assets/images/icons/rawQuartz16x16.png"),
+    uranium: require("../../../assets/images/icons/uranium16x16.png"),
 
     // Processed materials
     ironIngot: require("../../../assets/images/icons/ironIngots16x16.png"),
@@ -34,6 +35,7 @@ export const GameAssets = {
     steelPipes: require("../../../assets/images/icons/steelPipes16x16.png"),
     blackPowder: require("../../../assets/images/icons/blackPowder16x16.png"),
     sulfuricAcid: require("../../../assets/images/icons/sulfuricAcid16x16.png"),
+    quartzCrystals: require("../../../assets/images/icons/quartzCrystals16x16.png"),
 
     // Nodes
     ironOre_node: require("../../../assets/images/icons/ironOreNode16x16.png"),
@@ -42,9 +44,8 @@ export const GameAssets = {
     cateriumOre_node: require("../../../assets/images/icons/cateriumOreNode16x16.png"),
     bauxite_node: require("../../../assets/images/icons/bauxiteNode16x16.png"),
     coal_node: require("../../../assets/images/icons/coalNode16x16.png"),
-    quartzCrystals: require("../../../assets/images/icons/quartzCrystals16x16.png"),
     crudeOil_node: require("../../../assets/images/icons/crudeOilNode16x16.png"),
-    rawQuartz_node: require("../../../assets/images/icons/rawQuartz16x16.png"),
+    rawQuartz_node: require("../../../assets/images/icons/rawQuartzNode16x16.png"),
     sulfur_node: require("../../../assets/images/icons/sulfurNode16x16.png"),
     uranium_node: require("../../../assets/images/icons/uraniumNode16x16.png"),
 

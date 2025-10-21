@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
-import Colors from '../../constants/Colors';
-import { GameAssets } from '../AppLoader';
+import React from "react";
+import { View, Image, StyleSheet } from "react-native";
+import Colors from "../../constants/Colors";
+import { GameAssets } from "../AppLoader";
 
 /**
  * A reusable component for displaying game icons with consistent styling
- * 
+ *
  * @param {Object} props Component props
  * @param {string} props.iconId The ID of the icon to display from GameAssets.icons
  * @param {number} props.size Container size in pixels (default: 32)
@@ -24,22 +24,17 @@ const IconContainer = ({
   source,
 }) => {
   // Use provided source or get from GameAssets using iconId
-  const iconSource = source || (iconId ? GameAssets.icons[iconId] || GameAssets.icons.default : GameAssets.icons.default);
-  
+  const iconSource =
+    source ||
+    (iconId
+      ? GameAssets.icons[iconId] || GameAssets.icons.default
+      : GameAssets.icons.default);
+
   return (
-    <View
-      style={[
-        styles.container,
-        { width: size, height: size },
-        style,
-      ]}
-    >
+    <View style={[styles.container, { width: size, height: size }]}>
       <Image
         source={iconSource}
-        style={[
-          { width: iconSize, height: iconSize },
-          iconStyle,
-        ]}
+        style={[{ width: iconSize, height: iconSize }, iconStyle]}
       />
     </View>
   );
@@ -47,10 +42,10 @@ const IconContainer = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
