@@ -145,12 +145,7 @@ const ProgressionTree = () => {
 
       {/* Machine Header */}
       {selectedMachine && (
-        <View
-          style={[
-            styles.machineHeader,
-            { backgroundColor: `${selectedMachine.color}33` },
-          ]}
-        >
+        <View style={styles.machineHeader}>
           <Text style={styles.machineTitle}>{selectedMachine.name}</Text>
           <Text style={styles.machineDescription}>
             {selectedMachine.description}

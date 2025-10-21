@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
   recipeHeader: {
     marginBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-    paddingBottom:8
+    borderBottomColor: Colors.borderLight,
+    paddingBottom: 8,
   },
   recipeTitleContainer: {
     flexDirection: "row",
@@ -26,8 +26,6 @@ const styles = StyleSheet.create({
   },
   recipeTitleIconContainer: {
     marginRight: 8,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
   },
   recipeTitle: {
     fontSize: 16,
@@ -43,10 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   miningOutputItem: {
-    marginBottom: 12,
     paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   miningOutputHeader: {
     flexDirection: "row",
@@ -54,10 +49,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   nodeInfoContainer: {
-    backgroundColor: Colors.backgroundPanel,
+    backgroundColor: Colors.background,
     borderRadius: 8,
     padding: 10,
-    borderLeftWidth: 3,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   nodeInfoHeader: {
     flexDirection: "row",
@@ -67,7 +63,7 @@ const styles = StyleSheet.create({
   nodeIconContainer: {
     marginRight: 8,
     marginTop: 2,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 0,
   },
   nodeInfoDescription: {
@@ -135,7 +131,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginRight: 6,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 0,
   },
   itemName: {

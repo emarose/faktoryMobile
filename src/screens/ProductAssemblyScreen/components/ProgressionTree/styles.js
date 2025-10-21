@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   // Tab navigation styles
   tabsContainer: {
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: Colors.borderLight,
@@ -66,9 +66,12 @@ const styles = StyleSheet.create({
   },
   // Machine header styles
   machineHeader: {
-    padding: 16,
-    marginTop: 12,
-    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   machineTitle: {
     fontSize: 18,
@@ -79,13 +82,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.textSecondary,
     marginTop: 4,
-    marginBottom: 8,
   },
   machineRequirements: {
     marginTop: 8,
-    padding: 10,
-    backgroundColor: Colors.backgroundAccent,
-    borderRadius: 8,
   },
   machineRequirementsTitle: {
     fontSize: 14,
@@ -121,8 +120,7 @@ const styles = StyleSheet.create({
   // Recipe list container
   recipesContainer: {
     flex: 1,
-    padding: 12,
-  },
+      },
   // Common styling used in multiple components
   itemColorIndicator: {
     width: 10,

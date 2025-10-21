@@ -37,7 +37,7 @@ const MachineTab = ({ machine, isSelected, onPress }) => {
       >
         {machine.name}
       </Text>
-      {machine.recipeCount > 0 && (
+     {/*  {machine.recipeCount > 0 && (
         <View
           style={[
             styles.recipeCounter,
@@ -55,7 +55,7 @@ const MachineTab = ({ machine, isSelected, onPress }) => {
             {machine.recipeCount}
           </Text>
         </View>
-      )}
+      )} */}
     </TouchableOpacity>
   );
 };
