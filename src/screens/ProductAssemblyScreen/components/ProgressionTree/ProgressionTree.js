@@ -1,11 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
@@ -26,10 +20,11 @@ const ProgressionTree = () => {
     selectedMachine,
     handleMachineSelect,
     machineRecipes,
-    autoSelectMachineWithResults
+    autoSelectMachineWithResults,
   } = useProgressionTree();
 
   const [searchQuery, setSearchQuery] = useState("");
+
   // Filter recipes based on search query
   const filteredRecipes = useMemo(() => {
     if (!selectedMachine || !searchQuery.trim()) {
@@ -37,22 +32,22 @@ const ProgressionTree = () => {
     }
 
     const query = searchQuery.toLowerCase().trim();
-    return selectedMachine.recipes.filter(recipe => {
+    return selectedMachine.recipes.filter((recipe) => {
       // Search in recipe name
       if (recipe.name.toLowerCase().includes(query)) return true;
-      
+
       // Search in input materials
-      const hasInputMatch = recipe.inputs.some(input => 
+      const hasInputMatch = recipe.inputs.some((input) =>
         input.name.toLowerCase().includes(query)
       );
       if (hasInputMatch) return true;
-      
+
       // Search in output products
-      const hasOutputMatch = recipe.outputs.some(output => 
+      const hasOutputMatch = recipe.outputs.some((output) =>
         output.name.toLowerCase().includes(query)
       );
       if (hasOutputMatch) return true;
-      
+
       return false;
     });
   }, [selectedMachine, searchQuery]);
@@ -64,17 +59,23 @@ const ProgressionTree = () => {
     }
 
     const query = searchQuery.toLowerCase().trim();
-    return machineList.filter(machine => {
+    return machineList.filter((machine) => {
       const machineData = machineRecipes[machine.id];
-      
+
       // Search in machine name
       if (machine.name.toLowerCase().includes(query)) return true;
-      
+
       // Search in any recipes for this machine
-      return machineData.recipes.some(recipe => {
-        return recipe.name.toLowerCase().includes(query) ||
-               recipe.inputs.some(input => input.name.toLowerCase().includes(query)) ||
-               recipe.outputs.some(output => output.name.toLowerCase().includes(query));
+      return machineData.recipes.some((recipe) => {
+        return (
+          recipe.name.toLowerCase().includes(query) ||
+          recipe.inputs.some((input) =>
+            input.name.toLowerCase().includes(query)
+          ) ||
+          recipe.outputs.some((output) =>
+            output.name.toLowerCase().includes(query)
+          )
+        );
       });
     });
   }, [machineList, machineRecipes, searchQuery]);
@@ -92,9 +93,7 @@ const ProgressionTree = () => {
 
   return (
     <View style={styles.container}>
-      {/* Search Header - Always Visible */}
       <View style={styles.searchHeader}>
-        <Text style={styles.screenTitle}>Assembly Recipes</Text>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
@@ -115,10 +114,13 @@ const ProgressionTree = () => {
       {searchQuery.trim() && (
         <View style={styles.searchSummary}>
           <Text style={styles.searchSummaryText}>
-            {filteredMachineList.length === 0 
+            {filteredMachineList.length === 0
               ? `No results found for "${searchQuery}"`
-              : `Found ${filteredRecipes.length} recipe${filteredRecipes.length !== 1 ? 's' : ''} in ${filteredMachineList.length} machine${filteredMachineList.length !== 1 ? 's' : ''}`
-            }
+              : `Found ${filteredRecipes.length} recipe${
+                  filteredRecipes.length !== 1 ? "s" : ""
+                } in ${filteredMachineList.length} machine${
+                  filteredMachineList.length !== 1 ? "s" : ""
+                }`}
           </Text>
         </View>
       )}
@@ -153,34 +155,41 @@ const ProgressionTree = () => {
           <Text style={styles.machineDescription}>
             {selectedMachine.description}
           </Text>
-          
+
           {/* Machine Requirements */}
-          {selectedMachine.recipes.length > 0 && selectedMachine.recipes[0].inputs.length > 0 && (
-            <View style={styles.machineRequirements}>
-              <Text style={styles.machineRequirementsTitle}>Machine Requirements:</Text>
-              <View style={styles.machineRequirementsItems}>
-                {selectedMachine.recipes[0].inputs.map((input) => (
-                  <View key={input.id} style={styles.requiredItemChip}>
-                    {GameAssets.icons[input.id] ? (
-                      <Image 
-                        source={GameAssets.icons[input.id]}
-                        style={styles.requiredItemIcon}
-                      />
-                    ) : (
-                      <View
-                        style={[
-                          styles.itemColorIndicator,
-                          { backgroundColor: input.color || Colors.accentBlue },
-                        ]}
-                      />
-                    )}
-                    <Text style={styles.requiredItemName}>{input.name}</Text>
-                    <Text style={styles.requiredItemQuantity}>× {input.quantity}</Text>
-                  </View>
-                ))}
+          {selectedMachine.recipes.length > 0 &&
+            selectedMachine.recipes[0].inputs.length > 0 && (
+              <View style={styles.machineRequirements}>
+                <Text style={styles.machineRequirementsTitle}>
+                  Machine Requirements:
+                </Text>
+                <View style={styles.machineRequirementsItems}>
+                  {selectedMachine.recipes[0].inputs.map((input) => (
+                    <View key={input.id} style={styles.requiredItemChip}>
+                      {GameAssets.icons[input.id] ? (
+                        <Image
+                          source={GameAssets.icons[input.id]}
+                          style={styles.requiredItemIcon}
+                        />
+                      ) : (
+                        <View
+                          style={[
+                            styles.itemColorIndicator,
+                            {
+                              backgroundColor: input.color || Colors.accentBlue,
+                            },
+                          ]}
+                        />
+                      )}
+                      <Text style={styles.requiredItemName}>{input.name}</Text>
+                      <Text style={styles.requiredItemQuantity}>
+                        × {input.quantity}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
-            </View>
-          )}
+            )}
         </View>
       )}
 
@@ -198,13 +207,15 @@ const ProgressionTree = () => {
         ) : (
           <View style={styles.emptyState}>
             <Text style={styles.emptyStateText}>
-              {searchQuery.trim() 
+              {searchQuery.trim()
                 ? `No recipes found for "${searchQuery}"`
-                : "No recipes available for this machine."
-              }
+                : "No recipes available for this machine."}
             </Text>
             {searchQuery.trim() && (
-              <TouchableOpacity style={styles.clearSearchButton} onPress={clearSearch}>
+              <TouchableOpacity
+                style={styles.clearSearchButton}
+                onPress={clearSearch}
+              >
                 <Text style={styles.clearSearchButtonText}>Clear Search</Text>
               </TouchableOpacity>
             )}

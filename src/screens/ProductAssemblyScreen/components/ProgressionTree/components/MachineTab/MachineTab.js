@@ -22,12 +22,13 @@ const MachineTab = ({ machine, isSelected, onPress }) => {
       ]}
       onPress={() => onPress(machine.id)}
     >
-      <IconContainer 
+      {/* DESCOMENTAR CUANDO ESTEN LOS ICONOS LISTOS */}
+   {/*    <IconContainer 
         iconId={machine.id}
         size={24}
         iconSize={20}
         style={styles.machineIconContainer}
-      />
+      /> */}
       <Text
         style={[
           styles.machineTabText,

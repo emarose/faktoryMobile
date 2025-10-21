@@ -110,6 +110,7 @@ const MapGrid = ({
             </View>
           );
         } else if (node && discovered) {
+          
           const hasMiner = placedMachines.some(
             (m) =>
               (m.type === "miner" || m.type === "oilExtractor") &&
@@ -139,7 +140,7 @@ const MapGrid = ({
                 <IconContainer
                   iconId={node.type}
                   size={24}
-                  iconSize={64}
+                  iconSize={24}
                   style={{ backgroundColor: 'transparent', borderWidth: 0 }}
                 />
               )}

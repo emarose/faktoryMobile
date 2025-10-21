@@ -8,35 +8,23 @@ const styles = StyleSheet.create({
   },
   // Search header styles
   searchHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 8,
     backgroundColor: Colors.backgroundPanel,
-    borderBottomWidth: 2,
     borderBottomColor: Colors.border,
   },
-  screenTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.textPrimary,
-    marginBottom: 12,
-    textAlign: 'center',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.backgroundSecondary,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: Colors.border,
-    paddingHorizontal: 4,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   searchInput: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    fontSize: 15,
     color: Colors.textPrimary,
   },
   clearButton: {
@@ -45,13 +33,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundAccent,
     borderRadius: 8,
     minWidth: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   clearButtonText: {
     fontSize: 16,
     color: Colors.textPrimary,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   searchSummary: {
     paddingHorizontal: 16,
@@ -63,7 +51,7 @@ const styles = StyleSheet.create({
   searchSummaryText: {
     fontSize: 13,
     color: Colors.accentGreen,
-    fontWeight: '600',
+    fontWeight: "600",
     letterSpacing: 0.5,
   },
   // Tab navigation styles
@@ -170,7 +158,7 @@ const styles = StyleSheet.create({
   clearSearchButtonText: {
     fontSize: 14,
     color: Colors.textPrimary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
 
