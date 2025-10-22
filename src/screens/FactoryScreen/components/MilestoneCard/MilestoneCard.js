@@ -117,7 +117,7 @@ const MilestoneCard = ({
                     {requirement.key !== "discoveredNodes" && (
                       <IconContainer 
                         iconId={requirement.key} 
-                        size={20}
+                        size={24}
                         iconSize={16}
                         style={styles.requirementIconContainer} 
                       />

@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   requirementNameWithIcon: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 8,
   },
   requirementIconContainer: {
     width: 20,

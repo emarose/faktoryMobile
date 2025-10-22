@@ -33,7 +33,7 @@ const ResourceOverviewHeader = () => {
               <View key={item.id} style={styles.resourceItem}>
                 <IconContainer 
                   iconId={item.id} 
-                  size={32}
+                  size={24}
                   iconSize={16}
                   style={styles.iconContainerStyle}
                 />
@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
+    gap: 8,
   },
   iconContainerStyle: {
     marginRight: 4,

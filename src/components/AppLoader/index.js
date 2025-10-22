@@ -54,7 +54,7 @@ export const GameAssets = {
     // smelter: require("../../../assets/images/icons/smelter16x16.png"),
 
     // Default icon for fallback
-    default: require("../../../assets/images/icons/ironOre16x16.png"),
+    default: require("../../../assets/images/icons/ironOreNode16x16.png"),
   },
 };
 
