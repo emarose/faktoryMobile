@@ -28,6 +28,7 @@ import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader, IconContainer } from "../../components";
 import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
+import { GameAssets } from "../../components/AppLoader";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
