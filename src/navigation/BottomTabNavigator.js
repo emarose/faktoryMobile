@@ -8,12 +8,20 @@ import MapScreen from "../screens/MapScreen/MapScreen";
 import DeployedMachinesScreen from "../screens/DeployedMachinesScreen/DeployedMachinesScreen";
 import BuildScreen from "../screens/BuildScreen/BuildScreen";
 import OptionsScreen from "../screens/OptionsScreen/OptionsScreen";
+import { Text } from "../components";
 
 const BottomTab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
   function TabBarIcon({ name, color, size = 30 }) {
-    return <MaterialCommunityIcons name={name} size={size} color={color} style={{ marginBottom: -3 }} />;
+    return (
+      <MaterialCommunityIcons
+        name={name}
+        size={size}
+        color={color}
+        style={{ marginBottom: -3 }}
+      />
+    );
   }
 
   return (
@@ -37,7 +45,17 @@ export default function BottomTabNavigator() {
         component={MapScreen}
         options={{
           title: "World Map",
-          tabBarLabel: "World",
+          tabBarLabel: () => (
+            <Text
+              style={{
+                color: Colors.textPrimary,
+                fontSize: 12,
+                paddingBottom: 8,
+              }}
+            >
+              Map
+            </Text>
+          ),
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="map-outline" color={color} />
           ),
@@ -49,10 +67,18 @@ export default function BottomTabNavigator() {
         component={BuildScreen}
         options={{
           title: "Builder",
-          tabBarLabel: "Builder",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="hammer" color={color} />
+          tabBarLabel: () => (
+            <Text
+              style={{
+                color: Colors.textPrimary,
+                fontSize: 12,
+                paddingBottom: 8,
+              }}
+            >
+              Builder
+            </Text>
           ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="hammer" color={color} />,
         }}
       />
 
@@ -61,7 +87,17 @@ export default function BottomTabNavigator() {
         component={FactoryScreen}
         options={{
           title: "Factory",
-          tabBarLabel: "Factory",
+          tabBarLabel: () => (
+            <Text
+              style={{
+                color: Colors.textPrimary,
+                fontSize: 12,
+                paddingBottom: 8,
+              }}
+            >
+              Factory
+            </Text>
+          ),
           tabBarIcon: ({ color, focused }) => (
             // Factory gets a slightly larger icon when focused (center emphasis)
             <TabBarIcon name="factory" color={color} size={focused ? 40 : 34} />
@@ -74,7 +110,17 @@ export default function BottomTabNavigator() {
         component={DeployedMachinesScreen}
         options={{
           title: "Machines",
-          tabBarLabel: "Machines",
+          tabBarLabel: () => (
+            <Text
+              style={{
+                color: Colors.textPrimary,
+                fontSize: 12,
+                paddingBottom: 8,
+              }}
+            >
+              Machines
+            </Text>
+          ),
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="robot-industrial" color={color} />
           ),
@@ -86,10 +132,18 @@ export default function BottomTabNavigator() {
         component={OptionsScreen}
         options={{
           title: "Options",
-          tabBarLabel: "Options",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="cog" color={color} />
+          tabBarLabel: () => (
+            <Text
+              style={{
+                color: Colors.textPrimary,
+                fontSize: 12,
+                paddingBottom: 8,
+              }}
+            >
+              Options
+            </Text>
           ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
         }}
       />
     </BottomTab.Navigator>

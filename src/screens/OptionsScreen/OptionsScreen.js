@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { Text } from '../../components';
+import { Text, FontSelector } from '../../components';
 import Colors from '../../constants/Colors';
 import GameDataManager from './components/GameDataManager';
 import ManualSave from './components/ManualSave';
@@ -29,6 +29,13 @@ const OptionsScreen = () => {
           </View>
         </View>
 
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>UI Settings</Text>
+          <View style={styles.optionCard}>
+            <FontSelector />
+          </View>
+        </View>
+        
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
           <View style={styles.optionCard}>

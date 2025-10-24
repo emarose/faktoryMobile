@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
 const styles = StyleSheet.create({
   container: {
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+
   },
   rowAlignCenterGap: {
     flexDirection: "row",
@@ -183,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: Colors.borderLight,
-    backgroundColor:"rgba(255, 255, 255, 0.05)",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -193,20 +195,32 @@ const styles = StyleSheet.create({
   marginVertical10: {
     /*  marginVertical: 10, */
   },
-
+  machineIconContainer: {
+    borderRadius: 8,
+    backgroundColor: Colors.backgroundSecondary,
+  },
   // Buttons
   assignNodeButton: {
-    backgroundColor: Colors.accentBlue,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    flexDirection: "row",
-    alignItems: "center",
+/*     width: 80,
+    height: 64, */
+    /* flexDirection: "row",
     justifyContent: "center",
+    alignItems: "center", */
+    //backgroundColor: Colors.accentBlue,
+    //paddingVertical: 10,
+    //paddingHorizontal: 16,
+    //borderRadius: 8,
+    //flexDirection: "row",
+    //alignItems: "center",
+    //justifyContent: "center",
   },
   assignNodeText: {
-    color: Colors.textPrimary,
-    fontSize: 14,
+
+    textAlign: "center",
+    color: Colors.background,
+    fontSize: 16,
+    paddingBottom:10,
+    fontWeight: "700",
   },
 
   // Extra info container

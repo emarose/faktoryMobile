@@ -1,10 +1,22 @@
 // src/components/AppLoader/index.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { View, ActivityIndicator, Text, Image } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from "expo-font";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import Colors from "../../constants/Colors";
+
+// Font Family context for easy switching
+export const FontFamilyContext = createContext({
+  currentFont: 'VT323-Regular',
+  setCurrentFont: () => {},
+  availableFonts: {},
+  fontFamilies: {},
+  currentFontFamily: 'VT323',
+});
+
+export const useFontFamily = () => useContext(FontFamilyContext);
 
 // Global object to store all preloaded assets
 export const GameAssets = {
@@ -58,14 +70,74 @@ export const GameAssets = {
   },
 };
 
+// All available fonts in the app
+export const AVAILABLE_FONTS = {
+  // Space Mono
+  "SpaceMono-Regular": require("../../../assets/fonts/Space_Mono/SpaceMono-Regular.ttf"),
+  "SpaceMono-Bold": require("../../../assets/fonts/Space_Mono/SpaceMono-Bold.ttf"),
+  "SpaceMono-Italic": require("../../../assets/fonts/Space_Mono/SpaceMono-Italic.ttf"),
+  "SpaceMono-BoldItalic": require("../../../assets/fonts/Space_Mono/SpaceMono-BoldItalic.ttf"),
+  
+  // Pixelify Sans
+  "PixelifySans-Regular": require("../../../assets/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf"),
+  "PixelifySans-Medium": require("../../../assets/fonts/Pixelify_Sans/static/PixelifySans-Medium.ttf"),
+  "PixelifySans-SemiBold": require("../../../assets/fonts/Pixelify_Sans/static/PixelifySans-SemiBold.ttf"),
+  "PixelifySans-Bold": require("../../../assets/fonts/Pixelify_Sans/static/PixelifySans-Bold.ttf"),
+  "PixelifySans-Variable": require("../../../assets/fonts/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf"),
+  
+  // Press Start 2P
+  "PressStart2P": require("../../../assets/fonts/Press_Start_2P/PressStart2P-Regular.ttf"),
+  // VT323
+  "VT323-Regular": require("../../../assets/fonts/VT323/VT323-Regular.ttf"),
+};
+
+// Group fonts by family for easier selection
+export const FONT_FAMILIES = {
+  "Space Mono": ["SpaceMono-Regular", "SpaceMono-Bold", "SpaceMono-Italic", "SpaceMono-BoldItalic"],
+  "Pixelify Sans": ["PixelifySans-Regular", "PixelifySans-Medium", "PixelifySans-SemiBold", "PixelifySans-Bold", "PixelifySans-Variable"],
+  "Press Start 2P": ["PressStart2P"]
+  ,
+  "VT323": ["VT323-Regular"]
+};
+
 const AppLoader = ({ children, onLoaded, loadGameData }) => {
   const [loading, setLoading] = useState(true);
   const [loadingStep, setLoadingStep] = useState("Initializing...");
-  const [showStartNewGameDialog, setShowStartNewGameDialog] = useState(false);
+  const [currentFont, setCurrentFont] = useState("VT323-Regular");
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  
+  // Determine the current font family based on the selected font
+  const currentFontFamily = Object.keys(FONT_FAMILIES).find(
+    family => FONT_FAMILIES[family].includes(currentFont)
+  ) || "Space Mono";
 
   useEffect(() => {
-    preloadAllAssets();
+    // Load saved font preference, then preload assets
+    const init = async () => {
+      try {
+        const saved = await AsyncStorage.getItem('@faktory/selectedFont');
+        if (saved) setCurrentFont(saved);
+      } catch (e) {
+        console.warn('Could not load saved font:', e);
+      }
+
+      await preloadAllAssets();
+    };
+
+    init();
   }, []);
+
+  // Persist font selection
+  useEffect(() => {
+    const save = async () => {
+      try {
+        await AsyncStorage.setItem('@faktory/selectedFont', currentFont);
+      } catch (e) {
+        console.warn('Could not save selected font:', e);
+      }
+    };
+    save();
+  }, [currentFont]);
 
   const preloadAllAssets = async () => {
     try {
@@ -73,11 +145,10 @@ const AppLoader = ({ children, onLoaded, loadGameData }) => {
       await Font.loadAsync({
         ...MaterialIcons.font,
         ...MaterialCommunityIcons.font,
-        "SpaceMono-Regular": require("../../../assets/fonts/Space_Mono/SpaceMono-Regular.ttf"),
-        "SpaceMono-Bold": require("../../../assets/fonts/Space_Mono/SpaceMono-Bold.ttf"),
-        "SpaceMono-Italic": require("../../../assets/fonts/Space_Mono/SpaceMono-Italic.ttf"),
-        "SpaceMono-BoldItalic": require("../../../assets/fonts/Space_Mono/SpaceMono-BoldItalic.ttf"),
+        ...AVAILABLE_FONTS
       });
+      
+      setFontsLoaded(true);
 
       setLoadingStep("Preloading images...");
       // Preload all image assets from GameAssets.icons
@@ -121,13 +192,13 @@ const AppLoader = ({ children, onLoaded, loadGameData }) => {
           backgroundColor: Colors.background,
         }}
       >
-        <ActivityIndicator size="large" color={Colors.accentGreen} />
+        <ActivityIndicator size="large" color={Colors.accentBlue} />
         <Text
           style={{
             color: Colors.textPrimary,
             marginTop: 20,
             fontSize: 16,
-            fontFamily: "SpaceMono-Regular",
+            fontFamily: currentFont,
           }}
         >
           {loadingStep}
@@ -136,7 +207,21 @@ const AppLoader = ({ children, onLoaded, loadGameData }) => {
     );
   }
 
-  return children;
+  // Provide font context to all child components
+  return (
+    <FontFamilyContext.Provider 
+      value={{
+        currentFont,
+        setCurrentFont,
+        availableFonts: AVAILABLE_FONTS,
+        fontFamilies: FONT_FAMILIES,
+        currentFontFamily,
+        fontsLoaded
+      }}
+    >
+      {children}
+    </FontFamilyContext.Provider>
+  );
 };
 
 export default AppLoader;

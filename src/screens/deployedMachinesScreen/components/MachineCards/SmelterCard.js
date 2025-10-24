@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text } from '../../../../components';
-import ProgressBar from '../../../../components/ProgressBar';
-import Colors from '../../../../constants/Colors';
-import { useSmelterCard } from '../../hooks';
-import { getMachineIcon } from '../../hooks/useMachineCard';
-import styles from '../../styles';
-import { GameAssets } from '../../../../components/AppLoader';
+import React from "react";
+import { View, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Text } from "../../../../components";
+import ProgressBar from "../../../../components/ProgressBar";
+import Colors from "../../../../constants/Colors";
+import { useSmelterCard } from "../../hooks";
+import { getMachineIcon } from "../../hooks/useMachineCard";
+import styles from "../../styles";
+import { GameAssets } from "../../../../components/AppLoader";
 
 const SmelterCard = ({ machine, navigation }) => {
   const {
@@ -41,12 +41,7 @@ const SmelterCard = ({ machine, navigation }) => {
         <View style={styles.machineInfo}>
           <View style={styles.rowSpaceBetween}>
             <View style={styles.rowAlignCenterGap}>
-              <View
-                style={[
-                  styles.machineIconContainer,
-                  { backgroundColor: machineColor },
-                ]}
-              >
+              <View style={styles.machineIconContainer}>
                 {getMachineIcon(machine.type, Colors.textPrimary)}
               </View>
               <Text style={[styles.machineName, { color: machineColor }]}>
@@ -57,21 +52,30 @@ const SmelterCard = ({ machine, navigation }) => {
         </View>
 
         {/* Assign Recipe Button */}
-        <View style={styles.marginVertical10}>
+        <View>
           <TouchableOpacity
             style={styles.assignNodeButton}
             onPress={openSmelterScreen}
-            activeOpacity={0.85}
           >
-            <MaterialCommunityIcons
-              name="octahedron"
-              size={28}
-              color={Colors.textPrimary}
-              style={{ marginRight: 6 }}
-            />
-            <Text style={styles.assignNodeText}>
-              {status.isProcessing ? "Change" : liveMachine.currentRecipeId ? "Change" : "Assign"}
-            </Text>
+            <ImageBackground
+              source={require("../../../../../assets/images/UI/buttons/boton-inactive.png")}
+              style={{
+                width: 96,
+                height: 48,
+                justifyContent: "center",
+              }}
+              imageStyle={{
+                resizeMode: "cover", // o "contain"
+              }}
+            >
+              <Text style={styles.assignNodeText}>
+                {status.isProcessing
+                  ? "Change"
+                  : liveMachine.currentRecipeId
+                  ? "Change"
+                  : "Assign"}
+              </Text>
+            </ImageBackground>
           </TouchableOpacity>
         </View>
       </View>
@@ -81,18 +85,37 @@ const SmelterCard = ({ machine, navigation }) => {
         <View style={styles.extraInfoContainer}>
           <View>
             <View style={styles.headerRow}>
-              <View style={[styles.selectedNodePill, { maxWidth: '70%', flexDirection: 'row', alignItems: 'center' }]}>
-                {currentProcess?.itemId && GameAssets.icons[currentProcess.itemId] && (
-                  <Image 
-                    source={GameAssets.icons[currentProcess.itemId]} 
-                    style={{ width: 16, height: 16, marginRight: 4 }}
-                  />
-                )}
-                <Text style={styles.selectedNodePillText} numberOfLines={1} ellipsizeMode="tail">
-                  Crafting: {currentProcess.itemName} (Queue: {machineProcesses?.length || 1})
+              <View
+                style={[
+                  styles.selectedNodePill,
+                  {
+                    maxWidth: "70%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  },
+                ]}
+              >
+                {currentProcess?.itemId &&
+                  GameAssets.icons[currentProcess.itemId] && (
+                    <Image
+                      source={GameAssets.icons[currentProcess.itemId]}
+                      style={{ width: 16, height: 16, marginRight: 4 }}
+                    />
+                  )}
+                <Text
+                  style={styles.selectedNodePillText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  Crafting: {currentProcess.itemName} (Queue:{" "}
+                  {machineProcesses?.length || 1})
                 </Text>
               </View>
-              <Text style={[styles.machineStatus, { color: status.color }]} numberOfLines={1} ellipsizeMode="tail">
+              <Text
+                style={[styles.machineStatus, { color: status.color }]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {status.text}
               </Text>
             </View>
@@ -134,10 +157,7 @@ const SmelterCard = ({ machine, navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[
-                    styles.craftingControlButton,
-                    styles.cancelButton,
-                  ]}
+                  style={[styles.craftingControlButton, styles.cancelButton]}
                   onPress={actions.handleCancelCrafting}
                 >
                   <MaterialIcons name="stop" size={16} color="#fff" />
@@ -156,10 +176,10 @@ const SmelterCard = ({ machine, navigation }) => {
             {status.text}
           </Text>
           {currentRecipe && (
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               {GameAssets.icons[currentRecipe.id] && (
-                <Image 
-                  source={GameAssets.icons[currentRecipe.id]} 
+                <Image
+                  source={GameAssets.icons[currentRecipe.id]}
                   style={{ width: 16, height: 16, marginRight: 4 }}
                 />
               )}

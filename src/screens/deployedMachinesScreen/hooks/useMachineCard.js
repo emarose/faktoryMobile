@@ -1,39 +1,43 @@
-import { useMemo } from 'react';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useMachineColors } from '../../../hooks';
-import { items } from '../../../data/items';
+import { useMemo } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Image, Text } from "react-native";
+import { useMachineColors } from "../../../hooks";
+import { items } from "../../../data/items";
 
 // Common machine icon helper
 export function getMachineIcon(type, color) {
+  // Define machine icon paths
+  const machineIcons = {
+    smelter: require("../../../../assets/images/icons/smelter.png"),
+    // Add more machine icons here as they become available
+    // Example:
+    // miner: require('../../../../assets/images/icons/miner.png'),
+    // constructor: require('../../../../assets/images/icons/constructor.png'),
+  };
+
+  // If we have a specific icon for this machine type
+  if (machineIcons[type]) {
+    return (
+      <Image source={machineIcons[type]} style={{ width: 80, height: 80 }} />
+    );
+  }
+
+  // Fallbacks using emoji-style icons for machines without specific images yet
   switch (type) {
     case "miner":
-      return (
-        <MaterialCommunityIcons
-          name="robot-industrial"
-          size={28}
-          color={color}
-        />
-      );
+      return <Text style={{ fontSize: 24, color }}>⛏️</Text>;
     case "refinery":
-      return (
-        <MaterialCommunityIcons
-          name="chemical-weapon"
-          size={28}
-          color={color}
-        />
-      );
-    case "smelter":
-      return <MaterialCommunityIcons name="factory" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>⚗️</Text>;
     case "constructor":
-      return <MaterialCommunityIcons name="cog" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>🔧</Text>;
     case "assembler":
-      return <MaterialCommunityIcons name="wrench" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>⚙️</Text>;
     case "manufacturer":
-      return <MaterialCommunityIcons name="factory" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>🏭</Text>;
     case "foundry":
-      return <MaterialCommunityIcons name="anvil" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>🔥</Text>;
     case "oilExtractor":
-      return <MaterialCommunityIcons name="oil-lamp" size={28} color={color} />;
+      return <Text style={{ fontSize: 24, color }}>🛢️</Text>;
     default:
       return <MaterialIcons name="build" size={28} color={color || "#aaa"} />;
   }

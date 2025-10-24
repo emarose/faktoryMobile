@@ -1158,6 +1158,8 @@ export const items = {
       smelter: 1,
     },
     buildTime: 5,
+    icon:"./assets/icons/smelter.png",
+
   },
   foundry: {
     id: "foundry",
