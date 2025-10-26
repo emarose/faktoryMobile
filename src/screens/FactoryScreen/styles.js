@@ -1,36 +1,27 @@
 import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: heightPercentageToDP(1),
     backgroundColor: Colors.background,
-    paddingTop: 0,
   },
   scrollViewContent: {
     flexGrow: 1,
-    paddingBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: Colors.accentGreen,
-    marginTop: 25,
-    marginBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
-    paddingBottom: 5,
   },
   gridContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   rowSplit: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
     marginBottom: 15,
   },
   gridItem: {
@@ -46,14 +37,22 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   halfItem: {
-    width: "48%",
+    width: "45%",
+    backgroundColor: Colors.backgroundPanel,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   gridItemTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    color: Colors.textSecondary,
+    color: Colors.textPrimary,
     textAlign: "center",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   gridItemDescription: {
     fontSize: 12,

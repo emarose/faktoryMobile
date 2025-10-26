@@ -1,6 +1,13 @@
 import React, { useContext, useRef, useCallback } from "react";
 import { GameContext } from "../../contexts/GameContext";
-import { StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  View,
+  ImageBackground,
+  Image,
+} from "react-native";
 import { Text, CustomHeader } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -30,15 +37,19 @@ export default function FactoryScreen() {
       if (scrollRef.current) {
         try {
           scrollRef.current.scrollTo({ y: 0, animated: true });
-        } catch (e) {
-        }
+        } catch (e) {}
       }
     }, [])
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} bounces={false} ref={scrollRef} contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        ref={scrollRef}
+        contentContainerStyle={styles.scrollViewContent}
+      >
         <ResourceOverviewHeader />
         <View style={{}}>
           <MilestoneCard
@@ -52,26 +63,32 @@ export default function FactoryScreen() {
               style={[styles.gridItem, styles.halfItem]}
               onPress={() => navigation.navigate("MapScreen")}
             >
-              <MaterialCommunityIcons
-                name="map-outline"
-                size={28}
-                color={"#fff"}
-                style={{ marginBottom: 8 }}
-              />
               <Text style={styles.gridItemTitle}>World Map</Text>
+              <Image
+                source={require("../../../assets/images/UI/cardBg/worldMap.png")}
+                style={{
+                  width: 80,
+                  height: 80,
+                }}
+                resizeMode="cover"
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.gridItem, styles.halfItem]}
               onPress={() => navigation.navigate("BuildScreen")}
             >
-              <MaterialCommunityIcons
-                name="hammer"
-                size={28}
-                color={"#fff"}
-                style={{ marginBottom: 8 }}
+              <Text numberOfLines={2} style={styles.gridItemTitle}>
+                Machine Builder
+              </Text>
+              <Image
+                source={require("../../../assets/images/UI/cardBg/buildMachines.png")}
+                style={{
+                  width: 80,
+                  height: 80,
+                }}
+                resizeMode="cover"
               />
-              <Text style={styles.gridItemTitle}>Machine Builder</Text>
             </TouchableOpacity>
           </View>
 
