@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
+import { getMachineIcon } from "../../../BuildScreen/hooks";
 
 const DeployedMachinesCard = ({
   placedMachines,
@@ -154,7 +155,7 @@ const DeployedMachinesCard = ({
     (m) => m.status === "idle"
   ).length;
 
-  const getMachineIcon = (machineType) => {
+ /*  const getMachineIcon = (machineType) => {
     const iconMap = {
       miner: "robot-industrial",
       smelter: "fire",
@@ -166,7 +167,7 @@ const DeployedMachinesCard = ({
       oilExtractor: "oil-lamp",
     };
     return iconMap[machineType] || "cog";
-  };
+  }; */
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -201,7 +202,6 @@ const DeployedMachinesCard = ({
         <Text style={styles.gridItemTitle}>Deployed Machines</Text>
         {totalMachines > 0 && (
           <View style={styles.totalSummary}>
-            <Text style={styles.totalCount}>{totalMachines} machines</Text>
             <View style={styles.totalStatusBar}>
               {totalActive > 0 && (
                 <View
@@ -271,6 +271,7 @@ const DeployedMachinesCard = ({
             >
               {/* Machine basic info */}
               <View style={styles.machineBasicInfo}>
+
                 <MaterialCommunityIcons
                   name={getMachineIcon(machine.type)}
                   size={20}

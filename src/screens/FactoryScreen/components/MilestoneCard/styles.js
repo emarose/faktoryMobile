@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 15,
-    marginBottom: 15,
+    marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,

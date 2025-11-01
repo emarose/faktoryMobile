@@ -67,8 +67,8 @@ export default function FactoryScreen() {
               <Image
                 source={require("../../../assets/images/UI/cardBg/worldMap.png")}
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 100,
+                  height: 100,
                 }}
                 resizeMode="cover"
               />
@@ -79,13 +79,13 @@ export default function FactoryScreen() {
               onPress={() => navigation.navigate("BuildScreen")}
             >
               <Text numberOfLines={2} style={styles.gridItemTitle}>
-                Machine Builder
+                Builder
               </Text>
               <Image
                 source={require("../../../assets/images/UI/cardBg/buildMachines.png")}
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 130,
+                  height: 100,
                 }}
                 resizeMode="cover"
               />

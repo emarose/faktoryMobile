@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
   },
   rowSplit: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    gap: 10,
+    //gap: 10,
     marginBottom: 15,
   },
   gridItem: {
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   halfItem: {
-    width: "45%",
+    width: "49%",
     backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     paddingHorizontal: 8,
