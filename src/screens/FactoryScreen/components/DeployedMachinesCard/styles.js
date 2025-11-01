@@ -4,7 +4,6 @@ import Colors from "../../../../constants/Colors";
 const styles = StyleSheet.create({
   deployedMachinesCard: {
     width: "100%",
-    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
@@ -12,6 +11,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderWidth: 1,
     borderColor: Colors.border,
+ 
   },
   cardHeader: {
     alignItems: "center",

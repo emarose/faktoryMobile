@@ -5,11 +5,19 @@ import { heightPercentageToDP } from "react-native-responsive-screen";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: heightPercentageToDP(1),
     backgroundColor: Colors.background,
   },
   scrollViewContent: {
     flexGrow: 1,
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    width: "100%",
+  },
+  cardsContainer: {
+    flex: 1,
+    paddingHorizontal: heightPercentageToDP(1),
+    paddingVertical: 10,
   },
   gridContainer: {
     flexDirection: "row",
@@ -26,7 +34,6 @@ const styles = StyleSheet.create({
   },
   gridItem: {
     width: "100%",
-    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 16,
@@ -38,14 +45,17 @@ const styles = StyleSheet.create({
   },
   halfItem: {
     width: "49%",
-    backgroundColor: Colors.backgroundPanel,
+  },
+  gradientCard: {
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: Colors.backgroundAccent,
+    width: "100%",
+    opacity: 0.8,
   },
   gridItemTitle: {
     fontSize: 14,

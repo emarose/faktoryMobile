@@ -63,7 +63,7 @@ export const GameAssets = {
 
     // Machines
     smelter: require("../../../assets/images/icons/smelter.png"),
-    miner: require("../../../assets/images/icons/miner.png"), // TODO: Replace with actual miner icon
+    miner: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual miner icon
     constructor: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual constructor icon
     assembler: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual assembler icon
     manufacturer: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual manufacturer icon

@@ -4,7 +4,6 @@ import Colors from "../../../../constants/Colors";
 const styles = StyleSheet.create({
   gridItem: {
     width: "100%",
-    backgroundColor: Colors.backgroundPanel,
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
@@ -18,6 +17,7 @@ const styles = StyleSheet.create({
   milestoneCard: {
     alignItems: "stretch",
     paddingVertical: 16,
+    opacity: 0.8,
   },
   milestoneHeader: {
     flexDirection: "row",

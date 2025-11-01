@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
@@ -196,7 +197,13 @@ const DeployedMachinesCard = ({
   };
 
   return (
-    <TouchableOpacity style={styles.deployedMachinesCard} onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
+      <LinearGradient
+        colors={["rgba(26, 26, 46, 0.8)", "rgba(44, 44, 68, 0.8)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.deployedMachinesCard}
+      >
       {/* Header with total summary */}
       <View style={styles.cardHeader}>
         <Text style={styles.gridItemTitle}>Deployed Machines</Text>
@@ -352,6 +359,7 @@ const DeployedMachinesCard = ({
           )}
         </View>
       )}
+      </LinearGradient>
     </TouchableOpacity>
   );
 };

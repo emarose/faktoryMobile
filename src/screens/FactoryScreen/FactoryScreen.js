@@ -8,10 +8,12 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import styles from "./styles";
+import Colors from "../../constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ResourceOverviewHeader from "./components/ResourceOverviewHeader/ResourceOverviewHeader";
 import MilestoneCard from "./components/MilestoneCard";
@@ -37,84 +39,120 @@ export default function FactoryScreen() {
       if (scrollRef.current) {
         try {
           scrollRef.current.scrollTo({ y: 0, animated: true });
-        } catch (e) {}
+        } catch (e) { }
       }
     }, [])
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        ref={scrollRef}
-        contentContainerStyle={styles.scrollViewContent}
+      <ImageBackground
+        source={require("../../../assets/images/backgrounds/background.png")}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
       >
-        <ResourceOverviewHeader />
-        <View style={{}}>
-          <MilestoneCard
-            currentMilestone={currentMilestone}
-            inventory={inventory}
-            discoveredNodes={discoveredNodes}
-            onPress={() => navigation.navigate("MilestonesScreen")}
-          />
-          <View style={styles.rowSplit}>
-            <TouchableOpacity
-              style={[styles.gridItem, styles.halfItem]}
-              onPress={() => navigation.navigate("MapScreen")}
-            >
-              <Text style={styles.gridItemTitle}>World Map</Text>
-              <Image
-                source={require("../../../assets/images/UI/cardBg/worldMap.png")}
-                style={{
-                  width: 100,
-                  height: 100,
-                }}
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          ref={scrollRef}
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          <ResourceOverviewHeader />
+          <View style={styles.cardsContainer}>
+            <MilestoneCard
+              currentMilestone={currentMilestone}
+              inventory={inventory}
+              discoveredNodes={discoveredNodes}
+              onPress={() => navigation.navigate("MilestonesScreen")}
+            />
+            <View style={styles.rowSplit}>
+              <TouchableOpacity
+                style={styles.halfItem}
+                onPress={() => navigation.navigate("MapScreen")}
+              >
+                <LinearGradient
+                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.gradientCard}
+                >
+                  <Text style={styles.gridItemTitle}>World Map</Text>
+                  <Image
+                    source={require("../../../assets/images/UI/cardBg/worldMap.png")}
+                    style={{
+                      width: 100,
+                      height: 100,
+                    }}
+                    resizeMode="cover"
+                  />
+                </LinearGradient>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.gridItem, styles.halfItem]}
-              onPress={() => navigation.navigate("BuildScreen")}
-            >
-              <Text numberOfLines={2} style={styles.gridItemTitle}>
-                Builder
-              </Text>
-              <Image
-                source={require("../../../assets/images/UI/cardBg/buildMachines.png")}
-                style={{
-                  width: 130,
-                  height: 100,
-                }}
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.halfItem}
+                onPress={() => navigation.navigate("BuildScreen")}
+              >
+                <LinearGradient
+                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={styles.gradientCard}
+                >
+                  <Text numberOfLines={2} style={styles.gridItemTitle}>
+                    Builder
+                  </Text>
+                  <Image
+                    source={require("../../../assets/images/UI/cardBg/buildMachines.png")}
+                    style={{
+                      width: 130,
+                      height: 100,
+                    }}
+                    resizeMode="cover"
+                  />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            <DeployedMachinesCard
+              placedMachines={placedMachines}
+              ownedMachines={ownedMachines}
+              craftingQueue={craftingQueue}
+              allResourceNodes={allResourceNodes}
+              onPress={() => navigation.navigate("DeployedMachinesScreen")}
+            />
+
+            <View style={styles.rowSplit}>
+              <TouchableOpacity
+                style={styles.halfItem}
+                onPress={() => navigation.navigate("InventoryScreen")}
+              >
+                <LinearGradient
+                  colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.3)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.gradientCard}
+                >
+                  <Text style={styles.gridItemTitle}>Inventory</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.halfItem}
+                onPress={() => navigation.navigate("ProductAssemblyScreen")}
+              >
+                <LinearGradient
+                  colors={["rgba(26, 26, 46, 0.8)", "rgba(44, 44, 68, 0.8)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.gradientCard}
+                >
+                  <Text style={styles.gridItemTitle}>Product Assembly</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          <DeployedMachinesCard
-            placedMachines={placedMachines}
-            ownedMachines={ownedMachines}
-            craftingQueue={craftingQueue}
-            allResourceNodes={allResourceNodes}
-            onPress={() => navigation.navigate("DeployedMachinesScreen")}
-          />
-
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("InventoryScreen")}
-          >
-            <Text style={styles.gridItemTitle}>Inventory</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.gridItem}
-            onPress={() => navigation.navigate("ProductAssemblyScreen")}
-          >
-            <Text style={styles.gridItemTitle}>Product Assembly</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 }

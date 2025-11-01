@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, IconContainer } from "../../../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import milestones from "../../../../data/milestones";
@@ -68,7 +69,12 @@ const MilestoneCard = ({
   );
 
   return (
-    <View style={[styles.gridItem, styles.milestoneCard]}>
+    <LinearGradient
+      colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={[styles.gridItem, styles.milestoneCard]}
+    >
       <View style={styles.milestoneHeader}>
         <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
           <MaterialCommunityIcons
@@ -173,7 +179,7 @@ const MilestoneCard = ({
             </View>
           </View>
         )}
-    </View>
+    </LinearGradient>
   );
 };
 
