@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
 import { Text } from "../../../../components";
 import Colors from "../../../../constants/Colors";
-import { getMachineIcon } from "../../hooks";
+import { GameAssets } from "../../../../components/AppLoader";
 
 export default function MachineCard({
   item,
@@ -92,7 +92,19 @@ export default function MachineCard({
             },
           ]}
         >
-          <Text style={styles.machineIconText}>{getMachineIcon(item.id)}</Text>
+          {GameAssets.icons[item.id] ? (
+            <Image 
+              source={GameAssets.icons[item.id]} 
+              style={{ width: 32, height: 32 }}
+              resizeMode="contain"
+            />
+          ) : (
+            <MaterialCommunityIcons 
+              name="cog" 
+              size={32} 
+              color={isLocked ? Colors.textMuted : machineColor} 
+            />
+          )}
         </View>
 
         <View style={styles.machineInfo}>
@@ -128,6 +140,13 @@ export default function MachineCard({
                           },
                         ]}
                       />
+                      {GameAssets.icons[inputId] && (
+                        <Image 
+                          source={GameAssets.icons[inputId]} 
+                          style={{ width: 12, height: 12, marginRight: 4 }}
+                          resizeMode="contain"
+                        />
+                      )}
                       <Text style={styles.requirementText} numberOfLines={1}>
                         {inventory[inputId]?.name || inputId}
                       </Text>

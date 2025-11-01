@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
-import { getMachineIcon } from "../../../BuildScreen/hooks";
+import { getMachineIcon } from "../../../DeployedMachinesScreen/hooks/useMachineCard";
 
 const DeployedMachinesCard = ({
   placedMachines,
@@ -271,12 +271,9 @@ const DeployedMachinesCard = ({
             >
               {/* Machine basic info */}
               <View style={styles.machineBasicInfo}>
-
-                <MaterialCommunityIcons
-                  name={getMachineIcon(machine.type)}
-                  size={20}
-                  color="#64B5F6"
-                />
+                <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
+                  {getMachineIcon(machine.type, "#64B5F6", 20)}
+                </View>
                 <View style={styles.machineNameContainer}>
                   <Text style={styles.individualMachineName}>
                     {machine.machineName}

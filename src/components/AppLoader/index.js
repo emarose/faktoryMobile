@@ -61,9 +61,15 @@ export const GameAssets = {
     sulfur_node: require("../../../assets/images/icons/sulfurNode16x16.png"),
     uranium_node: require("../../../assets/images/icons/uraniumNode16x16.png"),
 
-    // Machines - These will be added when available
-    // miner: require("../../../assets/images/icons/miner16x16.png"),
-    // smelter: require("../../../assets/images/icons/smelter16x16.png"),
+    // Machines
+    smelter: require("../../../assets/images/icons/smelter.png"),
+    miner: require("../../../assets/images/icons/miner.png"), // TODO: Replace with actual miner icon
+    constructor: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual constructor icon
+    assembler: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual assembler icon
+    manufacturer: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual manufacturer icon
+    foundry: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual foundry icon
+    refinery: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual refinery icon
+    oilExtractor: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual oilExtractor icon
 
     // Default icon for fallback
     default: require("../../../assets/images/icons/ironOreNode16x16.png"),

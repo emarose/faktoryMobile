@@ -1,16 +1,16 @@
 // Helpers for BuildScreen: sorting buildable items and machine icon mapping
 export const getMachineIcon = (machineId) => {
   const icons = {
-    miner: "⛏️",
-    smelter: "🔥",
-    constructor: "🔧",
-    assembler: "⚙️",
-    foundry: "🏭",
-    manufacturer: "🏗️",
-    refinery: "⚗️",
-    oilExtractor: "🛢️",
+    miner: "robot-industrial",
+    smelter: "fire",
+    constructor: "hammer-wrench",
+    assembler: "cog",
+    foundry: "anvil",
+    manufacturer: "factory",
+    refinery: "chemical-weapon",
+    oilExtractor: "oil-lamp",
   };
-  return icons[machineId] || "🔧";
+  return icons[machineId] || "cog";
 };
 
 export const getSortedBuildable = (buildableItems = [], unlockedMachineNames = [], milestones = []) => {
