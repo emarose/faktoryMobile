@@ -26,6 +26,8 @@ const Colors = {
 
   // Para fallback o casos especiales
   fallback: "#333",
+  magenta: "#ff00ff",
+  cyan: "#00ffff",
 };
 
 export default Colors;

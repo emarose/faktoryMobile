@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     padding: 6,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 50,
+    
   },
   milestoneDescription: {
     color: Colors.accentGreen,
@@ -105,8 +106,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 4,
   },
-
-  // Mini progress bar styles
   miniProgressBar: {
     height: 6,
     backgroundColor: Colors.background,

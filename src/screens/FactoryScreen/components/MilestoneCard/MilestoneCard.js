@@ -80,7 +80,7 @@ const MilestoneCard = ({
       }}
     >
       <View style={styles.milestoneHeader}>
-        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
+        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>  
           <Image
             source={GameAssets.icons.largeStar}
             style={{ width: 32, height: 32 }}
