@@ -63,13 +63,13 @@ export const GameAssets = {
 
     // Machines
     smelter: require("../../../assets/images/icons/smelter.png"),
-    miner: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual miner icon
-    constructor: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual constructor icon
-    assembler: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual assembler icon
-    manufacturer: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual manufacturer icon
-    foundry: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual foundry icon
-    refinery: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual refinery icon
-    oilExtractor: require("../../../assets/images/icons/smelter.png"), // TODO: Replace with actual oilExtractor icon
+    miner: require("../../../assets/images/icons/miner.png"), 
+    constructor: require("../../../assets/images/icons/constructor.png"), 
+    assembler: require("../../../assets/images/icons/assembler.png"),
+    manufacturer: require("../../../assets/images/icons/manufacturer.png"), 
+    foundry: require("../../../assets/images/icons/foundry.png"), 
+    refinery: require("../../../assets/images/icons/refinery.png"), 
+    oilExtractor: require("../../../assets/images/icons/oilExtractor.png"),
 
     // Default icon for fallback
     default: require("../../../assets/images/icons/ironOreNode16x16.png"),
