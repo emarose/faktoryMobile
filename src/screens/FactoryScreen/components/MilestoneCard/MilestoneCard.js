@@ -25,6 +25,9 @@ const MilestoneCard = ({
   
   // Animated value for chevron rotation
   const rotation = useSharedValue(expanded ? 180 : 0);
+  // Animated value for content expansion
+  const contentOpacity = useSharedValue(expanded ? 1 : 0);
+  const contentTranslateY = useSharedValue(expanded ? 0 : -20);
   
   // Toggle function with animation
   const toggleExpanded = () => {
@@ -36,6 +39,17 @@ const MilestoneCard = ({
       duration: 300,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
     });
+    
+    // Animate content expansion
+    contentOpacity.value = withTiming(newExpanded ? 1 : 0, {
+      duration: newExpanded ? 400 : 200,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+    });
+    
+    contentTranslateY.value = withTiming(newExpanded ? 0 : -20, {
+      duration: 300,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+    });
   };
   
   // Animated style for chevron
@@ -44,6 +58,20 @@ const MilestoneCard = ({
       transform: [
         {
           rotate: `${rotation.value}deg`,
+        },
+      ],
+    };
+  });
+  
+  // Animated style for progress section
+  const progressSectionStyle = useAnimatedStyle(() => {
+    return {
+      opacity: contentOpacity.value,
+      height: contentOpacity.value === 0 ? 0 : undefined,
+      overflow: 'hidden',
+      transform: [
+        {
+          translateY: contentTranslateY.value,
         },
       ],
     };
@@ -133,10 +161,11 @@ const MilestoneCard = ({
         )}
       </View>
 
-      {expanded && currentMilestone &&
+      {expanded &&currentMilestone &&
         !currentMilestone.unlocked &&
         milestoneProgress.length > 0 && (
-          <View style={styles.progressSection}>
+          <Animated.View style={progressSectionStyle}>
+            <View style={styles.progressSection}>
             {milestoneProgress.map((requirement) => (
               <View key={requirement.key} style={styles.requirementRow}>
                 <View style={styles.requirementHeader}>
@@ -196,7 +225,8 @@ const MilestoneCard = ({
                 </Text>
               )}
             </View>
-          </View>
+            </View>
+          </Animated.View>
         )}
     </LinearGradient>
   );

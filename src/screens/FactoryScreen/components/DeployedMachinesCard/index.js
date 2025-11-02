@@ -99,9 +99,8 @@ const DeployedMachinesCard = ({
         if (activeProcesses.length > 0) {
           status = "processing";
           const currentProcess = activeProcesses[0];
-          activity = `Crafting ${
-            items[currentProcess.itemType]?.name || currentProcess.itemType
-          }`;
+          activity = `Crafting ${items[currentProcess.itemType]?.name || currentProcess.itemType
+            }`;
 
           // Calculate progress if available
           if (currentProcess.startTime && currentProcess.duration) {
@@ -109,9 +108,8 @@ const DeployedMachinesCard = ({
             progress = Math.min(100, (elapsed / currentProcess.duration) * 100);
           }
 
-          outputInfo = `${currentProcess.quantity}x ${
-            items[currentProcess.itemType]?.name || currentProcess.itemType
-          }`;
+          outputInfo = `${currentProcess.quantity}x ${items[currentProcess.itemType]?.name || currentProcess.itemType
+            }`;
         } else {
           status = "active";
           activity = "Ready for work";
@@ -156,20 +154,6 @@ const DeployedMachinesCard = ({
     (m) => m.status === "idle"
   ).length;
 
- /*  const getMachineIcon = (machineType) => {
-    const iconMap = {
-      miner: "robot-industrial",
-      smelter: "fire",
-      constructor: "hammer-wrench",
-      assembler: "cog",
-      foundry: "anvil",
-      manufacturer: "factory",
-      refinery: "chemical-weapon",
-      oilExtractor: "oil-lamp",
-    };
-    return iconMap[machineType] || "cog";
-  }; */
-
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
@@ -199,166 +183,176 @@ const DeployedMachinesCard = ({
   return (
     <TouchableOpacity onPress={onPress}>
       <LinearGradient
-        colors={["rgba(26, 26, 46, 0.8)", "rgba(44, 44, 68, 0.8)"]}
+        colors={['#00ffff', '#ff00cc']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={styles.deployedMachinesCard}
+        style={{
+          borderRadius: 10,
+          padding: 2,
+        }}
       >
-      {/* Header with total summary */}
-      <View style={styles.cardHeader}>
-        <Text style={styles.gridItemTitle}>Deployed Machines</Text>
-        {totalMachines > 0 && (
-          <View style={styles.totalSummary}>
-            <View style={styles.totalStatusBar}>
-              {totalActive > 0 && (
-                <View
-                  style={[
-                    styles.statusSegment,
-                    {
-                      backgroundColor: "#4CAF50",
-                      flex: totalActive,
-                    },
-                  ]}
-                />
-              )}
-              {totalProcessing > 0 && (
-                <View
-                  style={[
-                    styles.statusSegment,
-                    {
-                      backgroundColor: "#2196F3",
-                      flex: totalProcessing,
-                    },
-                  ]}
-                />
-              )}
-              {totalIdle > 0 && (
-                <View
-                  style={[
-                    styles.statusSegment,
-                    {
-                      backgroundColor: "#FF9800",
-                      flex: totalIdle,
-                    },
-                  ]}
-                />
-              )}
-            </View>
-          </View>
-        )}
-      </View>
-
-      {/* Status legend */}
-      {totalMachines > 0 && (
-        <View style={styles.statusLegend}>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: "#4CAF50" }]} />
-            <Text style={styles.legendText}>Active ({totalActive})</Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: "#2196F3" }]} />
-            <Text style={styles.legendText}>
-              Processing ({totalProcessing})
-            </Text>
-          </View>
-          <View style={styles.legendItem}>
-            <View style={[styles.legendDot, { backgroundColor: "#FF9800" }]} />
-            <Text style={styles.legendText}>Idle ({totalIdle})</Text>
-          </View>
-        </View>
-      )}
-
-      {/* Individual machines list */}
-      {machinesWithDetails.length > 0 && (
-        <View style={styles.machinesListContainer}>
-          {machinesWithDetails.slice(0, 4).map((machine, index) => (
-            <View
-              key={`machine-${machine.id}-${index}`}
-              style={styles.individualMachineRow}
-            >
-              {/* Machine basic info */}
-              <View style={styles.machineBasicInfo}>
-                <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-                  {getMachineIcon(machine.type, "#64B5F6", 20)}
-                </View>
-                <View style={styles.machineNameContainer}>
-                  <Text style={styles.individualMachineName}>
-                    {machine.machineName}
-                  </Text>
-                  {machine.location && (
-                    <Text style={styles.machineLocation}>
-                      {machine.location}
-                    </Text>
+        <View style={{ borderRadius: 10, backgroundColor: "rgba(0,0,0,0.8)" }}>
+          {/* Header with total summary */}
+          <View style={styles.cardHeader}>
+            <Text style={styles.gridItemTitle}>Deployed Machines</Text>
+            {totalMachines > 0 && (
+              <View style={styles.totalSummary}>
+                <View style={styles.totalStatusBar}>
+                  {totalActive > 0 && (
+                    <View
+                      style={[
+                        styles.statusSegment,
+                        {
+                          backgroundColor: "#4CAF50",
+                          flex: totalActive,
+                        },
+                      ]}
+                    />
+                  )}
+                  {totalProcessing > 0 && (
+                    <View
+                      style={[
+                        styles.statusSegment,
+                        {
+                          backgroundColor: "#2196F3",
+                          flex: totalProcessing,
+                        },
+                      ]}
+                    />
+                  )}
+                  {totalIdle > 0 && (
+                    <View
+                      style={[
+                        styles.statusSegment,
+                        {
+                          backgroundColor: "#FF9800",
+                          flex: totalIdle,
+                        },
+                      ]}
+                    />
                   )}
                 </View>
               </View>
+            )}
+          </View>
 
-              {/* Status and activity */}
-              <View style={styles.machineStatusContainer}>
-                <View style={styles.statusRow}>
+          {/* Status legend */}
+          {totalMachines > 0 && (
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.1)", "rgba(0, 0, 0, 0.6)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.statusLegend}
+            >
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: "#4CAF50" }]} />
+                <Text style={styles.legendText}>Active ({totalActive})</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: "#2196F3" }]} />
+                <Text style={styles.legendText}>
+                  Processing ({totalProcessing})
+                </Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: "#FF9800" }]} />
+                <Text style={styles.legendText}>Idle ({totalIdle})</Text>
+              </View>
+            </LinearGradient>
+          )}
+
+          {/* Individual machines list */}
+          {machinesWithDetails.length > 0 && (
+            <View style={styles.machinesListContainer}>
+              {machinesWithDetails.slice(0, 4).map((machine, index) => (
+                <View
+                  key={`machine-${machine.id}-${index}`}
+                  style={styles.individualMachineRow}
+                >
+                  {/* Machine basic info */}
+                  <View style={styles.machineBasicInfo}>
+                    <View style={{ width: 48, height: 48, alignItems: 'center', justifyContent: 'center' }}>
+                      {getMachineIcon(machine.type, "#64B5F6", 48)}
+                    </View>
+                    <View style={styles.machineNameContainer}>
+                      <Text style={styles.individualMachineName}>
+                        {machine.machineName}
+                      </Text>
+                      {machine.location && (
+                        <Text style={styles.machineLocation}>
+                          {machine.location}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+
+                  {/* Status and activity */}
+                  <View style={styles.machineStatusContainer}>
+                    <View style={styles.statusRow}>
+                      <MaterialCommunityIcons
+                        name={getStatusIcon(machine.status)}
+                        size={14}
+                        color={getStatusColor(machine.status)}
+                      />
+                      <Text
+                        style={[
+                          styles.statusText,
+                          { color: getStatusColor(machine.status) },
+                        ]}
+                      >
+                        {machine.status.charAt(0).toUpperCase() +
+                          machine.status.slice(1)}
+                      </Text>
+                    </View>
+
+                    <Text style={styles.activityText} numberOfLines={1}>
+                      {machine.activity}
+                    </Text>
+
+                    {machine.outputInfo && (
+                      <Text style={styles.outputText} numberOfLines={1}>
+                        → {machine.outputInfo}
+                      </Text>
+                    )}
+
+                    {/* Progress bar for processing machines */}
+                    {machine.progress !== null && (
+                      <View style={styles.progressBarContainer}>
+                        <View style={styles.progressBarBackground}>
+                          <View
+                            style={[
+                              styles.progressBarFill,
+                              {
+                                width: `${machine.progress}%`,
+                                backgroundColor: getStatusColor(machine.status),
+                              },
+                            ]}
+                          />
+                        </View>
+                        <Text style={styles.progressText}>
+                          {Math.round(machine.progress)}%
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              ))}
+
+              {machinesWithDetails.length > 4 && (
+                <View style={styles.moreItemsContainer}>
                   <MaterialCommunityIcons
-                    name={getStatusIcon(machine.status)}
-                    size={14}
-                    color={getStatusColor(machine.status)}
+                    name="dots-horizontal"
+                    size={16}
+                    color={Colors.textMuted}
                   />
-                  <Text
-                    style={[
-                      styles.statusText,
-                      { color: getStatusColor(machine.status) },
-                    ]}
-                  >
-                    {machine.status.charAt(0).toUpperCase() +
-                      machine.status.slice(1)}
+                  <Text style={styles.moreItemsText}>
+                    +{machinesWithDetails.length - 4} more machines...
                   </Text>
                 </View>
-
-                <Text style={styles.activityText} numberOfLines={1}>
-                  {machine.activity}
-                </Text>
-
-                {machine.outputInfo && (
-                  <Text style={styles.outputText} numberOfLines={1}>
-                    → {machine.outputInfo}
-                  </Text>
-                )}
-
-                {/* Progress bar for processing machines */}
-                {machine.progress !== null && (
-                  <View style={styles.progressBarContainer}>
-                    <View style={styles.progressBarBackground}>
-                      <View
-                        style={[
-                          styles.progressBarFill,
-                          {
-                            width: `${machine.progress}%`,
-                            backgroundColor: getStatusColor(machine.status),
-                          },
-                        ]}
-                      />
-                    </View>
-                    <Text style={styles.progressText}>
-                      {Math.round(machine.progress)}%
-                    </Text>
-                  </View>
-                )}
-              </View>
-            </View>
-          ))}
-
-          {machinesWithDetails.length > 4 && (
-            <View style={styles.moreItemsContainer}>
-              <MaterialCommunityIcons
-                name="dots-horizontal"
-                size={16}
-                color={Colors.textMuted}
-              />
-              <Text style={styles.moreItemsText}>
-                +{machinesWithDetails.length - 4} more machines...
-              </Text>
+              )}
             </View>
           )}
         </View>
-      )}
       </LinearGradient>
     </TouchableOpacity>
   );

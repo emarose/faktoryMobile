@@ -2,23 +2,13 @@ import { StyleSheet } from "react-native";
 import Colors from "../../../../constants/Colors";
 
 const styles = StyleSheet.create({
-  deployedMachinesCard: {
-    width: "100%",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    alignItems: "stretch",
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: Colors.border,
- 
-  },
   cardHeader: {
     alignItems: "center",
     marginBottom: 12,
+    paddingVertical: 12
   },
   gridItemTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: Colors.textSecondary,
     textAlign: "center",
@@ -37,9 +27,9 @@ const styles = StyleSheet.create({
   totalStatusBar: {
     flexDirection: "row",
     height: 4,
-    width: "80%",
+    width: "90%",
     backgroundColor: Colors.fallback,
-    borderRadius: 2,
+    borderRadius: 4,
     overflow: "hidden",
   },
   statusSegment: {
@@ -48,10 +38,10 @@ const styles = StyleSheet.create({
   statusLegend: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    backgroundColor: Colors.background,
-    borderRadius: 6,
+    padding: 6,
+    width: "90%",
+    alignSelf:"center",
+    borderRadius:6,
     marginBottom: 12,
   },
   legendItem: {
@@ -74,14 +64,11 @@ const styles = StyleSheet.create({
   },
   individualMachineRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 12,
-    backgroundColor: Colors.background,
-    borderRadius: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: Colors.accentGreen,
+    backgroundColor: "rgba(255, 255, 255, 0.05)"
   },
   machineBasicInfo: {
     flexDirection: "row",
