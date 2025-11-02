@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming,
+  Easing 
+} from "react-native-reanimated";
 import { Text, IconContainer } from "../../../../components";
 import { GameAssets } from "../../../../components/AppLoader";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,6 +22,33 @@ const MilestoneCard = ({
   onPress,
 }) => {
   const [expanded, setExpanded] = useState(true);
+  
+  // Animated value for chevron rotation
+  const rotation = useSharedValue(expanded ? 180 : 0);
+  
+  // Toggle function with animation
+  const toggleExpanded = () => {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    
+    // Animate chevron rotation
+    rotation.value = withTiming(newExpanded ? 180 : 0, {
+      duration: 300,
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
+    });
+  };
+  
+  // Animated style for chevron
+  const chevronStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: `${rotation.value}deg`,
+        },
+      ],
+    };
+  });
+  
   // Busca el milestone completo para acceder a requirementsDescription
   const milestoneFull = currentMilestone
     ? milestones.find((m) => m.id === currentMilestone.id)
@@ -87,13 +120,15 @@ const MilestoneCard = ({
           />
         </TouchableOpacity>
         {currentMilestone && !currentMilestone.unlocked && (
-          <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.nameAndCaret}>
+          <TouchableOpacity onPress={toggleExpanded} style={styles.nameAndCaret}>
             <Text style={[styles.milestoneTitle, { flex: 1, textAlign: 'center' }]}>{currentMilestone.name}</Text>
-            <MaterialCommunityIcons
-              name={expanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              color={Colors.textPrimary}
-            />
+            <Animated.View style={chevronStyle}>
+              <MaterialCommunityIcons
+                name="chevron-down"
+                size={24}
+                color={Colors.textPrimary}
+              />
+            </Animated.View>
           </TouchableOpacity>
         )}
       </View>

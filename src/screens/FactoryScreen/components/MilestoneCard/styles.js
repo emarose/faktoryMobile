@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     padding: 6,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 50,
-    
   },
   milestoneDescription: {
     color: Colors.accentGreen,
