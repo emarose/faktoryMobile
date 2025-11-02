@@ -127,7 +127,7 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("InventoryScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(255, 255, 255, 0.5)", "rgba(255, 255, 255, 0.3)"]}
+                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.gradientCard}
@@ -141,9 +141,9 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("ProductAssemblyScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(26, 26, 46, 0.8)", "rgba(44, 44, 68, 0.8)"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
+                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
                   style={styles.gradientCard}
                 >
                   <Text style={styles.gridItemTitle}>Product Assembly</Text>

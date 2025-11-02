@@ -5,7 +5,7 @@ import { heightPercentageToDP } from "react-native-responsive-screen";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#3a0242ff",
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: heightPercentageToDP(1),
     paddingVertical: 10,
+    gap:12
   },
   gridContainer: {
     flexDirection: "row",

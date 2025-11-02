@@ -2,28 +2,13 @@ import { StyleSheet } from "react-native";
 import Colors from "../../../../constants/Colors";
 
 const styles = StyleSheet.create({
-  gridItem: {
-    width: "100%",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  
-  // Milestone specific styles
-  milestoneCard: {
-    alignItems: "stretch",
-    paddingVertical: 16,
-    opacity: 0.8,
-  },
   milestoneHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: 'space-between',
-    marginBottom: 4,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    borderRadius: 10,
+    padding: 8,
   },
   milestoneInfo: {
     flex: 1,
@@ -33,20 +18,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textPrimary,
     fontWeight: "bold",
-    marginBottom: 4,
   },
   nameAndCaret: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-between',
+    marginRight: 6,
   },
   starTouchable: {
-    borderWidth: 1,
-    borderColor: Colors.accentGold,
-    elevation: 5,
-    borderRadius: 5,
-    padding: 5,
+    padding: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 50,
   },
   milestoneDescription: {
     color: Colors.accentGreen,
@@ -59,17 +42,17 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     marginLeft: 12,
   },
-  
+
   // Progress section styles
   progressSection: {
-    marginTop: 8,
+    marginTop: 2,
+    borderRadius: 10,
     paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
- 
   requirementRow: {
     marginBottom: 12,
+    paddingHorizontal:10
   },
   requirementHeader: {
     flexDirection: "row",
@@ -107,6 +90,8 @@ const styles = StyleSheet.create({
   },
   overallProgress: {
     alignItems: "center",
+    paddingHorizontal: 10,
+    paddingBottom: 8
   },
   overallProgressText: {
     color: Colors.textSecondary,
@@ -120,7 +105,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 4,
   },
-  
+
   // Mini progress bar styles
   miniProgressBar: {
     height: 6,

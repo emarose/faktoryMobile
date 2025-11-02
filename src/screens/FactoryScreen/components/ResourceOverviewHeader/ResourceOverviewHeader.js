@@ -1,14 +1,10 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, IconContainer } from "../../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { useGame } from "../../../../contexts/GameContext";
-import { getNodeColor } from "../../../../data/nodeTypes";
 import Colors from "../../../../constants/Colors";
-import NineSliceFrame from "../../../../utils/NineSliceFrame";
-import {
-  heightPercentageToDP,
-  widthPercentageToDP,
-} from "react-native-responsive-screen";
+import { heightPercentageToDP } from "react-native-responsive-screen";
 
 const ResourceOverviewHeader = () => {
   const { inventory } = useGame();
@@ -20,9 +16,13 @@ const ResourceOverviewHeader = () => {
     <>
       <TouchableOpacity
         onPress={() => navigation.navigate("BasicResourcesScreen")}
-        style={styles.headerContainer}
       >
-        {/*  <NineSliceFrame width={widthPercentageToDP(90)} height={96}> */}
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.1)"]}
+          start={{ x: 0, y:0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.headerContainer}
+        >
         <View style={styles.resourcesWrapper}>
           {displayedResourceIds.map((resourceId) => {
             const item = inventory[resourceId];
@@ -45,7 +45,7 @@ const ResourceOverviewHeader = () => {
             );
           })}
         </View>
-        {/*  </NineSliceFrame> */}
+        </LinearGradient>
       </TouchableOpacity>
     </>
   );
@@ -53,12 +53,8 @@ const ResourceOverviewHeader = () => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    marginVertical: 16,
     alignItems: "center",
-    paddingVertical: 12,
-    backgroundColor: Colors.backgroundSecondary,
-    borderColor: Colors.borderLight,
-    borderRadius: 8,
+    paddingVertical: heightPercentageToDP(3),
   },
   resourcesWrapper: {
     flexDirection: "row",

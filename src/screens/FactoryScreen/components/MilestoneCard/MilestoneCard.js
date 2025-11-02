@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, IconContainer } from "../../../../components";
+import { GameAssets } from "../../../../components/AppLoader";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import milestones from "../../../../data/milestones";
 import { items } from "../../../../data/items";
@@ -70,47 +71,33 @@ const MilestoneCard = ({
 
   return (
     <LinearGradient
-      colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
+      colors={['#ff00cc', '#00ffff']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
-      style={[styles.gridItem, styles.milestoneCard]}
+      style={{
+        borderRadius: 10,
+        padding: 2,
+      }}
     >
       <View style={styles.milestoneHeader}>
         <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
-          <MaterialCommunityIcons
-            name={"star"}
-            size={30}
-            color={Colors.accentGold}
+          <Image
+            source={GameAssets.icons.largeStar}
+            style={{ width: 32, height: 32 }}
           />
         </TouchableOpacity>
         {currentMilestone && !currentMilestone.unlocked && (
           <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.nameAndCaret}>
-            <Text style={[styles.milestoneTitle, {flex: 1, textAlign: 'center'}]}>{currentMilestone.name}</Text>
+            <Text style={[styles.milestoneTitle, { flex: 1, textAlign: 'center' }]}>{currentMilestone.name}</Text>
             <MaterialCommunityIcons
               name={expanded ? "chevron-up" : "chevron-down"}
-              size={20}
+              size={24}
               color={Colors.textPrimary}
             />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Overall completion indicator in non-expanded state */}
-      {currentMilestone && !currentMilestone.unlocked && !expanded && (
-        <View style={styles.overallProgress}>
-          <Text style={styles.overallProgressText}>
-            {milestoneProgress.filter((r) => r.completed).length}/
-            {milestoneProgress.length} completed
-          </Text>
-          {isMilestoneCompleted && (
-            <Text style={styles.readyToComplete}>
-              Ready to complete! 🎉
-            </Text>
-          )}
-        </View>
-      )}
-
-      {/* Progress bars for each requirement */}
       {expanded && currentMilestone &&
         !currentMilestone.unlocked &&
         milestoneProgress.length > 0 && (
@@ -119,16 +106,14 @@ const MilestoneCard = ({
               <View key={requirement.key} style={styles.requirementRow}>
                 <View style={styles.requirementHeader}>
                   <View style={styles.requirementNameWithIcon}>
-                    {/* Display GameAssets icon if available, otherwise don't show icon */}
                     {requirement.key !== "discoveredNodes" && (
-                      <IconContainer 
-                        iconId={requirement.key} 
+                      <IconContainer
+                        iconId={requirement.key}
                         size={24}
                         iconSize={16}
-                        style={styles.requirementIconContainer} 
+                        style={styles.requirementIconContainer}
                       />
                     )}
-                    {/* Special icon for discovered nodes */}
                     {requirement.key === "discoveredNodes" && (
                       <View style={styles.requirementIconContainer}>
                         <MaterialCommunityIcons
@@ -165,7 +150,6 @@ const MilestoneCard = ({
               </View>
             ))}
 
-            {/* Overall completion indicator */}
             <View style={styles.overallProgress}>
               <Text style={styles.overallProgressText}>
                 {milestoneProgress.filter((r) => r.completed).length}/

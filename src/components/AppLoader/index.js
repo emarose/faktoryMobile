@@ -73,6 +73,9 @@ export const GameAssets = {
 
     // Default icon for fallback
     default: require("../../../assets/images/icons/ironOreNode16x16.png"),
+    
+    // UI Icons
+    largeStar: require("../../../assets/images/UI/Icon_Large_Star.png"),
   },
 };
 
