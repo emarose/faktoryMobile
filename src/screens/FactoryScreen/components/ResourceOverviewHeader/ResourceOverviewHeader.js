@@ -18,11 +18,12 @@ const ResourceOverviewHeader = () => {
         onPress={() => navigation.navigate("BasicResourcesScreen")}
       >
         <LinearGradient
-          colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.1)"]}
-          start={{ x: 0, y:0 }}
-          end={{ x: 0, y: 1 }}
+          colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
+          start={{ x: 1, y:0 }}
+          end={{ x: 0, y: 0 }}
           style={styles.headerContainer}
         >
+        <Text style={styles.headerTitle}>Basic Resources</Text>
         <View style={styles.resourcesWrapper}>
           {displayedResourceIds.map((resourceId) => {
             const item = inventory[resourceId];
@@ -31,16 +32,19 @@ const ResourceOverviewHeader = () => {
             }
             return (
               <View key={item.id} style={styles.resourceItem}>
-                <IconContainer 
-                  iconId={item.id} 
-                  size={30}
-                  iconSize={20}
-                  style={styles.iconContainerStyle}
-                />
-
-                <Text style={styles.resourceAmount}>
-                  {Math.floor(item.currentAmount)}
-                </Text>
+                <View style={styles.iconWithCounter}>
+                  <IconContainer 
+                    iconId={item.id} 
+                    size={30}
+                    iconSize={24}
+                    style={styles.iconContainerStyle}
+                  />
+                  <View style={styles.counterContainer}>
+                    <Text style={styles.resourceAmount}>
+                      {Math.floor(item.currentAmount)}
+                    </Text>
+                  </View>
+                </View>
               </View>
             );
           })}
@@ -54,7 +58,14 @@ const ResourceOverviewHeader = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     alignItems: "center",
-    paddingVertical: heightPercentageToDP(3),
+    paddingVertical: heightPercentageToDP(2),
+  },
+  headerTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginBottom: 8,
+    textAlign: "center",
   },
   resourcesWrapper: {
     flexDirection: "row",
@@ -63,18 +74,32 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   resourceItem: {
-    flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
-    gap: 8,
+  },
+  iconWithCounter: {
+    position: "relative",
+  },
+  counterContainer: {
+    position: "absolute",
+    bottom: -2,
+    right: -2,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    minWidth: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconContainerStyle: {
     marginRight: 4,
   },
   resourceAmount: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
-    color: Colors.accentGreen,
+    color: Colors.textPrimary,
+    textAlign: "center",
   },
 });
 
