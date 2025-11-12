@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
   withTiming,
-  Easing 
+  Easing
 } from "react-native-reanimated";
 import { Text, IconContainer } from "../../../../components";
 import { GameAssets } from "../../../../components/AppLoader";
@@ -22,36 +22,36 @@ const MilestoneCard = ({
   onPress,
 }) => {
   const [expanded, setExpanded] = useState(true);
-  
+
   // Animated value for chevron rotation
   const rotation = useSharedValue(expanded ? 180 : 0);
   // Animated value for content expansion
   const contentOpacity = useSharedValue(expanded ? 1 : 0);
   const contentTranslateY = useSharedValue(expanded ? 0 : -20);
-  
+
   // Toggle function with animation
   const toggleExpanded = () => {
     const newExpanded = !expanded;
     setExpanded(newExpanded);
-    
+
     // Animate chevron rotation
     rotation.value = withTiming(newExpanded ? 180 : 0, {
       duration: 300,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
     });
-    
+
     // Animate content expansion
     contentOpacity.value = withTiming(newExpanded ? 1 : 0, {
       duration: newExpanded ? 400 : 200,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
     });
-    
+
     contentTranslateY.value = withTiming(newExpanded ? 0 : -20, {
       duration: 300,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
     });
   };
-  
+
   // Animated style for chevron
   const chevronStyle = useAnimatedStyle(() => {
     return {
@@ -62,7 +62,7 @@ const MilestoneCard = ({
       ],
     };
   });
-  
+
   // Animated style for progress section
   const progressSectionStyle = useAnimatedStyle(() => {
     return {
@@ -76,7 +76,7 @@ const MilestoneCard = ({
       ],
     };
   });
-  
+
   // Busca el milestone completo para acceder a requirementsDescription
   const milestoneFull = currentMilestone
     ? milestones.find((m) => m.id === currentMilestone.id)
@@ -141,7 +141,7 @@ const MilestoneCard = ({
       }}
     >
       <View style={styles.milestoneHeader}>
-        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>  
+        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
           <Image
             source={GameAssets.icons.largeStar}
             style={{ width: 32, height: 32 }}
@@ -149,7 +149,10 @@ const MilestoneCard = ({
         </TouchableOpacity>
         {currentMilestone && !currentMilestone.unlocked && (
           <TouchableOpacity onPress={toggleExpanded} style={styles.nameAndCaret}>
-            <Text style={[styles.milestoneTitle, { flex: 1, textAlign: 'center' }]}>{currentMilestone.name}</Text>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text style={styles.milestoneTitleHeader}>Current Milestone:</Text>
+              <Text style={[styles.milestoneTitle]}>{currentMilestone.name}</Text>
+            </View>
             <Animated.View style={chevronStyle}>
               <MaterialCommunityIcons
                 name="chevron-down"
@@ -161,70 +164,70 @@ const MilestoneCard = ({
         )}
       </View>
 
-      {expanded &&currentMilestone &&
+      {expanded && currentMilestone &&
         !currentMilestone.unlocked &&
         milestoneProgress.length > 0 && (
           <Animated.View style={progressSectionStyle}>
             <View style={styles.progressSection}>
-            {milestoneProgress.map((requirement) => (
-              <View key={requirement.key} style={styles.requirementRow}>
-                <View style={styles.requirementHeader}>
-                  <View style={styles.requirementNameWithIcon}>
-                    {requirement.key !== "discoveredNodes" && (
-                      <IconContainer
-                        iconId={requirement.key}
-                        size={24}
-                        iconSize={16}
-                        style={styles.requirementIconContainer}
-                      />
-                    )}
-                    {requirement.key === "discoveredNodes" && (
-                      <View style={styles.requirementIconContainer}>
-                        <MaterialCommunityIcons
-                          name="map-marker-multiple"
-                          size={16}
-                          color={Colors.accentGold}
+              {milestoneProgress.map((requirement) => (
+                <View key={requirement.key} style={styles.requirementRow}>
+                  <View style={styles.requirementHeader}>
+                    <View style={styles.requirementNameWithIcon}>
+                      {requirement.key !== "discoveredNodes" && (
+                        <IconContainer
+                          iconId={requirement.key}
+                          size={24}
+                          iconSize={16}
+                          style={styles.requirementIconContainer}
                         />
-                      </View>
-                    )}
-                    <Text style={styles.requirementName}>{requirement.name}</Text>
+                      )}
+                      {requirement.key === "discoveredNodes" && (
+                        <View style={styles.requirementIconContainer}>
+                          <MaterialCommunityIcons
+                            name="map-marker-multiple"
+                            size={16}
+                            color={Colors.accentGold}
+                          />
+                        </View>
+                      )}
+                      <Text style={styles.requirementName}>{requirement.name}</Text>
+                    </View>
+                    <Text
+                      style={[
+                        styles.requirementCount,
+                        requirement.completed && styles.requirementCompleted,
+                      ]}
+                    >
+                      {requirement.current}/{requirement.required}
+                    </Text>
                   </View>
-                  <Text
-                    style={[
-                      styles.requirementCount,
-                      requirement.completed && styles.requirementCompleted,
-                    ]}
-                  >
-                    {requirement.current}/{requirement.required}
-                  </Text>
+                  <View style={styles.miniProgressBar}>
+                    <View
+                      style={[
+                        styles.miniProgressFill,
+                        {
+                          width: `${requirement.percentage}%`,
+                          backgroundColor: requirement.completed
+                            ? "#4CAF50"
+                            : "#ffd700",
+                        },
+                      ]}
+                    />
+                  </View>
                 </View>
-                <View style={styles.miniProgressBar}>
-                  <View
-                    style={[
-                      styles.miniProgressFill,
-                      {
-                        width: `${requirement.percentage}%`,
-                        backgroundColor: requirement.completed
-                          ? "#4CAF50"
-                          : "#ffd700",
-                      },
-                    ]}
-                  />
-                </View>
-              </View>
-            ))}
+              ))}
 
-            <View style={styles.overallProgress}>
-              <Text style={styles.overallProgressText}>
-                {milestoneProgress.filter((r) => r.completed).length}/
-                {milestoneProgress.length} completed
-              </Text>
-              {isMilestoneCompleted && (
-                <Text style={styles.readyToComplete}>
-                  Ready to complete! 🎉
+              <View style={styles.overallProgress}>
+                <Text style={styles.overallProgressText}>
+                  {milestoneProgress.filter((r) => r.completed).length}/
+                  {milestoneProgress.length} completed
                 </Text>
-              )}
-            </View>
+                {isMilestoneCompleted && (
+                  <Text style={styles.readyToComplete}>
+                    Ready to complete! 🎉
+                  </Text>
+                )}
+              </View>
             </View>
           </Animated.View>
         )}

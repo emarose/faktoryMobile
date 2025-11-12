@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
+  milestoneTitleHeader:{
+    fontSize: 12,
+    color: Colors.textSecondary,
+  },
   milestoneTitle: {
     fontSize: 16,
     color: Colors.textPrimary,
