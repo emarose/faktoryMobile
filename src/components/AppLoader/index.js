@@ -69,7 +69,7 @@ export const GameAssets = {
     manufacturer: require("../../../assets/images/icons/manufacturer.png"), 
     foundry: require("../../../assets/images/icons/foundry.png"), 
     refinery: require("../../../assets/images/icons/refinery.png"), 
-    oilExtractor: require("../../../assets/images/icons/oilExtractor.png"),
+    oilExtractor: require("../../../assets/images/icons/oilextractor.png"),
 
     // Default icon for fallback
     default: require("../../../assets/images/icons/ironOreNode16x16.png"),
