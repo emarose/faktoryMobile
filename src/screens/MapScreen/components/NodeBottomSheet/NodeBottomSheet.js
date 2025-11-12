@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Text } from "../../../../components";
+import { Text, IconContainer } from "../../../../components";
 import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
@@ -32,10 +32,11 @@ const NodeBottomSheet = ({
   const insets = useSafeAreaInsets();
   const translateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
+  const isClosingRef = React.useRef(false);
 
   React.useEffect(() => {
-    console.log('NodeBottomSheet: isVisible =', isVisible, 'node =', node?.id, node?.name);
     if (isVisible && node) {
+      isClosingRef.current = false;
       translateY.value = withSpring(SCREEN_HEIGHT - BOTTOM_SHEET_HEIGHT - insets.bottom, {
         damping: 20,
         stiffness: 300,
@@ -48,17 +49,15 @@ const NodeBottomSheet = ({
   }, [isVisible, node]);
 
   const handleClose = () => {
-    translateY.value = withTiming(SCREEN_HEIGHT, { duration: 300 });
-    backdropOpacity.value = withTiming(0, { duration: 300 }, () => {
-      runOnJS(onClose)();
-    });
+    if (isClosingRef.current) return;
+    isClosingRef.current = true;
+    onClose();
   };
 
-  // Early return if no node data
-  if (!node) {
-    console.log('NodeBottomSheet: No node data, not rendering');
-    return null;
-  }
+  // Debounced close to prevent double triggers
+  const debouncedClose = React.useCallback(() => {
+    handleClose();
+  }, []);
 
   const animatedBackdropStyle = useAnimatedStyle(() => ({
     opacity: backdropOpacity.value,
@@ -68,10 +67,17 @@ const NodeBottomSheet = ({
     transform: [{ translateY: translateY.value }],
   }));
 
-  if (!isVisible || !node) return null;
+  // Only render modal if visible and node exists
+  if (!isVisible || !node) {
+    return (
+      <Modal transparent visible={false} animationType="none">
+        {/* Empty modal */}
+      </Modal>
+    );
+  }
 
   const { id: nodeId, name, x, y, type: nodeType } = node;
-  const nodeDefinition = items[nodeType];
+  const nodeDefinition = items[nodeType] || {};
   const { manualMineable, machineRequired, output } = nodeDefinition;
   const producedItemId = output ? Object.keys(output)[0] : null;
   const producedItemName =
@@ -93,11 +99,11 @@ const NodeBottomSheet = ({
     0
   );
 
-  const nodeCapacity = node.capacity || 1000;
+  const nodeCapacity = node?.capacity || 1000;
   const nodeDepletionAmount =
-    typeof node.nodeDepletionAmount !== "undefined"
+    typeof node?.nodeDepletionAmount !== "undefined"
       ? node.nodeDepletionAmount
-      : typeof node.currentAmount !== "undefined"
+      : typeof node?.currentAmount !== "undefined"
       ? node.currentAmount
       : nodeCapacity;
 
@@ -135,7 +141,7 @@ const NodeBottomSheet = ({
   };
 
   return (
-    <Modal transparent visible={isVisible} animationType="none">
+    <Modal transparent visible={isVisible && !!node} animationType="none">
       {/* Backdrop */}
       <Animated.View
         style={[
@@ -152,7 +158,7 @@ const NodeBottomSheet = ({
       >
         <TouchableOpacity
           style={{ flex: 1 }}
-          onPress={handleClose}
+          onPress={debouncedClose}
           activeOpacity={1}
         />
       </Animated.View>
@@ -193,9 +199,30 @@ const NodeBottomSheet = ({
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.textPrimary }}>
-                {name}
-              </Text>
+              <IconContainer
+                iconId={nodeType}
+                size={32}
+                iconSize={28}
+                style={{ 
+                  backgroundColor: 'transparent', 
+                  borderWidth: 1,
+                  borderColor: Colors.borderLight,
+                  marginRight: 12
+                }}
+              />
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.textPrimary }}>
+                  {name}
+                </Text>
+                <Text style={{ fontSize: 14, color: Colors.textMuted, marginTop: 4 }}>
+                  ({x}, {y}) • {producedItemName}
+                </Text>
+                {automatedProductionRate > 0 && (
+                  <Text style={{ fontSize: 14, color: Colors.accentGreen, marginTop: 2 }}>
+                    +{automatedProductionRate.toFixed(1)}/s
+                  </Text>
+                )}
+              </View>
               {assignedMachineCount > 0 && (
                 <Icon
                   name="factory"
@@ -205,17 +232,9 @@ const NodeBottomSheet = ({
                 />
               )}
             </View>
-            <Text style={{ fontSize: 14, color: Colors.textMuted, marginTop: 4 }}>
-              ({x}, {y}) • {producedItemName}
-            </Text>
-            {assignedMachineCount > 0 && (
-              <Text style={{ fontSize: 14, color: Colors.accentGreen, marginTop: 2 }}>
-                +{automatedProductionRate.toFixed(1)}/s
-              </Text>
-            )}
           </View>
 
-          <TouchableOpacity onPress={handleClose} style={{ padding: 8 }}>
+          <TouchableOpacity onPress={debouncedClose} style={{ padding: 8 }}>
             <Icon name="close" size={24} color={Colors.textMuted} />
           </TouchableOpacity>
         </View>

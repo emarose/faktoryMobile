@@ -8,8 +8,7 @@ import MapGridControls from "./components/MapGridControls/MapGridControls";
 import MapGrid from "./components/MapGrid";
 import MiniToast from "../../components/MiniToast";
 import DiscoveryRadius from "./components/DiscoveryRadius";
-import useWorldMapExploration from "../../hooks/useWorldMapExploration";
-// import { useMachines } from "../../hooks/useMachines";
+// import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { GameContext } from "../../contexts/GameContext";
 import NodeBottomSheet from "./components/NodeBottomSheet";
 import MapToast from "./components/MapToast/MapToast";
@@ -81,17 +80,34 @@ export default function MapScreen({ navigation }) {
     }
     setVisualPlayerPos({ x, y });
     setMoveLocked(true);
+    // Close bottom sheet when moving
+    setIsBottomSheetVisible(false);
+    setSelectedNode(null);
     setTimeout(() => setPlayerMapPosition({ x, y }), 0);
   };
 
-  const { exploreDirection } = useWorldMapExploration(
-    allResourceNodes,
-    DISCOVERY_RADIUS_PX,
-    discoveredNodes,
-    setDiscoveredNodes,
-    visualPlayerPos,
-    setPlayerMapPosition
-  );
+  // Handle discovery when player moves
+  useEffect(() => {
+    const tileRadius = Math.ceil(DISCOVERY_RADIUS_PX / TILE_SIZE);
+    const radiusSquared = (tileRadius - 1) * (tileRadius - 1);
+    
+    const nodesInRange = allResourceNodes.filter((node) => {
+      const dx = node.x - playerMapPosition.x;
+      const dy = node.y - playerMapPosition.y;
+      return dx * dx + dy * dy <= radiusSquared;
+    });
+
+    const newDiscoveries = {};
+    nodesInRange.forEach((node) => {
+      if (!discoveredNodes[node.id]) {
+        newDiscoveries[node.id] = true;
+      }
+    });
+
+    if (Object.keys(newDiscoveries).length > 0) {
+      setDiscoveredNodes(prev => ({ ...prev, ...newDiscoveries }));
+    }
+  }, [playerMapPosition, allResourceNodes, discoveredNodes, setDiscoveredNodes]);
 
   useEffect(() => {
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
@@ -145,7 +161,6 @@ export default function MapScreen({ navigation }) {
   });
 
   const handleTilePress = (node) => {
-    console.log('Node pressed:', node.id, node.name);
     setSelectedNode(node);
     setIsBottomSheetVisible(true);
   };
@@ -178,6 +193,12 @@ export default function MapScreen({ navigation }) {
       miniToastTimeoutRef.current = null;
     }, 700);
   };
+
+  // Update selected node with current amount when nodeAmounts change
+  const updatedSelectedNode = selectedNode ? {
+    ...selectedNode,
+    currentAmount: nodeAmounts[selectedNode.id] ?? selectedNode.capacity ?? 1000
+  } : null;
 
   return (
     <SafeAreaView style={styles.fullScreenContainer}>
@@ -218,6 +239,7 @@ export default function MapScreen({ navigation }) {
               discoveredNodes={discoveredNodes}
               handleTilePress={handleTilePress}
               navigation={navigation}
+              selectedNodeId={selectedNode?.id}
               placedMachines={placedMachines}
               currentDirection={currentDirection}
               manualMineFeedback={manualMineFeedback}
@@ -271,7 +293,6 @@ export default function MapScreen({ navigation }) {
               <MapGridControls
                 MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
                 exploreDirection={handleExploreDirection}
-                onMove={() => setIsManualPin(false)}
                 onDirectionChange={(dir) => setCurrentDirection(dir)}
               />
             </View>
@@ -282,14 +303,17 @@ export default function MapScreen({ navigation }) {
 
       <NodeBottomSheet
         isVisible={isBottomSheetVisible}
-        node={selectedNode}
+        node={updatedSelectedNode}
         inventory={inventory}
         placedMachines={placedMachines}
         playerPosition={playerMapPosition}
         onDepleteNode={handleDepleteNode}
         onManualMine={handleManualMine}
         placeMachine={placeMachine}
-        onClose={() => setIsBottomSheetVisible(false)}
+        onClose={() => {
+          setIsBottomSheetVisible(false);
+          setSelectedNode(null);
+        }}
       />
     </SafeAreaView>
   );
