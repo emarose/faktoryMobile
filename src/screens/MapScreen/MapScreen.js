@@ -11,7 +11,7 @@ import DiscoveryRadius from "./components/DiscoveryRadius";
 import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 // import { useMachines } from "../../hooks/useMachines";
 import { GameContext } from "../../contexts/GameContext";
-import NodeCard from "./components/NodeCard/NodeCard";
+import NodeBottomSheet from "./components/NodeBottomSheet";
 import MapToast from "./components/MapToast/MapToast";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useMilestone } from "../../hooks/useMilestone";
@@ -48,6 +48,10 @@ export default function MapScreen({ navigation }) {
   const [manualMineSignal, setManualMineSignal] = useState(0);
   // mini toast state: { nodeId, message, signal }
   const [miniToast, setMiniToast] = useState(null);
+  
+  // Bottom sheet state
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const miniToastTimeoutRef = useRef(null);
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
@@ -61,8 +65,6 @@ export default function MapScreen({ navigation }) {
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [manualPinnedNodeId, setManualPinnedNodeId] = useState(null);
-  const [isManualPinActive, setIsManualPinActive] = useState(false);
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
@@ -79,8 +81,6 @@ export default function MapScreen({ navigation }) {
     }
     setVisualPlayerPos({ x, y });
     setMoveLocked(true);
-    setIsManualPinActive(false);
-    setManualPinnedNodeId(null);
     setTimeout(() => setPlayerMapPosition({ x, y }), 0);
   };
 
@@ -90,13 +90,8 @@ export default function MapScreen({ navigation }) {
     discoveredNodes,
     setDiscoveredNodes,
     visualPlayerPos,
-    setPlayerMapPosition,
-    () => handleManualPin
+    setPlayerMapPosition
   );
-
-  const handleManualPin = () => {
-    setIsManualPin(false);
-  };
 
   useEffect(() => {
     const newlyDiscovered = Object.keys(discoveredNodes).filter(
@@ -125,27 +120,6 @@ export default function MapScreen({ navigation }) {
     setToastShownNodeIds,
   ]);
 
-  // Compute closest node for auto-pin
-  let closestNodeId = null;
-  let minDist = Infinity;
-  mineableNodes.forEach((node) => {
-    if (discoveredNodes[node.id]) {
-      const dx = (playerMapPosition.x - node.x) * TILE_SIZE;
-      const dy = (playerMapPosition.y - node.y) * TILE_SIZE;
-      const euclideanDist = Math.sqrt(dx * dx + dy * dy);
-      if (euclideanDist <= DISCOVERY_RADIUS_PX && euclideanDist < minDist) {
-        closestNodeId = node.id;
-        minDist = euclideanDist;
-      }
-    }
-  });
-
-  // Nodo actualmente "pinned" (manual o auto)
-  const pinnedNodeId =
-    isManualPinActive && manualPinnedNodeId
-      ? manualPinnedNodeId
-      : closestNodeId;
-
   // Merge nodeAmounts into displayableNodes for correct ProgressBar
   let displayableNodes = mineableNodes
     .filter((node) => discoveredNodes[node.id])
@@ -159,10 +133,6 @@ export default function MapScreen({ navigation }) {
     });
 
   displayableNodes = displayableNodes.sort((a, b) => {
-    if (pinnedNodeId) {
-      if (a.id === pinnedNodeId) return -1;
-      if (b.id === pinnedNodeId) return 1;
-    }
     const distA = Math.max(
       Math.abs(playerMapPosition.x - a.x),
       Math.abs(playerMapPosition.y - a.y)
@@ -175,8 +145,9 @@ export default function MapScreen({ navigation }) {
   });
 
   const handleTilePress = (node) => {
-    setManualPinnedNodeId(node.id);
-    setIsManualPinActive(true);
+    console.log('Node pressed:', node.id, node.name);
+    setSelectedNode(node);
+    setIsBottomSheetVisible(true);
   };
 
   // Called by NodeCard when user manually mines a node
@@ -247,7 +218,6 @@ export default function MapScreen({ navigation }) {
               discoveredNodes={discoveredNodes}
               handleTilePress={handleTilePress}
               navigation={navigation}
-              pinnedNodeId={pinnedNodeId}
               placedMachines={placedMachines}
               currentDirection={currentDirection}
               manualMineFeedback={manualMineFeedback}
@@ -308,22 +278,19 @@ export default function MapScreen({ navigation }) {
           </View>
         </View>
 
-        {displayableNodes.map((item) => (
-          <NodeCard
-            key={item.id}
-            node={item}
-            nodeDepletionAmount={item.currentAmount}
-            inventory={inventory}
-            placedMachines={placedMachines}
-            styles={styles}
-            playerPosition={playerMapPosition}
-            onDepleteNode={handleDepleteNode}
-            onManualMine={handleManualMine}
-            placeMachine={placeMachine}
-            isExpanded={pinnedNodeId === item.id}
-          />
-        ))}
       </ScrollView>
+
+      <NodeBottomSheet
+        isVisible={isBottomSheetVisible}
+        node={selectedNode}
+        inventory={inventory}
+        placedMachines={placedMachines}
+        playerPosition={playerMapPosition}
+        onDepleteNode={handleDepleteNode}
+        onManualMine={handleManualMine}
+        placeMachine={placeMachine}
+        onClose={() => setIsBottomSheetVisible(false)}
+      />
     </SafeAreaView>
   );
 }

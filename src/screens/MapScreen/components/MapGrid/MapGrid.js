@@ -13,7 +13,6 @@ const MapGrid = ({
   discoveredNodes,
   handleTilePress,
   navigation,
-  pinnedNodeId,
   placedMachines,
   currentDirection,
   manualMineFeedback,
@@ -124,10 +123,7 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: color,
                 borderWidth: 1,
-                borderColor:
-                  pinnedNodeId !== node.id
-                    ? Colors.borderLight
-                    : Colors.accentGold,
+                borderColor: Colors.borderLight,
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
