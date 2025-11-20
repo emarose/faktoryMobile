@@ -168,24 +168,19 @@ const SmelterCard = ({ machine, navigation }) => {
       )}
 
       {/* Recipe Status (when not processing) */}
-      {!status.isProcessing && (
+      {!status.isProcessing && currentRecipe && (
         <View style={styles.extraInfoContainer}>
-          <Text style={[styles.machineStatus, { color: status.color }]}>
-            {status.text}
-          </Text>
-          {currentRecipe && (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {GameAssets.icons[currentRecipe.id] && (
-                <Image
-                  source={GameAssets.icons[currentRecipe.id]}
-                  style={{ width: 16, height: 16, marginRight: 4 }}
-                />
-              )}
-              <Text style={styles.recipeInfo}>
-                Ready to craft: {currentRecipe.name}
-              </Text>
-            </View>
-          )}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {GameAssets.icons[currentRecipe.id] && (
+              <Image
+                source={GameAssets.icons[currentRecipe.id]}
+                style={{ width: 16, height: 16, marginRight: 4 }}
+              />
+            )}
+            <Text style={styles.recipeInfo}>
+              Ready to craft: {currentRecipe.name}
+            </Text>
+          </View>
         </View>
       )}
     </View>
