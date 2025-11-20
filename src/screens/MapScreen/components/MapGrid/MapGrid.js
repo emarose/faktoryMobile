@@ -111,11 +111,10 @@ const MapGrid = ({
           );
         } else if (node && discovered) {
           
-          const hasMiner = placedMachines.some(
-            (m) =>
-              (m.type === "miner" || m.type === "oilExtractor") &&
-              m.assignedNodeId === node.id
-          );
+          // Check if this node has a placed machine
+          const hasMiner = placedMachines.some((m) => {
+            return (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === node.id;
+          });
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
@@ -145,14 +144,11 @@ const MapGrid = ({
               )}
               {/* Show miner icon when a miner is placed */}
               {hasMiner && (
-                <MaterialCommunityIcons
-                  name="robot-industrial"
-                  size={20}
-                  color={
-                    node.id.includes("coal_node")
-                      ? Colors.accentGold
-                      : Colors.background
-                  }
+                <IconContainer
+                  iconId="miner"
+                  size={24}
+                  iconSize={20}
+                  style={{ backgroundColor: 'transparent', borderWidth: 0 }}
                 />
               )}
               {/* Manual mine pulse overlay (full tile color change) */}
