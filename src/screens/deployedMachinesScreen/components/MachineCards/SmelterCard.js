@@ -1,5 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "../../../../components";
 import ProgressBar from "../../../../components/ProgressBar";
@@ -54,28 +55,25 @@ const SmelterCard = ({ machine, navigation }) => {
         {/* Assign Recipe Button */}
         <View>
           <TouchableOpacity
-            style={styles.assignNodeButton}
             onPress={openSmelterScreen}
+            activeOpacity={0.7}
           >
-            <ImageBackground
-              source={require("../../../../../assets/images/UI/buttons/boton-inactive.png")}
-              style={{
-                width: 96,
-                height: 48,
-                justifyContent: "center",
-              }}
-              imageStyle={{
-                resizeMode: "cover", // o "contain"
-              }}
+            <LinearGradient
+              colors={['#00ffff', '#ff00cc']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.assignNodeButton}
             >
-              <Text style={styles.assignNodeText}>
-                {status.isProcessing
-                  ? "Change"
-                  : liveMachine.currentRecipeId
-                  ? "Change"
-                  : "Assign"}
-              </Text>
-            </ImageBackground>
+              <View style={styles.assignNodeButtonInner}>
+                <Text style={styles.assignNodeText}>
+                  {status.isProcessing
+                    ? "Change"
+                    : liveMachine.currentRecipeId
+                    ? "Change"
+                    : "Assign"}
+                </Text>
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>

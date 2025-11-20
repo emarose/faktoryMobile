@@ -1,5 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text } from "../../../../components";
 import ProgressBar from "../../../../components/ProgressBar";
@@ -55,23 +56,25 @@ const MinerCard = ({ machine, navigation }) => {
         {/* Assign Node Button */}
         <View style={styles.marginVertical10}>
           <TouchableOpacity
-            style={styles.assignNodeButton}
             onPress={() =>
               navigation.navigate("NodeSelectorScreen", {
                 machine: liveMachine,
               })
             }
-            activeOpacity={0.85}
+            activeOpacity={0.7}
           >
-            <MaterialCommunityIcons
-              name="select-marker"
-              size={28}
-              color={Colors.textPrimary}
-              style={{ marginRight: 6 }}
-            />
-            <Text style={styles.assignNodeText}>
-              {liveMachine.assignedNodeId ? "Change" : "Assign"}
-            </Text>
+            <LinearGradient
+              colors={["#00ffff", "#ff00cc"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.assignNodeButton}
+            >
+              <View style={styles.assignNodeButtonInner}>
+                <Text style={styles.assignNodeText}>
+                  {liveMachine.assignedNodeId ? "Change" : "Assign"}
+                </Text>
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>

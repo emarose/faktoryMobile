@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '../../../../components';
 import { GameAssets } from '../../../../components/AppLoader';
@@ -62,19 +63,27 @@ const RefineryCard = ({ machine, navigation }) => {
         {/* Assign Recipe Button */}
         <View style={styles.marginVertical10}>
           <TouchableOpacity
-            style={styles.assignNodeButton}
             onPress={openRefineryScreen}
-            activeOpacity={0.85}
+            activeOpacity={0.7}
           >
-            <MaterialCommunityIcons
-              name="flask"
-              size={28}
-              color={Colors.textPrimary}
-              style={{ marginRight: 6 }}
-            />
-            <Text style={styles.assignNodeText}>
-              {status.isProcessing ? "Change" : liveMachine.currentRecipeId ? "Change" : "Assign"}
-            </Text>
+            <LinearGradient
+              colors={['#00ffff', '#ff00cc']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.assignNodeButton}
+            >
+              <View style={styles.assignNodeButtonInner}>
+                <MaterialCommunityIcons
+                  name="flask"
+                  size={20}
+                  color={Colors.textPrimary}
+                  style={{ marginRight: 4 }}
+                />
+                <Text style={styles.assignNodeText}>
+                  {status.isProcessing ? "Change" : liveMachine.currentRecipeId ? "Change" : "Assign"}
+                </Text>
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>

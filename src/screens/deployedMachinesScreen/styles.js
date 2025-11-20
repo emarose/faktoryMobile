@@ -201,26 +201,24 @@ const styles = StyleSheet.create({
   },
   // Buttons
   assignNodeButton: {
-/*     width: 80,
-    height: 64, */
-    /* flexDirection: "row",
+    borderRadius: 10,
+    padding: 2,
+  },
+  assignNodeButtonInner: {
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center", */
-    //backgroundColor: Colors.accentBlue,
-    //paddingVertical: 10,
-    //paddingHorizontal: 16,
-    //borderRadius: 8,
-    //flexDirection: "row",
-    //alignItems: "center",
-    //justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    minWidth: 90,
   },
   assignNodeText: {
-
     textAlign: "center",
-    color: Colors.background,
-    fontSize: 16,
-    paddingBottom:10,
-    fontWeight: "700",
+    color: Colors.textPrimary,
+    fontSize: 14,
+    fontWeight: "bold",
   },
 
   // Extra info container
