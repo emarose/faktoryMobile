@@ -11,8 +11,10 @@ import DiscoveryRadius from "./components/DiscoveryRadius";
 // import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { GameContext } from "../../contexts/GameContext";
 import NodeBottomSheet from "./components/NodeBottomSheet";
+import InventoryBottomSheet from "./components/InventoryBottomSheet";
 import MapToast from "./components/MapToast/MapToast";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native";
 import { useMilestone } from "../../hooks/useMilestone";
 import Colors from "../../constants/Colors";
 import { TILE_SIZE } from "../../constants/Consts";
@@ -47,10 +49,11 @@ export default function MapScreen({ navigation }) {
   const [manualMineSignal, setManualMineSignal] = useState(0);
   // mini toast state: { nodeId, message, signal }
   const [miniToast, setMiniToast] = useState(null);
-  
+
   // Bottom sheet state
   const [selectedNode, setSelectedNode] = useState(null);
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
+  const [isInventoryVisible, setIsInventoryVisible] = useState(false);
   const miniToastTimeoutRef = useRef(null);
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
@@ -90,7 +93,7 @@ export default function MapScreen({ navigation }) {
   useEffect(() => {
     const tileRadius = Math.ceil(DISCOVERY_RADIUS_PX / TILE_SIZE);
     const radiusSquared = (tileRadius - 1) * (tileRadius - 1);
-    
+
     const nodesInRange = allResourceNodes.filter((node) => {
       const dx = node.x - playerMapPosition.x;
       const dy = node.y - playerMapPosition.y;
@@ -215,11 +218,11 @@ export default function MapScreen({ navigation }) {
           onHide={() => setToastVisible(false)}
         />
 
-        {/* Map Controls */}
-        <MapControls
+        {/* Map Controls FOR TEST ONLY */}
+        {/*   <MapControls
           onRegenerateSeed={regenerateSeed}
           onSetTestSeed={setTestSeed}
-        />
+        /> */}
 
         <View style={styles.mapVisualContainer}>
           <View
@@ -299,6 +302,34 @@ export default function MapScreen({ navigation }) {
           </View>
         </View>
 
+        {/* Inventory Button */}
+        <View style={{ alignItems: "center", marginTop: 16, marginBottom: 8 }}>
+          <TouchableOpacity
+            onPress={() => setIsInventoryVisible(true)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: Colors.backgroundPanel,
+              borderWidth: 1,
+              borderColor: Colors.borderLight,
+              borderRadius: 8,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              gap: 8,
+            }}
+          >
+            <MaterialCommunityIcons
+              name="bag-personal"
+              size={20}
+              color={Colors.accentGold}
+            />
+            <Text style={{ fontSize: 14, color: Colors.textPrimary, fontWeight: "500" }}>
+              Inventory
+            </Text>
+
+          </TouchableOpacity>
+        </View>
+
       </ScrollView>
 
       <NodeBottomSheet
@@ -314,6 +345,12 @@ export default function MapScreen({ navigation }) {
           setIsBottomSheetVisible(false);
           setSelectedNode(null);
         }}
+      />
+
+      <InventoryBottomSheet
+        isVisible={isInventoryVisible}
+        inventory={inventory}
+        onClose={() => setIsInventoryVisible(false)}
       />
     </SafeAreaView>
   );
