@@ -337,7 +337,7 @@ export const GameProvider = ({ children }) => {
     return () => {
       // Only attempt to save if game data has been loaded
       if (isGameLoaded) {
-        console.log('Saving game data on unmount...');
+        //console.log('Saving game data on unmount...');
         // Create a synchronous version of the save logic to ensure it completes
         const saveGameSync = async () => {
           try {
@@ -358,7 +358,6 @@ export const GameProvider = ({ children }) => {
               saveData(STORAGE_KEYS.MAP_SEED, seed),
               saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds))
             ]);
-            console.log('Game saved on unmount');
           } catch (error) {
             console.error('Error saving game on unmount:', error);
           }

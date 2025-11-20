@@ -9,21 +9,20 @@ export function getMachineIcon(type, color, size = 80) {
   // Define machine icon paths for all machine types
   const machineIcons = {
     smelter: require("../../../../assets/images/icons/smelter.png"),
-    miner: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual miner icon
-    constructor: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual constructor icon
-    assembler: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual assembler icon
-    manufacturer: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual manufacturer icon
-    foundry: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual foundry icon
-    refinery: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual refinery icon
-    oilExtractor: require("../../../../assets/images/icons/smelter.png"), // TODO: Replace with actual oilExtractor icon
+    miner: require("../../../../assets/images/icons/miner.png"),
+    constructor: require("../../../../assets/images/icons/constructor.png"),
+    assembler: require("../../../../assets/images/icons/assembler.png"),
+    manufacturer: require("../../../../assets/images/icons/manufacturer.png"),
+    foundry: require("../../../../assets/images/icons/foundry.png"),
+    refinery: require("../../../../assets/images/icons/refinery.png"),
+    oilExtractor: require("../../../../assets/images/icons/oilextractor.png"),
   };
-
   // Return image component for machine icon
   const iconSource = machineIcons[type] || machineIcons.smelter;
   return (
-    <Image 
-      source={iconSource} 
-      style={{ width: size, height: size }} 
+    <Image
+      source={iconSource}
+      style={{ width: size, height: size }}
       resizeMode="contain"
     />
   );
