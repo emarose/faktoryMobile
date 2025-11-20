@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   machineStatusContainer: {
     alignItems: "flex-end",
-    minWidth: 120,
+    minWidth: 150,
   },
   statusRow: {
     flexDirection: "row",
@@ -111,14 +111,14 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "right",
     marginBottom: 2,
-    maxWidth: 120,
+    maxWidth: 150,
   },
   outputText: {
     color: Colors.backgroundAccent,
     fontSize: 10,
     textAlign: "right",
     fontWeight: "500",
-    maxWidth: 120,
+    maxWidth: 150,
   },
   progressBarContainer: {
     flexDirection: "row",

@@ -99,17 +99,21 @@ const DeployedMachinesCard = ({
         if (activeProcesses.length > 0) {
           status = "processing";
           const currentProcess = activeProcesses[0];
-          activity = `Crafting ${items[currentProcess.itemType]?.name || currentProcess.itemType
-            }`;
+          
+          // Use the correct properties from the actual process object
+          const itemName = currentProcess.itemName || items[currentProcess.recipeId]?.name || currentProcess.recipeId || 'Unknown Item';
+          const quantity = 1; // Default to 1 as recipes typically produce single items
+          
+          activity = `Crafting ${itemName}`;
 
-          // Calculate progress if available
-          if (currentProcess.startTime && currentProcess.duration) {
-            const elapsed = Date.now() - currentProcess.startTime;
-            progress = Math.min(100, (elapsed / currentProcess.duration) * 100);
+          // Calculate progress using the correct time properties
+          if (currentProcess.startedAt && currentProcess.endsAt) {
+            const elapsed = Date.now() - currentProcess.startedAt;
+            const total = currentProcess.endsAt - currentProcess.startedAt;
+            progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
           }
 
-          outputInfo = `${currentProcess.quantity}x ${items[currentProcess.itemType]?.name || currentProcess.itemType
-            }`;
+          outputInfo = `${quantity}x ${itemName}`;
         } else {
           status = "active";
           activity = "Ready for work";
