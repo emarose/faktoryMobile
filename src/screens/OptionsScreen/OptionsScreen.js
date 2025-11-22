@@ -1,19 +1,32 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { Text, FontSelector } from '../../components';
+import { View, ScrollView, ImageBackground } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Text, FontSelector, CustomHeader } from '../../components';
 import Colors from '../../constants/Colors';
 import GameDataManager from './components/GameDataManager';
 import ManualSave from './components/ManualSave';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import styles from './styles';
 
 const OptionsScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <MaterialCommunityIcons name="cog" size={32} color={Colors.accentGold} />
-          <Text style={styles.headerText}>Options</Text>
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <CustomHeader
+        title="Options"
+        rightIcon="factory"
+        onRightIconPress={() => console.log('Factory icon pressed')}
+      />
+      <ImageBackground
+        source={require('../../../assets/images/backgrounds/background.png')}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
+      >
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.4)", "rgba(58, 2, 66, 0.6)", "rgba(0, 0, 0, 0.5)"]}
+          style={styles.gradientOverlay}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Game Save</Text>
@@ -43,66 +56,13 @@ const OptionsScreen = () => {
             <Text style={styles.infoText}>A resource management and factory building game</Text>
           </View>
         </View>
-      </ScrollView>
+          </ScrollView>
+        </LinearGradient>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-  },
-  scrollContainer: {
-    padding: 16,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderColor,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginLeft: 12,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.accentGold,
-    marginBottom: 8,
-  },
-  optionCard: {
-    backgroundColor: Colors.backgroundPanel,
-    borderRadius: 10,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  versionText: {
-    fontSize: 16,
-    color: Colors.textPrimary,
-    textAlign: 'center',
-    marginTop: 16,
-    fontWeight: 'bold',
-  },
-  infoText: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    marginVertical: 16,
-    paddingHorizontal: 20,
-  },
-});
+
 
 export default OptionsScreen;

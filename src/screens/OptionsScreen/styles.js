@@ -2,26 +2,19 @@ import { StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
 export default StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: '#000',
+  },
+  backgroundImageContainer: {
+    flex: 1,
+  },
+  gradientOverlay: {
+    flex: 1,
   },
   scrollContainer: {
     padding: 16,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderColor,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginLeft: 12,
+    paddingBottom: 100,
   },
   section: {
     marginBottom: 24,
@@ -29,29 +22,34 @@ export default StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.accentGold,
-    marginBottom: 8,
+    color: '#00ffff',
+    marginBottom: 12,
+    textShadowColor: 'rgba(0, 255, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   optionCard: {
-    backgroundColor: Colors.backgroundPanel,
-    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 255, 255, 0.3)',
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: '#00ffff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   versionText: {
     fontSize: 16,
-    color: Colors.textPrimary,
+    color: '#00ffff',
     textAlign: 'center',
     marginTop: 16,
     fontWeight: 'bold',
   },
   infoText: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     textAlign: 'center',
     marginVertical: 16,
     paddingHorizontal: 20,
