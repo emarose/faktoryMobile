@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity, ImageBackground, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
+import { GameAssets } from "../../components/AppLoader";
 import styles from "./styles";
 import Colors from "../../constants/Colors";
 import { useGame } from "../../contexts/GameContext";
@@ -28,9 +30,18 @@ export default function MilestonesScreen() {
         rightIcon="trophy"
         onRightIconPress={() => console.log("Milestones tools pressed")}
       />
-      <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 12 }}
+      <ImageBackground
+        source={require('../../../assets/images/backgrounds/background.png')}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
       >
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.4)", "rgba(58, 2, 66, 0.6)", "rgba(0, 0, 0, 0.5)"]}
+          style={styles.gradientOverlay}
+        >
+          <ScrollView
+            contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 100 }}
+          >
         {milestones.map((milestone) => {
           const expanded = expandedId === milestone.id;
           const isNext = nextMilestone && milestone.id === nextMilestone.id;
@@ -45,10 +56,10 @@ export default function MilestonesScreen() {
                   ? styles.milestoneUnlocked
                   : styles.milestoneLocked,
                 isNext && {
-                  borderColor: Colors.accentGold,
-                  borderWidth: 3,
-                  shadowColor: Colors.accentGold,
-                  shadowOpacity: 0.25,
+                  borderColor: '#00ffff',
+                  borderWidth: 2,
+                  shadowColor: '#00ffff',
+                  shadowOpacity: 0.4,
                 },
                 {
                   minHeight: 60,
@@ -56,9 +67,9 @@ export default function MilestonesScreen() {
                   marginBottom: 10,
                   overflow: "hidden",
                   elevation: expanded ? 6 : 2,
-                  shadowOpacity: expanded ? 0.18 : 0.08,
-                  shadowRadius: expanded ? 12 : 4,
-                  borderWidth: expanded ? 2.5 : 1.5,
+                  shadowOpacity: expanded ? 0.25 : 0.15,
+                  shadowRadius: expanded ? 12 : 6,
+                  borderWidth: expanded ? 2 : 1.5,
                 },
               ]}
             >
@@ -70,11 +81,10 @@ export default function MilestonesScreen() {
                 }}
               >
                 {isNext && (
-                  <Text
-                    style={{ fontSize: 18, color: Colors.accentGold, marginRight: 6 }}
-                  >
-                    ★
-                  </Text>
+                  <Image
+                    source={GameAssets.icons.largeStar}
+                    style={{ width: 20, height: 20, marginRight: 6 }}
+                  />
                 )}
                 <Text style={[styles.milestoneName, { fontSize: 18 }]}>
                   {milestone.name}
@@ -92,10 +102,36 @@ export default function MilestonesScreen() {
               {expanded && (
                 <>
                   <Text
-                    style={{ color: Colors.textSecondary, fontSize: 13, marginBottom: 2 }}
+                    style={{ color: Colors.textSecondary, fontSize: 13, marginBottom: 8, marginTop: 4 }}
                   >
                     {milestone.requirementsDescription}
                   </Text>
+                  
+                  {milestone.requirements && (
+                    <View style={{ marginTop: 4, marginBottom: 8 }}>
+                      <Text style={{ color: '#00ffff', fontSize: 14, fontWeight: 'bold', marginBottom: 6 }}>
+                        Requirements:
+                      </Text>
+                      {Object.entries(milestone.requirements).map(([key, value]) => {
+                        const icon = GameAssets.icons[key];
+                        return (
+                          <View key={key} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                            {icon && (
+                              <Image
+                                source={icon}
+                                style={{ width: 20, height: 20, marginRight: 8 }}
+                                resizeMode="contain"
+                              />
+                            )}
+                            <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: 13 }}>
+                              {key === 'discoveredNodes' ? `Discover ${value} nodes` : `${value}x ${key.replace(/([A-Z])/g, ' $1').trim()}`}
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  )}
+
                   <Text
                     style={{
                       color: Colors.textPrimary,
@@ -121,8 +157,9 @@ export default function MilestonesScreen() {
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
-      
+          </ScrollView>
+        </LinearGradient>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
