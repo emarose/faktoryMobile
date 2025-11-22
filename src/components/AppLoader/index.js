@@ -76,6 +76,13 @@ export const GameAssets = {
     
     // UI Icons
     largeStar: require("../../../assets/images/UI/Icon_Large_Star.png"),
+    
+    // Bottom Tab Navigator Icons
+    tabMap: require("../../../assets/images/UI/bottomTabNavigator/map.png"),
+    tabBuilder: require("../../../assets/images/UI/bottomTabNavigator/builder.png"),
+    tabFactory: require("../../../assets/images/UI/bottomTabNavigator/factory.png"),
+    tabMachines: require("../../../assets/images/UI/bottomTabNavigator/builtMachines.png"),
+    tabSettings: require("../../../assets/images/UI/bottomTabNavigator/settings.png"),
   },
 };
 

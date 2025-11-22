@@ -32,14 +32,14 @@ const ResourceOverviewHeader = () => {
             }
             return (
               <View key={item.id} style={styles.resourceItem}>
+                <Text style={styles.resourceName} numberOfLines={1}>
+                  {item.name}
+                </Text>
                 <IconContainer 
                   iconId={item.id} 
                   size={30}
                   iconSize={24}
                 />
-                <Text style={styles.resourceName} numberOfLines={1}>
-                  {item.name}
-                </Text>
                 <View style={styles.counterContainer}>
                   <Text style={styles.resourceAmount}>
                     {Math.floor(item.currentAmount)}
@@ -87,18 +87,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.textSecondary,
     textAlign: "center",
-    marginTop: 2,
+    marginVertical: 2,
   },
   counterContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    borderRadius: 6,
     paddingHorizontal: 6,
     paddingVertical: 3,
     minWidth: 40,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
   },
   resourceAmount: {
     fontSize: 11,

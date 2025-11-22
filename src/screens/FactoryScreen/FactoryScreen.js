@@ -39,7 +39,7 @@ export default function FactoryScreen() {
       if (scrollRef.current) {
         try {
           scrollRef.current.scrollTo({ y: 0, animated: true });
-        } catch (e) { }
+        } catch (e) {}
       }
     }, [])
   );
@@ -71,7 +71,7 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("MapScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  colors={["rgba(0, 0, 0, 0.9)", "rgba(0, 0, 0, 0.5)"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.gradientCard}
@@ -93,13 +93,13 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("BuildScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  colors={["rgba(0, 0, 0, 0.9)", "rgba(0, 0, 0, 0.5)"]}
                   start={{ x: 1, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={styles.gradientCard}
                 >
                   <Text numberOfLines={2} style={styles.gridItemTitle}>
-                    Builder
+                  Machine Builder
                   </Text>
                   <Image
                     source={require("../../../assets/images/UI/cardBg/buildMachines.png")}
@@ -127,7 +127,7 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("InventoryScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  colors={["rgba(0, 0, 0, 0.9)", "rgba(0, 0, 0, 0.5)"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.gradientCard}
@@ -141,7 +141,7 @@ export default function FactoryScreen() {
                 onPress={() => navigation.navigate("ProductAssemblyScreen")}
               >
                 <LinearGradient
-                  colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+                  colors={["rgba(0, 0, 0, 0.9)", "rgba(0, 0, 0, 0.5)"]}
                   start={{ x: 1, y: 0 }}
                   end={{ x: 0, y: 1 }}
                   style={styles.gradientCard}
