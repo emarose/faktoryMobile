@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { View, ScrollView, Animated } from "react-native";
+import { View, ScrollView, Animated, ImageBackground } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, CustomHeader } from "../../components";
+import { LinearGradient } from "expo-linear-gradient";
 import styles from "./styles";
 import MapControls from "./components/MapControls/MapControls";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
@@ -211,20 +212,30 @@ export default function MapScreen({ navigation }) {
         onRightIconPress={() => console.log("Map target pressed")}
       />
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
-        <MapToast
-          visible={toastVisible}
-          message={toastMessage}
-          onHide={() => setToastVisible(false)}
-        />
+      <ImageBackground
+        source={require("../../../assets/images/backgrounds/background.png")}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
+      >
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
+          <MapToast
+            visible={toastVisible}
+            message={toastMessage}
+            onHide={() => setToastVisible(false)}
+          />
 
-        {/* Map Controls FOR TEST ONLY */}
-        {/*   <MapControls
-          onRegenerateSeed={regenerateSeed}
-          onSetTestSeed={setTestSeed}
-        /> */}
+          {/* Map Controls FOR TEST ONLY */}
+          {/*   <MapControls
+            onRegenerateSeed={regenerateSeed}
+            onSetTestSeed={setTestSeed}
+          /> */}
 
-        <View style={styles.mapVisualContainer}>
+          <LinearGradient
+            colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.mapVisualContainer}
+          >
           <View
             style={{
               position: "relative",
@@ -264,13 +275,16 @@ export default function MapScreen({ navigation }) {
             }}
           >
             {/* Player Info */}
-            <View
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={{
                 alignSelf: "flex-start",
                 flexDirection: "column",
                 gap: 8,
                 borderWidth: 1,
-                borderColor: Colors.border,
+                borderColor: Colors.backgroundAccent,
                 borderRadius: 8,
                 padding: 8,
                 marginTop: 16,
@@ -289,7 +303,7 @@ export default function MapScreen({ navigation }) {
                   Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
                 </Text>
               </View>
-            </View>
+            </LinearGradient>
 
             {/* Movement Controls - Posicionados en el área del PlayerInfo */}
             <View style={{ position: "relative", alignSelf: "flex-end" }}>
@@ -300,37 +314,50 @@ export default function MapScreen({ navigation }) {
               />
             </View>
           </View>
-        </View>
+          </LinearGradient>
 
         {/* Inventory Button */}
         <View style={{ alignItems: "center", marginTop: 16, marginBottom: 8 }}>
           <TouchableOpacity
             onPress={() => setIsInventoryVisible(true)}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: Colors.backgroundPanel,
-              borderWidth: 1,
-              borderColor: Colors.borderLight,
-              borderRadius: 8,
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              gap: 8,
-            }}
+            style={{ width: "90%", maxWidth: 300 }}
           >
-            <MaterialCommunityIcons
-              name="bag-personal"
-              size={20}
-              color={Colors.accentGold}
-            />
-            <Text style={{ fontSize: 14, color: Colors.textPrimary, fontWeight: "500" }}>
-              Inventory
-            </Text>
-
+            <LinearGradient
+              colors={["#ff00cc", "#00ffff"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                borderRadius: 8,
+                padding: 2,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  borderRadius: 6,
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
+                  gap: 8,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="bag-personal"
+                  size={20}
+                  color={Colors.accentGold}
+                />
+                <Text style={{ fontSize: 14, color: Colors.textPrimary, fontWeight: "500" }}>
+                  Inventory
+                </Text>
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
-      </ScrollView>
+        </ScrollView>
+      </ImageBackground>
 
       <NodeBottomSheet
         isVisible={isBottomSheetVisible}

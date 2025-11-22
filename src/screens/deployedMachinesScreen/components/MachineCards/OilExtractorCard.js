@@ -28,7 +28,6 @@ const OilExtractorCard = ({ machine, navigation }) => {
         styles.machineCard,
         {
           borderColor: machineColor,
-          backgroundColor: Colors.backgroundPanel,
         },
       ]}
     >
@@ -40,10 +39,10 @@ const OilExtractorCard = ({ machine, navigation }) => {
               <View
                 style={[
                   styles.machineIconContainer,
-                  { backgroundColor: machineColor },
+                  { borderColor: machineColor, borderWidth: 2 },
                 ]}
               >
-                {getMachineIcon(machine.type, Colors.textPrimary)}
+                {getMachineIcon(machine.type, machineColor)}
               </View>
               <Text style={[styles.machineName, { color: machineColor }]}>
                 {displayName}

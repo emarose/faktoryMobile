@@ -1,4 +1,5 @@
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
@@ -87,8 +88,18 @@ const DeployedMachinesScreen = () => {
         onRightIconPress={() => navigation.navigate("BuildScreen")}
       />
       
-      {/* Machine Type Tabs */}
-      <View style={styles.filterTabsContainer}>
+      <ImageBackground
+        source={require("../../../assets/images/backgrounds/background.png")}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
+      >
+        {/* Machine Type Tabs */}
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.filterTabsContainer}
+        >
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false}
@@ -121,9 +132,9 @@ const DeployedMachinesScreen = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+        </LinearGradient>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {currentTabMachines.length > 0 ? (
           <MachineGroup key={activeTab} typeName={activeTab}>
             {currentTabMachines.filter(Boolean).map((machine) => {
@@ -139,7 +150,8 @@ const DeployedMachinesScreen = () => {
             }
           </Text>
         )}
-      </ScrollView>
+        </ScrollView>
+      </ImageBackground>
     </SafeAreaView>
   );
 };

@@ -4,7 +4,11 @@ import Colors from "../../constants/Colors";
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: "#3a0242ff",
+  },
+  backgroundImageContainer: {
+    flex: 1,
+    width: "100%",
   },
   scrollViewContentWrapper: {
     paddingTop: 10,
@@ -22,18 +26,14 @@ const styles = StyleSheet.create({
   // --- Map Visualization Section Styles ---
   mapVisualContainer: {
     alignSelf: "center",
-    backgroundColor: Colors.backgroundPanel,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
-    borderRadius: 8,
+    borderColor: Colors.backgroundAccent,
+    borderRadius: 10,
     padding: 16,
     marginVertical: 8,
+    marginHorizontal: 8,
     alignItems: "center",
-    shadowColor: Colors.fallback,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    elevation: 10,
+    opacity: 0.9,
   },
   mapGrid: {
     backgroundColor: Colors,

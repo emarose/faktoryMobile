@@ -29,29 +29,38 @@ const MinerCard = ({ machine, navigation }) => {
         styles.machineCard,
         {
           borderColor: machineColor,
-          backgroundColor: Colors.backgroundPanel,
         },
       ]}
     >
       {/* Machine Header */}
-      <View style={styles.rowAlignCenter}>
-        <View style={styles.machineInfo}>
-          <View style={styles.rowSpaceBetween}>
-            <View style={styles.rowAlignCenterGap}>
-              <View
-                style={[
-                  styles.machineIconContainer,
-                  { backgroundColor: machineColor },
-                ]}
-              >
-                {getMachineIcon(machine.type, Colors.textPrimary)}
+      <LinearGradient
+        colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          borderRadius: 8,
+          padding: 12,
+          marginBottom: 12,
+        }}
+      >
+        <View style={styles.rowAlignCenter}>
+          <View style={styles.machineInfo}>
+            <View style={styles.rowSpaceBetween}>
+              <View style={styles.rowAlignCenterGap}>
+                <View
+                  style={[
+                    styles.machineIconContainer,
+                    { borderColor: machineColor, borderWidth: 2 },
+                  ]}
+                >
+                  {getMachineIcon(machine.type, machineColor)}
+                </View>
+                <Text style={[styles.machineName, { color: machineColor }]}>
+                  {displayName}
+                </Text>
               </View>
-              <Text style={[styles.machineName, { color: machineColor }]}>
-                {displayName}
-              </Text>
             </View>
           </View>
-        </View>
 
         {/* Assign Node Button */}
         <View style={styles.marginVertical10}>
@@ -77,35 +86,81 @@ const MinerCard = ({ machine, navigation }) => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+        </View>
+      </LinearGradient>
 
       {/* Miner Details */}
       {assignedNode && (
-        <View style={resStyles.card}>
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={{
+            borderRadius: 8,
+            padding: 12,
+            borderWidth: 1,
+            borderColor: Colors.borderLight,
+          }}
+        >
           {/* Assigned node header */}
-          <View style={styles.headerRow}>
-            <Text style={resStyles.sectionTitle}>Assigned Node</Text>
-
-            <View style={styles.iconContainer}>
-              {assignedNode.type &&
-                GameAssets.icons[`${assignedNode.type}`] && (
-                  <Image
-                    source={GameAssets.icons[`${assignedNode.type}`]}
-                    style={{ width: 16, height: 16 }}
-                  />
-                )}
+          <View
+            style={[
+              styles.headerRow,
+              {
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                marginBottom: 12,
+              },
+            ]}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <View
+                style={[
+                  styles.iconContainer,
+                  {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderColor: Colors.accentGold,
+                  },
+                ]}
+              >
+                {assignedNode.type &&
+                  GameAssets.icons[`${assignedNode.type}`] && (
+                    <Image
+                      source={GameAssets.icons[`${assignedNode.type}`]}
+                      style={{ width: 16, height: 16 }}
+                    />
+                  )}
+              </View>
+              <Text
+                style={[
+                  resStyles.sectionTitle,
+                  { color: Colors.accentGold, fontSize: 13, fontWeight: "600" },
+                ]}
+              >
+                Assigned Node
+              </Text>
             </View>
           </View>
-          <Text
-            style={[
-              styles.machineStatus,
-              { color: status.color, flex: 1, textAlign: "center" },
-            ]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {status.text}
-          </Text>
+
+          {/* Status Badge */}
+          <View style={{ marginBottom: 12, alignItems: "flex-start" }}>
+            <View
+              style={[
+                styles.selectedNodePill,
+                { backgroundColor: status.color + "40", borderWidth: 1, borderColor: status.color },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.selectedNodePillText,
+                  { color: status.color, fontSize: 11 },
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {status.text}
+              </Text>
+            </View>
+          </View>
 
           {/* Depletion info */}
           {nodeDepletionData && (
@@ -142,9 +197,11 @@ const MinerCard = ({ machine, navigation }) => {
                 status.isIdle
                   ? styles.pauseResumeIdle
                   : styles.pauseResumeActive,
+                status.isDepleted && status.isIdle && { opacity: 0.4 },
               ]}
               onPress={actions.handlePauseResume}
               activeOpacity={0.85}
+              disabled={status.isDepleted && status.isIdle}
             >
               <MaterialIcons
                 name={status.isIdle ? "play-arrow" : "pause"}
@@ -158,20 +215,29 @@ const MinerCard = ({ machine, navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.detachButton}
+              style={[
+                styles.detachButton,
+                status.isDepleted && {
+                  backgroundColor: Colors.textDanger + "20",
+                  borderColor: Colors.textDanger,
+                  borderWidth: 1,
+                },
+              ]}
               onPress={actions.handleDetachNode}
               activeOpacity={0.85}
             >
               <MaterialCommunityIcons
                 name="link-off"
                 size={16}
-                color={Colors.textSecondary}
+                color={status.isDepleted ? Colors.textDanger : Colors.textSecondary}
                 style={{ marginRight: 4 }}
               />
-              <Text style={styles.detachText}>Detach Miner</Text>
+              <Text style={[styles.detachText, status.isDepleted && { color: Colors.textDanger }]}>
+                Detach Miner
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </LinearGradient>
       )}
     </View>
   );

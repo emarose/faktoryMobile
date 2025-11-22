@@ -2,89 +2,104 @@ import { StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
 const styles = StyleSheet.create({
-  resourceCardSmall: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 3,
-    opacity: 0.7,
-    minHeight: 60,
-    maxHeight: 80,
-  },
   container: {
     flex: 1,
-    backgroundColor: Colors.backgroundPanel,
-    paddingTop: 10,
+    backgroundColor: "#3a0242ff",
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 20,
+  backgroundImageContainer: {
+    flex: 1,
+    width: "100%",
   },
   scrollViewContent: {
-    width: '100%',
     paddingHorizontal: 15,
+    paddingVertical: 10,
+    paddingBottom: 30,
+  },
+  summaryContainer: {
+    gap: 12,
+    marginBottom: 20,
   },
   resourceCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: Colors.backgroundAccent,
   },
-  resourceInfo: {
+  resourceCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  resourceCardInfo: {
+    marginLeft: 12,
     flex: 1,
-    marginLeft: 10,
   },
   resourceName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.textSecondary,
-    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginBottom: 4,
   },
-  resourceDescription: {
-    fontSize: 14,
-    color: Colors.textMuted,
-    marginBottom: 10,
+  resourceAmount: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: Colors.accentGold,
   },
   resourceStats: {
-    fontSize: 16,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderLight,
+    marginTop: 8,
+  },
+  statItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  statText: {
+    fontSize: 12,
     color: Colors.textSecondary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
-  mineButton: {
-    backgroundColor: Colors.backgroundAccent,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginLeft: 15,
+  capacityContainer: {
+    marginTop: 12,
   },
-  mineButtonText: {
-    color: Colors.textPrimary,
-    fontWeight: 'bold',
-    fontSize: 15,
-  },
-  noResourcesText: {
+  capacityLabel: {
+    fontSize: 11,
     color: Colors.textMuted,
-    textAlign: 'center',
-    marginTop: 50,
+    marginBottom: 6,
+    fontWeight: "600",
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: Colors.background,
+    borderRadius: 4,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  chartContainer: {
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: Colors.backgroundAccent,
+    alignItems: "center",
+  },
+  chartTitle: {
     fontSize: 16,
-  }
+    fontWeight: "bold",
+    color: Colors.textPrimary,
+    marginBottom: 16,
+    alignSelf: "flex-start",
+  },
+  chart: {
+    borderRadius: 8,
+  },
 });
 
 export default styles;

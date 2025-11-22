@@ -130,6 +130,10 @@ export default function useMinerCard(machine) {
 
   // Action handlers
   const handlePauseResume = () => {
+    // Don't allow resume if node is depleted
+    if (status.isIdle && status.isDepleted) {
+      return;
+    }
     if (status.isIdle) {
       resumeMiner(liveMachine.id, { user: true });
     } else {

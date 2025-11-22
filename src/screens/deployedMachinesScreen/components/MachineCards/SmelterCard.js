@@ -33,27 +33,36 @@ const SmelterCard = ({ machine, navigation }) => {
         styles.machineCard,
         {
           borderColor: machineColor,
-          backgroundColor: Colors.backgroundPanel,
         },
       ]}
     >
       {/* Machine Header */}
-      <View style={styles.rowAlignCenter}>
-        <View style={styles.machineInfo}>
-          <View style={styles.rowSpaceBetween}>
-            <View style={styles.rowAlignCenterGap}>
-              <View style={styles.machineIconContainer}>
-                {getMachineIcon(machine.type, Colors.textPrimary)}
-              </View>
-              <Text style={[styles.machineName, { color: machineColor }]}>
-                {displayName}
-              </Text>
+      <LinearGradient
+        colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          borderRadius: 8,
+          padding: 12,
+          marginBottom: 12,
+        }}
+      >
+        <View style={{ flexDirection: "column", gap: 12 }}>
+          <View style={styles.rowAlignCenterGap}>
+            <View
+              style={[
+                styles.machineIconContainer,
+                { borderColor: machineColor, borderWidth: 2 },
+              ]}
+            >
+              {getMachineIcon(machine.type, machineColor)}
             </View>
+            <Text style={[styles.machineName, { color: machineColor }]}>
+              {displayName}
+            </Text>
           </View>
-        </View>
 
-        {/* Assign Recipe Button */}
-        <View>
+          {/* Assign Recipe Button */}
           <TouchableOpacity
             onPress={openSmelterScreen}
             activeOpacity={0.7}
@@ -76,46 +85,94 @@ const SmelterCard = ({ machine, navigation }) => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Crafting Progress */}
       {status.isProcessing && currentProcess && (
-        <View style={styles.extraInfoContainer}>
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={{
+            borderRadius: 8,
+            padding: 12,
+            borderWidth: 1,
+            borderColor: Colors.borderLight,
+          }}
+        >
           <View>
-            <View style={styles.headerRow}>
+            <View
+              style={[
+                styles.headerRow,
+                {
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  marginBottom: 12,
+                },
+              ]}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentGreen,
+                    },
+                  ]}
+                >
+                  {currentProcess?.recipeId &&
+                    GameAssets.icons[currentProcess.recipeId] && (
+                      <Image
+                        source={GameAssets.icons[currentProcess.recipeId]}
+                        style={{ width: 16, height: 16 }}
+                      />
+                    )}
+                </View>
+                <Text
+                  style={[
+                    styles.selectedNodePillText,
+                    { color: Colors.accentGreen, fontSize: 13, fontWeight: "600" },
+                  ]}
+                >
+                  Crafting: {currentProcess.itemName}
+                </Text>
+              </View>
+            </View>
+
+            {/* Queue Info Badge */}
+            <View style={{ marginBottom: 12, flexDirection: "row", gap: 8, alignItems: "center" }}>
               <View
                 style={[
                   styles.selectedNodePill,
                   {
-                    maxWidth: "70%",
-                    flexDirection: "row",
-                    alignItems: "center",
+                    backgroundColor: Colors.accentBlue + "40",
+                    borderWidth: 1,
+                    borderColor: Colors.accentBlue,
                   },
                 ]}
               >
-                {currentProcess?.itemId &&
-                  GameAssets.icons[currentProcess.itemId] && (
-                    <Image
-                      source={GameAssets.icons[currentProcess.itemId]}
-                      style={{ width: 16, height: 16, marginRight: 4 }}
-                    />
-                  )}
                 <Text
-                  style={styles.selectedNodePillText}
+                  style={[styles.selectedNodePillText, { color: Colors.accentBlue, fontSize: 11 }]}
+                >
+                  Queue: {machineProcesses?.length || 1}
+                </Text>
+              </View>
+
+              {/* Status Badge */}
+              <View
+                style={[
+                  styles.selectedNodePill,
+                  { backgroundColor: status.color + "40", borderWidth: 1, borderColor: status.color },
+                ]}
+              >
+                <Text
+                  style={[styles.selectedNodePillText, { color: status.color, fontSize: 11 }]}
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  Crafting: {currentProcess.itemName} (Queue:{" "}
-                  {machineProcesses?.length || 1})
+                  {status.text}
                 </Text>
               </View>
-              <Text
-                style={[styles.machineStatus, { color: status.color }]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {status.text}
-              </Text>
             </View>
 
             <View style={styles.depletionSection}>
@@ -164,12 +221,22 @@ const SmelterCard = ({ machine, navigation }) => {
               </View>
             </View>
           </View>
-        </View>
+        </LinearGradient>
       )}
 
       {/* Recipe Status (when not processing) */}
       {!status.isProcessing && currentRecipe && (
-        <View style={styles.extraInfoContainer}>
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={{
+            borderRadius: 8,
+            padding: 12,
+            borderWidth: 1,
+            borderColor: Colors.borderLight,
+          }}
+        >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {GameAssets.icons[currentRecipe.id] && (
               <Image
@@ -181,7 +248,7 @@ const SmelterCard = ({ machine, navigation }) => {
               Ready to craft: {currentRecipe.name}
             </Text>
           </View>
-        </View>
+        </LinearGradient>
       )}
     </View>
   );

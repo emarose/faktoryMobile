@@ -32,18 +32,18 @@ const ResourceOverviewHeader = () => {
             }
             return (
               <View key={item.id} style={styles.resourceItem}>
-                <View style={styles.iconWithCounter}>
-                  <IconContainer 
-                    iconId={item.id} 
-                    size={30}
-                    iconSize={24}
-                    style={styles.iconContainerStyle}
-                  />
-                  <View style={styles.counterContainer}>
-                    <Text style={styles.resourceAmount}>
-                      {Math.floor(item.currentAmount)}
-                    </Text>
-                  </View>
+                <IconContainer 
+                  iconId={item.id} 
+                  size={30}
+                  iconSize={24}
+                />
+                <Text style={styles.resourceName} numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <View style={styles.counterContainer}>
+                  <Text style={styles.resourceAmount}>
+                    {Math.floor(item.currentAmount)}
+                  </Text>
                 </View>
               </View>
             );
@@ -70,33 +70,38 @@ const styles = StyleSheet.create({
   resourcesWrapper: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    alignItems: "center",
     width: "100%",
-    gap: 8,
+    paddingHorizontal: 8,
+    gap: 6,
   },
   resourceItem: {
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  iconWithCounter: {
-    position: "relative",
-  },
-  counterContainer: {
-    position: "absolute",
-    bottom: -2,
-    right: -2,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 1,
-    minWidth: 16,
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    flex: 1,
+    gap: 3,
   },
-  iconContainerStyle: {
-    marginRight: 4,
+  resourceName: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: Colors.textSecondary,
+    textAlign: "center",
+    marginTop: 2,
+  },
+  counterContainer: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    minWidth: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
   resourceAmount: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "bold",
     color: Colors.textPrimary,
     textAlign: "center",
