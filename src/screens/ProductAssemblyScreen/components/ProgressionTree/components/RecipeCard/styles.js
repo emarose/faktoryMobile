@@ -3,21 +3,21 @@ import Colors from "../../../../../../constants/Colors";
 
 const styles = StyleSheet.create({
   recipeCard: {
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 12,
     marginBottom: 12,
     padding: 12,
-    borderWidth: 1,
-    shadowColor: Colors.shadow,
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    borderWidth: 1.5,
+    shadowColor: '#00ffff',
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 5,
   },
   recipeHeader: {
     marginBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
+    borderBottomColor: 'rgba(0, 255, 255, 0.3)',
     paddingBottom: 8,
   },
   recipeTitleContainer: {
@@ -31,7 +31,10 @@ const styles = StyleSheet.create({
   recipeTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: Colors.textPrimary,
+    color: '#00ffff',
+    textShadowColor: 'rgba(0, 255, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   recipeContent: {
     flexDirection: "row",
@@ -46,12 +49,12 @@ const styles = StyleSheet.create({
   },
   arrowText: {
     fontSize: 24,
-    color: Colors.textSecondary,
+    color: '#ff00cc',
   },
   recipeOutputs: {
     flex: 1,
     borderLeftWidth: 1,
-    borderLeftColor: Colors.border,
+    borderLeftColor: 'rgba(0, 255, 255, 0.3)',
     paddingLeft: 12,
   },
   recipeItem: {
@@ -74,12 +77,12 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 13,
-    color: Colors.textPrimary,
+    color: '#ffffff',
     flex: 1,
   },
   itemQuantity: {
     fontSize: 12,
-    color: Colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     marginLeft: 4,
   },
 });

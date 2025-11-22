@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "../../../../../../components";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { IconContainer } from "../../../../../../components";
 import styles from "./styles";

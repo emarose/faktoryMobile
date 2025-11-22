@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1.5,
   },
   machineIconContainer: {
     width: 24,
@@ -21,13 +21,11 @@ const styles = StyleSheet.create({
   machineTabText: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.textPrimary,
   },
   recipeCounter: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: Colors.textPrimary,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,

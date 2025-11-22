@@ -4,33 +4,36 @@ import Colors from "../../../../constants/Colors";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.backgroundPrimary,
+    paddingHorizontal: 12,
   },
   // Search header styles
   searchHeader: {
     paddingVertical: 8,
-    backgroundColor: Colors.backgroundPanel,
-    borderBottomColor: Colors.border,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 255, 255, 0.3)',
+    borderRadius: 8,
+    marginBottom: 8,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: 'rgba(0, 255, 255, 0.4)',
   },
   searchInput: {
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 6,
     fontSize: 15,
-    color: Colors.textPrimary,
+    color: '#ffffff',
   },
   clearButton: {
     padding: 8,
     marginRight: 8,
-    backgroundColor: Colors.backgroundAccent,
+    backgroundColor: 'rgba(255, 0, 204, 0.3)',
     borderRadius: 8,
     minWidth: 32,
     alignItems: "center",
@@ -38,19 +41,21 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 16,
-    color: Colors.textPrimary,
+    color: '#ff00cc',
     fontWeight: "bold",
   },
   searchSummary: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: Colors.backgroundSecondary,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    borderBottomColor: 'rgba(0, 255, 255, 0.3)',
+    borderRadius: 8,
+    marginBottom: 8,
   },
   searchSummaryText: {
     fontSize: 13,
-    color: Colors.accentGreen,
+    color: '#00ffff',
     fontWeight: "600",
     letterSpacing: 0.5,
   },
@@ -59,7 +64,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: 'rgba(0, 255, 255, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    marginBottom: 8,
   },
   tabsScrollContent: {
     paddingHorizontal: 8,
@@ -71,16 +78,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: 'rgba(0, 255, 255, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   machineTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: Colors.textPrimary,
+    color: '#00ffff',
+    textShadowColor: 'rgba(0, 255, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   machineDescription: {
     fontSize: 13,
-    color: Colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     marginTop: 4,
   },
   machineRequirements: {
@@ -89,7 +100,7 @@ const styles = StyleSheet.create({
   machineRequirementsTitle: {
     fontSize: 14,
     fontWeight: "500",
-    color: Colors.textPrimary,
+    color: '#00ffff',
     marginBottom: 8,
   },
   machineRequirementsItems: {
@@ -100,8 +111,10 @@ const styles = StyleSheet.create({
   requiredItemChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.backgroundAccent,
+    backgroundColor: 'rgba(0, 255, 255, 0.15)',
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 255, 255, 0.3)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     marginRight: 8,
@@ -109,18 +122,19 @@ const styles = StyleSheet.create({
   },
   requiredItemName: {
     fontSize: 12,
-    color: Colors.textPrimary,
+    color: '#ffffff',
     fontWeight: "500",
   },
   requiredItemQuantity: {
     fontSize: 11,
-    color: Colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     marginLeft: 4,
   },
   // Recipe list container
   recipesContainer: {
     flex: 1,
-      },
+    paddingBottom: 100,
+  },
   // Common styling used in multiple components
   itemColorIndicator: {
     width: 10,
@@ -141,21 +155,21 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.7)',
     textAlign: "center",
     marginBottom: 16,
   },
   clearSearchButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: Colors.backgroundPanel,
+    backgroundColor: 'rgba(0, 255, 255, 0.15)',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderColor: 'rgba(0, 255, 255, 0.4)',
   },
   clearSearchButtonText: {
     fontSize: 14,
-    color: Colors.textPrimary,
+    color: '#00ffff',
     fontWeight: "500",
   },
 });

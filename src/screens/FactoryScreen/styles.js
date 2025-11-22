@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1,
+    paddingBottom: 100,
   },
   backgroundImageContainer: {
     flex: 1,

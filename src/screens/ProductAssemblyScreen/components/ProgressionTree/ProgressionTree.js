@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, TextInput, TouchableOpacity, Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { Text } from "../../../../components";
 import styles from "./styles";
 import Colors from "../../../../constants/Colors";
 import { GameAssets } from "../../../../components/AppLoader";

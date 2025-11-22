@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "../../../../../../components";
 import Colors from "../../../../../../constants/Colors";
 import { IconContainer } from "../../../../../../components";
 import styles from "./styles";
