@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, ImageBackground } from "react-native";
+import { View, ScrollView, TouchableOpacity, ImageBackground, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +9,8 @@ import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
 import { MinerCard, OilExtractorCard, SmelterCard, ConstructorCard, DefaultMachineCard, FoundryCard, AssemblerCard, RefineryCard, ManufacturerCard } from "./components/MachineCards";
 import MachineGroup from "./components/MachineGroup";
+import { GameAssets } from "../../components/AppLoader";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Map machine types to their dedicated card components
 const machineCardComponents = {
@@ -51,20 +53,35 @@ const DeployedMachinesScreen = () => {
     ? (allMachines || []).filter(Boolean)
     : (machinesByType[activeTab] || []).filter(Boolean);
 
-  // Machine type icons
+  // Get machine type icon from GameAssets
   const getMachineTypeIcon = (typeName) => {
-    if (typeName === "All") return '🏭';
-    const icons = {
-      'Miner': '⛏️',
-      'Smelter': '🔥', 
-      'Constructor': '🔧',
-      'Assembler': '⚙️',
-      'Foundry': '🏭',
-      'Manufacturer': '🏗️',
-      'Refinery': '⚗️',
-      'Oil Extractor': '🛢️'
+    if (typeName === "All") {
+      return null;
+    }
+    
+    const iconMap = {
+      'Miner': 'miner',
+      'Smelter': 'smelter', 
+      'Constructor': 'constructor',
+      'Assembler': 'assembler',
+      'Foundry': 'foundry',
+      'Manufacturer': 'manufacturer',
+      'Refinery': 'refinery',
+      'Oil Extractor': 'oilExtractor'
     };
-    return icons[typeName] || '🔧';
+    
+    const iconKey = iconMap[typeName];
+    if (iconKey && GameAssets.icons[iconKey]) {
+      return (
+        <Image 
+          source={GameAssets.icons[iconKey]} 
+          style={{ width: 24, height: 24 }}
+          resizeMode="contain"
+        />
+      );
+    }
+    
+    return <MaterialCommunityIcons name="cog" size={24} color="#00ffff" />;
   };
 
   // Render the appropriate card component for each machine type
@@ -105,32 +122,54 @@ const DeployedMachinesScreen = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filterTabsContent}
         >
-          {availableMachineTypes.map((machineType) => (
-            <TouchableOpacity
-              key={machineType}
-              style={[
-                styles.machineTab,
-                activeTab === machineType && styles.machineTabActive
-              ]}
-              onPress={() => setActiveTab(machineType)}
-            >
-              <Text style={styles.machineTabIcon}>
-                {getMachineTypeIcon(machineType)}
-              </Text>
-              <Text style={[
-                styles.machineTabText,
-                activeTab === machineType && styles.machineTabTextActive
-              ]}>
-                {machineType}
-              </Text>
-              <Text style={[
-                styles.machineTabCount,
-                activeTab === machineType && styles.machineTabCountActive
-              ]}>
-                ({machineType === "All" ? allMachines.length : (machinesByType[machineType]?.length || 0)})
-              </Text>
-            </TouchableOpacity>
-          ))}
+          {availableMachineTypes.map((machineType) => {
+            const icon = getMachineTypeIcon(machineType);
+            const isActive = activeTab === machineType;
+            
+            return (
+              <TouchableOpacity
+                key={machineType}
+                onPress={() => setActiveTab(machineType)}
+              >
+                {isActive ? (
+                  <LinearGradient
+                    colors={["#00ffff", "#ff00cc"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.machineTabGradient}
+                  >
+                    <View style={[styles.machineTab, styles.machineTabActive]}>
+                      {icon && (
+                        <View style={styles.machineTabIcon}>
+                          {icon}
+                        </View>
+                      )}
+                      <Text style={[styles.machineTabText, styles.machineTabTextActive]}>
+                        {machineType}
+                      </Text>
+                      <Text style={[styles.machineTabCount, styles.machineTabCountActive]}>
+                        ({machineType === "All" ? allMachines.length : (machinesByType[machineType]?.length || 0)})
+                      </Text>
+                    </View>
+                  </LinearGradient>
+                ) : (
+                  <View style={styles.machineTab}>
+                    {icon && (
+                      <View style={styles.machineTabIcon}>
+                        {icon}
+                      </View>
+                    )}
+                    <Text style={styles.machineTabText}>
+                      {machineType}
+                    </Text>
+                    <Text style={styles.machineTabCount}>
+                      ({machineType === "All" ? allMachines.length : (machinesByType[machineType]?.length || 0)})
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
         </LinearGradient>
 
