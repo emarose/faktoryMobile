@@ -5,27 +5,20 @@ const styles = StyleSheet.create({
   // Main container styles
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.backgroundPanel, // Industrial gray-blue background like ConstructorScreen
+    backgroundColor: "#3a0242ff",
   },
-  container: {
+  backgroundImageContainer: {
     flex: 1,
-    backgroundColor: Colors.backgroundPanel,
+    width: "100%",
+  },
+  gradientOverlay: {
+    flex: 1,
   },
 
-  // Scroll view
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
+  // List content
+  listContent: {
     padding: 16,
     paddingBottom: 40,
-  },
-
-  // Grid container
-  gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
   },
 
   // Stats container moved to component-level styles

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styles from "./styles";
 import { Text } from "../../../../components";
@@ -64,7 +65,6 @@ export default function MachineCard({
 
   return (
     <View
-      key={item.id}
       style={[
         styles.machineCard,
         isLocked && styles.lockedMachineCard,
@@ -74,145 +74,161 @@ export default function MachineCard({
       {/* Status Badge */}
       {isLocked && (
         <View style={styles.statusBadge}>
-          <MaterialCommunityIcons name="lock" size={10} color="#fff" />
+          <MaterialCommunityIcons name="lock" size={12} color="#fff" />
           <Text style={styles.statusBadgeText}>LOCKED</Text>
         </View>
       )}
 
-      {/* Machine Header - Compact */}
-      <View style={styles.machineHeader}>
-        <View
-          style={[
-            styles.machineIcon,
-            {
-              backgroundColor: isLocked
-                ? Colors.textMuted + "30"
-                : machineColor + "20",
-              borderColor: isLocked ? Colors.textMuted : machineColor,
-            },
-          ]}
-        >
-          {GameAssets.icons[item.id] ? (
-            <Image 
-              source={GameAssets.icons[item.id]} 
-              style={{ width: 32, height: 32 }}
-              resizeMode="contain"
-            />
-          ) : (
-            <MaterialCommunityIcons 
-              name="cog" 
-              size={32} 
-              color={isLocked ? Colors.textMuted : machineColor} 
-            />
-          )}
-        </View>
-
-        <View style={styles.machineInfo}>
+      {/* Horizontal Layout */}
+      <View style={styles.cardContent}>
+        {/* Left: Machine Icon and Name */}
+        <View style={styles.leftSection}>
+          <View style={styles.machineIconLarge}>
+            {GameAssets.icons[item.id] ? (
+              <Image 
+                source={GameAssets.icons[item.id]} 
+                style={{ width: 56, height: 56 }}
+                resizeMode="contain"
+              />
+            ) : (
+              <MaterialCommunityIcons 
+                name="cog" 
+                size={56} 
+                color={isLocked ? "rgba(255, 255, 255, 0.3)" : "#00ffff"}
+              />
+            )}
+          </View>
           <Text
             style={[styles.machineName, isLocked && styles.lockedMachineName]}
-            numberOfLines={1}
+            numberOfLines={2}
           >
             {item.name}
           </Text>
         </View>
-      </View>
 
-      {/* Requirements Section - Compact */}
-      {!isLocked && (
-        <View style={styles.requirementsContainer}>
-          {Object.keys(item.inputs || {}).length > 0 ? (
-            <View style={styles.requirementsList}>
-              {Object.entries(item.inputs || {}).map(
-                ([inputId, requiredAmount]) => {
-                  const currentAmount = Math.floor(
-                    inventory[inputId]?.currentAmount || 0
-                  );
-                  const hasEnough = currentAmount >= requiredAmount;
-                  return (
-                    <View key={inputId} style={styles.requirementItem}>
-                      <View
-                        style={[
-                          styles.requirementIndicator,
-                          {
-                            backgroundColor: hasEnough
-                              ? Colors.accentGreen
-                              : Colors.textDanger,
-                          },
-                        ]}
-                      />
-                      {GameAssets.icons[inputId] && (
-                        <Image 
-                          source={GameAssets.icons[inputId]} 
-                          style={{ width: 12, height: 12, marginRight: 4 }}
-                          resizeMode="contain"
-                        />
-                      )}
-                      <Text style={styles.requirementText} numberOfLines={1}>
-                        {inventory[inputId]?.name || inputId}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.requirementAmount,
-                          hasEnough
-                            ? styles.hasEnoughAmount
-                            : styles.needsAmount,
-                        ]}
-                      >
-                        {currentAmount}/{requiredAmount}
-                      </Text>
-                    </View>
-                  );
-                }
+        {/* Right: Requirements and Button */}
+        <View style={styles.rightSection}>
+          {/* Requirements Section */}
+          {!isLocked && (
+            <View style={styles.requirementsContainer}>
+              {Object.keys(item.inputs || {}).length > 0 ? (
+                <View style={styles.requirementsList}>
+                  {Object.entries(item.inputs || {}).map(
+                    ([inputId, requiredAmount]) => {
+                      const currentAmount = Math.floor(
+                        inventory[inputId]?.currentAmount || 0
+                      );
+                      const hasEnough = currentAmount >= requiredAmount;
+                      return (
+                        <View key={inputId} style={[
+                          styles.requirementItem,
+                          !hasEnough && styles.requirementItemMissing
+                        ]}>
+                          <View style={styles.requirementHeader}>
+                            {GameAssets.icons[inputId] && (
+                              <Image 
+                                source={GameAssets.icons[inputId]} 
+                                style={{ width: 20, height: 20, marginRight: 8 }}
+                                resizeMode="contain"
+                              />
+                            )}
+                            <Text style={styles.requirementText}>
+                              {inventory[inputId]?.name || inputId}
+                            </Text>
+                          </View>
+                          <View style={styles.requirementAmounts}>
+                            <View
+                              style={[
+                                styles.requirementAmountBadge,
+                                hasEnough
+                                  ? styles.hasEnoughAmount
+                                  : styles.needsAmount,
+                              ]}
+                            >
+                              <Text style={styles.requirementAmountText}>
+                                {currentAmount} / {requiredAmount}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      );
+                    }
+                  )}
+                </View>
+              ) : (
+                <View style={styles.noRequirementsContainer}>
+                  <MaterialCommunityIcons
+                    name="check-circle-outline"
+                    size={16}
+                    color="#4CAF50"
+                  />
+                  <Text style={styles.noRequirementsText}>
+                    Free to build
+                  </Text>
+                </View>
               )}
             </View>
+          )}
+
+          {/* Build Button with Gradient */}
+          {canBuild && !building ? (
+            <LinearGradient
+              colors={["#00ffff", "#ff00cc"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.buildButtonGradient}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  if (buildTime <= 0) {
+                    onBuild && onBuild(item.id);
+                    return;
+                  }
+                  setBuilding(true);
+                  setElapsed(0);
+                }}
+                style={[styles.buildButton, styles.availableBuildButton]}
+              >
+                <MaterialCommunityIcons name="hammer" size={18} color="#fff" />
+                <Text style={styles.buildButtonText}>Build</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           ) : (
-            <View style={styles.noRequirementsContainer}>
-              <MaterialCommunityIcons
-                name="check-circle-outline"
-                size={12}
-                color={Colors.accentGreen}
+            <TouchableOpacity
+              onPress={() => {
+                if (building) return;
+                if (!canBuild || isLocked) return;
+                if (buildTime <= 0) {
+                  onBuild && onBuild(item.id);
+                  return;
+                }
+                setBuilding(true);
+                setElapsed(0);
+              }}
+              disabled={(!canBuild && !isLocked) || building}
+              style={[
+                styles.buildButton,
+                isLocked && styles.lockedBuildButton,
+                !canBuild && !isLocked && styles.disabledBuildButton,
+                building && styles.buildingButton,
+              ]}
+            >
+              <MaterialCommunityIcons 
+                name={isLocked ? "lock" : building ? "cog" : "alert-circle"} 
+                size={18} 
+                color="#fff" 
               />
-              <Text style={styles.noRequirementsText}>
-                No materials required
+              <Text style={styles.buildButtonText}>
+                {isLocked
+                  ? "Locked"
+                  : building
+                  ? `Building... ${Math.floor(progress * 100)}%`
+                  : "Missing Items"}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         </View>
-      )}
-
-      {/* Standard Build Button */}
-      <TouchableOpacity
-        onPress={() => {
-          if (building) return; // already building
-          if (!canBuild || isLocked) return;
-          if (buildTime <= 0) {
-            // instant build
-            onBuild && onBuild(item.id);
-            return;
-          }
-          setBuilding(true);
-          setElapsed(0);
-        }}
-        disabled={(!canBuild && !isLocked) || building}
-        style={[
-          styles.buildButton,
-         /*  isLocked && styles.lockedBuildButton,
-          canBuild && styles.availableBuildButton,
-          !canBuild && !isLocked && styles.disabledBuildButton,
-          building && styles.buildingButton, */
-        ]}
-      >
-       
-        <Text style={styles.buildButtonText}>
-          {isLocked
-            ? "Locked"
-            : building
-            ? `Building...`
-            : canBuild
-            ? "Build"
-            : "Missing Items"}
-        </Text>
-      </TouchableOpacity>
+      </View>
 
       {/* Building overlay (visual progress) */}
       {building && (
@@ -220,9 +236,16 @@ export default function MachineCard({
           pointerEvents="none"
           style={[
             styles.buildingOverlay,
-            { height: `${progress * 100}%`, backgroundColor: machineColor },
+            { height: `${progress * 100}%` },
           ]}
-        />
+        >
+          <LinearGradient
+            colors={["rgba(0, 255, 255, 0.3)", "rgba(255, 0, 204, 0.3)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ width: '100%', height: '100%' }}
+          />
+        </View>
       )}
     </View>
   );

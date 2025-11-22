@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { View, ScrollView, Alert, Dimensions } from "react-native";
+import { View, ScrollView, Alert, Dimensions, ImageBackground, FlatList } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGame } from "../../contexts/GameContext";
@@ -37,32 +38,38 @@ const BuildScreen = () => {
         rightIcon="factory"
         onRightIconPress={() => console.log("Factory icon pressed")}
       />
-      <View style={styles.container}>
-        {/* Stats Overview */}
-        <StatsOverview
-          allBuildableItems={allBuildableItems}
-          ownedMachines={ownedMachines}
-        />
-
-        {/* Machine Cards Grid */}
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContent}
-          showsVerticalScrollIndicator={false}
+      <ImageBackground
+        source={require("../../../assets/images/backgrounds/background.png")}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
+      >
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.4)", "rgba(58, 2, 66, 0.6)", "rgba(0, 0, 0, 0.5)"]}
+          style={styles.gradientOverlay}
         >
-          <View style={styles.gridContainer}>
-            {allBuildableItems.map((item) => (
+          {/* Stats Overview */}
+          <StatsOverview
+            allBuildableItems={allBuildableItems}
+            ownedMachines={ownedMachines}
+          />
+
+          {/* Machine Cards List */}
+          <FlatList
+            data={allBuildableItems}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <MachineCard
-                key={item.id}
                 item={item}
                 inventory={inventory}
                 getMachineColor={getMachineColor}
                 onBuild={handleBuild}
               />
-            ))}
-          </View>
-        </ScrollView>
-      </View>
+            )}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        </LinearGradient>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
