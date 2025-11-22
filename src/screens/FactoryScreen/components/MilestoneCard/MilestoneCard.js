@@ -141,12 +141,22 @@ const MilestoneCard = ({
       }}
     >
       <View style={styles.milestoneHeader}>
-        <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
-          <Image
-            source={GameAssets.icons.largeStar}
-            style={{ width: 32, height: 32 }}
-          />
-        </TouchableOpacity>
+        <View style={styles.starContainer}>
+          <LinearGradient
+            colors={['#00ffff', '#ff00cc']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.starGradientBorder}
+          >
+            <TouchableOpacity onPress={onPress} style={styles.starTouchable}>
+              <Image
+                source={GameAssets.icons.largeStar}
+                style={{ width: 32, height: 32 }}
+              />
+            </TouchableOpacity>
+          </LinearGradient>
+          <Text style={styles.viewAllText}>View all</Text>
+        </View>
         {currentMilestone && !currentMilestone.unlocked && (
           <TouchableOpacity onPress={toggleExpanded} style={styles.nameAndCaret}>
             <View style={{ flex: 1, alignItems: 'center' }}>

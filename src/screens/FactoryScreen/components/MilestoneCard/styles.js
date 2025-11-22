@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
   milestoneHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     borderRadius: 10,
     padding: 8,
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
-  milestoneTitleHeader:{
+  milestoneTitleHeader: {
     fontSize: 12,
     color: Colors.textSecondary,
   },
@@ -24,16 +24,35 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   nameAndCaret: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     marginRight: 6,
+  },
+  starContainer: {
+    position: "relative",
+  },
+  starGradientBorder: {
+    borderRadius: 50,
+    padding: 2,
   },
   starTouchable: {
     padding: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     borderRadius: 50,
+  },
+  viewAllText: {
+    position: "absolute",
+    bottom: -2,
+    right: -8,
+    fontSize: 8,
+    color: "#00ffff",
+    fontWeight: "700",
+    textShadowColor: "rgba(0, 255, 255, 0.8)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 4,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   milestoneDescription: {
     color: Colors.accentGreen,
@@ -56,7 +75,7 @@ const styles = StyleSheet.create({
   },
   requirementRow: {
     marginBottom: 12,
-    paddingHorizontal:10
+    paddingHorizontal: 10,
   },
   requirementHeader: {
     flexDirection: "row",
@@ -95,7 +114,7 @@ const styles = StyleSheet.create({
   overallProgress: {
     alignItems: "center",
     paddingHorizontal: 10,
-    paddingBottom: 8
+    paddingBottom: 8,
   },
   overallProgressText: {
     color: Colors.textSecondary,
