@@ -1,6 +1,8 @@
-import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import { View, ScrollView, TouchableOpacity, Image, ImageBackground } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { GameAssets } from "../../components/AppLoader";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import styles from "./styles";
@@ -27,7 +29,16 @@ const InventoryScreen = () => {
         rightIcon="package-variant"
         onRightIconPress={() => console.log("Inventory tools pressed")}
       />
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <ImageBackground
+        source={require('../../../assets/images/backgrounds/background.png')}
+        style={styles.backgroundImageContainer}
+        resizeMode="cover"
+      >
+        <LinearGradient
+          colors={["rgba(0, 0, 0, 0.4)", "rgba(58, 2, 66, 0.6)", "rgba(0, 0, 0, 0.5)"]}
+          style={styles.gradientOverlay}
+        >
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {ownedCraftedItems.length > 0 ? (
           <View style={styles.inventoryGrid}>
             {ownedCraftedItems.map((item) => {
@@ -44,10 +55,17 @@ const InventoryScreen = () => {
                   }}
                 >
                   <View style={styles.iconContainer}>
-                    {/* <Image source={itemDetails.icon} style={styles.itemIcon} /> */}
-                    <Text style={styles.iconText}>
-                      {item.name.charAt(0).toUpperCase()}
-                    </Text>
+                    {GameAssets.icons[item.id] ? (
+                      <Image 
+                        source={GameAssets.icons[item.id]} 
+                        style={styles.itemIcon}
+                        resizeMode="contain"
+                      />
+                    ) : (
+                      <Text style={styles.iconText}>
+                        {item.name.charAt(0).toUpperCase()}
+                      </Text>
+                    )}
                   </View>
 
                   <Text style={styles.itemName}>{item.name}</Text>
@@ -67,7 +85,9 @@ const InventoryScreen = () => {
             crafting!
           </Text>
         )}
-      </ScrollView>
+          </ScrollView>
+        </LinearGradient>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
