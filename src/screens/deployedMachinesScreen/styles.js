@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
 
   // Spacing utilities
   marginVertical10: {
-    /*  marginVertical: 10, */
+     marginTop: 12,
   },
   machineIconContainer: {
     borderRadius: 8,

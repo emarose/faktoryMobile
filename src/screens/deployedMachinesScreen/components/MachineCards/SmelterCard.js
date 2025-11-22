@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -23,6 +23,8 @@ const SmelterCard = ({ machine, navigation }) => {
     actions,
   } = useSmelterCard(machine);
 
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   const openSmelterScreen = () => {
     navigation.navigate("SmelterScreen", { machine: liveMachine });
   };
@@ -44,51 +46,171 @@ const SmelterCard = ({ machine, navigation }) => {
         style={{
           borderRadius: 8,
           padding: 12,
-          marginBottom: 12,
+          marginBottom: isCollapsed ? 0 : 12,
         }}
       >
         <View style={{ flexDirection: "column", gap: 12 }}>
-          <View style={styles.rowAlignCenterGap}>
-            <View
-              style={[
-                styles.machineIconContainer,
-                { borderColor: machineColor, borderWidth: 2 },
-              ]}
-            >
-              {getMachineIcon(machine.type, machineColor)}
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={styles.rowAlignCenterGap}>
+              <View
+                style={[
+                  styles.machineIconContainer,
+                  { borderColor: machineColor, borderWidth: 2 },
+                ]}
+              >
+                {getMachineIcon(machine.type, machineColor)}
+              </View>
+              <Text style={[styles.machineName, { color: machineColor }]}>
+                {displayName}
+              </Text>
             </View>
-            <Text style={[styles.machineName, { color: machineColor }]}>
-              {displayName}
-            </Text>
+
+            {/* Collapse Toggle */}
+            <TouchableOpacity
+              onPress={() => setIsCollapsed(!isCollapsed)}
+              style={{ padding: 8 }}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons
+                name={isCollapsed ? "keyboard-arrow-down" : "keyboard-arrow-up"}
+                size={24}
+                color={machineColor}
+              />
+            </TouchableOpacity>
           </View>
 
-          {/* Assign Recipe Button */}
-          <TouchableOpacity
-            onPress={openSmelterScreen}
-            activeOpacity={0.7}
-          >
-            <LinearGradient
-              colors={['#00ffff', '#ff00cc']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.assignNodeButton}
+          {/* Assign Recipe Button - only show when expanded */}
+          {!isCollapsed && (
+            <TouchableOpacity
+              onPress={openSmelterScreen}
+              activeOpacity={0.7}
             >
-              <View style={styles.assignNodeButtonInner}>
-                <Text style={styles.assignNodeText}>
-                  {status.isProcessing
-                    ? "Change"
-                    : liveMachine.currentRecipeId
-                    ? "Change"
-                    : "Assign"}
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+              <LinearGradient
+                colors={['#00ffff', '#ff00cc']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.assignNodeButton}
+              >
+                <View style={styles.assignNodeButtonInner}>
+                  <Text style={styles.assignNodeText}>
+                    {status.isProcessing
+                      ? "Change"
+                      : liveMachine.currentRecipeId
+                      ? "Change"
+                      : "Assign"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
         </View>
       </LinearGradient>
 
-      {/* Crafting Progress */}
-      {status.isProcessing && currentProcess && (
+      {/* Collapsed View */}
+      {isCollapsed && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+          }}
+        >
+          {(currentProcess || currentRecipe) ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              {currentProcess?.recipeId && GameAssets.icons[currentProcess.recipeId] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentGreen,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentProcess.recipeId]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : currentRecipe && GameAssets.icons[currentRecipe.id] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentBlue,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentRecipe.id]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : null}
+              <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+                {currentProcess ? currentProcess.itemName : currentRecipe?.name}
+              </Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 12, color: Colors.textMuted }}>
+              No recipe assigned
+            </Text>
+          )}
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            {(currentProcess || currentRecipe) && (
+              <View
+                style={[
+                  styles.selectedNodePill,
+                  {
+                    backgroundColor: status.color + "20",
+                    borderWidth: 1,
+                    borderColor: status.color,
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                  },
+                ]}
+              >
+                <Text style={{ fontSize: 10, color: status.color }}>
+                  {status.isProcessing ? "Crafting" : "Ready"}
+                </Text>
+              </View>
+            )}
+
+            <TouchableOpacity onPress={openSmelterScreen} activeOpacity={0.7}>
+              <LinearGradient
+                colors={["#00ffff", "#ff00cc"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{ borderRadius: 6, padding: 1 }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    borderRadius: 5,
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                  }}
+                >
+                  <Text style={{ fontSize: 10, color: Colors.textPrimary, fontWeight: "bold" }}>
+                    {liveMachine.currentRecipeId ? "Change" : "Assign"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Expanded Crafting Progress */}
+      {!isCollapsed && status.isProcessing && currentProcess && (
         <LinearGradient
           colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
           start={{ x: 0, y: 0 }}
@@ -225,7 +347,7 @@ const SmelterCard = ({ machine, navigation }) => {
       )}
 
       {/* Recipe Status (when not processing) */}
-      {!status.isProcessing && currentRecipe && (
+      {!isCollapsed && !status.isProcessing && currentRecipe && (
         <LinearGradient
           colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)"]}
           start={{ x: 0, y: 0 }}

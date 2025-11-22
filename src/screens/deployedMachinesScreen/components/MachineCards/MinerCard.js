@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -23,6 +23,8 @@ const MinerCard = ({ machine, navigation }) => {
     actions,
   } = useMinerCard(machine);
 
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
     <View
       style={[
@@ -40,7 +42,7 @@ const MinerCard = ({ machine, navigation }) => {
         style={{
           borderRadius: 8,
           padding: 12,
-          marginBottom: 12,
+          marginBottom: isCollapsed ? 0 : 12,
         }}
       >
         <View style={styles.rowAlignCenter}>
@@ -62,35 +64,143 @@ const MinerCard = ({ machine, navigation }) => {
             </View>
           </View>
 
-        {/* Assign Node Button */}
-        <View style={styles.marginVertical10}>
+          {/* Collapse Toggle */}
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("NodeSelectorScreen", {
-                machine: liveMachine,
-              })
-            }
+            onPress={() => setIsCollapsed(!isCollapsed)}
+            style={{ padding: 8 }}
             activeOpacity={0.7}
           >
-            <LinearGradient
-              colors={["#00ffff", "#ff00cc"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.assignNodeButton}
-            >
-              <View style={styles.assignNodeButtonInner}>
-                <Text style={styles.assignNodeText}>
-                  {liveMachine.assignedNodeId ? "Change" : "Assign"}
-                </Text>
-              </View>
-            </LinearGradient>
+            <MaterialIcons
+              name={isCollapsed ? "keyboard-arrow-down" : "keyboard-arrow-up"}
+              size={24}
+              color={machineColor}
+            />
           </TouchableOpacity>
         </View>
-        </View>
+
+        {/* Assign Node Button - only show when expanded */}
+        {!isCollapsed && (
+          <View style={styles.marginVertical10}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("NodeSelectorScreen", {
+                  machine: liveMachine,
+                })
+              }
+              activeOpacity={0.7}
+            >
+              <LinearGradient
+                colors={["#00ffff", "#ff00cc"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.assignNodeButton}
+              >
+                <View style={styles.assignNodeButtonInner}>
+                  <Text style={styles.assignNodeText}>
+                    {liveMachine.assignedNodeId ? "Change" : "Assign"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        )}
       </LinearGradient>
 
-      {/* Miner Details */}
-      {assignedNode && (
+      {/* Collapsed View */}
+      {isCollapsed && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+          }}
+        >
+          {assignedNode ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <View
+                style={[
+                  styles.iconContainer,
+                  {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderColor: Colors.accentGold,
+                    width: 24,
+                    height: 24,
+                  },
+                ]}
+              >
+                {assignedNode.type && GameAssets.icons[`${assignedNode.type}`] && (
+                  <Image
+                    source={GameAssets.icons[`${assignedNode.type}`]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                )}
+              </View>
+              <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+                {assignedNode.name}
+              </Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 12, color: Colors.textMuted }}>
+              No node assigned
+            </Text>
+          )}
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            {assignedNode && (
+              <View
+                style={[
+                  styles.selectedNodePill,
+                  {
+                    backgroundColor: status.color + "20",
+                    borderWidth: 1,
+                    borderColor: status.color,
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                  },
+                ]}
+              >
+                <Text style={{ fontSize: 10, color: status.color }}>
+                  {status.isIdle ? "Idle" : "Active"}
+                </Text>
+              </View>
+            )}
+
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("NodeSelectorScreen", {
+                  machine: liveMachine,
+                })
+              }
+              activeOpacity={0.7}
+            >
+              <LinearGradient
+                colors={["#00ffff", "#ff00cc"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{ borderRadius: 6, padding: 1 }}
+              >
+                <View
+                  style={{
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    borderRadius: 5,
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                  }}
+                >
+                  <Text style={{ fontSize: 10, color: Colors.textPrimary, fontWeight: "bold" }}>
+                    {liveMachine.assignedNodeId ? "Change" : "Assign"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {/* Expanded Miner Details */}
+      {!isCollapsed && assignedNode && (
         <LinearGradient
           colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
           start={{ x: 0, y: 0 }}
