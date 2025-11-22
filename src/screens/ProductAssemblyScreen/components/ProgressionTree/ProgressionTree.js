@@ -14,7 +14,7 @@ import MachineTab from "./components/MachineTab";
 import { useProgressionTree } from "./hooks";
 
 // Main component with tabbed machine recipes
-const ProgressionTree = () => {
+const ProgressionTree = ({ searchVisible = false }) => {
   const {
     machineList,
     selectedMachineId,
@@ -94,22 +94,25 @@ const ProgressionTree = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchHeader}>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search recipes, materials, products..."
-            placeholderTextColor={Colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity style={styles.clearButton} onPress={clearSearch}>
-              <Text style={styles.clearButtonText}>✕</Text>
-            </TouchableOpacity>
-          )}
+      {searchVisible && (
+        <View style={styles.searchHeader}>
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search recipes, materials, products..."
+              placeholderTextColor={Colors.textSecondary}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity style={styles.clearButton} onPress={clearSearch}>
+                <Text style={styles.clearButtonText}>✕</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-      </View>
+      )}
 
       {/* Search Results Summary */}
       {searchQuery.trim() && (
