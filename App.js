@@ -6,6 +6,7 @@ import Navigation from "./src/navigation";
 import { useColorScheme } from "react-native";
 import { GameProvider, GameContext } from "./src/contexts/GameContext";
 import { ToastProvider, useToastContext } from "./src/contexts/ToastContext";
+import { AudioProvider } from "./src/contexts/AudioContext";
 import Toast from "./src/components/Toast";
 import React, { useState, useContext } from "react";
 
@@ -38,10 +39,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <GameProvider>
-        <AppContent />
-      </GameProvider>
-    </ToastProvider>
+    <AudioProvider>
+      <ToastProvider>
+        <GameProvider>
+          <AppContent />
+        </GameProvider>
+      </ToastProvider>
+    </AudioProvider>
   );
 }

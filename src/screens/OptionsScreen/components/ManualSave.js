@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center',
     padding: 15,
-    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 8,
   },
   infoContainer: {
