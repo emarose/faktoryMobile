@@ -4,6 +4,7 @@ import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../../../constants/Colors";
 import { IconContainer } from "../../../../components";
+import PlayerSprite from "./PlayerSprite";
 
 const MapGrid = ({
   chunkSize,
@@ -80,7 +81,7 @@ const MapGrid = ({
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: color,
+                backgroundColor: "transparent",
                 borderWidth: 1,
                 borderColor: Colors.borderLight,
                 alignItems: "center",
@@ -89,31 +90,16 @@ const MapGrid = ({
                 //zIndex: 200,
               }}
             >
-              <View
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  transform: [
-                    { translateX: -12 },
-                    { translateY: -12 },
-                    { scaleX: currentDirection === "left" ? -1 : 1 },
-                  ],
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="run"
-                  size={24}
-                  color={Colors.accentGold}
-                />
-              </View>
+              <PlayerSprite direction={currentDirection} size={tileSize} />
             </View>
           );
         } else if (node && discovered) {
-          
           // Check if this node has a placed machine
           const hasMiner = placedMachines.some((m) => {
-            return (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === node.id;
+            return (
+              (m.type === "miner" || m.type === "oilExtractor") &&
+              m.assignedNodeId === node.id
+            );
           });
           cols.push(
             <TouchableOpacity
@@ -121,11 +107,12 @@ const MapGrid = ({
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: color,
+                backgroundColor: "rgba(0,0,0,0.5)",
                 borderWidth: selectedNodeId === node.id ? 2 : 1,
-                borderColor: selectedNodeId === node.id 
-                  ? Colors.accentGold 
-                  : Colors.borderLight,
+                borderColor:
+                  selectedNodeId === node.id
+                    ? Colors.accentGold
+                    : Colors.borderLight,
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
@@ -139,7 +126,7 @@ const MapGrid = ({
                   iconId={node.type}
                   size={24}
                   iconSize={24}
-                  style={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                  style={{ backgroundColor: "transparent", borderWidth: 0 }}
                 />
               )}
               {/* Show miner icon when a miner is placed */}
@@ -148,7 +135,7 @@ const MapGrid = ({
                   iconId="miner"
                   size={24}
                   iconSize={20}
-                  style={{ backgroundColor: 'transparent', borderWidth: 0 }}
+                  style={{ backgroundColor: "transparent", borderWidth: 0 }}
                 />
               )}
               {/* Manual mine pulse overlay (full tile color change) */}
@@ -157,6 +144,7 @@ const MapGrid = ({
                   pointerEvents="none"
                   style={{
                     position: "absolute",
+                    backgroundColor: "rgba(0,0,0,0.5)",
 
                     right: 0 - 2,
                     top: 0 - 2,
@@ -192,7 +180,7 @@ const MapGrid = ({
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: color,
+                backgroundColor: "rgba(0,0,0,0.5)",
                 borderWidth: 1,
                 borderColor: Colors.borderLight,
               }}

@@ -231,7 +231,7 @@ export default function MapScreen({ navigation }) {
           /> */}
 
           <LinearGradient
-            colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.3)"]}
+            colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.5)","rgba(0, 0, 0, 0.8)"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.mapVisualContainer}
