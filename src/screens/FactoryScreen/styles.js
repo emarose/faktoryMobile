@@ -48,6 +48,10 @@ const styles = StyleSheet.create({
   halfItem: {
     width: "49%",
   },
+  fullWidthItem: {
+    width: "100%",
+    marginBottom: 15,
+  },
   gradientCard: {
     borderRadius: 10,
     paddingHorizontal: 8,

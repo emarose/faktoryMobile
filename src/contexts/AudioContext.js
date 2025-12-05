@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import { Audio } from 'expo-av';
 
 const AudioContext = createContext();
-const DEFAULT_VOLUME = 0.2;
+const DEFAULT_VOLUME = 0;
 // Define your music tracks here - update these paths to match your actual audio files
 const MUSIC_TRACKS = [
   {
@@ -41,7 +41,7 @@ export const AudioProvider = ({ children }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   const soundRef = useRef(null);
   const isLoadingRef = useRef(false);
 
