@@ -51,6 +51,39 @@ export default StyleSheet.create({
     paddingHorizontal: 20,
   },
   // Music Controls
+  volumeControl: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 255, 255, 0.2)',
+  },
+  volumeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  volumeLabel: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 12,
+    flex: 1,
+  },
+  volumeValue: {
+    color: '#4CAF50',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  volumeSlider: {
+    width: '100%',
+    height: 40,
+  },
+  playPauseButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 255, 255, 0.2)',
+  },
   musicOption: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -80,7 +113,6 @@ export default StyleSheet.create({
   trackOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     padding: 10,
     borderRadius: 6,

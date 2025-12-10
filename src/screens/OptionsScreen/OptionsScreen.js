@@ -8,10 +8,11 @@ import GameDataManager from './components/GameDataManager';
 import ManualSave from './components/ManualSave';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAudio } from '../../contexts/AudioContext';
+import Slider from '@react-native-community/slider';
 import styles from './styles';
 
 const OptionsScreen = () => {
-  const { isMuted, toggleMute, tracks, currentTrackIndex, selectTrack, isPaused, pauseMusic, resumeMusic } = useAudio();
+  const { volume, changeVolume, tracks, currentTrackIndex, selectTrack, isPaused, togglePlayPause } = useAudio();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -34,65 +35,73 @@ const OptionsScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Music</Text>
           <View style={styles.optionCard}>
-            <TouchableOpacity style={styles.musicOption} onPress={toggleMute}>
+            {/* Volume Slider */}
+            <View style={styles.volumeControl}>
+              <View style={styles.volumeHeader}>
+                <MaterialCommunityIcons
+                  name={volume === 0 ? 'volume-off' : volume < 0.5 ? 'volume-medium' : 'volume-high'}
+                  size={24}
+                  color="#fff"
+                />
+                <Text style={styles.volumeLabel}>Master Volume</Text>
+                <Text style={styles.volumeValue}>{Math.round(volume * 100)}%</Text>
+              </View>
+              <Slider
+                style={styles.volumeSlider}
+                minimumValue={0}
+                maximumValue={1}
+                value={volume}
+                onValueChange={changeVolume}
+                minimumTrackTintColor="#4CAF50"
+                maximumTrackTintColor="#666"
+                thumbTintColor="#4CAF50"
+              />
+            </View>
+
+            {/* Play/Pause Button */}
+            <TouchableOpacity style={styles.playPauseButton} onPress={togglePlayPause}>
               <View style={styles.optionLeft}>
                 <MaterialCommunityIcons
-                  name={isMuted ? 'volume-off' : 'volume-high'}
+                  name={isPaused ? 'play-circle' : 'pause-circle'}
                   size={24}
                   color="#fff"
                 />
                 <Text style={styles.optionText}>
-                  {isMuted ? 'Music Muted' : 'Music Playing'}
+                  {isPaused ? 'Music Paused' : 'Music Playing'}
                 </Text>
               </View>
               <MaterialCommunityIcons
-                name={isMuted ? 'toggle-switch-off' : 'toggle-switch'}
+                name={isPaused ? 'play' : 'pause'}
                 size={32}
-                color={isMuted ? '#666' : '#4CAF50'}
+                color={isPaused ? '#666' : '#4CAF50'}
               />
             </TouchableOpacity>
             
             <View style={styles.trackList}>
               <Text style={styles.trackListTitle}>Track Selection</Text>
               {tracks.map((track, index) => (
-                <View
+                <TouchableOpacity
                   key={track.id}
                   style={[
                     styles.trackOption,
                     currentTrackIndex === index && styles.trackOptionActive,
                   ]}
+                  onPress={() => selectTrack(index)}
                 >
-                  <TouchableOpacity
-                    style={styles.trackContent}
-                    onPress={() => selectTrack(index)}
+                  <MaterialCommunityIcons
+                    name={currentTrackIndex === index ? 'music-circle' : 'music-circle-outline'}
+                    size={20}
+                    color={currentTrackIndex === index ? '#4CAF50' : '#fff'}
+                  />
+                  <Text
+                    style={[
+                      styles.trackText,
+                      currentTrackIndex === index && styles.trackTextActive,
+                    ]}
                   >
-                    <MaterialCommunityIcons
-                      name={currentTrackIndex === index ? 'music-circle' : 'music-circle-outline'}
-                      size={20}
-                      color={currentTrackIndex === index ? '#4CAF50' : '#fff'}
-                    />
-                    <Text
-                      style={[
-                        styles.trackText,
-                        currentTrackIndex === index && styles.trackTextActive,
-                      ]}
-                    >
-                      {track.name}
-                    </Text>
-                  </TouchableOpacity>
-                  {currentTrackIndex === index && (
-                    <TouchableOpacity
-                      style={styles.pauseButton}
-                      onPress={isPaused ? resumeMusic : pauseMusic}
-                    >
-                      <MaterialCommunityIcons
-                        name={isPaused ? 'play' : 'pause'}
-                        size={20}
-                        color="#4CAF50"
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
+                    {track.name}
+                  </Text>
+                </TouchableOpacity>
               ))}
             </View>
           </View>

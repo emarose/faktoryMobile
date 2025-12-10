@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import { Audio } from 'expo-av';
 
 const AudioContext = createContext();
-const DEFAULT_VOLUME = 0;
+const DEFAULT_VOLUME = 0.3;
 // Define your music tracks here - update these paths to match your actual audio files
 const MUSIC_TRACKS = [
   {
@@ -38,7 +38,7 @@ const MUSIC_TRACKS = [
 ];
 
 export const AudioProvider = ({ children }) => {
-  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -58,13 +58,9 @@ export const AudioProvider = ({ children }) => {
 
   useEffect(() => {
     if (soundRef.current) {
-      if (isMuted) {
-        soundRef.current.setVolumeAsync(0);
-      } else {
-        soundRef.current.setVolumeAsync(DEFAULT_VOLUME);
-      }
+      soundRef.current.setVolumeAsync(volume);
     }
-  }, [isMuted]);
+  }, [volume]);
 
   const setupAudio = async () => {
     try {
@@ -105,7 +101,7 @@ export const AudioProvider = ({ children }) => {
 
       const { sound } = await Audio.Sound.createAsync(
         MUSIC_TRACKS[index].file,
-        { shouldPlay: !isMuted, volume: isMuted ? 0 : DEFAULT_VOLUME },
+        { shouldPlay: true, volume: volume },
         onPlaybackStatusUpdate
       );
 
@@ -131,8 +127,17 @@ export const AudioProvider = ({ children }) => {
     loadAndPlayTrack(nextIndex);
   };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
+  const changeVolume = (newVolume) => {
+    const clampedVolume = Math.max(0, Math.min(1, newVolume));
+    setVolume(clampedVolume);
+  };
+
+  const togglePlayPause = async () => {
+    if (isPaused) {
+      await resumeMusic();
+    } else {
+      await pauseMusic();
+    }
   };
 
   const selectTrack = (index) => {
@@ -165,16 +170,15 @@ export const AudioProvider = ({ children }) => {
   };
 
   const value = {
-    isMuted,
-    toggleMute,
+    volume,
+    changeVolume,
     currentTrack: MUSIC_TRACKS[currentTrackIndex],
     tracks: MUSIC_TRACKS,
     selectTrack,
     currentTrackIndex,
     isPlaying,
     isPaused,
-    pauseMusic,
-    resumeMusic,
+    togglePlayPause,
   };
 
   return <AudioContext.Provider value={value}>{children}</AudioContext.Provider>;
