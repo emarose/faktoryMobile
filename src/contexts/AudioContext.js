@@ -10,12 +10,12 @@ const STORAGE_KEYS = {
   VOLUME: '@faktory/audioVolume',
   IS_PAUSED: '@faktory/audioIsPaused',
 };
-// Define your music tracks here - update these paths to match your actual audio files
+
 const MUSIC_TRACKS = [
   {
     id: 'track1',
-    name: 'Lamerios Tema',
-    file: require('../../assets/sounds/track1.mp3'),
+    name: 'The Antidote',
+    file: require('../../assets/sounds/track3.mp3'),
   },
   {
     id: 'track2',
@@ -24,8 +24,8 @@ const MUSIC_TRACKS = [
   },
   {
     id: 'track3',
-    name: 'The Antidote',
-    file: require('../../assets/sounds/track3.mp3'),
+    name: 'Lamerios theme',
+    file: require('../../assets/sounds/track1.mp3'),
   },
   {
     id: 'track4',
