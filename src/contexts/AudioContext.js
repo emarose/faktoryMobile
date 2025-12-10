@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { Audio } from 'expo-av';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AudioContext = createContext();
 const DEFAULT_VOLUME = 0.3;
+
+// Storage keys for persisting audio settings
+const STORAGE_KEYS = {
+  VOLUME: '@faktory/audioVolume',
+  IS_PAUSED: '@faktory/audioIsPaused',
+};
 // Define your music tracks here - update these paths to match your actual audio files
 const MUSIC_TRACKS = [
   {
@@ -42,10 +49,23 @@ export const AudioProvider = ({ children }) => {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const soundRef = useRef(null);
   const isLoadingRef = useRef(false);
 
+  // Load persisted audio settings on mount
   useEffect(() => {
+    const init = async () => {
+      await loadAudioSettings();
+      setSettingsLoaded(true);
+    };
+    init();
+  }, []);
+
+  // Setup audio only after settings are loaded
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    
     setupAudio();
     return () => {
       if (soundRef.current) {
@@ -54,13 +74,50 @@ export const AudioProvider = ({ children }) => {
         soundRef.current = null;
       }
     };
-  }, []);
+  }, [settingsLoaded]);
 
   useEffect(() => {
     if (soundRef.current) {
       soundRef.current.setVolumeAsync(volume);
     }
-  }, [volume]);
+    // Persist volume state
+    if (settingsLoaded) {
+      saveAudioSetting(STORAGE_KEYS.VOLUME, volume);
+    }
+  }, [volume, settingsLoaded]);
+
+  // Persist pause state
+  useEffect(() => {
+    if (settingsLoaded) {
+      saveAudioSetting(STORAGE_KEYS.IS_PAUSED, isPaused);
+    }
+  }, [isPaused, settingsLoaded]);
+
+  const loadAudioSettings = async () => {
+    try {
+      const [savedVolume, savedIsPaused] = await Promise.all([
+        AsyncStorage.getItem(STORAGE_KEYS.VOLUME),
+        AsyncStorage.getItem(STORAGE_KEYS.IS_PAUSED),
+      ]);
+
+      if (savedVolume !== null) {
+        setVolume(JSON.parse(savedVolume));
+      }
+      if (savedIsPaused !== null) {
+        setIsPaused(JSON.parse(savedIsPaused));
+      }
+    } catch (error) {
+      console.error('Error loading audio settings:', error);
+    }
+  };
+
+  const saveAudioSetting = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error(`Error saving audio setting ${key}:`, error);
+    }
+  };
 
   const setupAudio = async () => {
     try {
@@ -101,14 +158,18 @@ export const AudioProvider = ({ children }) => {
 
       const { sound } = await Audio.Sound.createAsync(
         MUSIC_TRACKS[index].file,
-        { shouldPlay: true, volume: volume },
+        { shouldPlay: !isPaused, volume: volume },
         onPlaybackStatusUpdate
       );
 
       soundRef.current = sound;
       setCurrentTrackIndex(index);
-      setIsPlaying(true);
-      setIsPaused(false);
+      setIsPlaying(!isPaused);
+      
+      // If it was paused, pause the newly loaded track
+      if (isPaused) {
+        await sound.pauseAsync();
+      }
     } catch (error) {
       console.error('Error loading track:', error);
     } finally {
