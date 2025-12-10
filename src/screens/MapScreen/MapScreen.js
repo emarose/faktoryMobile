@@ -8,8 +8,6 @@ import MapControls from "./components/MapControls/MapControls";
 import MapGridControls from "./components/MapGridControls/MapGridControls";
 import MapGrid from "./components/MapGrid";
 import MiniToast from "../../components/MiniToast";
-import DiscoveryRadius from "./components/DiscoveryRadius";
-// import useWorldMapExploration from "../../hooks/useWorldMapExploration";
 import { GameContext } from "../../contexts/GameContext";
 import NodeBottomSheet from "./components/NodeBottomSheet";
 import InventoryBottomSheet from "./components/InventoryBottomSheet";

@@ -1,34 +1,53 @@
 
 === Files with more than 300 lines (excluding styles.js) ===
+E:\Code\faktoryMobile\src\components\AppLoader\index.js
 E:\Code\faktoryMobile\src\contexts\GameContext.js
 E:\Code\faktoryMobile\src\data\items.js
 E:\Code\faktoryMobile\src\data\milestones.js
 E:\Code\faktoryMobile\src\hooks\useInventory.js
 E:\Code\faktoryMobile\src\hooks\useMachines.js
-E:\Code\faktoryMobile\src\screens\BuildScreen\BuildScreen.js
+E:\Code\faktoryMobile\src\navigation\BottomTabNavigator.js
+E:\Code\faktoryMobile\src\screens\AssemblerScreen\AssemblerScreen.js
+E:\Code\faktoryMobile\src\screens\BasicResourcesScreen\BasicResourcesScreen.js
+E:\Code\faktoryMobile\src\screens\BuildScreen\components\MachineCard\index.js
 E:\Code\faktoryMobile\src\screens\ConstructorScreen\ConstructorScreen.js
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCard\index.js
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCards\MinerCard.js
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCards\SmelterCard.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\SmelterModal\index.js
-E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\DeployedMachinesScreen.js
 E:\Code\faktoryMobile\src\screens\FactoryScreen\components\DeployedMachinesCard\index.js
+E:\Code\faktoryMobile\src\screens\FactoryScreen\components\MilestoneCard\MilestoneCard.js
+E:\Code\faktoryMobile\src\screens\FoundryScreen\FoundryScreen.js
+E:\Code\faktoryMobile\src\screens\ManufacturerScreen\ManufacturerScreen.js
+E:\Code\faktoryMobile\src\screens\MapScreen\components\InventoryBottomSheet\InventoryBottomSheet.js
+E:\Code\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js
+E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeBottomSheet\NodeBottomSheet.js
 E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js
 E:\Code\faktoryMobile\src\screens\MapScreen\MapScreen.js
 E:\Code\faktoryMobile\src\screens\NodeSelectorScreen\NodeSelectorScreen.js
+E:\Code\faktoryMobile\src\screens\OilExtractorScreen\OilExtractorScreen.js
 E:\Code\faktoryMobile\src\screens\ProductAssemblyScreen\components\ProgressionTree\ProgressionTree.js
+E:\Code\faktoryMobile\src\screens\RefineryScreen\RefineryScreen.js
 E:\Code\faktoryMobile\src\screens\SmelterScreen\SmelterScreen.js
 
 === Files with many inline styles and NO styles.js in the same folder ===
 E:\Code\faktoryMobile\src\components\ProgressBar\index.js (inline styles: 10)
+E:\Code\faktoryMobile\src\navigation\BottomTabNavigator.js (inline styles: 28)
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCards\MinerCard.js (inline styles: 36)
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCards\OilExtractorCard.js (inline styles: 10)
+E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineCards\SmelterCard.js (inline styles: 44)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\CraftButton\index.js (inline styles: 6)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Constructor\components\QuantityStepper\index.js (inline styles: 28)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\CraftButton\index.js (inline styles: 6)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\NodeSelector\index.js (inline styles: 6)
 E:\Code\faktoryMobile\src\screens\DeployedMachinesScreen\components\MachineTypes\Smelter\components\QuantityStepper\index.js (inline styles: 30)
+E:\Code\faktoryMobile\src\screens\MapScreen\components\InventoryBottomSheet\InventoryBottomSheet.js (inline styles: 50)
 E:\Code\faktoryMobile\src\screens\MapScreen\components\MapControls\MapControls.js (inline styles: 10)
 E:\Code\faktoryMobile\src\screens\MapScreen\components\MapGrid\MapGrid.js (inline styles: 18)
-E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 26)
+E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeBottomSheet\NodeBottomSheet.js (inline styles: 40)
+E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inline styles: 20)
+E:\Code\faktoryMobile\src\utils\NineSliceFrame.js (inline styles: 22)
 
 === NODE COLORS ANALYSIS (vs nodeTypes.js) ===
 
@@ -53,15 +72,15 @@ E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inl
 === MACHINE COLORS ANALYSIS (vs useMachineColors) ===
 
 🏭 OFFICIAL MACHINE COLORS (from useMachineColors.js):
-🔧 assembler       → #26A69A
-🔧 constructor     → #64B5F6
+🔧 assembler       → #9C27B0
+🔧 constructor     → #50A553FF
 🔧 default         → #90A4AE
-🔧 foundry         → #FFD54F
-🔧 manufacturer    → #FF7043
-🔧 miner           → #2CA362FF
-🔧 oilExtractor    → #5D4037
-🔧 refinery        → #AB47BC
-🔧 smelter         → #E57373
+🔧 foundry         → #C1446F
+🔧 manufacturer    → #C8D41DFF
+🔧 miner           → #AAA8A4FF
+🔧 oilExtractor    → #614F4FFF
+🔧 refinery        → #1E88E5
+🔧 smelter         → #FF9800
 
 🚨 FILES WITH HARDCODED MACHINE COLORS:
 ⚠️  hooks\useMachineColors.js
@@ -70,51 +89,104 @@ E:\Code\faktoryMobile\src\screens\MapScreen\components\NodeCard\NodeCard.js (inl
 
 ✅ All machine colors match the official useMachineColors definitions!
 
-📊 STATS: 9 official machines | 6 files using hook | 1 files with hardcoded colors | 0 inconsistencies
+📊 STATS: 9 official machines | 15 files using hook | 1 files with hardcoded colors | 0 inconsistencies
 
 === GLOBAL COLOR SUMMARY ===
-Total unique backgroundColor: 17
-Total unique text color: 19
-Total unique colors (all): 36
+Total unique backgroundColor: 62
+Total unique text color: 27
+Total unique colors (all): 89
 
 === backgroundColor usage ===
-#2c2c2c: 9 uses (18.37%)
-#3a3a3a: 7 uses (14.29%)
-#1a1a1a: 6 uses (12.24%)
-#23233a: 4 uses (8.16%)
-#ff9800: 4 uses (8.16%)
-#444: 4 uses (8.16%)
-#1f2935: 2 uses (4.08%)
-#4CAF50: 2 uses (4.08%)
-#2196F3: 2 uses (4.08%)
-#FF9800: 2 uses (4.08%)
-#4a7fa7: 1 uses (2.04%)
-#3a4856: 1 uses (2.04%)
-#2c2c44: 1 uses (2.04%)
-#ffe082: 1 uses (2.04%)
-rgba(0,0,0,0.8): 1 uses (2.04%)
-rgba(255, 255, 255, 0.1): 1 uses (2.04%)
-rgba(255, 255, 255, 0.2): 1 uses (2.04%)
-Total unique backgroundColor usage: 17
+rgba(255, 255, 255, 0.1): 20 uses (10.53%)
+rgba(0, 0, 0, 0.8): 11 uses (5.79%)
+rgba(28, 41, 56, 0.7): 10 uses (5.26%)
+rgba(0, 0, 0, 0.7): 9 uses (4.74%)
+rgba(74, 127, 167, 0.3): 8 uses (4.21%)
+rgba(30, 41, 59, 0.6): 8 uses (4.21%)
+rgba(0, 0, 0, 0.1): 7 uses (3.68%)
+rgba(50, 50, 50, 0.7): 6 uses (3.16%)
+rgba(44, 44, 44, 0.75): 6 uses (3.16%)
+rgba(0,0,0,0.5): 5 uses (2.63%)
+#3a0242ff: 5 uses (2.63%)
+rgba(0, 0, 0, 0.6): 5 uses (2.63%)
+rgba(0, 0, 0, 0.5): 4 uses (2.11%)
+rgba(255, 255, 255, 0.05): 4 uses (2.11%)
+#2c2c2c: 4 uses (2.11%)
+#3a3a3a: 4 uses (2.11%)
+#000: 4 uses (2.11%)
+rgba(47, 79, 117, 0.5): 4 uses (2.11%)
+#23233a: 3 uses (1.58%)
+#444: 3 uses (1.58%)
+rgba(0,0,0,0.7): 3 uses (1.58%)
+rgba(17, 25, 40, 0.85): 2 uses (1.05%)
+rgba(41, 49, 71, 0.8): 2 uses (1.05%)
+rgba(0, 255, 255, 0.1): 2 uses (1.05%)
+#ff9800: 2 uses (1.05%)
+#1f2935: 2 uses (1.05%)
+rgba(0,0,0,0.8): 2 uses (1.05%)
+rgba(0, 0, 0, 0.3): 2 uses (1.05%)
+#4CAF50: 2 uses (1.05%)
+#2196F3: 2 uses (1.05%)
+#FF9800: 2 uses (1.05%)
+rgba(28, 41, 56, 0.6): 2 uses (1.05%)
+rgba(50, 50, 50, 0.75): 2 uses (1.05%)
+rgba(58, 58, 58, 0.85): 2 uses (1.05%)
+rgba(255, 152, 0, 0.85): 2 uses (1.05%)
+rgba(68, 68, 68, 0.6): 2 uses (1.05%)
+rgba(0, 255, 255, 0.15): 2 uses (1.05%)
+rgba(0, 0, 0, 0.85): 1 uses (0.53%)
+rgba(239, 83, 80, 0.05): 1 uses (0.53%)
+rgba(76, 175, 80, 0.3): 1 uses (0.53%)
+rgba(239, 83, 80, 0.3): 1 uses (0.53%)
+rgba(0, 0, 0, 0.4): 1 uses (0.53%)
+rgba(239, 83, 80, 0.2): 1 uses (0.53%)
+#4a7fa7: 1 uses (0.53%)
+#3a4856: 1 uses (0.53%)
+#2c2c44: 1 uses (0.53%)
+#ffe082: 1 uses (0.53%)
+#1a1a1a: 1 uses (0.53%)
+rgba(0, 0, 0, 0.9): 1 uses (0.53%)
+rgba(255, 255, 255, 0.03): 1 uses (0.53%)
+#FFA726: 1 uses (0.53%)
+#EF5350: 1 uses (0.53%)
+rgba(255, 0, 204, 0.8): 1 uses (0.53%)
+rgba(255, 255, 255, 0.2): 1 uses (0.53%)
+rgba(35, 35, 35, 0.65): 1 uses (0.53%)
+rgba(44, 44, 44, 0.8): 1 uses (0.53%)
+rgba(35, 35, 35, 0.7): 1 uses (0.53%)
+rgba(40, 44, 52, 0.85): 1 uses (0.53%)
+rgba(33, 150, 243, 0.15): 1 uses (0.53%)
+rgba(35, 35, 35, 0.6): 1 uses (0.53%)
+rgba(35, 35, 35, 0.8): 1 uses (0.53%)
+rgba(255, 0, 204, 0.3): 1 uses (0.53%)
+Total unique backgroundColor usage: 62
 
 === text color usage ===
-#e8f4fd: 12 uses (23.53%)
-#b8c7d1: 7 uses (13.73%)
-#ff9800: 6 uses (11.76%)
-#fff: 5 uses (9.80%)
-#6b7885: 3 uses (5.88%)
-#FFD700: 2 uses (3.92%)
-#aaa: 2 uses (3.92%)
-#4CAF50: 2 uses (3.92%)
-#888: 2 uses (3.92%)
-#d8dadbff: 1 uses (1.96%)
-#b88333ff: 1 uses (1.96%)
-#f5d7c5ff: 1 uses (1.96%)
-#424040ff: 1 uses (1.96%)
-#DAA520: 1 uses (1.96%)
-#ADD8E6: 1 uses (1.96%)
-#FFFF00: 1 uses (1.96%)
-#4B0082: 1 uses (1.96%)
-#CD5C5C: 1 uses (1.96%)
-#00FF00: 1 uses (1.96%)
-Total unique text color usage: 19
+#e8f4fd: 27 uses (19.71%)
+#b8c7d1: 24 uses (17.52%)
+#00ffff: 14 uses (10.22%)
+#fff: 11 uses (8.03%)
+#ff9800: 11 uses (8.03%)
+rgba(255, 255, 255, 0.7): 10 uses (7.30%)
+#6b7885: 6 uses (4.38%)
+#ffffff: 5 uses (3.65%)
+#4CAF50: 3 uses (2.19%)
+#ff00cc: 3 uses (2.19%)
+#FFD700: 2 uses (1.46%)
+#aaa: 2 uses (1.46%)
+rgba(255, 255, 255, 0.9): 2 uses (1.46%)
+#888: 2 uses (1.46%)
+#00ff88: 2 uses (1.46%)
+#2196F3: 2 uses (1.46%)
+#d8dadbff: 1 uses (0.73%)
+#b88333ff: 1 uses (0.73%)
+#f5d7c5ff: 1 uses (0.73%)
+#424040ff: 1 uses (0.73%)
+#DAA520: 1 uses (0.73%)
+#ADD8E6: 1 uses (0.73%)
+#FFFF00: 1 uses (0.73%)
+#4B0082: 1 uses (0.73%)
+#CD5C5C: 1 uses (0.73%)
+#00FF00: 1 uses (0.73%)
+rgba(184, 199, 209, 0.5): 1 uses (0.73%)
+Total unique text color usage: 27

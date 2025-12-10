@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useRef } from 'r
 import { Audio } from 'expo-av';
 
 const AudioContext = createContext();
-const DEFAULT_VOLUME = 0.2;
+const DEFAULT_VOLUME = 0;
 // Define your music tracks here - update these paths to match your actual audio files
 const MUSIC_TRACKS = [
   {
