@@ -92,12 +92,11 @@ export default function MapScreen({ navigation }) {
       setTimeout(() => setToastVisible(false), 1500);
       return;
     }
-    setVisualPlayerPos({ x, y });
     setMoveLocked(true);
     // Close bottom sheet when moving
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
-    // Delay position update to allow smooth animation (200ms matches animation duration)
+    // Update position after animation completes (visualPlayerPos will sync via useEffect)
     setTimeout(() => setPlayerMapPosition({ x, y }), 200);
   };
 
