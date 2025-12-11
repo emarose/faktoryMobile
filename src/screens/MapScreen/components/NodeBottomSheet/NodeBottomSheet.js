@@ -240,7 +240,12 @@ const NodeBottomSheet = ({
         </View>
 
         {/* Progress Bar */}
-        {nodeDepletionAmount !== null && typeof nodeDepletionAmount === 'number' && (
+        {nodeDepletionAmount !== null && 
+         typeof nodeDepletionAmount === 'number' && 
+         !isNaN(nodeDepletionAmount) &&
+         typeof nodeCapacity === 'number' &&
+         !isNaN(nodeCapacity) &&
+         nodeCapacity > 0 && (
           <View style={{ marginBottom: 16 }}>
             <ProgressBar
               value={nodeDepletionAmount}

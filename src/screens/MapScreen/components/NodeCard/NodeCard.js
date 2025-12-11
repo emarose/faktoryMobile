@@ -225,7 +225,12 @@ const NodeCard = React.memo(
         {/* Detalles y barra solo si expandido */}
         {isExpanded && (
           <View>
-            {nodeDepletionAmount !== null && (
+            {nodeDepletionAmount !== null && 
+             typeof nodeDepletionAmount === 'number' && 
+             !isNaN(nodeDepletionAmount) &&
+             typeof nodeCapacity === 'number' &&
+             !isNaN(nodeCapacity) &&
+             nodeCapacity > 0 && (
               <ProgressBar
                 value={nodeDepletionAmount}
                 max={nodeCapacity}

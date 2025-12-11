@@ -23,7 +23,10 @@ const ProgressBar = ({
   const safeMax =
     typeof max === "number" && !isNaN(max) && Number(max) > 0 ? Number(max) : 1;
   const progress = Math.max(0, Math.min(1, safeValue / safeMax));
-  const progressText = `${Math.floor(safeValue)} / ${safeMax}`;
+  // Ensure progressText only contains valid numbers (critical for production builds)
+  const displayValue = Math.floor(safeValue);
+  const displayMax = Math.floor(safeMax);
+  const progressText = `${displayValue} / ${displayMax}`;
 
   // Trigger a subtle pulse animation when progress increases
   useEffect(() => {
