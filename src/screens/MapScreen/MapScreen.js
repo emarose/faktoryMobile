@@ -81,7 +81,15 @@ export default function MapScreen({ navigation }) {
     // Prevent moving into tiles that contain any resource node
     const nodeAtTarget = allResourceNodes.find((n) => n.x === x && n.y === y);
     if (nodeAtTarget) {
-      // block movement into node tile
+      // block movement into node tile and show feedback
+      const isDiscovered = discoveredNodes[nodeAtTarget.id];
+      if (isDiscovered) {
+        setToastMessage(`Can't walk through ${nodeAtTarget.name || nodeAtTarget.type}`);
+      } else {
+        setToastMessage("Something is blocking the way");
+      }
+      setToastVisible(true);
+      setTimeout(() => setToastVisible(false), 1500);
       return;
     }
     setVisualPlayerPos({ x, y });
