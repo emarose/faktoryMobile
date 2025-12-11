@@ -27,6 +27,7 @@ const MapGrid = ({
   manualMineSignal,
   miniToast,
   playerMapPosition, // Add this to track actual position
+  nodeAmounts,
 }) => {
   // Animated value for a quick color pulse overlay on the tile.
   // We animate the overlay's opacity in a short sequence to create a pulse effect.
@@ -155,6 +156,10 @@ const MapGrid = ({
               m.assignedNodeId === node.id
             );
           });
+          // Check if node is depleted
+          const nodeAmount = nodeAmounts?.[node.id] ?? node.capacity ?? 1000;
+          const isDepleted = nodeAmount <= 0;
+          
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
@@ -163,14 +168,16 @@ const MapGrid = ({
                 height: tileSize,
                 backgroundColor: "rgba(0,0,0,0.5)",
                 borderWidth: selectedNodeId === node.id ? 2 : 1,
-                borderColor:
-                  selectedNodeId === node.id
+                borderColor: isDepleted
+                  ? "#ff0000"
+                  : selectedNodeId === node.id
                     ? Colors.accentGold
                     : Colors.borderLight,
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
                 zIndex: 100,
+                opacity: isDepleted ? 0.3 : 1,
               }}
               onPress={() => handleTilePress(node)}
             >
@@ -191,6 +198,33 @@ const MapGrid = ({
                   iconSize={20}
                   style={{ backgroundColor: "transparent", borderWidth: 0 }}
                 />
+              )}
+              {/* Vertical progress bar for nodes with placed machines */}
+              {hasMiner && (
+                <View
+                  style={{
+                    position: "absolute",
+                    right: -6,
+                    top: -tileSize -2,
+                    width: 6,
+                    height: tileSize * 2,
+                    backgroundColor: "rgba(0,0,0,0.6)",
+                    borderRadius: 2,
+                    borderWidth: 1,
+                    borderColor: Colors.borderLight,
+                    overflow: "hidden",
+                  }}
+                >
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      width: "100%",
+                      height: `${Math.max(0, Math.min(100, (nodeAmount / (node.capacity || 1000)) * 100))}%`,
+                      backgroundColor: isDepleted ? "#ff0000" : Colors.accentGold,
+                    }}
+                  />
+                </View>
               )}
               {/* Manual mine pulse overlay (full tile color change) */}
               {manualMineFeedback === node.id && (

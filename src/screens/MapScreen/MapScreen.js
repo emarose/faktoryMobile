@@ -270,6 +270,7 @@ export default function MapScreen({ navigation }) {
               manualMineFeedback={manualMineFeedback}
               manualMineSignal={manualMineSignal}
               miniToast={miniToast}
+              nodeAmounts={nodeAmounts}
             />
           </View>
 
