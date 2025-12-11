@@ -31,25 +31,21 @@ const DPAD_CONFIG = [
   },
 ];
 
-const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection, onDirectionChange }) => {
+const MapGridControls = ({ MAP_DISPLAY_SIZE, onHoldStart, onHoldEnd, onDirectionChange }) => {
   const [pressedButton, setPressedButton] = useState(null);
   const padSize = 140 + BUTTON_OFFSET * 2.5; // Aumentado para acomodar botones más grandes
 
   const handlePressIn = (dir) => {
     setPressedButton(dir);
+    // Call direction change and start continuous movement
     if (onDirectionChange) onDirectionChange(dir);
+    if (onHoldStart) onHoldStart(dir);
   };
 
   const handlePressOut = () => {
-    setPressedButton(null);
-    // Do not clear heading here; keep the last direction until user presses another direction.
-  };
-
-  const handlePress = (dir) => {
-    if (exploreDirection) {
-      exploreDirection(dir);
-    }
-    // Pequeña vibración visual manteniendo el estado pressed un poco más
+    // Stop continuous movement
+    if (onHoldEnd) onHoldEnd();
+    // Keep button pressed for visual feedback
     setTimeout(() => setPressedButton(null), 100);
   };
 
@@ -91,7 +87,6 @@ const MapGridControls = ({ MAP_DISPLAY_SIZE, exploreDirection, onDirectionChange
               },
               style
             )}
-            onPress={() => handlePress(dir)}
             onPressIn={() => handlePressIn(dir)}
             onPressOut={handlePressOut}
             activeOpacity={0.7}

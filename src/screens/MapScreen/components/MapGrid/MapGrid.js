@@ -28,6 +28,7 @@ const MapGrid = ({
   miniToast,
   playerMapPosition, // Add this to track actual position
   nodeAmounts,
+  isMoving, // Add isMoving state
 }) => {
   // Animated value for a quick color pulse overlay on the tile.
   // We animate the overlay's opacity in a short sequence to create a pulse effect.
@@ -39,6 +40,7 @@ const MapGrid = ({
   const prevVisualPos = useRef(visualPlayerPos);
 
   // Animate player movement when visualPlayerPos changes
+  // This runs synchronously - no delays
   useEffect(() => {
     const prev = prevVisualPos.current;
     const curr = visualPlayerPos;
@@ -48,23 +50,23 @@ const MapGrid = ({
     const deltaY = curr.y - prev.y;
 
     if (deltaX !== 0 || deltaY !== 0) {
-      // Start from the offset position (simulate coming from previous tile)
+      // INSTANT start: Set initial offset immediately (no delay)
       offsetX.value = -deltaX * tileSize;
       offsetY.value = -deltaY * tileSize;
 
-      // Animate smoothly to center (0, 0)
+      // Then animate to center (0, 0) - this starts immediately
       offsetX.value = withTiming(0, {
         duration: 200,
-        easing: Easing.out(Easing.ease),
+        easing: Easing.out(Easing.quad),
       });
       offsetY.value = withTiming(0, {
         duration: 200,
-        easing: Easing.out(Easing.ease),
+        easing: Easing.out(Easing.quad),
       });
+      
+      prevVisualPos.current = visualPlayerPos;
     }
-
-    prevVisualPos.current = visualPlayerPos;
-  }, [visualPlayerPos, tileSize]);
+  }, [visualPlayerPos, tileSize, offsetX, offsetY]);
 
   // Re-run animation when either the nodeId or the signal changes. This
   // allows rapid repeated mines on the same node to retrigger the pulse.
@@ -144,7 +146,11 @@ const MapGrid = ({
               }}
             >
               <Reanimated.View style={[playerAnimatedStyle, { width: tileSize, height: tileSize }]}>
-                <PlayerSprite direction={currentDirection} size={tileSize} />
+                <PlayerSprite 
+                  direction={currentDirection || 'down'} 
+                  size={tileSize} 
+                  isMoving={isMoving}
+                />
               </Reanimated.View>
             </View>
           );

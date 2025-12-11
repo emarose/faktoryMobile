@@ -56,49 +56,149 @@ export default function MapScreen({ navigation }) {
   const miniToastTimeoutRef = useRef(null);
 
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
-  const [moveLocked, setMoveLocked] = useState(false);
-  const [currentDirection, setCurrentDirection] = useState(null);
+  const [continuousPos, setContinuousPos] = useState({ x: playerMapPosition.x, y: playerMapPosition.y });
+  const moveIntervalRef = useRef(null);
+  const holdStartTimeRef = useRef(null);
+  const [isMoving, setIsMoving] = useState(false);
+  const [currentDirection, setCurrentDirection] = useState('down');
+  const movingDirectionRef = useRef(null);
 
   useEffect(() => {
+    // Sync positions when actual position changes
     setVisualPlayerPos(playerMapPosition);
-    setMoveLocked(false);
+    setContinuousPos({ x: playerMapPosition.x, y: playerMapPosition.y });
+    setIsMoving(false);
   }, [playerMapPosition]);
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
-  const handleExploreDirection = (dir) => {
-    if (moveLocked) return;
+  const handleHoldStart = (dir) => {
+    // Record when button was pressed
+    holdStartTimeRef.current = Date.now();
     
-    // Set direction first for sprite animation
+    // Set direction and start animation immediately
     setCurrentDirection(dir);
+    setIsMoving(true);
+    movingDirectionRef.current = dir;
     
-    let { x, y } = visualPlayerPos;
-    if (dir === "up") y -= 1;
-    if (dir === "down") y += 1;
-    if (dir === "left") x -= 1;
-    if (dir === "right") x += 1;
-    // Prevent moving into tiles that contain any resource node
-    const nodeAtTarget = allResourceNodes.find((n) => n.x === x && n.y === y);
-    if (nodeAtTarget) {
-      // block movement into node tile and show feedback
-      const isDiscovered = discoveredNodes[nodeAtTarget.id];
-      if (isDiscovered) {
-        setToastMessage(`Can't walk through ${nodeAtTarget.name || nodeAtTarget.type}`);
-      } else {
-        setToastMessage("Something is blocking the way");
-      }
-      setToastVisible(true);
-      setTimeout(() => setToastVisible(false), 1500);
-      return;
-    }
-    setMoveLocked(true);
     // Close bottom sheet when moving
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
-    // Update position after animation completes (visualPlayerPos will sync via useEffect)
-    setTimeout(() => setPlayerMapPosition({ x, y }), 200);
+    
+    // Delay before starting continuous movement (allows for tap detection)
+    const holdDelay = 250; // ms to distinguish tap from hold
+    const moveSpeed = 600; // ms per tile (slower, more deliberate movement)
+    
+    setTimeout(() => {
+      // Only start continuous movement if still holding
+      if (movingDirectionRef.current === dir) {
+        moveIntervalRef.current = setInterval(() => {
+          setContinuousPos((prevPos) => {
+            const currentDir = movingDirectionRef.current;
+            if (!currentDir) return prevPos;
+            
+            let { x, y } = prevPos;
+            if (currentDir === "up") y -= 1;
+            if (currentDir === "down") y += 1;
+            if (currentDir === "left") x -= 1;
+            if (currentDir === "right") x += 1;
+            
+            // Check collision
+            const nodeAtTarget = allResourceNodes.find((n) => n.x === x && n.y === y);
+            if (nodeAtTarget) {
+              // Stop movement on collision
+              handleHoldEnd();
+              const isDiscovered = discoveredNodes[nodeAtTarget.id];
+              if (isDiscovered) {
+                setToastMessage(`Can't walk through ${nodeAtTarget.name || nodeAtTarget.type}`);
+              } else {
+                setToastMessage("Something is blocking the way");
+              }
+              setToastVisible(true);
+              setTimeout(() => setToastVisible(false), 1500);
+              return prevPos;
+            }
+            
+            // Update visual position
+            setVisualPlayerPos({ x, y });
+            return { x, y };
+          });
+        }, moveSpeed);
+      }
+    }, holdDelay);
   };
+
+  const handleHoldEnd = () => {
+    const holdDuration = holdStartTimeRef.current ? Date.now() - holdStartTimeRef.current : 0;
+    const wasTap = holdDuration < 250; // Quick tap
+    
+    // Stop continuous movement
+    const lastDirection = movingDirectionRef.current;
+    movingDirectionRef.current = null;
+    setIsMoving(false);
+    
+    if (moveIntervalRef.current) {
+      clearInterval(moveIntervalRef.current);
+      moveIntervalRef.current = null;
+    }
+    
+    // Handle tap vs hold differently
+    if (wasTap && lastDirection) {
+      // Single tap: move one tile
+      setContinuousPos((prevPos) => {
+        let { x, y } = prevPos;
+        if (lastDirection === "up") y -= 1;
+        if (lastDirection === "down") y += 1;
+        if (lastDirection === "left") x -= 1;
+        if (lastDirection === "right") x += 1;
+        
+        // Check collision
+        const nodeAtTarget = allResourceNodes.find((n) => n.x === x && n.y === y);
+        if (nodeAtTarget) {
+          const isDiscovered = discoveredNodes[nodeAtTarget.id];
+          if (isDiscovered) {
+            setToastMessage(`Can't walk through ${nodeAtTarget.name || nodeAtTarget.type}`);
+          } else {
+            setToastMessage("Something is blocking the way");
+          }
+          setToastVisible(true);
+          setTimeout(() => setToastVisible(false), 1500);
+          return prevPos;
+        }
+        
+        // Move one tile
+        const newPos = { x, y };
+        setVisualPlayerPos(newPos);
+        setPlayerMapPosition(newPos);
+        return newPos;
+      });
+    } else {
+      // Hold release: snap to nearest tile
+      setContinuousPos((prevPos) => {
+        const snappedX = Math.round(prevPos.x);
+        const snappedY = Math.round(prevPos.y);
+        const snappedPos = { x: snappedX, y: snappedY };
+        
+        // Update visual and actual position
+        setVisualPlayerPos(snappedPos);
+        setPlayerMapPosition(snappedPos);
+        
+        return snappedPos;
+      });
+    }
+    
+    holdStartTimeRef.current = null;
+  };
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (moveIntervalRef.current) {
+        clearInterval(moveIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Handle discovery when player moves
   useEffect(() => {
@@ -271,6 +371,7 @@ export default function MapScreen({ navigation }) {
               manualMineSignal={manualMineSignal}
               miniToast={miniToast}
               nodeAmounts={nodeAmounts}
+              isMoving={isMoving}
             />
           </View>
 
@@ -321,7 +422,8 @@ export default function MapScreen({ navigation }) {
             <View style={{ position: "relative", alignSelf: "flex-end" }}>
               <MapGridControls
                 MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-                exploreDirection={handleExploreDirection}
+                onHoldStart={handleHoldStart}
+                onHoldEnd={handleHoldEnd}
                 onDirectionChange={(dir) => setCurrentDirection(dir)}
               />
             </View>
