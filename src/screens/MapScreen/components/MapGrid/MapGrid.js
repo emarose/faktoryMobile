@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { View, TouchableOpacity, Animated } from "react-native";
+import Reanimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  Easing,
+} from "react-native-reanimated";
 import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../../../constants/Colors";
@@ -20,10 +26,44 @@ const MapGrid = ({
   manualMineFeedback,
   manualMineSignal,
   miniToast,
+  playerMapPosition, // Add this to track actual position
 }) => {
   // Animated value for a quick color pulse overlay on the tile.
   // We animate the overlay's opacity in a short sequence to create a pulse effect.
   const pulseOpacity = useRef(new Animated.Value(0)).current;
+
+  // Reanimated shared values for smooth player sliding
+  const offsetX = useSharedValue(0);
+  const offsetY = useSharedValue(0);
+  const prevVisualPos = useRef(visualPlayerPos);
+
+  // Animate player movement when visualPlayerPos changes
+  useEffect(() => {
+    const prev = prevVisualPos.current;
+    const curr = visualPlayerPos;
+
+    // Calculate the difference in grid positions
+    const deltaX = curr.x - prev.x;
+    const deltaY = curr.y - prev.y;
+
+    if (deltaX !== 0 || deltaY !== 0) {
+      // Start from the offset position (simulate coming from previous tile)
+      offsetX.value = -deltaX * tileSize;
+      offsetY.value = -deltaY * tileSize;
+
+      // Animate smoothly to center (0, 0)
+      offsetX.value = withTiming(0, {
+        duration: 200,
+        easing: Easing.out(Easing.ease),
+      });
+      offsetY.value = withTiming(0, {
+        duration: 200,
+        easing: Easing.out(Easing.ease),
+      });
+    }
+
+    prevVisualPos.current = visualPlayerPos;
+  }, [visualPlayerPos, tileSize]);
 
   // Re-run animation when either the nodeId or the signal changes. This
   // allows rapid repeated mines on the same node to retrigger the pulse.
@@ -50,6 +90,17 @@ const MapGrid = ({
       }),
     ]).start();
   }, [manualMineFeedback, manualMineSignal]);
+
+  // Animated style for player sliding
+  const playerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: offsetX.value },
+        { translateY: offsetY.value },
+      ],
+    };
+  });
+
   const renderTiles = () => {
     const rows = [];
     const px = visualPlayerPos.x;
@@ -87,10 +138,13 @@ const MapGrid = ({
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
+                overflow: "visible",
                 //zIndex: 200,
               }}
             >
-              <PlayerSprite direction={currentDirection} size={tileSize} />
+              <Reanimated.View style={[playerAnimatedStyle, { width: tileSize, height: tileSize }]}>
+                <PlayerSprite direction={currentDirection} size={tileSize} />
+              </Reanimated.View>
             </View>
           );
         } else if (node && discovered) {

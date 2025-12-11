@@ -69,6 +69,10 @@ export default function MapScreen({ navigation }) {
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
+    
+    // Set direction first for sprite animation
+    setCurrentDirection(dir);
+    
     let { x, y } = visualPlayerPos;
     if (dir === "up") y -= 1;
     if (dir === "down") y += 1;
@@ -85,7 +89,8 @@ export default function MapScreen({ navigation }) {
     // Close bottom sheet when moving
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
-    setTimeout(() => setPlayerMapPosition({ x, y }), 0);
+    // Delay position update to allow smooth animation (200ms matches animation duration)
+    setTimeout(() => setPlayerMapPosition({ x, y }), 200);
   };
 
   // Handle discovery when player moves
@@ -247,6 +252,7 @@ export default function MapScreen({ navigation }) {
               chunkSize={CHUNK_SIZE}
               tileSize={TILE_SIZE}
               visualPlayerPos={visualPlayerPos}
+              playerMapPosition={playerMapPosition}
               allResourceNodes={allResourceNodes}
               discoveredNodes={discoveredNodes}
               handleTilePress={handleTilePress}
