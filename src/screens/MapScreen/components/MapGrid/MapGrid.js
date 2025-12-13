@@ -137,9 +137,10 @@ const MapGrid = ({
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: "transparent",
+                backgroundColor: "rgba(0,0,0,0.5)",
                 borderWidth: 1,
                 borderColor: Colors.borderLight,
+                borderStyle: "dashed",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
@@ -163,7 +164,7 @@ const MapGrid = ({
           // Check if node is depleted
           const nodeAmount = nodeAmounts?.[node.id] ?? node.capacity ?? 1000;
           const isDepleted = nodeAmount <= 0;
-          
+
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
@@ -171,12 +172,13 @@ const MapGrid = ({
                 width: tileSize,
                 height: tileSize,
                 backgroundColor: "rgba(0,0,0,0.5)",
-                borderWidth: selectedNodeId === node.id ? 2 : 1,
+                borderWidth: 1,
+                borderStyle: selectedNodeId === node.id ? "solid" : "dotted",
                 borderColor: isDepleted
                   ? "#ff0000"
                   : selectedNodeId === node.id
                     ? Colors.accentGold
-                    : Colors.borderLight,
+                    : "rgba(255, 255, 255, 0.15)",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
@@ -209,7 +211,7 @@ const MapGrid = ({
                   style={{
                     position: "absolute",
                     right: -6,
-                    top: -tileSize -2,
+                    top: -tileSize - 2,
                     width: 6,
                     height: tileSize * 2,
                     backgroundColor: "rgba(0,0,0,0.6)",
@@ -269,15 +271,16 @@ const MapGrid = ({
           // Check if this tile was visited or is the target
           const isVisited = visitedTiles.some(tile => tile.x === gx && tile.y === gy);
           const isTarget = targetTile && targetTile.x === gx && targetTile.y === gy;
-          
+
           cols.push(
             <TouchableOpacity
               key={`${gx}-${gy}`}
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: isTarget ? "rgba(255, 215, 0, 0.3)" : "rgba(0,0,0,0.5)",
-                borderWidth: isTarget ? 2 : 1,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                borderWidth: 1,
+                borderStyle: "dashed",
                 borderColor: isTarget ? Colors.accentGold : Colors.borderLight,
                 alignItems: 'center',
                 justifyContent: 'center',
