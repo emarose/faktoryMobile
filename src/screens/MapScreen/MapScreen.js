@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, startTransition } from "react";
 import { View, ScrollView, Animated, ImageBackground } from "react-native";
+import { useSharedValue, withTiming, runOnJS, Easing } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, CustomHeader } from "../../components";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,6 +56,10 @@ export default function MapScreen({ navigation }) {
   const [isInventoryVisible, setIsInventoryVisible] = useState(false);
   const miniToastTimeoutRef = useRef(null);
 
+  // Use Reanimated shared values for position (runs on UI thread for 60fps)
+  const visualPlayerPosX = useSharedValue(playerMapPosition.x);
+  const visualPlayerPosY = useSharedValue(playerMapPosition.y);
+  // Keep a React state version for rendering tiles and non-animated logic
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
   const [moveLocked, setMoveLocked] = useState(false);
   const [currentDirection, setCurrentDirection] = useState(null);
@@ -63,8 +68,13 @@ export default function MapScreen({ navigation }) {
   const [targetTile, setTargetTile] = useState(null); // Highlighted destination tile
 
   useEffect(() => {
-    setVisualPlayerPos(playerMapPosition);
-    setMoveLocked(false);
+    // Only sync visualPlayerPos if not currently pathfinding (pathfinding manages visualPlayerPos directly)
+    if (!isWalkingRef.current) {
+      setVisualPlayerPos(playerMapPosition);
+      visualPlayerPosX.value = playerMapPosition.x;
+      visualPlayerPosY.value = playerMapPosition.y;
+      setMoveLocked(false);
+    }
   }, [playerMapPosition]);
 
   const [toastVisible, setToastVisible] = useState(false);
@@ -143,10 +153,12 @@ export default function MapScreen({ navigation }) {
       const currentPos = pathIndex === 0 ? playerMapPosition : path[pathIndex - 1];
       const dx = nextStep.x - currentPos.x;
       const dy = nextStep.y - currentPos.y;
-      if (dy < 0) setCurrentDirection('up');
-      else if (dy > 0) setCurrentDirection('down');
-      else if (dx < 0) setCurrentDirection('left');
-      else if (dx > 0) setCurrentDirection('right');
+      let newDir;
+      if (dy < 0) newDir = 'up';
+      else if (dy > 0) newDir = 'down';
+      else if (dx < 0) newDir = 'left';
+      else if (dx > 0) newDir = 'right';
+      setCurrentDirection(newDir);
 
       // Add the CURRENT tile (being left) to visited trail before moving
       setVisitedTiles(prev => {
@@ -154,13 +166,27 @@ export default function MapScreen({ navigation }) {
         return newTiles.slice(-10); // Keep only last 10 tiles
       });
 
-      // Move to next step (discrete tile-by-tile)
+      // Move to next step - Update shared values INSTANTLY (runs on UI thread)
       setMoveLocked(true);
-      setVisualPlayerPos(nextStep);
-      setPlayerMapPosition(nextStep);
+      
+      // Update shared values with animation - this happens immediately on UI thread
+      visualPlayerPosX.value = withTiming(nextStep.x, {
+        duration: 240,
+        easing: Easing.out(Easing.cubic),
+      });
+      visualPlayerPosY.value = withTiming(nextStep.y, {
+        duration: 240,
+        easing: Easing.out(Easing.cubic),
+      });
+      
+      // Update React state for tile rendering (non-critical, can be slightly delayed)
+      startTransition(() => {
+        setVisualPlayerPos(nextStep);
+      });
 
-      // Wait for animation, then move to next step (240ms for slower movement)
+      // Wait for animation, then update actual position and unlock
       setTimeout(() => {
+        setPlayerMapPosition(nextStep);
         setMoveLocked(false);
         walkNextStep(pathIndex + 1);
       }, 240);
@@ -257,6 +283,8 @@ export default function MapScreen({ navigation }) {
       return;
     }
     setMoveLocked(true);
+    setIsMoving(true);
+    
     // Close bottom sheet when moving
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
@@ -267,8 +295,26 @@ export default function MapScreen({ navigation }) {
       return newTiles.slice(-10); // Keep only last 10 tiles
     });
 
-    // Update position after animation completes (visualPlayerPos will sync via useEffect)
-    setTimeout(() => setPlayerMapPosition({ x, y }), 200);
+    // Animate position on UI thread (instant, no React delay)
+    visualPlayerPosX.value = withTiming(x, {
+      duration: 240,
+      easing: Easing.out(Easing.cubic),
+    });
+    visualPlayerPosY.value = withTiming(y, {
+      duration: 240,
+      easing: Easing.out(Easing.cubic),
+    });
+    
+    // Update React state for tile rendering (non-critical)
+    startTransition(() => {
+      setVisualPlayerPos({ x, y });
+    });
+
+    // Update position after animation completes and clear isMoving
+    setTimeout(() => {
+      setPlayerMapPosition({ x, y });
+      setIsMoving(false);
+    }, 240);
   };
 
   // Handle discovery when player moves
@@ -430,6 +476,8 @@ export default function MapScreen({ navigation }) {
                 chunkSize={CHUNK_SIZE}
                 tileSize={TILE_SIZE}
                 visualPlayerPos={visualPlayerPos}
+                visualPlayerPosX={visualPlayerPosX}
+                visualPlayerPosY={visualPlayerPosY}
                 playerMapPosition={playerMapPosition}
                 allResourceNodes={allResourceNodes}
                 discoveredNodes={discoveredNodes}

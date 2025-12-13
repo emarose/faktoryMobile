@@ -122,4 +122,11 @@ const PlayerSprite = ({ direction = 'down', size = 96, isMoving = false }) => {
   );
 };
 
-export default PlayerSprite;
+// Memoize with custom comparison
+export default React.memo(PlayerSprite, (prev, next) => {
+  return (
+    prev.direction === next.direction &&
+    prev.isMoving === next.isMoving &&
+    prev.size === next.size
+  );
+});

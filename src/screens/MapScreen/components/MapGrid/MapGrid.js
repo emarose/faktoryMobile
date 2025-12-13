@@ -5,6 +5,7 @@ import Reanimated, {
   useAnimatedStyle,
   withTiming,
   Easing,
+  useDerivedValue,
 } from "react-native-reanimated";
 import MiniToast from "../../../../components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,6 +17,8 @@ const MapGrid = ({
   chunkSize,
   tileSize,
   visualPlayerPos,
+  visualPlayerPosX, // Reanimated shared value
+  visualPlayerPosY, // Reanimated shared value
   allResourceNodes,
   discoveredNodes,
   handleTilePress,
@@ -37,38 +40,7 @@ const MapGrid = ({
   // We animate the overlay's opacity in a short sequence to create a pulse effect.
   const pulseOpacity = useRef(new Animated.Value(0)).current;
 
-  // Reanimated shared values for smooth player sliding
-  const offsetX = useSharedValue(0);
-  const offsetY = useSharedValue(0);
-  const prevVisualPos = useRef(visualPlayerPos);
-
-  // Animate player movement when visualPlayerPos changes
-  useEffect(() => {
-    const prev = prevVisualPos.current;
-    const curr = visualPlayerPos;
-
-    // Calculate the difference in grid positions
-    const deltaX = curr.x - prev.x;
-    const deltaY = curr.y - prev.y;
-
-    if (deltaX !== 0 || deltaY !== 0) {
-      // Start from the offset position (simulate coming from previous tile)
-      offsetX.value = -deltaX * tileSize;
-      offsetY.value = -deltaY * tileSize;
-
-      // Animate smoothly to center (0, 0) with slower, smooth timing
-      offsetX.value = withTiming(0, {
-        duration: 240,
-        easing: Easing.out(Easing.cubic),
-      });
-      offsetY.value = withTiming(0, {
-        duration: 240,
-        easing: Easing.out(Easing.cubic),
-      });
-    }
-
-    prevVisualPos.current = visualPlayerPos;
-  }, [visualPlayerPos, tileSize]);
+  // Player position is now controlled by shared values passed from parent
 
   // Re-run animation when either the nodeId or the signal changes. This
   // allows rapid repeated mines on the same node to retrigger the pulse.
@@ -96,13 +68,19 @@ const MapGrid = ({
     ]).start();
   }, [manualMineFeedback, manualMineSignal]);
 
-  // Animated style for player sliding
+  // Create animated style from shared values for smooth player movement
   const playerAnimatedStyle = useAnimatedStyle(() => {
+    // Use only shared values - no React state allowed here
+    // Calculate local position within chunk using modulo
+    const localX = (visualPlayerPosX.value % chunkSize + chunkSize) % chunkSize;
+    const localY = (visualPlayerPosY.value % chunkSize + chunkSize) % chunkSize;
+    
     return {
-      transform: [
-        { translateX: offsetX.value },
-        { translateY: offsetY.value },
-      ],
+      position: 'absolute',
+      left: localX * tileSize,
+      top: localY * tileSize,
+      width: tileSize,
+      height: tileSize,
     };
   });
 
@@ -131,6 +109,7 @@ const MapGrid = ({
         }
 
         if (isPlayer) {
+          // Render empty tile for player position (player rendered separately as absolute positioned)
           cols.push(
             <View
               key={`${gx}-${gy}`}
@@ -141,16 +120,8 @@ const MapGrid = ({
                 borderWidth: 1,
                 borderColor: Colors.borderLight,
                 borderStyle: "dashed",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "visible",
               }}
-            >
-              <Reanimated.View style={[playerAnimatedStyle, { width: tileSize, height: tileSize }]}>
-                <PlayerSprite direction={currentDirection} size={tileSize} isMoving={isMoving} />
-              </Reanimated.View>
-            </View>
+            />
           );
         } else if (node && discovered) {
           // Check if this node has a placed machine
@@ -316,11 +287,33 @@ const MapGrid = ({
         flexDirection: "column",
         width: tileSize * chunkSize,
         height: tileSize * chunkSize,
+        position: 'relative',
       }}
     >
       {renderTiles()}
+      {/* Player sprite positioned absolutely using shared values */}
+      <Reanimated.View style={[playerAnimatedStyle, { zIndex: 999 }]}>
+        <PlayerSprite direction={currentDirection} size={tileSize} isMoving={isMoving} />
+      </Reanimated.View>
     </View>
   );
 };
 
-export default React.memo(MapGrid);
+// Custom comparison function to prevent unnecessary re-renders
+const areEqual = (prevProps, nextProps) => {
+  // Only re-render if critical props change
+  return (
+    prevProps.visualPlayerPos.x === nextProps.visualPlayerPos.x &&
+    prevProps.visualPlayerPos.y === nextProps.visualPlayerPos.y &&
+    prevProps.currentDirection === nextProps.currentDirection &&
+    prevProps.isMoving === nextProps.isMoving &&
+    prevProps.selectedNodeId === nextProps.selectedNodeId &&
+    prevProps.manualMineFeedback === nextProps.manualMineFeedback &&
+    prevProps.manualMineSignal === nextProps.manualMineSignal &&
+    prevProps.miniToast === nextProps.miniToast &&
+    prevProps.targetTile === nextProps.targetTile &&
+    prevProps.visitedTiles.length === nextProps.visitedTiles.length
+  );
+};
+
+export default React.memo(MapGrid, areEqual);
