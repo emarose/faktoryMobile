@@ -145,7 +145,6 @@ const MapGrid = ({
                 justifyContent: "center",
                 position: "relative",
                 overflow: "visible",
-                //zIndex: 200,
               }}
             >
               <Reanimated.View style={[playerAnimatedStyle, { width: tileSize, height: tileSize }]}>

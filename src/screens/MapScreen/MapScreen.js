@@ -148,16 +148,16 @@ export default function MapScreen({ navigation }) {
       else if (dx < 0) setCurrentDirection('left');
       else if (dx > 0) setCurrentDirection('right');
 
+      // Add the CURRENT tile (being left) to visited trail before moving
+      setVisitedTiles(prev => {
+        const newTiles = [...prev, { x: currentPos.x, y: currentPos.y }];
+        return newTiles.slice(-10); // Keep only last 10 tiles
+      });
+
       // Move to next step (discrete tile-by-tile)
       setMoveLocked(true);
       setVisualPlayerPos(nextStep);
       setPlayerMapPosition(nextStep);
-
-      // Add this tile to visited trail (keep only last 10)
-      setVisitedTiles(prev => {
-        const newTiles = [...prev, { x: nextStep.x, y: nextStep.y }];
-        return newTiles.slice(-10); // Keep only last 10 tiles
-      });
 
       // Wait for animation, then move to next step (240ms for slower movement)
       setTimeout(() => {
@@ -260,6 +260,13 @@ export default function MapScreen({ navigation }) {
     // Close bottom sheet when moving
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
+
+    // Add the CURRENT tile (being left) to visited trail (keep only last 10)
+    setVisitedTiles(prev => {
+      const newTiles = [...prev, { x: visualPlayerPos.x, y: visualPlayerPos.y }];
+      return newTiles.slice(-10); // Keep only last 10 tiles
+    });
+
     // Update position after animation completes (visualPlayerPos will sync via useEffect)
     setTimeout(() => setPlayerMapPosition({ x, y }), 200);
   };
@@ -443,9 +450,9 @@ export default function MapScreen({ navigation }) {
             </View>
 
             <View
-              style={{flexDirection:"row", justifyContent:"space-between", marginTop:8}}
+              style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}
             >
-              <Text style={{ fontSize: 12, color: Colors.textPrimary, marginTop:8 }}>
+              <Text style={{ fontSize: 12, color: Colors.textPrimary, marginTop: 8 }}>
                 Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
               </Text>
               <View style={{}}>
@@ -456,7 +463,7 @@ export default function MapScreen({ navigation }) {
                 />
               </View>
             </View>
-            <Text style={{ fontSize: 10, color: Colors.textMuted, marginTop: 8, alignSelf:"flex-end" }}>
+            <Text style={{ fontSize: 10, color: Colors.textMuted, marginTop: 8, alignSelf: "flex-end" }}>
               Tap an empty tile or use the controls to walk
             </Text>
           </LinearGradient>
