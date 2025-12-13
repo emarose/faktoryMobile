@@ -69,7 +69,7 @@ export default function MapScreen({ navigation }) {
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  
+
   // Pathfinding state for click-to-walk
   const [walkPath, setWalkPath] = useState([]);
   const walkIntervalRef = useRef(null);
@@ -93,41 +93,41 @@ export default function MapScreen({ navigation }) {
     if (isWalkingRef.current) {
       stopWalking();
     }
-    
+
     // Check if target has a node
     const nodeAtTarget = allResourceNodes.find((n) => n.x === targetX && n.y === targetY);
     if (nodeAtTarget) {
       return; // Can't walk to occupied tile
     }
-    
+
     // Calculate path using BFS
     const path = calculatePath(playerMapPosition.x, playerMapPosition.y, targetX, targetY);
-    
+
     if (path.length === 0) {
       setTargetTile(null);
       return; // No path or already at target
     }
-    
+
     // Set target tile for highlighting
     setTargetTile({ x: targetX, y: targetY });
-    
+
     setWalkPath(path);
     isWalkingRef.current = true;
     setIsMoving(true);
-    
+
     // Close bottom sheet when walking
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
-    
+
     // Walk along path step by step
     const walkNextStep = (pathIndex) => {
       if (pathIndex >= path.length) {
         stopWalking();
         return;
       }
-      
+
       const nextStep = path[pathIndex];
-      
+
       // Check collision at next step
       const nodeAtNext = allResourceNodes.find((n) => n.x === nextStep.x && n.y === nextStep.y);
       if (nodeAtNext) {
@@ -138,7 +138,7 @@ export default function MapScreen({ navigation }) {
         stopWalking();
         return;
       }
-      
+
       // Update direction based on movement from current position
       const currentPos = pathIndex === 0 ? playerMapPosition : path[pathIndex - 1];
       const dx = nextStep.x - currentPos.x;
@@ -147,25 +147,25 @@ export default function MapScreen({ navigation }) {
       else if (dy > 0) setCurrentDirection('down');
       else if (dx < 0) setCurrentDirection('left');
       else if (dx > 0) setCurrentDirection('right');
-      
+
       // Move to next step (discrete tile-by-tile)
       setMoveLocked(true);
       setVisualPlayerPos(nextStep);
       setPlayerMapPosition(nextStep);
-      
+
       // Add this tile to visited trail (keep only last 10)
       setVisitedTiles(prev => {
         const newTiles = [...prev, { x: nextStep.x, y: nextStep.y }];
         return newTiles.slice(-10); // Keep only last 10 tiles
       });
-      
+
       // Wait for animation, then move to next step (240ms for slower movement)
       setTimeout(() => {
         setMoveLocked(false);
         walkNextStep(pathIndex + 1);
       }, 240);
     };
-    
+
     // Start walking from first step
     walkNextStep(0);
   };
@@ -176,12 +176,12 @@ export default function MapScreen({ navigation }) {
     if (startX === endX && startY === endY) {
       return [];
     }
-    
+
     // BFS queue: each item is { x, y, path }
     const queue = [{ x: startX, y: startY, path: [] }];
     const visited = new Set();
     visited.add(`${startX},${startY}`);
-    
+
     // 4-directional movement (up, down, left, right)
     const directions = [
       { dx: 0, dy: -1 }, // up
@@ -189,54 +189,54 @@ export default function MapScreen({ navigation }) {
       { dx: -1, dy: 0 }, // left
       { dx: 1, dy: 0 },  // right
     ];
-    
+
     while (queue.length > 0) {
       const current = queue.shift();
-      
+
       // Try all 4 directions
       for (const dir of directions) {
         const nextX = current.x + dir.dx;
         const nextY = current.y + dir.dy;
         const key = `${nextX},${nextY}`;
-        
+
         // Skip if already visited
         if (visited.has(key)) {
           continue;
         }
-        
+
         // Check if this position has a node (obstacle)
         const nodeAtPos = allResourceNodes.find((n) => n.x === nextX && n.y === nextY);
         if (nodeAtPos) {
           continue; // Skip obstacles
         }
-        
+
         // Build new path
         const newPath = [...current.path, { x: nextX, y: nextY }];
-        
+
         // Check if we reached the destination
         if (nextX === endX && nextY === endY) {
           return newPath;
         }
-        
+
         // Add to queue and mark as visited
         visited.add(key);
         queue.push({ x: nextX, y: nextY, path: newPath });
       }
     }
-    
+
     // No path found
     return [];
   };
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
-    
+
     // Stop any pathfinding walk
     stopWalking();
-    
+
     // Set direction first for sprite animation
     setCurrentDirection(dir);
-    
+
     let { x, y } = visualPlayerPos;
     if (dir === "up") y -= 1;
     if (dir === "down") y += 1;
@@ -405,136 +405,101 @@ export default function MapScreen({ navigation }) {
           /> */}
 
           <LinearGradient
-            colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.5)","rgba(0, 0, 0, 0.8)"]}
+            colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0.8)"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.mapVisualContainer}
           >
-          <View
-            style={{
-              position: "relative",
-              width: TILE_SIZE * VIEW_SIZE,
-              height: TILE_SIZE * VIEW_SIZE,
-              alignSelf: "center",
-            }}
-          >
-            {/* Map Grid */}
-            <MapGrid
-              chunkSize={CHUNK_SIZE}
-              tileSize={TILE_SIZE}
-              visualPlayerPos={visualPlayerPos}
-              playerMapPosition={playerMapPosition}
-              allResourceNodes={allResourceNodes}
-              discoveredNodes={discoveredNodes}
-              handleTilePress={handleTilePress}
-              handleEmptyTilePress={handleEmptyTilePress}
-              navigation={navigation}
-              selectedNodeId={selectedNode?.id}
-              placedMachines={placedMachines}
-              currentDirection={currentDirection}
-              isMoving={isMoving}
-              manualMineFeedback={manualMineFeedback}
-              manualMineSignal={manualMineSignal}
-              miniToast={miniToast}
-              nodeAmounts={nodeAmounts}
-              visitedTiles={visitedTiles}
-              targetTile={targetTile}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              width: TILE_SIZE * VIEW_SIZE,
-              minHeight: 90,
-              marginTop: 16,
-              marginBottom: 16,
-              alignSelf: "center",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-            }}
-          >
-            {/* Player Info */}
-            <LinearGradient
-              colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+            <View
               style={{
-                alignSelf: "flex-start",
-                flexDirection: "column",
-                gap: 8,
-                borderWidth: 1,
-                borderColor: Colors.backgroundAccent,
-                borderRadius: 8,
-                padding: 8,
-                marginTop: 16,
+                position: "relative",
+                width: TILE_SIZE * VIEW_SIZE,
+                height: TILE_SIZE * VIEW_SIZE,
+                alignSelf: "center",
               }}
             >
-              <View
-                style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
-              >
-                <MaterialIcons
-                  name="my-location"
-                  size={18}
-                  color={Colors.accentGold}
-                  style={{ opacity: 0.85 }}
-                />
-                <Text style={{ fontSize: 12, color: Colors.textPrimary }}>
-                  Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
-                </Text>
-              </View>
-            </LinearGradient>
-
-            {/* Movement Controls - Posicionados en el área del PlayerInfo */}
-            <View style={{ position: "relative", alignSelf: "flex-end" }}>
-              <MapGridControls
-                MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
-                exploreDirection={handleExploreDirection}
-                onDirectionChange={(dir) => setCurrentDirection(dir)}
+              {/* Map Grid */}
+              <MapGrid
+                chunkSize={CHUNK_SIZE}
+                tileSize={TILE_SIZE}
+                visualPlayerPos={visualPlayerPos}
+                playerMapPosition={playerMapPosition}
+                allResourceNodes={allResourceNodes}
+                discoveredNodes={discoveredNodes}
+                handleTilePress={handleTilePress}
+                handleEmptyTilePress={handleEmptyTilePress}
+                navigation={navigation}
+                selectedNodeId={selectedNode?.id}
+                placedMachines={placedMachines}
+                currentDirection={currentDirection}
+                isMoving={isMoving}
+                manualMineFeedback={manualMineFeedback}
+                manualMineSignal={manualMineSignal}
+                miniToast={miniToast}
+                nodeAmounts={nodeAmounts}
+                visitedTiles={visitedTiles}
+                targetTile={targetTile}
               />
             </View>
-          </View>
+
+            <View
+              style={{flexDirection:"row", justifyContent:"space-between", marginTop:8}}
+            >
+              <Text style={{ fontSize: 12, color: Colors.textPrimary, marginTop:8 }}>
+                Position: ({visualPlayerPos.x}, {visualPlayerPos.y})
+              </Text>
+              <View style={{}}>
+                <MapGridControls
+                  MAP_DISPLAY_SIZE={TILE_SIZE * VIEW_SIZE}
+                  exploreDirection={handleExploreDirection}
+                  onDirectionChange={(dir) => setCurrentDirection(dir)}
+                />
+              </View>
+            </View>
+            <Text style={{ fontSize: 10, color: Colors.textMuted, marginTop: 8, alignSelf:"flex-end" }}>
+              Tap an empty tile or use the controls to walk
+            </Text>
           </LinearGradient>
 
-        {/* Inventory Button */}
-        <View style={{ alignItems: "center", marginTop: 16, marginBottom: 8 }}>
-          <TouchableOpacity
-            onPress={() => setIsInventoryVisible(true)}
-            style={{ width: "90%", maxWidth: 300 }}
-          >
-            <LinearGradient
-              colors={["#ff00cc", "#00ffff"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{
-                borderRadius: 8,
-                padding: 2,
-              }}
+          {/* Inventory Button */}
+          <View style={{ alignItems: "center", marginTop: 16, marginBottom: 8 }}>
+            <TouchableOpacity
+              onPress={() => setIsInventoryVisible(true)}
+              style={{ width: "90%", maxWidth: 300 }}
             >
-              <View
+              <LinearGradient
+                colors={["#ff00cc", "#00ffff"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
-                  borderRadius: 6,
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                  gap: 8,
+                  borderRadius: 8,
+                  padding: 2,
                 }}
               >
-                <MaterialCommunityIcons
-                  name="bag-personal"
-                  size={20}
-                  color={Colors.accentGold}
-                />
-                <Text style={{ fontSize: 14, color: Colors.textPrimary, fontWeight: "500" }}>
-                  Inventory
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    borderRadius: 6,
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    gap: 8,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="bag-personal"
+                    size={20}
+                    color={Colors.accentGold}
+                  />
+                  <Text style={{ fontSize: 14, color: Colors.textPrimary, fontWeight: "500" }}>
+                    Inventory
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
 
         </ScrollView>
       </ImageBackground>

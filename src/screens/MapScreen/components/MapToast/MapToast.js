@@ -69,10 +69,10 @@ const MapToast = ({ visible, message, onHide, duration = 5000 }) => {
       
       {/* Icono de success */}
       <MaterialCommunityIcons
-        name="check-circle"
+        name="alert-circle-outline"
         size={20}
         color={Colors.accentGreen}
-        style={{ marginRight: 10 }}
+        style={{ marginRight: 8 }}
       />
       
       <Text style={styles.text}>{message}</Text>
