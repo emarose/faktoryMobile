@@ -18,7 +18,7 @@ import ProgressBar from "../../../../components/ProgressBar";
 import Colors from "../../../../constants/Colors";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-const BOTTOM_SHEET_HEIGHT = 300;
+const BOTTOM_SHEET_HEIGHT = 380;
 const CHARGE_DURATION = 2000; // 2 seconds to charge
 
 const NodeBottomSheet = ({
@@ -234,52 +234,117 @@ const NodeBottomSheet = ({
             backgroundColor: Colors.borderLight,
             borderRadius: 2,
             alignSelf: "center",
-            marginBottom: 20,
+            marginBottom: 24,
           }}
         />
 
-        {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-          <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <IconContainer
-                iconId={nodeType}
-                size={32}
-                iconSize={28}
-                style={{ 
-                  backgroundColor: 'transparent', 
-                  borderWidth: 1,
-                  borderColor: Colors.borderLight,
-                  marginRight: 12
-                }}
+        {/* Header with prominent node icon */}
+        <View style={{ alignItems: "center", marginBottom: 20 }}>
+          <View style={{ 
+            flexDirection: "row", 
+            alignItems: "center", 
+            justifyContent: "center",
+            marginBottom: 12
+          }}>
+            <IconContainer
+              iconId={nodeType}
+              size={56}
+              iconSize={48}
+              style={{ 
+                backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+                borderWidth: 2,
+                borderColor: Colors.accentGold,
+                marginRight: 16,
+                shadowColor: Colors.accentGold,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 8,
+                elevation: 8,
+              }}
+            />
+            <View style={{ alignItems: "center" }}>
+              <Icon 
+                name="arrow-right" 
+                size={24} 
+                color={Colors.textMuted} 
+                style={{ marginBottom: 4 }}
               />
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 18, fontWeight: "bold", color: Colors.textPrimary }}>
-                  {name}
-                </Text>
-                <Text style={{ fontSize: 14, color: Colors.textMuted, marginTop: 4 }}>
-                  ({x}, {y}) • {producedItemName}
-                </Text>
-                {automatedProductionRate > 0 && (
-                  <Text style={{ fontSize: 14, color: Colors.accentGreen, marginTop: 2 }}>
-                    +{automatedProductionRate.toFixed(1)}/s
-                  </Text>
-                )}
-              </View>
-              {assignedMachineCount > 0 && (
-                <Icon
-                  name="factory"
-                  size={18}
-                  color={Colors.accentGreen}
-                  style={{ marginLeft: 8, opacity: 0.8 }}
-                />
-              )}
+              <Text style={{ fontSize: 10, color: Colors.textMuted }}>produces</Text>
             </View>
+            <IconContainer
+              iconId={producedItemId}
+              size={56}
+              iconSize={48}
+              style={{ 
+                backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+                borderWidth: 2,
+                borderColor: Colors.accentGreen,
+                marginLeft: 16,
+                shadowColor: Colors.accentGreen,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.5,
+                shadowRadius: 8,
+                elevation: 8,
+              }}
+            />
+          </View>
+          
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: Colors.textPrimary, textAlign: "center" }}>
+            {name}
+          </Text>
+          <Text style={{ fontSize: 14, color: Colors.textMuted, marginTop: 4 }}>
+            Location: ({x}, {y})
+          </Text>
+        </View>
+
+        {/* Production Info Card */}
+        <View style={{
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 16,
+          borderWidth: 1,
+          borderColor: Colors.borderLight,
+        }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Icon name="package-variant" size={20} color={Colors.accentGold} />
+              <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary, marginLeft: 8 }}>
+                Resource
+              </Text>
+            </View>
+            <Text style={{ fontSize: 14, fontWeight: "bold", color: Colors.accentGold }}>
+              {producedItemName}
+            </Text>
           </View>
 
-          <TouchableOpacity onPress={debouncedClose} style={{ padding: 8 }}>
-            <Icon name="close" size={24} color={Colors.textMuted} />
-          </TouchableOpacity>
+          {automatedProductionRate > 0 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name="speedometer" size={20} color={Colors.accentGreen} />
+                <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary, marginLeft: 8 }}>
+                  Production Rate
+                </Text>
+              </View>
+              <Text style={{ fontSize: 14, fontWeight: "bold", color: Colors.accentGreen }}>
+                +{automatedProductionRate.toFixed(1)}/s
+              </Text>
+            </View>
+          )}
+
+          {assignedMachineCount > 0 && (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name="factory" size={20} color={Colors.accentBlue} />
+                <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary, marginLeft: 8 }}>
+                  Active Miners
+                </Text>
+              </View>
+              <Text style={{ fontSize: 14, fontWeight: "bold", color: Colors.accentBlue }}>
+                {assignedMachineCount}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Progress Bar */}
@@ -290,6 +355,14 @@ const NodeBottomSheet = ({
          !isNaN(nodeCapacity) &&
          nodeCapacity > 0 && (
           <View style={{ marginBottom: 16 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 6 }}>
+              <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+                Remaining Resources
+              </Text>
+              <Text style={{ fontSize: 12, fontWeight: "600", color: isDepleted ? Colors.textDanger : Colors.textPrimary }}>
+                {Math.floor(nodeDepletionAmount)} / {nodeCapacity}
+              </Text>
+            </View>
             <ProgressBar
               value={nodeDepletionAmount}
               max={nodeCapacity}
@@ -299,40 +372,57 @@ const NodeBottomSheet = ({
 
         {/* Status and Info */}
         {isDepleted && (
-          <Text style={{ color: Colors.textDanger, fontSize: 16, marginBottom: 12 }}>
-            Node Depleted
-          </Text>
+          <View style={{
+            backgroundColor: "rgba(220, 20, 60, 0.2)",
+            borderRadius: 8,
+            padding: 12,
+            marginBottom: 16,
+            borderWidth: 1,
+            borderColor: Colors.textDanger,
+          }}>
+            <Text style={{ color: Colors.textDanger, fontSize: 16, fontWeight: "600", textAlign: "center" }}>
+              ⚠️ Node Depleted
+            </Text>
+          </View>
         )}
 
-        {machineRequired && (
-          <Text style={{ fontSize: 13, color: Colors.accentGreen, marginBottom: 8 }}>
-            Requires: {items[machineRequired]?.name || machineRequired}
-          </Text>
-        )}
-
-        {assignedMachineCount > 0 && (
-          <Text style={{ fontSize: 13, color: Colors.accentGreen, marginBottom: 16 }}>
-            Machines: {assignedMachineCount}
-          </Text>
+        {machineRequired && !assignedMachineCount && (
+          <View style={{
+            backgroundColor: "rgba(255, 165, 0, 0.2)",
+            borderRadius: 8,
+            padding: 12,
+            marginBottom: 16,
+            borderWidth: 1,
+            borderColor: Colors.accentGold,
+          }}>
+            <Text style={{ fontSize: 13, color: Colors.accentGold, textAlign: "center" }}>
+              ⚙️ Requires: {items[machineRequired]?.name || machineRequired}
+            </Text>
+          </View>
         )}
 
         {/* Manual Mine Button */}
         {manualMineable && (
-          <View style={{ alignItems: "center", marginTop: 8 }}>
+          <View style={{ alignItems: "center" }}>
             {canManualMine && !isDepleted ? (
               <View style={{ width: '100%', alignItems: 'center' }}>
                 <TouchableOpacity
                   style={{
                     backgroundColor: isCharging ? Colors.accentGreen : Colors.accentGold,
-                    paddingHorizontal: 24,
-                    paddingVertical: 12,
-                    borderRadius: 8,
+                    paddingHorizontal: 32,
+                    paddingVertical: 16,
+                    borderRadius: 12,
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 8,
-                    width: '80%',
+                    gap: 12,
+                    width: '85%',
                     position: 'relative',
                     overflow: 'hidden',
+                    shadowColor: isCharging ? Colors.accentGreen : Colors.accentGold,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.6,
+                    shadowRadius: 8,
+                    elevation: 8,
                   }}
                   onPressIn={handleManualMineStart}
                   onPressOut={handleManualMineCancel}
@@ -351,24 +441,51 @@ const NodeBottomSheet = ({
                       chargeProgressStyle,
                     ]}
                   />
-                  <Icon name="pickaxe" size={20} color={Colors.background} style={{ zIndex: 1 }} />
-                  <Text style={{ color: Colors.background, fontWeight: "bold", fontSize: 16, zIndex: 1 }}>
+                  <Icon name="pickaxe" size={24} color={Colors.background} style={{ zIndex: 1 }} />
+                  <Text style={{ color: Colors.background, fontWeight: "bold", fontSize: 18, zIndex: 1 }}>
                     {isCharging ? "Mining..." : "Hold to Mine"}
                   </Text>
                 </TouchableOpacity>
                 {isCharging && (
-                  <Text style={{ color: Colors.textSecondary, fontSize: 12, marginTop: 4 }}>
+                  <Text style={{ color: Colors.textSecondary, fontSize: 12, marginTop: 8 }}>
                     Release to cancel
                   </Text>
                 )}
               </View>
             ) : (
-              <Text style={{ color: Colors.textDanger, fontSize: 14 }}>
-                {isDepleted ? "Node Depleted" : "Move closer to mine"}
-              </Text>
+              <View style={{
+                backgroundColor: "rgba(100, 100, 100, 0.3)",
+                borderRadius: 12,
+                padding: 16,
+                width: '85%',
+                alignItems: 'center',
+                borderWidth: 1,
+                borderColor: Colors.borderLight,
+              }}>
+                <Text style={{ color: Colors.textDanger, fontSize: 14, fontWeight: "600" }}>
+                  {isDepleted ? "🚫 Node Depleted" : "📍 Move closer to mine"}
+                </Text>
+              </View>
             )}
           </View>
         )}
+
+        {/* Close button - absolute positioned */}
+        <TouchableOpacity 
+          onPress={debouncedClose} 
+          style={{ 
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            padding: 8,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: Colors.borderLight,
+          }}
+        >
+          <Icon name="close" size={20} color={Colors.textMuted} />
+        </TouchableOpacity>
       </Animated.View>
     </Modal>
   );

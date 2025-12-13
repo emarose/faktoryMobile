@@ -84,6 +84,8 @@ export default function MapScreen({ navigation }) {
   const [walkPath, setWalkPath] = useState([]);
   const walkIntervalRef = useRef(null);
   const isWalkingRef = useRef(false);
+  const pendingWalkTimeoutsRef = useRef([]);
+  const currentWalkIdRef = useRef(0); // Unique ID for each walk session
 
   // Stop any ongoing pathfinding walk
   const stopWalking = () => {
@@ -91,10 +93,32 @@ export default function MapScreen({ navigation }) {
       clearInterval(walkIntervalRef.current);
       walkIntervalRef.current = null;
     }
+    
+    // Clear all pending walk timeouts
+    pendingWalkTimeoutsRef.current.forEach(timeoutId => clearTimeout(timeoutId));
+    pendingWalkTimeoutsRef.current = [];
+    
+    // Increment walk ID to invalidate old walk sessions
+    currentWalkIdRef.current += 1;
+    
+    // CRITICAL: Stop any in-progress animations by capturing current position
+    // Get the current animated position (mid-animation)
+    const currentX = Math.round(visualPlayerPosX.value);
+    const currentY = Math.round(visualPlayerPosY.value);
+    
+    // Cancel animations by setting to current value (no animation)
+    visualPlayerPosX.value = currentX;
+    visualPlayerPosY.value = currentY;
+    
+    // Sync all position states to current animated position
+    setVisualPlayerPos({ x: currentX, y: currentY });
+    setPlayerMapPosition({ x: currentX, y: currentY });
+    
     isWalkingRef.current = false;
     setIsMoving(false);
     setWalkPath([]);
     setTargetTile(null);
+    setMoveLocked(false);
   };
 
   // Handle clicking on empty tiles to walk there
@@ -110,7 +134,7 @@ export default function MapScreen({ navigation }) {
       return; // Can't walk to occupied tile
     }
 
-    // Calculate path using BFS
+    // Calculate path from current position (which stopWalking synced to visual position)
     const path = calculatePath(playerMapPosition.x, playerMapPosition.y, targetX, targetY);
 
     if (path.length === 0) {
@@ -122,6 +146,10 @@ export default function MapScreen({ navigation }) {
     setTargetTile({ x: targetX, y: targetY });
 
     setWalkPath(path);
+    
+    // Clear any old timeouts from previous walk
+    pendingWalkTimeoutsRef.current = [];
+    
     isWalkingRef.current = true;
     setIsMoving(true);
 
@@ -129,8 +157,21 @@ export default function MapScreen({ navigation }) {
     setIsBottomSheetVisible(false);
     setSelectedNode(null);
 
+    // Capture the current walk ID for this walk session
+    const thisWalkId = currentWalkIdRef.current;
+
     // Walk along path step by step
     const walkNextStep = (pathIndex) => {
+      // Check if this walk session is still valid (not cancelled by a new walk)
+      if (thisWalkId !== currentWalkIdRef.current) {
+        return;
+      }
+      
+      // Check if walking was cancelled before starting this step
+      if (!isWalkingRef.current) {
+        return;
+      }
+      
       if (pathIndex >= path.length) {
         stopWalking();
         return;
@@ -185,11 +226,24 @@ export default function MapScreen({ navigation }) {
       });
 
       // Wait for animation, then update actual position and unlock
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
+        // Check if this walk session is still valid
+        if (thisWalkId !== currentWalkIdRef.current) {
+          return;
+        }
+        
+        // Check if walking was cancelled during the timeout
+        if (!isWalkingRef.current) {
+          return;
+        }
+        
         setPlayerMapPosition(nextStep);
         setMoveLocked(false);
         walkNextStep(pathIndex + 1);
       }, 240);
+      
+      // Track this timeout so it can be cancelled if needed
+      pendingWalkTimeoutsRef.current.push(timeoutId);
     };
 
     // Start walking from first step
