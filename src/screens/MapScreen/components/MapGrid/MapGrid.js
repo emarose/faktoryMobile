@@ -19,15 +19,19 @@ const MapGrid = ({
   allResourceNodes,
   discoveredNodes,
   handleTilePress,
+  handleEmptyTilePress,
   navigation,
   selectedNodeId,
   placedMachines,
   currentDirection,
+  isMoving,
   manualMineFeedback,
   manualMineSignal,
   miniToast,
   playerMapPosition, // Add this to track actual position
   nodeAmounts,
+  visitedTiles = [],
+  targetTile = null,
 }) => {
   // Animated value for a quick color pulse overlay on the tile.
   // We animate the overlay's opacity in a short sequence to create a pulse effect.
@@ -52,14 +56,14 @@ const MapGrid = ({
       offsetX.value = -deltaX * tileSize;
       offsetY.value = -deltaY * tileSize;
 
-      // Animate smoothly to center (0, 0)
+      // Animate smoothly to center (0, 0) with slower, smooth timing
       offsetX.value = withTiming(0, {
-        duration: 200,
-        easing: Easing.out(Easing.ease),
+        duration: 240,
+        easing: Easing.out(Easing.cubic),
       });
       offsetY.value = withTiming(0, {
-        duration: 200,
-        easing: Easing.out(Easing.ease),
+        duration: 240,
+        easing: Easing.out(Easing.cubic),
       });
     }
 
@@ -144,7 +148,7 @@ const MapGrid = ({
               }}
             >
               <Reanimated.View style={[playerAnimatedStyle, { width: tileSize, height: tileSize }]}>
-                <PlayerSprite direction={currentDirection} size={tileSize} />
+                <PlayerSprite direction={currentDirection} size={tileSize} isMoving={isMoving} />
               </Reanimated.View>
             </View>
           );
@@ -262,17 +266,36 @@ const MapGrid = ({
             </TouchableOpacity>
           );
         } else {
+          // Check if this tile was visited or is the target
+          const isVisited = visitedTiles.some(tile => tile.x === gx && tile.y === gy);
+          const isTarget = targetTile && targetTile.x === gx && targetTile.y === gy;
+          
           cols.push(
-            <View
+            <TouchableOpacity
               key={`${gx}-${gy}`}
               style={{
                 width: tileSize,
                 height: tileSize,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                borderWidth: 1,
-                borderColor: Colors.borderLight,
+                backgroundColor: isTarget ? "rgba(255, 215, 0, 0.3)" : "rgba(0,0,0,0.5)",
+                borderWidth: isTarget ? 2 : 1,
+                borderColor: isTarget ? Colors.accentGold : Colors.borderLight,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-            />
+              onPress={() => handleEmptyTilePress && handleEmptyTilePress(gx, gy)}
+            >
+              {isVisited && (
+                <View
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: Colors.accentGold,
+                    opacity: 0.6,
+                  }}
+                />
+              )}
+            </TouchableOpacity>
           );
         }
       }

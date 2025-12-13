@@ -17,6 +17,9 @@ export const useProduction = (
       // The callbacks (addResourceCallback, removeResourcesCallback) handle the actual state updates.
       // This hook focuses on the *logic* of production.
       placedMachines.forEach((machine) => {
+        // Skip if machine is undefined or null (race condition protection)
+        if (!machine || !machine.id) return;
+        
         // Miner production logic
         if (machine.type === "miner" && machine.assignedNodeId) {
           // Respeta el flag isIdle
@@ -24,15 +27,19 @@ export const useProduction = (
           const node = allResourceNodes.find(
             (n) => n.id === machine.assignedNodeId
           );
+          
+          // Skip if node doesn't exist (may have been deleted)
+          if (!node || !node.id) return;
+          
           // Get current depletion from nodeAmounts
           const currentAmount =
             nodeAmounts && typeof nodeAmounts[node.id] === "number"
               ? nodeAmounts[node.id]
-              : typeof node?.capacity === "number"
+              : typeof node.capacity === "number"
               ? node.capacity
               : 1000;
 
-          if (node && items[node.type]?.output && currentAmount > 0) {
+          if (items[node.type]?.output && currentAmount > 0) {
             for (const resourceId in items[node.type].output) {
               // --- CAP LOGIC ---
               const minersAssigned = placedMachines.filter(

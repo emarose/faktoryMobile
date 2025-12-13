@@ -58,6 +58,9 @@ export default function MapScreen({ navigation }) {
   const [visualPlayerPos, setVisualPlayerPos] = useState(playerMapPosition);
   const [moveLocked, setMoveLocked] = useState(false);
   const [currentDirection, setCurrentDirection] = useState(null);
+  const [isMoving, setIsMoving] = useState(false);
+  const [visitedTiles, setVisitedTiles] = useState([]);
+  const [targetTile, setTargetTile] = useState(null); // Highlighted destination tile
 
   useEffect(() => {
     setVisualPlayerPos(playerMapPosition);
@@ -66,9 +69,170 @@ export default function MapScreen({ navigation }) {
 
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  
+  // Pathfinding state for click-to-walk
+  const [walkPath, setWalkPath] = useState([]);
+  const walkIntervalRef = useRef(null);
+  const isWalkingRef = useRef(false);
+
+  // Stop any ongoing pathfinding walk
+  const stopWalking = () => {
+    if (walkIntervalRef.current) {
+      clearInterval(walkIntervalRef.current);
+      walkIntervalRef.current = null;
+    }
+    isWalkingRef.current = false;
+    setIsMoving(false);
+    setWalkPath([]);
+    setTargetTile(null);
+  };
+
+  // Handle clicking on empty tiles to walk there
+  const handleEmptyTilePress = (targetX, targetY) => {
+    // Stop any current walking (allows canceling and re-routing)
+    if (isWalkingRef.current) {
+      stopWalking();
+    }
+    
+    // Check if target has a node
+    const nodeAtTarget = allResourceNodes.find((n) => n.x === targetX && n.y === targetY);
+    if (nodeAtTarget) {
+      return; // Can't walk to occupied tile
+    }
+    
+    // Calculate path using BFS
+    const path = calculatePath(playerMapPosition.x, playerMapPosition.y, targetX, targetY);
+    
+    if (path.length === 0) {
+      setTargetTile(null);
+      return; // No path or already at target
+    }
+    
+    // Set target tile for highlighting
+    setTargetTile({ x: targetX, y: targetY });
+    
+    setWalkPath(path);
+    isWalkingRef.current = true;
+    setIsMoving(true);
+    
+    // Close bottom sheet when walking
+    setIsBottomSheetVisible(false);
+    setSelectedNode(null);
+    
+    // Walk along path step by step
+    const walkNextStep = (pathIndex) => {
+      if (pathIndex >= path.length) {
+        stopWalking();
+        return;
+      }
+      
+      const nextStep = path[pathIndex];
+      
+      // Check collision at next step
+      const nodeAtNext = allResourceNodes.find((n) => n.x === nextStep.x && n.y === nextStep.y);
+      if (nodeAtNext) {
+        // Stop walking if path is blocked
+        setToastMessage("Path blocked");
+        setToastVisible(true);
+        setTimeout(() => setToastVisible(false), 1500);
+        stopWalking();
+        return;
+      }
+      
+      // Update direction based on movement from current position
+      const currentPos = pathIndex === 0 ? playerMapPosition : path[pathIndex - 1];
+      const dx = nextStep.x - currentPos.x;
+      const dy = nextStep.y - currentPos.y;
+      if (dy < 0) setCurrentDirection('up');
+      else if (dy > 0) setCurrentDirection('down');
+      else if (dx < 0) setCurrentDirection('left');
+      else if (dx > 0) setCurrentDirection('right');
+      
+      // Move to next step (discrete tile-by-tile)
+      setMoveLocked(true);
+      setVisualPlayerPos(nextStep);
+      setPlayerMapPosition(nextStep);
+      
+      // Add this tile to visited trail (keep only last 10)
+      setVisitedTiles(prev => {
+        const newTiles = [...prev, { x: nextStep.x, y: nextStep.y }];
+        return newTiles.slice(-10); // Keep only last 10 tiles
+      });
+      
+      // Wait for animation, then move to next step (240ms for slower movement)
+      setTimeout(() => {
+        setMoveLocked(false);
+        walkNextStep(pathIndex + 1);
+      }, 240);
+    };
+    
+    // Start walking from first step
+    walkNextStep(0);
+  };
+
+  // BFS pathfinding: find shortest path avoiding obstacles
+  const calculatePath = (startX, startY, endX, endY) => {
+    // Already at destination
+    if (startX === endX && startY === endY) {
+      return [];
+    }
+    
+    // BFS queue: each item is { x, y, path }
+    const queue = [{ x: startX, y: startY, path: [] }];
+    const visited = new Set();
+    visited.add(`${startX},${startY}`);
+    
+    // 4-directional movement (up, down, left, right)
+    const directions = [
+      { dx: 0, dy: -1 }, // up
+      { dx: 0, dy: 1 },  // down
+      { dx: -1, dy: 0 }, // left
+      { dx: 1, dy: 0 },  // right
+    ];
+    
+    while (queue.length > 0) {
+      const current = queue.shift();
+      
+      // Try all 4 directions
+      for (const dir of directions) {
+        const nextX = current.x + dir.dx;
+        const nextY = current.y + dir.dy;
+        const key = `${nextX},${nextY}`;
+        
+        // Skip if already visited
+        if (visited.has(key)) {
+          continue;
+        }
+        
+        // Check if this position has a node (obstacle)
+        const nodeAtPos = allResourceNodes.find((n) => n.x === nextX && n.y === nextY);
+        if (nodeAtPos) {
+          continue; // Skip obstacles
+        }
+        
+        // Build new path
+        const newPath = [...current.path, { x: nextX, y: nextY }];
+        
+        // Check if we reached the destination
+        if (nextX === endX && nextY === endY) {
+          return newPath;
+        }
+        
+        // Add to queue and mark as visited
+        visited.add(key);
+        queue.push({ x: nextX, y: nextY, path: newPath });
+      }
+    }
+    
+    // No path found
+    return [];
+  };
 
   const handleExploreDirection = (dir) => {
     if (moveLocked) return;
+    
+    // Stop any pathfinding walk
+    stopWalking();
     
     // Set direction first for sprite animation
     setCurrentDirection(dir);
@@ -263,14 +427,18 @@ export default function MapScreen({ navigation }) {
               allResourceNodes={allResourceNodes}
               discoveredNodes={discoveredNodes}
               handleTilePress={handleTilePress}
+              handleEmptyTilePress={handleEmptyTilePress}
               navigation={navigation}
               selectedNodeId={selectedNode?.id}
               placedMachines={placedMachines}
               currentDirection={currentDirection}
+              isMoving={isMoving}
               manualMineFeedback={manualMineFeedback}
               manualMineSignal={manualMineSignal}
               miniToast={miniToast}
               nodeAmounts={nodeAmounts}
+              visitedTiles={visitedTiles}
+              targetTile={targetTile}
             />
           </View>
 

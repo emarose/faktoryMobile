@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
   interpolate,
   runOnJS,
+  Easing,
 } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,6 +19,7 @@ import Colors from "../../../../constants/Colors";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BOTTOM_SHEET_HEIGHT = 300;
+const CHARGE_DURATION = 2000; // 2 seconds to charge
 
 const NodeBottomSheet = ({
   isVisible,
@@ -33,6 +35,11 @@ const NodeBottomSheet = ({
   const translateY = useSharedValue(SCREEN_HEIGHT);
   const backdropOpacity = useSharedValue(0);
   const isClosingRef = React.useRef(false);
+  
+  // Charging state for manual mine
+  const [isCharging, setIsCharging] = React.useState(false);
+  const chargeProgress = useSharedValue(0);
+  const chargeTimeoutRef = React.useRef(null);
 
   React.useEffect(() => {
     if (isVisible && node) {
@@ -66,6 +73,27 @@ const NodeBottomSheet = ({
   const animatedSheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
   }));
+  
+  const chargeProgressStyle = useAnimatedStyle(() => ({
+    width: `${chargeProgress.value * 100}%`,
+  }));
+  
+  // Define mining functions before early return (used in useEffect)
+  const handleManualMineCancel = React.useCallback(() => {
+    if (chargeTimeoutRef.current) {
+      clearTimeout(chargeTimeoutRef.current);
+      chargeTimeoutRef.current = null;
+    }
+    setIsCharging(false);
+    chargeProgress.value = withTiming(0, { duration: 200 });
+  }, []);
+  
+  // Cleanup on unmount or when sheet closes
+  React.useEffect(() => {
+    if (!isVisible) {
+      handleManualMineCancel();
+    }
+  }, [isVisible, handleManualMineCancel]);
 
   // Only render modal if visible and node exists
   if (!isVisible || !node) {
@@ -127,17 +155,32 @@ const NodeBottomSheet = ({
 
   const isDepleted = nodeDepletionAmount === 0;
 
-  const handleManualMine = () => {
-    if (
-      !isDepleted &&
-      typeof nodeDepletionAmount === "number" &&
-      nodeDepletionAmount > 0
-    ) {
-      if (onDepleteNode) {
-        onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
-        onManualMine(nodeId);
+  const handleManualMineStart = () => {
+    if (isDepleted || !canManualMine) return;
+    
+    setIsCharging(true);
+    
+    // Animate progress bar
+    chargeProgress.value = withTiming(1, {
+      duration: CHARGE_DURATION,
+      easing: Easing.linear,
+    });
+    
+    // Set timeout to actually mine after charge completes
+    chargeTimeoutRef.current = setTimeout(() => {
+      if (
+        !isDepleted &&
+        typeof nodeDepletionAmount === "number" &&
+        nodeDepletionAmount > 0
+      ) {
+        if (onDepleteNode) {
+          onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
+          onManualMine(nodeId);
+        }
       }
-    }
+      setIsCharging(false);
+      chargeProgress.value = 0;
+    }, CHARGE_DURATION);
   };
 
   return (
@@ -277,23 +320,48 @@ const NodeBottomSheet = ({
         {manualMineable && (
           <View style={{ alignItems: "center", marginTop: 8 }}>
             {canManualMine && !isDepleted ? (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.accentGold,
-                  paddingHorizontal: 24,
-                  paddingVertical: 12,
-                  borderRadius: 8,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-                onPress={handleManualMine}
-              >
-                <Icon name="pickaxe" size={20} color={Colors.background} />
-                <Text style={{ color: Colors.background, fontWeight: "bold", fontSize: 16 }}>
-                  Mine Resource
-                </Text>
-              </TouchableOpacity>
+              <View style={{ width: '100%', alignItems: 'center' }}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: isCharging ? Colors.accentGreen : Colors.accentGold,
+                    paddingHorizontal: 24,
+                    paddingVertical: 12,
+                    borderRadius: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                    width: '80%',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                  onPressIn={handleManualMineStart}
+                  onPressOut={handleManualMineCancel}
+                  activeOpacity={0.9}
+                >
+                  {/* Charge progress bar background */}
+                  <Animated.View
+                    style={[
+                      {
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                      },
+                      chargeProgressStyle,
+                    ]}
+                  />
+                  <Icon name="pickaxe" size={20} color={Colors.background} style={{ zIndex: 1 }} />
+                  <Text style={{ color: Colors.background, fontWeight: "bold", fontSize: 16, zIndex: 1 }}>
+                    {isCharging ? "Mining..." : "Hold to Mine"}
+                  </Text>
+                </TouchableOpacity>
+                {isCharging && (
+                  <Text style={{ color: Colors.textSecondary, fontSize: 12, marginTop: 4 }}>
+                    Release to cancel
+                  </Text>
+                )}
+              </View>
             ) : (
               <Text style={{ color: Colors.textDanger, fontSize: 14 }}>
                 {isDepleted ? "Node Depleted" : "Move closer to mine"}
