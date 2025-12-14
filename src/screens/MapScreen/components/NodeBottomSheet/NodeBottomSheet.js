@@ -20,7 +20,7 @@ import Colors from "../../../../constants/Colors";
 import { widthPercentageToDP } from "react-native-responsive-screen";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-const BOTTOM_SHEET_MAX_HEIGHT = Math.min(SCREEN_HEIGHT * 0.6, 450);
+const BOTTOM_SHEET_MAX_HEIGHT = Math.min(SCREEN_HEIGHT * 0.5, 450);
 const CHARGE_DURATION = 2000;
 
 const NodeBottomSheet = ({
@@ -41,7 +41,13 @@ const NodeBottomSheet = ({
   // Charging state for manual mine
   const [isCharging, setIsCharging] = React.useState(false);
   const chargeProgress = useSharedValue(0);
-  const chargeTimeoutRef = React.useRef(null);
+  const isPressed = useSharedValue(false);
+  const nodeRef = React.useRef(node);
+
+  // Update node ref whenever node prop changes
+  React.useEffect(() => {
+    nodeRef.current = node;
+  }, [node]);
 
   React.useEffect(() => {
     if (isVisible && node) {
@@ -81,13 +87,59 @@ const NodeBottomSheet = ({
   }));
 
   // Define mining functions before early return (used in useEffect)
-  const handleManualMineCancel = React.useCallback(() => {
-    if (chargeTimeoutRef.current) {
-      clearTimeout(chargeTimeoutRef.current);
-      chargeTimeoutRef.current = null;
+  const performMining = React.useCallback(() => {
+    const timestamp = Date.now();
+    console.log('[MINING] Mining cycle completed at', timestamp);
+    
+    const currentNode = nodeRef.current;
+    console.log('[NODE] Current node data:', JSON.stringify({
+      id: currentNode?.id,
+      currentAmount: currentNode?.currentAmount,
+      capacity: currentNode?.capacity,
+    }, null, 2));
+    
+    if (!currentNode) {
+      console.log('[ERROR] No node, stopping');
+      handleManualMineCancel();
+      return;
     }
+    
+    const currentAmount = currentNode.currentAmount || currentNode.capacity || 1000;
+    console.log('[MINING] Calculated currentAmount:', currentAmount);
+    
+    if (currentAmount > 0) {
+      const newAmount = currentAmount - 1;
+      console.log('[MINING] Executing mine. Current:', currentAmount, '→ New:', newAmount);
+      onDepleteNode(currentNode.id, newAmount, true);
+      onManualMine(currentNode.id);
+      
+      // Continue if still pressed
+      if (isPressed.value) {
+        console.log('[MINING] Still pressed, starting next cycle');
+        chargeProgress.value = 0;
+        chargeProgress.value = withTiming(1, {
+          duration: CHARGE_DURATION,
+          easing: Easing.linear,
+        }, (finished) => {
+          if (finished && isPressed.value) {
+            runOnJS(performMining)();
+          }
+        });
+      } else {
+        console.log('[MINING] Button released');
+        handleManualMineCancel();
+      }
+    } else {
+      console.log('[MINING] Node depleted, stopping');
+      handleManualMineCancel();
+    }
+  }, [onDepleteNode, onManualMine]);
+
+  const handleManualMineCancel = React.useCallback(() => {
+    console.log('[MINING] Canceling mining');
+    isPressed.value = false;
     setIsCharging(false);
-    chargeProgress.value = withTiming(0, { duration: 200 });
+    chargeProgress.value = withTiming(0, { duration: 200, easing: Easing.out(Easing.ease) });
   }, []);
 
   // Cleanup on unmount or when sheet closes
@@ -158,31 +210,22 @@ const NodeBottomSheet = ({
   const isDepleted = nodeDepletionAmount === 0;
 
   const handleManualMineStart = () => {
-    if (isDepleted || !canManualMine) return;
+    if (isDepleted || !canManualMine || isCharging) return;
 
+    console.log('[MINING] Button pressed, starting mining cycle');
+    isPressed.value = true;
     setIsCharging(true);
-
-    // Animate progress bar
+    
+    // Start animation with callback to trigger mining
+    chargeProgress.value = 0;
     chargeProgress.value = withTiming(1, {
       duration: CHARGE_DURATION,
       easing: Easing.linear,
-    });
-
-    // Set timeout to actually mine after charge completes
-    chargeTimeoutRef.current = setTimeout(() => {
-      if (
-        !isDepleted &&
-        typeof nodeDepletionAmount === "number" &&
-        nodeDepletionAmount > 0
-      ) {
-        if (onDepleteNode) {
-          onDepleteNode(nodeId, nodeDepletionAmount - 1, true);
-          onManualMine(nodeId);
-        }
+    }, (finished) => {
+      if (finished && isPressed.value) {
+        runOnJS(performMining)();
       }
-      setIsCharging(false);
-      chargeProgress.value = 0;
-    }, CHARGE_DURATION);
+    });
   };
 
   return (
@@ -411,11 +454,6 @@ const NodeBottomSheet = ({
                   marginHorizontal: 16,
                   borderWidth: 2,
                   borderColor: Colors.cyan,
-                  shadowColor: Colors.cyan,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 4,
-                  elevation: 3,
                 }}>
                   <Text style={{ fontSize: 13, color: Colors.cyan, textAlign: "center", fontWeight: '600' }}>
                     ⚙️ Requires: {items[machineRequired]?.name || machineRequired}
@@ -448,36 +486,50 @@ const NodeBottomSheet = ({
                             alignItems: "center",
                             justifyContent: "center",
                             gap: 8,
-                            position: 'relative',
-                            overflow: 'hidden',
                           }}
                           onPressIn={handleManualMineStart}
                           onPressOut={handleManualMineCancel}
                           activeOpacity={0.9}
                         >
-                          {/* Charge progress bar background */}
-                          <Animated.View
-                            style={[
-                              {
-                                position: 'absolute',
-                                left: 0,
-                                top: 0,
-                                bottom: 0,
-                                backgroundColor: isCharging ? 'rgba(39, 174, 96, 0.5)' : 'rgba(0, 255, 255, 0.3)',
-                              },
-                              chargeProgressStyle,
-                            ]}
-                          />
-                          <Icon name="pickaxe" size={20} color={Colors.textPrimary} style={{ zIndex: 1 }} />
-                          <Text style={{ color: Colors.textPrimary, fontWeight: "600", fontSize: 14, zIndex: 1 }}>
-                            {isCharging ? "Mining..." : "Hold to Mine"}
+                          <Icon name="pickaxe" size={20} color={Colors.textPrimary} />
+                          <Text style={{ color: Colors.textPrimary, fontWeight: "600", fontSize: 14 }}>
+                            {isCharging ? `Mining ${producedItemName}` : "Hold to Mine"}
                           </Text>
                         </TouchableOpacity>
                       </LinearGradient>
+                      
+                      {/* Separate progress bar below button */}
                       {isCharging && (
-                        <Text style={{ color: Colors.textSecondary, fontSize: 11, marginTop: 6, fontWeight: '600' }}>
-                          Release to cancel
-                        </Text>
+                        <View style={{ width: '100%', marginTop: 8 }}>
+                          <View style={{
+                            height: 8,
+                            width: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                            borderRadius: 4,
+                            overflow: 'hidden',
+                            borderWidth: 2,
+                            borderColor: 'rgba(39, 174, 96, 0.5)',
+                            position: 'relative',
+                          }}>
+                            <Animated.View
+                              style={[
+                                {
+                                  height: '100%',
+                                  backgroundColor: Colors.accentGreen,
+                                  shadowColor: Colors.accentGreen,
+                                  shadowOffset: { width: 0, height: 0 },
+                                  shadowOpacity: 1,
+                                  shadowRadius: 6,
+                                  elevation: 4,
+                                },
+                                chargeProgressStyle,
+                              ]}
+                            />
+                          </View>
+                          <Text style={{ color: Colors.textSecondary, fontSize: 11, marginTop: 4, textAlign: 'center', fontWeight: '600' }}>
+                            Release to cancel
+                          </Text>
+                        </View>
                       )}
                     </View>
                   ) : (
