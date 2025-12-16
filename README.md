@@ -1,44 +1,73 @@
-En este juego, la progresión es el motor principal. Empiezas como un explorador en un vasto mundo cuadriculado, moviéndote libremente para descubrir los valiosos Nodos de Recursos. Cada nodo, identificado por un color único, contiene un mineral que puedes extraer manualmente al principio.
+# 🏭 Faktory Mobile
 
-Tu primera gran meta será descubrir y minar suficientes recursos para desbloquear la pantalla de 'Constructor de Máquinas'. Aquí es donde el juego realmente evoluciona. Podrás construir Miners, tus primeros pasos hacia la automatización. Colocar un Miner en un nodo transformará la extracción manual en una producción pasiva, permitiéndote generar recursos sin esfuerzo.
+A resource management and automation game built with React Native and Expo, inspired by factory-building games like Factorio.
 
-Pero la automatización no es ilimitada. Los nodos tienen una capacidad finita, agotándose con el tiempo. Esto te obliga a tomar decisiones estratégicas: ¿exploras para encontrar nuevos nodos, o inviertes en mejorar la eficiencia de tus máquinas existentes para maximizar la producción de los recursos que ya tienes? Este ciclo de exploración, automatización y optimización es el corazón del juego
+## 🎮 About
 
-## Project Structure
+Faktory Mobile is an idle/incremental factory game where you explore a procedurally generated map, mine resources, build production chains, and automate your growing industrial empire—all from your mobile device.
 
-- `/src/screens`: Main screens for gameplay and UI.
-- `/src/components`: Reusable UI components.
-- `/src/hooks`: Custom React hooks for game logic.
-- `/src/data`: Static data for nodes, items, milestones, etc.
-- `/src/contexts`: Global state management.
+### Key Features
 
-## Features
+- **🗺️ Procedurally Generated Map** - Explore a tile-based world with resource nodes scattered across the terrain
+- **⛏️ Resource Mining** - Manually mine or deploy automated miners on resource nodes
+- **🏗️ Production Chains** - Build smelters, foundries, constructors, assemblers, and more to transform raw materials into complex products
+- **📦 Inventory Management** - Manage your resources with a comprehensive inventory system
+- **🎯 Milestone System** - Progress through milestones to unlock new machines and capabilities
+- **🎵 Dynamic Music System** - Enjoy background music with volume controls and track selection
+- **💾 Save/Load System** - Your progress is automatically saved and can be manually managed
 
-- Grid-based world exploration
-- Manual and automated mining
-- Machine building and upgrades
-- Inventory management
-- Milestone progression
+### Game Mechanics
 
-## Controls
+- **Mining**: Extract raw resources like iron ore, copper ore, coal, stone, and crude oil
+- **Processing**: Refine raw materials into usable products (iron plates, copper wire, steel, etc.)
+- **Crafting**: Combine processed materials into intermediate and advanced products
+- **Automation**: Deploy machines on resource nodes to automate production
+- **Discovery**: Explore the map to find new resource deposits
+- **Building**: Place machines strategically to optimize your factory layout
 
-- Move with arrow buttons on the map screen.
-- Tap nodes to mine or place machines.
+## 🎨 Tech Stack
 
-The screens the player will be interacting with are:
-[FACTORY] - This is the player "home", where he can see a clear state of machines built, inventory and items beign produced. No real interaction can be made here but its where the player will be navigating to and from to connect to other sections
+- **React Native** - Cross-platform mobile development
+- **Expo** - Development framework and tooling
+- **React Navigation** - Screen navigation
+- **React Native Reanimated** - Smooth animations
+- **AsyncStorage** - Persistent data storage
+- **Expo AV** - Audio playback for music
 
-## Save System
+## 📱 Screens
 
-The game automatically saves your progress every 30 seconds and when exiting the app. Saved data includes:
+- **Map Screen** - Main game view with grid-based exploration and player movement
+- **Inventory** - View all collected resources and materials
+- **Build** - Deploy machines on discovered resource nodes
+- **Deployed Machines** - Manage your placed machines and their production
+- **Factory Screens** - Individual screens for each machine type (Smelter, Foundry, Constructor, etc.)
+- **Milestones** - Track your progress and unlock new content
+- **Options** - Music controls, save/load, and game settings
 
-- Current milestones and progress
-- Player position on the world map
-- Discovered resource nodes
-- Placed machines and their operational state
-- Player inventory and resources
-- Node depletion states
-- Crafting queue
+## 🎯 Development
 
-To start a new game, navigate to the Basic Resources screen and tap the "New Game" button. This will delete all saved data and reset the game to its initial state.
+This is a private project built for personal enjoyment and learning. The codebase follows functional React patterns with hooks for state management and custom hooks for game logic.
 
+Key architectural patterns:
+- Context-based global state (GameContext, AudioContext, ToastContext)
+- Custom hooks for domain logic (useMining, useMachines, useProduction, etc.)
+- Component composition with reusable UI elements
+- Data-driven design for items, nodes, and milestones
+
+## 📝 Recent Updates
+
+- Smooth player sprite animations with Reanimated
+- Pathfinding system with visual trail dots
+- Collision feedback when walking into obstacles
+- Mini progress bars on mining nodes
+- Improved grid styling with dashed borders
+- Music controls refactored into separate component
+- Production idle state management
+
+## 🎵 Music Credits
+
+Game includes original background music tracks. See [Music Setup Documentation](docs/MUSIC_SETUP.md) for details.
+
+---
+
+*Built with ❤️ and a lot of coffee*

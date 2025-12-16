@@ -7,8 +7,11 @@ import GameDataManager from './components/GameDataManager';
 import ManualSave from './components/ManualSave';
 import MusicControls from './components/MusicControls';
 import styles from './styles';
+import Constants from 'expo-constants';
 
 const OptionsScreen = () => {
+  const appVersion = Constants.expoConfig?.version || '1.0.0';
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <CustomHeader
@@ -47,11 +50,10 @@ const OptionsScreen = () => {
                 <FontSelector />
               </View>
             </View>
-
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>About</Text>
               <View style={styles.optionCard}>
-                <Text style={styles.versionText}>Faktory Mobile v1.0.0</Text>
+                <Text style={styles.versionText}>Faktory Mobile v{appVersion}</Text>
                 <Text style={styles.infoText}>A resource management and factory building game</Text>
               </View>
             </View>

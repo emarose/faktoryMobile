@@ -229,6 +229,7 @@ const NodeBottomSheet = ({
   };
 
   return (
+    /* TODO: INSERT THE MP4 VIDEO CENTERED IN THE BACKDROP PART, IT SHOULD START PLAYING WHEN THE USER STARTS THE Mining */
     <Modal transparent visible={isVisible && !!node} animationType="none">
       {/* Backdrop */}
       <Animated.View
