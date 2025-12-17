@@ -16,7 +16,7 @@ const ProductAssemblyScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader
-        title="Product Assembly"
+        title="Crafting Guide"
         rightIcon="magnify"
         onRightIconPress={toggleSearch}
       />

@@ -146,7 +146,7 @@ export default function FactoryScreen() {
                   end={{ x: 0, y: 1 }}
                   style={styles.gradientCard}
                 >
-                  <Text style={styles.gridItemTitle}>Product Assembly</Text>
+                  <Text style={styles.gridItemTitle}>Crafting Guide</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>

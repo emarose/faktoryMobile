@@ -44,7 +44,7 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 - **Deployed Machines Card**: Resumen de máquinas colocadas en el mundo
 - **Fila inferior con dos botones**:
   - **Inventory**: Acceso al inventario de productos
-  - **Product Assembly**: Acceso al árbol de producción
+  - **Crafting guide**: Acceso al árbol de producción
 - Fondo con imagen industrial y gradiente atmosférico
 
 **Pruebas Sugeridas:**
@@ -323,16 +323,16 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 
 ---
 
-### 10. Product Assembly Screen (Ensamblaje de Productos)
+### 10. Product Assembly Screen (Crafting guide)
 
 **Funcionalidad:**
-- Accesible desde la Factory Screen mediante el botón "Product Assembly"
+- Accesible desde la Factory Screen mediante el botón "Crafting guide"
 - Visualización del árbol de progresión y recetas de fabricación
 - Sistema de búsqueda para localizar productos específicos
 - Vista jerárquica de todas las cadenas de producción disponibles
 
 **Elementos Visuales:**
-- Header con título "Product Assembly" e icono de lupa
+- Header con título "Crafting guide" e icono de lupa
 - Botón de búsqueda que activa/desactiva la funcionalidad de filtrado
 - **Componente ProgressionTree**: Árbol interactivo que muestra:
   - Relaciones entre materias primas y productos finales
