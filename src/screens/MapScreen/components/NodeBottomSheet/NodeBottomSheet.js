@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Dimensions, Modal, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Video } from "expo-av";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,7 +18,7 @@ import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 import { items } from "../../../../data/items";
 import ProgressBar from "../../../../components/ProgressBar";
 import Colors from "../../../../constants/Colors";
-import { widthPercentageToDP } from "react-native-responsive-screen";
+import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BOTTOM_SHEET_MAX_HEIGHT = Math.min(SCREEN_HEIGHT * 0.5, 450);
@@ -43,6 +44,8 @@ const NodeBottomSheet = ({
   const chargeProgress = useSharedValue(0);
   const isPressed = useSharedValue(false);
   const nodeRef = React.useRef(node);
+  const videoRef = React.useRef(null);
+  const videoTranslateX = useSharedValue(-Dimensions.get("window").width);
 
   // Update node ref whenever node prop changes
   React.useEffect(() => {
@@ -84,6 +87,10 @@ const NodeBottomSheet = ({
 
   const chargeProgressStyle = useAnimatedStyle(() => ({
     width: `${chargeProgress.value * 100}%`,
+  }));
+
+  const animatedVideoStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: videoTranslateX.value }],
   }));
 
   // Define mining functions before early return (used in useEffect)
@@ -140,6 +147,10 @@ const NodeBottomSheet = ({
     isPressed.value = false;
     setIsCharging(false);
     chargeProgress.value = withTiming(0, { duration: 200, easing: Easing.out(Easing.ease) });
+    videoTranslateX.value = withTiming(-Dimensions.get("window").width, { duration: 300 });
+    if (videoRef.current) {
+      videoRef.current.stopAsync();
+    }
   }, []);
 
   // Cleanup on unmount or when sheet closes
@@ -216,6 +227,15 @@ const NodeBottomSheet = ({
     isPressed.value = true;
     setIsCharging(true);
     
+    // Slide in video and play
+    videoTranslateX.value = withSpring(0, {
+      damping: 15,
+      stiffness: 100,
+    });
+    if (videoRef.current) {
+      videoRef.current.playAsync();
+    }
+    
     // Start animation with callback to trigger mining
     chargeProgress.value = 0;
     chargeProgress.value = withTiming(1, {
@@ -229,7 +249,6 @@ const NodeBottomSheet = ({
   };
 
   return (
-    /* TODO: INSERT THE MP4 VIDEO CENTERED IN THE BACKDROP PART, IT SHOULD START PLAYING WHEN THE USER STARTS THE Mining */
     <Modal transparent visible={isVisible && !!node} animationType="none">
       {/* Backdrop */}
       <Animated.View
@@ -251,6 +270,41 @@ const NodeBottomSheet = ({
           activeOpacity={1}
         />
       </Animated.View>
+
+      {/* Mining Video - positioned in upper-middle part of screen */}
+      {isCharging && (
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              top: "25%",
+              left: "50%",
+              width: heightPercentageToDP("20%"),
+              height: heightPercentageToDP("20%"),
+              marginLeft: -heightPercentageToDP("10%"),
+              marginTop: -heightPercentageToDP("10%"),
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 100,
+            },
+            animatedVideoStyle,
+          ]}
+          pointerEvents="none"
+        >
+          <Video
+            ref={videoRef}
+            source={require("../../../../../assets/video/pickaxe.mp4")}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+            isLooping
+            shouldPlay={isCharging}
+            isMuted={false}
+            resizeMode="contain"
+          />
+        </Animated.View>
+      )}
 
       {/* Bottom Sheet with gradient border */}
       <Animated.View
