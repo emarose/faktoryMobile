@@ -99,7 +99,7 @@ const ProgressionTree = ({ searchVisible = false }) => {
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search recipes, materials, products..."
+              placeholder="Search recipes or materials..."
               placeholderTextColor={Colors.textSecondary}
               value={searchQuery}
               onChangeText={setSearchQuery}

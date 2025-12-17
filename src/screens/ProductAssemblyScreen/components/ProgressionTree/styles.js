@@ -27,8 +27,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    fontSize: 15,
+    fontSize: 13,
     color: '#ffffff',
+    fontFamily: 'BitcountGridSingle-Variable',
   },
   clearButton: {
     padding: 8,
