@@ -52,6 +52,7 @@ export const AudioProvider = ({ children }) => {
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const soundRef = useRef(null);
   const isLoadingRef = useRef(false);
+  const currentTrackIndexRef = useRef(0); // Track the current index to avoid stale closures
 
   // Load persisted audio settings on mount
   useEffect(() => {
@@ -164,6 +165,7 @@ export const AudioProvider = ({ children }) => {
 
       soundRef.current = sound;
       setCurrentTrackIndex(index);
+      currentTrackIndexRef.current = index; // Keep ref in sync
       setIsPlaying(!isPaused);
       
       // If it was paused, pause the newly loaded track
@@ -184,7 +186,8 @@ export const AudioProvider = ({ children }) => {
   };
 
   const playNextTrack = () => {
-    const nextIndex = (currentTrackIndex + 1) % MUSIC_TRACKS.length;
+    // Use ref to get the current index, avoiding stale closure issues
+    const nextIndex = (currentTrackIndexRef.current + 1) % MUSIC_TRACKS.length;
     loadAndPlayTrack(nextIndex);
   };
 
