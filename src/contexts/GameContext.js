@@ -576,6 +576,12 @@ export const GameProvider = ({ children }) => {
         setCraftingQueue(savedCraftingQueue);
       }
       
+      // Load save timestamp
+      const savedTimestamp = await loadData(STORAGE_KEYS.SAVE_TIMESTAMP);
+      if (savedTimestamp) {
+        setSaveTimestamp(new Date(savedTimestamp));
+      }
+      
       console.log('Game data loaded successfully');
       setIsGameLoaded(true);
       showToast("Game loaded successfully", 3000);
@@ -593,6 +599,7 @@ export const GameProvider = ({ children }) => {
     try {
       setIsSaving(true);
       
+      const now = new Date();
       await Promise.all([
         saveData(STORAGE_KEYS.PLAYER_POSITION, playerMapPosition),
         saveData(STORAGE_KEYS.DISCOVERED_NODES, discoveredNodes),
@@ -608,10 +615,11 @@ export const GameProvider = ({ children }) => {
         saveData(STORAGE_KEYS.MACHINES, placedMachines),
         saveData(STORAGE_KEYS.CRAFTING_QUEUE, craftingQueue),
         saveData(STORAGE_KEYS.MAP_SEED, seed),
-        saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds))
+        saveData(STORAGE_KEYS.TOAST_SHOWN_NODE_IDS, Array.from(toastShownNodeIds)),
+        saveData(STORAGE_KEYS.SAVE_TIMESTAMP, now.toISOString())
       ]);
       
-      setSaveTimestamp(new Date());
+      setSaveTimestamp(now);
       // Show success toast directly when manual save completes
       showToast("Game saved", 3000);
       return true;

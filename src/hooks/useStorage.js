@@ -12,6 +12,7 @@ export const STORAGE_KEYS = {
   MAP_SEED: '@faktory/mapSeed',
   TOAST_SHOWN_NODE_IDS: '@faktory/toastShownNodeIds',
   CRAFTING_QUEUE: '@faktory/craftingQueue',
+  SAVE_TIMESTAMP: '@faktory/saveTimestamp',
 };
 
 const useStorage = () => {

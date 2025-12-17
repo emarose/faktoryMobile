@@ -11,6 +11,16 @@ const ManualSave = () => {
   const { showToast } = useToastContext();
   const [isSaving, setIsSaving] = useState(false);
 
+  const formatDateTime = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month} ${hours}:${minutes}`;
+  };
+
   const handleManualSave = async () => {
     if (isSaving) return;
     
@@ -37,7 +47,7 @@ const ManualSave = () => {
       <View style={styles.infoContainer}>
         {saveTimestamp && (
           <Text style={styles.saveInfo}>
-            Last saved: {new Date(saveTimestamp).toLocaleTimeString()}
+            Last saved: {formatDateTime(saveTimestamp)}
           </Text>
         )}
       </View>
