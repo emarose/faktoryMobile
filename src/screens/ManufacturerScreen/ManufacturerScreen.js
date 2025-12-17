@@ -25,9 +25,8 @@ import CraftingProgress from "../DeployedMachinesScreen/components/MachineTypes/
 import ResourceList from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/ResourceList";
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/MiniToast";
-import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text, CustomHeader } from "../../components";
+import { Text, CustomHeader, QuantitySlider } from "../../components";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
 function normalizeInputs(inputs) {
@@ -557,10 +556,13 @@ const ManufacturerScreen = ({ route, navigation }) => {
                   <View style={styles.controlsSection}>
                     <View style={styles.quantityControls}>
                       <Text style={styles.controlLabel}>Production Quantity</Text>
-                      <QuantityStepper
-                        amount={productAmount}
-                        setAmount={setProductAmount}
-                        maxAmount={maxCraftable}
+                      <QuantitySlider
+                        value={productAmount}
+                        onChange={setProductAmount}
+                        min={1}
+                        max={maxCraftable}
+                        accentColor="#2196F3"
+                        disabled={isProcessing}
                       />
                       
                       <View style={styles.quickButtons}>

@@ -26,8 +26,7 @@ import useCrafting from "../../hooks/useCrafting";
 import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
 import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text, CustomHeader, IconContainer } from "../../components";
-import QuantityStepper from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/QuantityStepper";
+import { Text, CustomHeader, IconContainer, QuantitySlider } from "../../components";
 import { GameAssets } from "../../components/AppLoader";
 
 // Helpers to normalize inputs/outputs to arrays of {item, amount}
@@ -762,13 +761,14 @@ const SmelterScreen = ({ route, navigation }) => {
                       <Text style={styles.controlLabel}>
                         Production Quantity
                       </Text>
-                      <View style={styles.quantityStepperContainer}>
-                        <QuantityStepper
-                          amount={productAmount}
-                          setAmount={setProductAmount}
-                          maxAmount={maxCraftable}
-                        />
-                      </View>
+                      <QuantitySlider
+                        value={productAmount}
+                        onChange={setProductAmount}
+                        min={1}
+                        max={maxCraftable}
+                        accentColor="#ff9800"
+                        disabled={isProcessing}
+                      />
 
                       <View style={styles.quickButtons}>
                         <CraftButton
