@@ -69,7 +69,7 @@ const ProgressBar = ({
         }}
         onLayout={(e) => setBarWidth(e.nativeEvent.layout.width)}
       >
-        {barWidth && (
+        {barWidth !== null && (
           <Progress.Bar
             progress={progress}
             width={barWidth}
