@@ -68,12 +68,11 @@ export default function MapScreen({ navigation }) {
   const [targetTile, setTargetTile] = useState(null); // Highlighted destination tile
 
   useEffect(() => {
-    // Only sync visualPlayerPos if not currently pathfinding (pathfinding manages visualPlayerPos directly)
-    if (!isWalkingRef.current) {
+    // Only sync visualPlayerPos if not currently moving (both pathfinding and manual control)
+    if (!isWalkingRef.current && !moveLocked) {
       setVisualPlayerPos(playerMapPosition);
       visualPlayerPosX.value = playerMapPosition.x;
       visualPlayerPosY.value = playerMapPosition.y;
-      setMoveLocked(false);
     }
   }, [playerMapPosition]);
 
@@ -368,6 +367,7 @@ export default function MapScreen({ navigation }) {
     setTimeout(() => {
       setPlayerMapPosition({ x, y });
       setIsMoving(false);
+      setMoveLocked(false);
     }, 240);
   };
 
