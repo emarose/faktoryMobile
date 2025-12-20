@@ -98,9 +98,9 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   machineCard: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     borderRadius: 10,
-    padding: 15,
+    padding: 12,
     marginVertical: 8,
     marginHorizontal: 5,
     borderWidth: 1,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accentBlue,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   upgradeButtonText: {
     color: Colors.textPrimary,
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 32,
     height: 32,
-    borderRadius: 6,
+    //borderRadius: 8,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     justifyContent: "center",
     alignItems: "center",
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
 
   },
   rowAlignCenterGap: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     gap: 12,
   },
@@ -189,15 +189,10 @@ const styles = StyleSheet.create({
      marginTop: 12,
   },
   machineIconContainer: {
-    borderRadius: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    padding: 6,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 2,
+    borderRadius: 10,
+    padding: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderWidth: 1,  
   },
   // Buttons
   assignNodeButton: {
@@ -233,7 +228,7 @@ const styles = StyleSheet.create({
   selectedNodePill: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 12,
+    borderRadius: 6,
     backgroundColor: Colors.accentBlue,
   },
   selectedNodePillText: {

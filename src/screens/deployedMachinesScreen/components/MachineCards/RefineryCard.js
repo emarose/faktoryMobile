@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -23,6 +23,8 @@ const RefineryCard = ({ machine, navigation }) => {
     actions,
   } = useRefineryCard(machine);
 
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
   const openRefineryScreen = () => {
     navigation.navigate("RefineryScreen", {
       machine: liveMachine,
@@ -40,9 +42,18 @@ const RefineryCard = ({ machine, navigation }) => {
       ]}
     >
       {/* Machine Header */}
-      <View style={styles.rowAlignCenter}>
-        <View style={styles.machineInfo}>
-          <View style={styles.rowSpaceBetween}>
+      <LinearGradient
+        colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{
+          borderRadius: 8,
+          padding: 12,
+          marginBottom: isCollapsed ? 0 : 12,
+        }}
+      >
+        <View style={{ flexDirection: "column", gap: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View style={styles.rowAlignCenterGap}>
               <View
                 style={[
@@ -56,39 +67,214 @@ const RefineryCard = ({ machine, navigation }) => {
                 {displayName}
               </Text>
             </View>
+
+            {/* Collapse Toggle */}
+            <TouchableOpacity
+              onPress={() => setIsCollapsed(!isCollapsed)}
+              style={{ padding: 8 }}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons
+                name={isCollapsed ? "keyboard-arrow-down" : "keyboard-arrow-up"}
+                size={24}
+                color={machineColor}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Assign Recipe Button - only show when expanded */}
+          {!isCollapsed && (
+            <TouchableOpacity
+              onPress={openRefineryScreen}
+              activeOpacity={0.7}
+            >
+              <LinearGradient
+                colors={['#00ffff', '#ff00cc']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.assignNodeButton}
+              >
+                <View style={styles.assignNodeButtonInner}>
+                  <Text style={styles.assignNodeText}>
+                    {status.isProcessing
+                      ? "Change"
+                      : liveMachine.currentRecipeId
+                      ? "Change"
+                      : "Assign"}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+        </View>
+      </LinearGradient>
+
+      {/* Collapsed View */}
+      {isCollapsed && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+          }}
+        >
+          {(currentProcess || currentRecipe) ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              {currentProcess?.recipeId && GameAssets.icons[currentProcess.recipeId] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentGreen,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentProcess.recipeId]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : currentRecipe && GameAssets.icons[currentRecipe.id] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentBlue,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentRecipe.id]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : null}
+              <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+                {currentProcess?.itemName || currentRecipe?.name}
+              </Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 12, color: Colors.textMuted }}>
+              No recipe assigned
+            </Text>
+          )}
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            {status.isProcessing && (
+              <View
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: Colors.accentGreen,
+                }}
+              />
+            )}
+            <Text
+              style={{
+                fontSize: 10,
+                color: status.color,
+                textTransform: "uppercase",
+              }}
+            >
+              {status.isProcessing ? "Active" : "Idle"}
+            </Text>
           </View>
         </View>
+      )}
 
-        {/* Assign Recipe Button */}
-        <View style={styles.marginVertical10}>
-          <TouchableOpacity
-            onPress={openRefineryScreen}
-            activeOpacity={0.7}
-          >
-            <LinearGradient
-              colors={['#00ffff', '#ff00cc']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.assignNodeButton}
+      {/* Collapsed View */}
+      {isCollapsed && (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+          }}
+        >
+          {(currentProcess || currentRecipe) ? (
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              {currentProcess?.recipeId && GameAssets.icons[currentProcess.recipeId] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentGreen,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentProcess.recipeId]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : currentRecipe && GameAssets.icons[currentRecipe.id] ? (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: Colors.accentBlue,
+                      width: 24,
+                      height: 24,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={GameAssets.icons[currentRecipe.id]}
+                    style={{ width: 12, height: 12 }}
+                  />
+                </View>
+              ) : null}
+              <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+                {currentProcess?.itemName || currentRecipe?.name}
+              </Text>
+            </View>
+          ) : (
+            <Text style={{ fontSize: 12, color: Colors.textMuted }}>
+              No recipe assigned
+            </Text>
+          )}
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            {status.isProcessing && (
+              <View
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: Colors.accentGreen,
+                }}
+              />
+            )}
+            <Text
+              style={{
+                fontSize: 10,
+                color: status.color,
+                textTransform: "uppercase",
+              }}
             >
-              <View style={styles.assignNodeButtonInner}>
-                <MaterialCommunityIcons
-                  name="flask"
-                  size={20}
-                  color={Colors.textPrimary}
-                  style={{ marginRight: 4 }}
-                />
-                <Text style={styles.assignNodeText}>
-                  {status.isProcessing ? "Change" : liveMachine.currentRecipeId ? "Change" : "Assign"}
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+              {status.isProcessing ? "Active" : "Idle"}
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
 
-      {/* Crafting Progress */}
-      {status.isProcessing && currentProcess && (
+      {/* Expanded View - Crafting Progress */}
+      {!isCollapsed && status.isProcessing && currentProcess && (
         <View style={styles.extraInfoContainer}>
           <View>
             <View style={styles.headerRow}>
@@ -154,8 +340,8 @@ const RefineryCard = ({ machine, navigation }) => {
         </View>
       )}
 
-      {/* Recipe Status (when not processing) */}
-      {!status.isProcessing && (
+      {/* Expanded View - Recipe Status (when not processing) */}
+      {!isCollapsed && !status.isProcessing && (
         <View style={styles.extraInfoContainer}>
           <Text style={[styles.machineStatus, { color: status.color }]}>
             {status.text}
