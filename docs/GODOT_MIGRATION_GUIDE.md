@@ -180,10 +180,6 @@ GameContext provides:
 
 ### 3.2 Component Patterns
 
-#### NineSliceFrame
-- Custom 9-slice image scaling for borders
-- Used for cards, panels, buttons
-
 #### Progress Bars
 - Node depletion: `currentAmount / capacity`
 - Crafting progress: `(now - startedAt) / processingTime`

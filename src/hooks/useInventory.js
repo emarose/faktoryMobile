@@ -17,55 +17,13 @@ export const useInventory = () => {
         };
       }
     });
-   /*  if (initialItems.ironOre) initialItems.ironOre.currentAmount = 30;
-    if (initialItems.copperOre) initialItems.copperOre.currentAmount = 30;
-    if (initialItems.limestone) initialItems.limestone.currentAmount = 30;
-    if (initialItems.coal) initialItems.coal.currentAmount = 30;
-    if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 100;
-    if (initialItems.ironRods) initialItems.ironRods.currentAmount = 10;
-    if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 100;
-    if (initialItems.concrete) initialItems.concrete.currentAmount = 50;
-    if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
-    if (initialItems.ironOre) initialItems.ironOre.currentAmount = 500;
-    if (initialItems.copperOre) initialItems.copperOre.currentAmount = 500;
-    if (initialItems.limestone) initialItems.limestone.currentAmount = 500;
-    if (initialItems.coal) initialItems.coal.currentAmount = 200;
 
-    if (initialItems.ironIngot) initialItems.ironIngot.currentAmount = 200;
-    if (initialItems.copperIngot) initialItems.copperIngot.currentAmount = 1000;
-    if (initialItems.ironPlates) initialItems.ironPlates.currentAmount = 50;
-    if (initialItems.ironRods) initialItems.ironRods.currentAmount = 50;
-    if (initialItems.wires) initialItems.wires.currentAmount = 50;
-    if (initialItems.concrete) initialItems.concrete.currentAmount = 20;
-    if (initialItems.screws) initialItems.screws.currentAmount = 200;
-    if (initialItems.steelBeams) initialItems.steelBeams.currentAmount = 200;
-    if (initialItems.reinforcedIronPlates)
-      initialItems.reinforcedIronPlates.currentAmount = 200;
-    if (initialItems.rotors) initialItems.rotors.currentAmount = 200;
-    if (initialItems.steelPipes) initialItems.steelPipes.currentAmount = 200;
-    if (initialItems.steelIngot) initialItems.steelIngot.currentAmount = 200;
-    if (initialItems.sulfur) initialItems.sulfur.currentAmount = 200;
-    if (initialItems.fuel) initialItems.fuel.currentAmount = 200;
-    if (initialItems.rubber) initialItems.rubber.currentAmount = 200;
-    if (initialItems.plastic) initialItems.plastic.currentAmount = 200;
-    if (initialItems.circuitBoards)
-      initialItems.circuitBoards.currentAmount = 200;
-    if (initialItems.motors) initialItems.motors.currentAmount = 200;
-    if (initialItems.modularFrames)
-      initialItems.modularFrames.currentAmount = 200;
-
-    if (initialItems.miner) initialItems.miner.currentAmount = 0;
-    if (initialItems.smelter) initialItems.smelter.currentAmount = 0;
-    if (initialItems.constructor) initialItems.constructor.currentAmount = 0;
-    if (initialItems.assembler) initialItems.assembler.currentAmount = 0;
-    if (initialItems.manufacturer) initialItems.manufacturer.currentAmount = 0;
-    if (initialItems.refinery) initialItems.refinery.currentAmount = 0;
-    if (initialItems.foundry) initialItems.foundry.currentAmount = 0;
-    if (initialItems.oilExtractor) initialItems.oilExtractor.currentAmount = 0; */
+    // Testing inventory: Add 200 of each item
+    Object.keys(initialItems).forEach((key) => {
+      initialItems[key].currentAmount = 200;
+    });
 
     const initialOwnedMachines = [];
-    // For testing, add a 'smelter' instance to ownedMachines if you want to see recipes immediately.
-    // initialOwnedMachines.push({ id: `smelter-${Date.now()}-0`, type: "smelter", currentRecipeId: null });
 
     return {
       items: initialItems,

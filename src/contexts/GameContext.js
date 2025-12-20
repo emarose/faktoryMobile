@@ -559,10 +559,11 @@ export const GameProvider = ({ children }) => {
       
       // Load inventory and machines
       const savedInventory = await loadData(STORAGE_KEYS.INVENTORY);
-      if (savedInventory) {
-        // These are set through the useInventory hook
-        setInventory(savedInventory);
-      }
+      // TESTING: Comment out to use initial test inventory from useInventory
+      // if (savedInventory) {
+      //   setInventory(savedInventory);
+      // }
+      console.log("Skipping saved inventory load - using test data from useInventory");
       
       // Load placed machines
       const savedMachines = await loadData(STORAGE_KEYS.MACHINES, []);
