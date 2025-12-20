@@ -8,7 +8,6 @@ import Colors from '../../../../constants/Colors';
 import { useOilExtractorCard } from '../../hooks';
 import { getMachineIcon } from '../../hooks/useMachineCard';
 import styles from '../../styles';
-import resStyles from '../MachineTypes/Smelter/components/ResourceList/styles';
 import { getNodeTypeDefinition } from '../../../../data/nodeTypes';
 
 const OilExtractorCard = ({ machine, navigation }) => {
@@ -83,9 +82,9 @@ const OilExtractorCard = ({ machine, navigation }) => {
 
       {/* Oil Extractor Details */}
       {assignedNode && (
-        <View style={resStyles.card}>
+        <View style={styles.card}>
           {/* Assigned node header */}
-          <Text style={resStyles.sectionTitle}>Assigned Node</Text>
+          <Text style={styles.sectionTitle}>Assigned Node</Text>
           <View style={styles.headerRow}>
             {(() => {
               const nodeTypeDef = getNodeTypeDefinition(assignedNode.type);

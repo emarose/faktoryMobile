@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,8 +8,6 @@ import Colors from "../../../../constants/Colors";
 import { useMinerCard } from "../../hooks";
 import { getMachineIcon } from "../../hooks/useMachineCard";
 import styles from "../../styles";
-import resStyles from "../MachineTypes/Smelter/components/ResourceList/styles";
-import { getNodeTypeDefinition } from "../../../../data/nodeTypes";
 import { GameAssets } from "../../../../components/AppLoader";
 
 const MinerCard = ({ machine, navigation }) => {
@@ -242,7 +240,7 @@ const MinerCard = ({ machine, navigation }) => {
               </View>
               <Text
                 style={[
-                  resStyles.sectionTitle,
+                  styles.sectionTitle,
                   { color: Colors.accentGold, fontSize: 13, fontWeight: "600" },
                 ]}
               >

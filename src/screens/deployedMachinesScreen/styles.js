@@ -368,6 +368,24 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     marginTop: 6,
   },
+
+  // Section title (used by Miner and OilExtractor cards)
+  sectionTitle: {
+    color: Colors.textPrimary,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+
+  // Card container (used by OilExtractor card)
+  card: {
+    backgroundColor: Colors.backgroundPanel || 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 14,
+    padding: 16,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: Colors.border || '#333',
+  },
 });
 
 export default styles;

@@ -23,8 +23,8 @@ import { useGame } from "../../contexts/GameContext";
 import useCrafting from "../../hooks/useCrafting";
 
 // Component imports
-import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/CraftButton";
-import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Smelter/components/MiniToast";
+import CraftButton from "../../components/MachineTypes/Smelter/components/CraftButton";
+import MiniToast from "../../components/MachineTypes/Smelter/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader, IconContainer, QuantitySlider } from "../../components";
 import { GameAssets } from "../../components/AppLoader";

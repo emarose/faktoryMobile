@@ -22,10 +22,10 @@ import useCrafting from "../../hooks/useCrafting";
 import { GameAssets } from "../../components/AppLoader";
 
 // Component imports
-import CraftingProgress from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/CraftingProgress";
-import ResourceList from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/ResourceList";
-import CraftButton from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/CraftButton";
-import MiniToast from "../DeployedMachinesScreen/components/MachineTypes/Constructor/components/MiniToast";
+import CraftingProgress from "../../components/MachineTypes/Constructor/components/CraftingProgress";
+import ResourceList from "../../components/MachineTypes/Constructor/components/ResourceList";
+import CraftButton from "../../components/MachineTypes/Constructor/components/CraftButton";
+import MiniToast from "../../components/MachineTypes/Constructor/components/MiniToast";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, CustomHeader, QuantitySlider } from "../../components";
 
