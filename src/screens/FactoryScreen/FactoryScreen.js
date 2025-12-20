@@ -7,6 +7,7 @@ import {
   View,
   ImageBackground,
   Image,
+  Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, CustomHeader } from "../../components";
@@ -32,6 +33,23 @@ export default function FactoryScreen() {
   } = useContext(GameContext);
 
   const scrollRef = useRef(null);
+  const rotationValue = useRef(new Animated.Value(0)).current;
+
+  // Set up continuous rotation animation
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.timing(rotationValue, {
+        toValue: 1,
+        duration: 8000, // 8 seconds for full rotation
+        useNativeDriver: true,
+      })
+    ).start();
+  }, []);
+
+  const spin = rotationValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   // Scroll to top whenever the screen receives focus
   useFocusEffect(
@@ -77,11 +95,12 @@ export default function FactoryScreen() {
                   style={styles.gradientCard}
                 >
                   <Text style={styles.gridItemTitle}>World Map</Text>
-                  <Image
+                  <Animated.Image
                     source={require("../../../assets/images/UI/cardBg/worldMap.png")}
                     style={{
                       width: 100,
                       height: 100,
+                      transform: [{ rotate: spin }],
                     }}
                     resizeMode="cover"
                   />
