@@ -166,7 +166,7 @@ function analyzeMachineColors() {
     }
 
     // Buscar definiciones hardcodeadas de colores de máquinas
-    const machineColorRegex = /(smelter|constructor|foundry|refinery|assembler|manufacturer|miner|oilExtractor|extractor)\s*:\s*['"`](#[0-9a-fA-F]{3,8})['"`]/gi;
+    const machineColorRegex = /(smelter|constructor|foundry|refinery|assembler|manufacturer|miner|extractor)\s*:\s*['"` ](#[0-9a-fA-F]{3,8})['"` ]/gi;
     let match;
     while ((match = machineColorRegex.exec(content))) {
       const machineType = match[1];

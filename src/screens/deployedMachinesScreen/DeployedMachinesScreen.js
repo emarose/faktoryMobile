@@ -7,7 +7,7 @@ import styles from "./styles";
 import { items } from "../../data/items";
 import { useGame } from "../../contexts/GameContext";
 import { useNavigation } from "@react-navigation/native";
-import { MinerCard, OilExtractorCard, SmelterCard, ConstructorCard, DefaultMachineCard, FoundryCard, AssemblerCard, RefineryCard, ManufacturerCard } from "./components/MachineCards";
+import { MinerCard, ExtractorCard, SmelterCard, ConstructorCard, DefaultMachineCard, FoundryCard, AssemblerCard, RefineryCard, ManufacturerCard } from "./components/MachineCards";
 import MachineGroup from "./components/MachineGroup";
 import { GameAssets } from "../../components/AppLoader";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -21,7 +21,7 @@ const machineCardComponents = {
   foundry: FoundryCard,
   manufacturer: ManufacturerCard,
   refinery: RefineryCard,
-  oilExtractor: OilExtractorCard,
+  extractor: ExtractorCard,
 };
 
 const DeployedMachinesScreen = () => {
@@ -67,7 +67,7 @@ const DeployedMachinesScreen = () => {
       'Foundry': 'foundry',
       'Manufacturer': 'manufacturer',
       'Refinery': 'refinery',
-      'Oil Extractor': 'oilExtractor'
+      'Extractor': 'extractor'
     };
     
     const iconKey = iconMap[typeName];

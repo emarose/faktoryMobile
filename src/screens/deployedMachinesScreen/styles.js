@@ -364,15 +364,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
 
-  // Section title (used by Miner and OilExtractor cards)
+  // Section title (used by Miner and Extractor cards)
   sectionTitle: {
     color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: '600',
-    marginBottom: 8,
   },
 
-  // Card container (used by OilExtractor card)
+  // Card container (used by Extractor card)
   card: {
     backgroundColor: Colors.backgroundPanel || 'rgba(0, 0, 0, 0.5)',
     borderRadius: 14,

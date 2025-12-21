@@ -24,7 +24,7 @@ const BasicResourcesScreen = () => {
       
       // Count miners assigned to this resource type
       const minersCount = placedMachines.filter((m) => {
-        if (m.type !== "miner" && m.type !== "oilExtractor") return false;
+        if (m.type !== "miner" && m.type !== "extractor") return false;
         const node = allResourceNodes.find((n) => n.id === m.assignedNodeId);
         return node && node.type === nodeTypeId;
       }).length;

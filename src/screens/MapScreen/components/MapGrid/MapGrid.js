@@ -127,7 +127,7 @@ const MapGrid = ({
           // Check if this node has a placed machine
           const hasMiner = placedMachines.some((m) => {
             return (
-              (m.type === "miner" || m.type === "oilExtractor") &&
+              (m.type === "miner" || m.type === "extractor") &&
               m.assignedNodeId === node.id
             );
           });

@@ -1,16 +1,23 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { View, ScrollView, TouchableOpacity, ImageBackground, Image } from "react-native";
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text, CustomHeader } from "../../components";
-import { useGame } from "../../contexts/GameContext";
-import { items } from "../../data/items";
-import { getNodeColor, getNodeTypeDefinition } from "../../data/nodeTypes";
-import Colors from "../../constants/Colors";
+
 import styles from "./styles";
+import Colors from "../../constants/Colors";
+import { items } from "../../data/items";
+import { useGame } from "../../contexts/GameContext";
+import { getNodeColor, getNodeTypeDefinition } from "../../data/nodeTypes";
+import { Text, CustomHeader } from "../../components";
 import { GameAssets } from "../../components/AppLoader";
 
-const NodeSelectorScreen = ({ route, navigation }) => {
+const ExtractorScreen = ({ route, navigation }) => {
   // Get machine from route params
   const machine = route?.params?.machine || null;
 
@@ -25,55 +32,22 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     updateOwnedMachine,
   } = useGame();
 
-  // If machine is an Extractor, we should only show crude oil nodes
-  const isExtractor = machine?.type === "extractor";
-  
-  // Auto-select crude oil filter for extractors
-  const initialResourceType = isExtractor ? "crudeOil_node" : null;
-  const [selectedResourceType, setSelectedResourceType] = useState(initialResourceType);
-
-  // Filter discovered and available nodes
+  // Filter discovered oil nodes only
   const discoveredNodeOptions = useMemo(
     () =>
       allResourceNodes.filter(
-        (n) => {
-          // Basic filters: must be discovered and have resources
-          const isDiscovered = discoveredNodes[n.id];
-          const hasResources = typeof n.currentAmount !== "number" || n.currentAmount > 0;
-          
-          // If this is an extractor, only show crude oil nodes
-          const matchesExtractorType = isExtractor 
-            ? n.type === "crudeOil_node" 
-            : true;
-            
-          return isDiscovered && hasResources && matchesExtractorType;
-        }
+        (n) =>
+          discoveredNodes[n.id] &&
+          (typeof n.currentAmount !== "number" || n.currentAmount > 0) &&
+          n.type === "crudeOil_node" // Only show crude oil nodes
       ),
-    [allResourceNodes, discoveredNodes, isExtractor]
+    [allResourceNodes, discoveredNodes]
   );
 
-  // Group nodes by type
-  const groupedNodes = useMemo(
-    () =>
-      discoveredNodeOptions.reduce((acc, node) => {
-        const type = node.type || "unknown";
-        if (!acc[type]) acc[type] = [];
-        acc[type].push(node);
-        return acc;
-      }, {}),
-    [discoveredNodeOptions]
-  );
-
-  const resourceTypes = Object.keys(groupedNodes);
-
-  // Get the nodes to display (filtered by selected type)
-  const nodesToDisplay = selectedResourceType
-    ? groupedNodes[selectedResourceType] || []
-    : discoveredNodeOptions;
-
+  // Handle selecting a node
   const handleSelectNode = useCallback(
     (node) => {
-      // Si la máquina ya está en placedMachines, actualizar su nodo
+      // If the machine is already in placedMachines, update its node
       const existingMachine = placedMachines.find((m) => m.id === machine.id);
       if (existingMachine) {
         setPlacedMachines((prevPlaced) =>
@@ -84,17 +58,17 @@ const NodeSelectorScreen = ({ route, navigation }) => {
           )
         );
       } else {
-        // Si no está en placedMachines, moverla de ownedMachines a placedMachines
+        // If it's not in placedMachines, move it from ownedMachines to placedMachines
         const machineToPlace = {
           ...machine,
           assignedNodeId: node.id,
           isIdle: false,
         };
 
-        // Agregar a placedMachines
+        // Add to placedMachines
         setPlacedMachines((prevPlaced) => [...prevPlaced, machineToPlace]);
 
-        // Marcar como colocada en ownedMachines para evitar duplicados
+        // Mark as placed in ownedMachines to avoid duplicates
         if (updateOwnedMachine) {
           updateOwnedMachine(machine.id, { isPlaced: true });
         }
@@ -106,6 +80,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     [machine, placedMachines, setPlacedMachines, updateOwnedMachine, navigation]
   );
 
+  // Calculate distance from player to node
   const calculateDistance = useCallback(
     (node) => {
       if (!playerMapPosition || !node) return 0;
@@ -116,6 +91,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     [playerMapPosition]
   );
 
+  // Helper functions for node display
   const getResourceIcon = (type) => {
     const iconMap = {
       ironOre_node: "cube-outline",
@@ -141,15 +117,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     
     // Otherwise use a formatted version of the type name
     const resourceNameMap = {
-      'ironOre_node': 'Iron Ore',
-      'copperOre_node': 'Copper Ore',
-      'coal_node': 'Coal',
-      'limestone_node': 'Limestone',
-      'cateriumOre_node': 'Caterium Ore',
-      'rawQuartz_node': 'Raw Quartz',
-      'sulfur_node': 'Sulfur',
-      'bauxite_node': 'Bauxite',
-      'uranium_node': 'Uranium'
+      'crudeOil_node': 'Crude Oil',
     };
     
     return resourceNameMap[type] || type.replace('_node', '').replace(/([A-Z])/g, ' $1').trim();
@@ -174,12 +142,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     
     // Try common mappings
     const iconMappings = {
-      'coal_node': 'coal',
-      'cateriumOre_node': 'cateriumOre',
-      'ironOre_node': 'ironOre',
-      'copperOre_node': 'copperOre',
-      'limestone_node': 'limestone',
-      'rawQuartz_node': 'rawQuartz'
+      'crudeOil_node': 'crudeOil',
     };
     
     if (iconMappings[type] && GameAssets.icons[iconMappings[type]]) {
@@ -189,37 +152,8 @@ const NodeSelectorScreen = ({ route, navigation }) => {
     // Use default icon as fallback
     return GameAssets.icons.default;
   };
-  
-  const getFilterResourceIcon = (type) => {
-    // For filter buttons, we always want the resource icon (not the node icon)
-    // First try to get the base resource by removing _node suffix
-    if (type.includes('_node')) {
-      const baseResource = type.replace('_node', '');
-      if (GameAssets.icons[baseResource]) {
-        return GameAssets.icons[baseResource];
-      }
-    }
-    
-    // If we don't have a matching resource icon, use common mappings
-    const filterIconMappings = {
-      'ironOre_node': 'ironOre',
-      'copperOre_node': 'copperOre',
-      'coal_node': 'coal',
-      'limestone_node': 'limestone',
-      'cateriumOre_node': 'cateriumOre',
-      'rawQuartz_node': 'rawQuartz',
-      'sulfur_node': 'sulfur',
-      'bauxite_node': 'bauxite',
-      'uranium_node': 'uranium'
-    };
-    
-    if (filterIconMappings[type] && GameAssets.icons[filterIconMappings[type]]) {
-      return GameAssets.icons[filterIconMappings[type]];
-    }
-    
-    // If no mapping is found, try to use the original type or fall back to default
-    return GameAssets.icons[type] || GameAssets.icons.default;
-  };
+
+ 
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -229,100 +163,23 @@ const NodeSelectorScreen = ({ route, navigation }) => {
       />
       <CustomHeader
         onBackPress={"DeployedMachinesScreen"}
-        title={isExtractor ? "Select Oil Node" : "Select Resource Node"}
+        title="Select Oil Node"
         showBackButton={true}
-        rightIcon={isExtractor ? "oil" : undefined}
-        borderColor={isExtractor ? "#ff9800" : undefined}
-        //onRightIconPress={() => console.log("Node selector tools pressed")}
+        rightIcon="oil"
+        borderColor="#ff9800"
+        onRightIconPress={() => console.log("Extractor tools pressed")}
       />
       <View style={styles.container}>
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Resource Type Filter - Don't show for extractors */}
-          {resourceTypes.length > 1 && !isExtractor && (
-            <View style={styles.industrialPanel}>
-              <View style={styles.panelHeader}>
-                <Text style={styles.panelTitle}>Filter by Resource</Text>
-              </View>
-              <View style={styles.panelContent}>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.filterContainer}
-                >
-                  <TouchableOpacity
-                    style={[
-                      styles.filterButton,
-                      !selectedResourceType && styles.filterButtonActive,
-                    ]}
-                    onPress={() => setSelectedResourceType(null)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterButtonText,
-                        !selectedResourceType && styles.filterButtonTextActive,
-                      ]}
-                    >
-                      All Resources
-                    </Text>
-                  </TouchableOpacity>
-
-                  {resourceTypes.map((type) => (
-                    <TouchableOpacity
-                      key={type}
-                      style={[
-                        styles.filterButton,
-                        selectedResourceType === type &&
-                          styles.filterButtonActive,
-                      ]}
-                      onPress={() => setSelectedResourceType(type)}
-                    >
-                      {GameAssets.icons[type.replace('_node', '')] || GameAssets.icons[type] ? (
-                        <Image 
-                          source={getFilterResourceIcon(type)}
-                          style={[
-                            styles.filterResourceIcon, 
-                            { opacity: selectedResourceType === type ? 1 : 0.7 }
-                          ]}
-                        />
-                      ) : (
-                        <MaterialCommunityIcons
-                          name={getResourceIcon(type)}
-                          size={16}
-                          color={
-                            selectedResourceType === type
-                              ? Colors.textPrimary
-                              : Colors.textSecondary
-                          }
-                          style={{ marginRight: 8 }}
-                        />
-                      )}
-                      <Text
-                        style={[
-                          styles.filterButtonText,
-                          selectedResourceType === type &&
-                            styles.filterButtonTextActive,
-                        ]}
-                      >
-                        {getResourceTypeLabel(type)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            </View>
-          )}
-
           {/* Node List */}
           <View style={styles.industrialPanel}>
             <View style={styles.panelHeader}>
               <Text style={styles.panelTitle}>
-                {isExtractor 
-                  ? `Available Oil Nodes (${nodesToDisplay.length})` 
-                  : `Available Nodes (${nodesToDisplay.length})`}
+                Available Oil Nodes ({discoveredNodeOptions.length})
               </Text>
             </View>
             <View style={styles.panelContent}>
-              {nodesToDisplay.length === 0 ? (
+              {discoveredNodeOptions.length === 0 ? (
                 <View style={styles.emptyState}>
                   <MaterialCommunityIcons
                     name="map-marker-off"
@@ -330,19 +187,16 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                     color={Colors.textSecondary}
                   />
                   <Text style={styles.noNodesText}>
-                    {isExtractor 
-                      ? "No oil nodes found." 
-                      : "No available nodes found for this resource type."}
+                    No oil nodes found.
                   </Text>
                   <Text style={styles.noNodesSubtext}>
-                    Explore the map to discover {isExtractor ? "oil" : "more resource"} nodes.
+                    Explore the map to discover oil resource nodes.
                   </Text>
                 </View>
               ) : (
-                nodesToDisplay.map((node) => {
+                discoveredNodeOptions.map((node) => {
                   const nodeDefinition = node.type ? items[node.type] : null;
-                  const nodeAmount =
-                    nodeAmounts[node.id] ?? node.capacity ?? 1000;
+                  const nodeAmount = nodeAmounts[node.id] ?? node.capacity ?? 1000;
                   const isAvailable = nodeAmount > 0;
                   const distance = calculateDistance(node);
 
@@ -393,8 +247,6 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                           <Text style={{ color: "#b8c7d1", fontSize: 12 }}>
                             ({node.x.toFixed(0)}, {node.y.toFixed(0)})
                           </Text>
-                          
-                       
                         </View>
                         <View style={styles.nodeStats}>
                           <View style={styles.nodeAmountContainer}>
@@ -424,35 +276,6 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                             ]}
                           />
                         </View>
-                        {nodeDefinition?.output && Object.keys(nodeDefinition.output).length > 0 && (
-                          <View style={styles.outputContainer}>
-                            <View style={styles.outputLabelContainer}>
-                              <MaterialCommunityIcons
-                                name="factory"
-                                size={12}
-                                color="#b8c7d1"
-                              />
-                              <Text style={styles.outputLabel}>Produces</Text>
-                            </View>
-                            {Object.entries(nodeDefinition.output).map(([resourceId, amount]) => {
-                              const resourceIcon = GameAssets.icons[resourceId];
-                              const resourceName = items[resourceId]?.name || resourceId;
-                              return (
-                                <View key={resourceId} style={styles.outputItemContainer}>
-                                  {resourceIcon && (
-                                    <Image 
-                                      source={resourceIcon} 
-                                      style={styles.outputIcon} 
-                                    />
-                                  )}
-                                  <Text style={styles.outputName}>
-                                    {amount}x {resourceName}
-                                  </Text>
-                                </View>
-                              );
-                            })}
-                          </View>
-                        )}
                       </View>
 
                       <MaterialCommunityIcons
@@ -460,7 +283,7 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                         size={24}
                         color={
                           isAvailable
-                            ? Colors.miner
+                            ? "#ff9800"
                             : Colors.textSecondary
                         }
                       />
@@ -487,15 +310,15 @@ const NodeSelectorScreen = ({ route, navigation }) => {
                       />
                     ) : (
                       <MaterialCommunityIcons
-                        name="pickaxe"
+                        name="oil"
                         size={28}
-                        color={Colors.miner}
+                        color="#ff9800"
                       />
                     )}
                   </View>
                   <View style={styles.machineDetails}>
                     <Text style={styles.machineTitle}>
-                      {items[machine.type]?.name || machine.type}
+                      {items[machine.type]?.name || "Extractor"}
                     </Text>
                     <Text style={styles.machineSubtitle}>ID: {machine.id}</Text>
                     <Text style={styles.machineStatus}>
@@ -513,4 +336,4 @@ const NodeSelectorScreen = ({ route, navigation }) => {
   );
 };
 
-export default React.memo(NodeSelectorScreen);
+export default React.memo(ExtractorScreen);

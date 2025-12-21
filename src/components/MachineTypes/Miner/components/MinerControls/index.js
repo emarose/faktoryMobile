@@ -34,7 +34,7 @@ const MinerControls = ({ machine, navigation }) => {
         ? placedMachines.filter(
             (m) =>
               m &&
-              (m.type === "miner" || m.type === "oilExtractor") &&
+              (m.type === "miner" || m.type === "extractor") &&
               m.assignedNodeId === assignedNode.id
           )
         : [];

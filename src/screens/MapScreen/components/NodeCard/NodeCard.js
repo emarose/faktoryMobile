@@ -30,7 +30,7 @@ const NodeCard = React.memo(
     const assignedMachinesOnNode = placedMachines.filter(
       (m) =>
         m.assignedNodeId === nodeId &&
-        (m.type === "miner" || m.type === "oilExtractor")
+        (m.type === "miner" || m.type === "extractor")
     );
     const assignedMachineCount = assignedMachinesOnNode.length;
 

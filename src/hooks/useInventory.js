@@ -19,9 +19,9 @@ export const useInventory = () => {
     });
 
     // Testing inventory: Add 200 of each item
-    Object.keys(initialItems).forEach((key) => {
+    /* Object.keys(initialItems).forEach((key) => {
       initialItems[key].currentAmount = 200;
-    });
+    }); */
 
     const initialOwnedMachines = [];
 

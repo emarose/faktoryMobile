@@ -4,9 +4,8 @@ import { useMachineColors } from '../../../hooks';
 import { items } from '../../../data/items';
 import { getNodeTypeDefinition } from '../../../data/nodeTypes';
 import RESOURCE_CAP from '../../../constants/ResourceCap';
-import Colors from '../../../constants/Colors';
 
-export default function useMinerCard(machine) {
+export default function useExtractorCard(machine) {
   const {
     placedMachines,
     allResourceNodes,
@@ -43,7 +42,7 @@ export default function useMinerCard(machine) {
       const assignedMachines = placedMachines.filter(
         (m) =>
           m &&
-          (m.type === "miner" || m.type === "extractor") &&
+          m.type === "extractor" &&
           m.assignedNodeId === assignedNode.id
       );
 
@@ -75,7 +74,7 @@ export default function useMinerCard(machine) {
         canAddMore: assignedMachines.length < 4,
       };
     } catch (err) {
-      console.error("Miner nodeDepletionData error:", err);
+      console.error("Extractor nodeDepletionData error:", err);
       return null;
     }
   }, [assignedNode, placedMachines]);
@@ -89,8 +88,8 @@ export default function useMinerCard(machine) {
     if (isIdle) {
       if (assignedNode) {
         if (assignedNode.currentAmount <= 0) {
-          statusText = `Node Depleted`;
-          statusColor = Colors.textDanger;
+          statusText = `Depleted: ${assignedNode.name}`;
+          statusColor = "#ff6b6b";
         } else {
           // Check if storage is full
           const nodeDefinition = assignedNode.type ? items[assignedNode.type] : null;
@@ -101,11 +100,11 @@ export default function useMinerCard(machine) {
               statusText = `Storage Full: ${inventory[resourceId]?.name || resourceId}`;
               statusColor = "#ff9800";
             } else {
-              statusText = "Paused";
+              statusText = "Idle (Paused)";
               statusColor = "#ff9800";
             }
           } else {
-            statusText = "Idle";
+            statusText = "Idle (Paused)";
             statusColor = "#ff9800";
           }
         }
@@ -130,10 +129,6 @@ export default function useMinerCard(machine) {
 
   // Action handlers
   const handlePauseResume = () => {
-    // Don't allow resume if node is depleted
-    if (status.isIdle && status.isDepleted) {
-      return;
-    }
     if (status.isIdle) {
       resumeMiner(liveMachine.id, { user: true });
     } else {
@@ -150,7 +145,7 @@ export default function useMinerCard(machine) {
     assignedNode,
     nodeDepletionData,
     status,
-    machineColor: getMachineColor(machine.type),
+    machineColor: getMachineColor(machine.type) || "#D76B00",
     displayName: items[machine.type]?.name || machine.type,
     actions: {
       handlePauseResume,

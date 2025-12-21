@@ -88,15 +88,7 @@ const NodeBottomSheet = ({
 
   // Define mining functions before early return (used in useEffect)
   const performMining = React.useCallback(() => {
-    const timestamp = Date.now();
-    console.log('[MINING] Mining cycle completed at', timestamp);
-    
     const currentNode = nodeRef.current;
-    console.log('[NODE] Current node data:', JSON.stringify({
-      id: currentNode?.id,
-      currentAmount: currentNode?.currentAmount,
-      capacity: currentNode?.capacity,
-    }, null, 2));
     
     if (!currentNode) {
       console.log('[ERROR] No node, stopping');
@@ -105,17 +97,14 @@ const NodeBottomSheet = ({
     }
     
     const currentAmount = currentNode.currentAmount || currentNode.capacity || 1000;
-    console.log('[MINING] Calculated currentAmount:', currentAmount);
     
     if (currentAmount > 0) {
       const newAmount = currentAmount - 1;
-      console.log('[MINING] Executing mine. Current:', currentAmount, '→ New:', newAmount);
       onDepleteNode(currentNode.id, newAmount, true);
       onManualMine(currentNode.id);
       
       // Continue if still pressed
       if (isPressed.value) {
-        console.log('[MINING] Still pressed, starting next cycle');
         chargeProgress.value = 0;
         chargeProgress.value = withTiming(1, {
           duration: CHARGE_DURATION,
@@ -126,17 +115,14 @@ const NodeBottomSheet = ({
           }
         });
       } else {
-        console.log('[MINING] Button released');
         handleManualMineCancel();
       }
     } else {
-      console.log('[MINING] Node depleted, stopping');
       handleManualMineCancel();
     }
   }, [onDepleteNode, onManualMine]);
 
   const handleManualMineCancel = React.useCallback(() => {
-    console.log('[MINING] Canceling mining');
     isPressed.value = false;
     setIsCharging(false);
     chargeProgress.value = withTiming(0, { duration: 200, easing: Easing.out(Easing.ease) });
@@ -168,7 +154,7 @@ const NodeBottomSheet = ({
   const assignedMachinesOnNode = placedMachines.filter(
     (m) =>
       m.assignedNodeId === nodeId &&
-      (m.type === "miner" || m.type === "oilExtractor")
+      (m.type === "miner" || m.type === "extractor")
   );
   const assignedMachineCount = assignedMachinesOnNode.length;
 
@@ -212,7 +198,6 @@ const NodeBottomSheet = ({
   const handleManualMineStart = () => {
     if (isDepleted || !canManualMine || isCharging) return;
 
-    console.log('[MINING] Button pressed, starting mining cycle');
     isPressed.value = true;
     setIsCharging(true);
     
@@ -229,7 +214,6 @@ const NodeBottomSheet = ({
   };
 
   return (
-    /* TODO: INSERT THE MP4 VIDEO CENTERED IN THE BACKDROP PART, IT SHOULD START PLAYING WHEN THE USER STARTS THE Mining */
     <Modal transparent visible={isVisible && !!node} animationType="none">
       {/* Backdrop */}
       <Animated.View

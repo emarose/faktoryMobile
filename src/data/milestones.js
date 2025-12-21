@@ -38,7 +38,7 @@ const milestones = [
       "Expand into copper processing to create electrical components. Master copper ingots and basic wiring systems.",
     requirementsDescription: "Produce 15 Copper Ingots and 25 Wires",
     unlocked: false,
-    unlocks: ["Foundry", "Oil Extractor"],
+    unlocks: ["Foundry", "Extractor"],
     requirements: { copperIngot: 15, wires: 25 },
   },
   {
@@ -77,7 +77,7 @@ const milestones = [
     id: "milestone8",
     name: "Oil & Petroleum Industry",
     description:
-      "Enter the petroleum age with oil extraction and refining. Gather materials to build Oil Extractors and Refineries.",
+      "Enter the petroleum age with oil extraction and refining. Gather materials to build Extractors and Refineries.",
     requirementsDescription:
       "Discover 5 nodes total and prepare: 8 Steel Pipes, 6 Concrete, 10 Wires",
     unlocked: false,

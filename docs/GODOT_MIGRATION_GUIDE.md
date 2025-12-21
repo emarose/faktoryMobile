@@ -26,7 +26,7 @@ Faktory Mobile is a **factory-building/automation idle game** inspired by Satisf
 
 #### Automated Mining
 - **Miner machines** can be placed on resource nodes (max 4 per node)
-- **Oil Extractors** work similarly for crude oil nodes
+- **Extractors** work similarly for crude oil nodes
 - Each miner produces resources per second (default efficiency = 1.0)
 - Nodes deplete over time: each active miner depletes 1 capacity per second
 - **Auto-pause system**: miners pause when:
@@ -118,7 +118,7 @@ Recipe: {
 | #1 | 2 nodes discovered, 10 Iron/Copper, 5 Coal | Smelter, Miner |
 | #2 | 20 Iron Ingots, 5 Concrete | Constructor |
 | #3 | 15 Iron Rods, 10 Plates, 20 Screws | Assembler |
-| #4 | 15 Copper Ingots, 25 Wires | Foundry, Oil Extractor |
+| #4 | 15 Copper Ingots, 25 Wires | Foundry, Extractor |
 | ... | ... | ... |
 | #20 | 1 Nuclear Fuel Rod, 10 nodes discovered | Master Industrialist |
 
@@ -574,7 +574,7 @@ func process_miners():
     var machines_by_node = {}
     
     for machine in GameManager.placed_machines:
-        if machine.type in ["miner", "oilExtractor"] and machine.has("assignedNodeId"):
+        if machine.type in ["miner", "Extractor"] and machine.has("assignedNodeId"):
             if machine.get("isIdle", false):
                 continue
             

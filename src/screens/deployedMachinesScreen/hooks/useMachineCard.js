@@ -3,22 +3,24 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Image, Text } from "react-native";
 import { useMachineColors } from "../../../hooks";
 import { items } from "../../../data/items";
+import { GameAssets } from "../../../components/AppLoader";
 
-// Common machine icon helper
+// Common machine icon helper - uses preloaded assets from GameAssets
 export function getMachineIcon(type, color, size = 80) {
-  // Define machine icon paths for all machine types
+  // Map machine types to preloaded GameAssets
   const machineIcons = {
-    smelter: require("../../../../assets/images/icons/smelter.png"),
-    miner: require("../../../../assets/images/icons/miner.png"),
-    constructor: require("../../../../assets/images/icons/constructor.png"),
-    assembler: require("../../../../assets/images/icons/assembler.png"),
-    manufacturer: require("../../../../assets/images/icons/manufacturer.png"),
-    foundry: require("../../../../assets/images/icons/foundry.png"),
-    refinery: require("../../../../assets/images/icons/refinery.png"),
-    oilExtractor: require("../../../../assets/images/icons/oilextractor.png"),
+    smelter: GameAssets.icons.smelter,
+    miner: GameAssets.icons.miner,
+    constructor: GameAssets.icons.constructor,
+    assembler: GameAssets.icons.assembler,
+    manufacturer: GameAssets.icons.manufacturer,
+    foundry: GameAssets.icons.foundry,
+    refinery: GameAssets.icons.refinery,
+    extractor: GameAssets.icons.extractor,
   };
+  
   // Return image component for machine icon
-  const iconSource = machineIcons[type] || machineIcons.smelter;
+  const iconSource = machineIcons[type] || GameAssets.icons.default;
   return (
     <Image
       source={iconSource}

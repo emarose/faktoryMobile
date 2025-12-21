@@ -78,7 +78,7 @@ export const items = {
     type: "rawMaterial",
     description: "An oil deposit.",
     manualMineable: false,
-    machineRequired: "oilExtractor",
+    machineRequired: "extractor",
     output: { crudeOil: 2 },
     processingTime: 2,
   },
@@ -131,7 +131,7 @@ export const items = {
     name: "Crude Oil",
     type: "rawMaterial",
     description: "Unrefined petroleum, a fossil fuel.",
-    machine: "oilExtractor",
+    machine: "extractor",
   },
   bauxite: {
     id: "bauxite",
@@ -1178,18 +1178,18 @@ export const items = {
     },
     buildTime: 5,
   },
-  oilExtractor: {
-    id: "oilExtractor",
-    name: "Oil Extractor",
+  extractor: {
+    id: "extractor",
+    name: "Extractor",
     type: "machine",
-    description: "Extracts crude oil from underground deposits.",
+    description: "Extracts liquids from underground deposits.",
     inputs: {
       steelPipes: 8,
       concrete: 6,
       wires: 10,
     },
     output: {
-      oilExtractor: 1,
+      extractor: 1,
     },
     buildTime: 5,
   },

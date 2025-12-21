@@ -14,7 +14,7 @@ export const useMachineColors = () => {
     assembler: "#9C27B0",
     manufacturer: "#c8d41dff",
     miner: "#aaa8a4ff",
-    oilExtractor: "#614f4fff",
+    extractor: "#614f4fff",
     // Default color for any missing machines
     default: "#90A4AE",
   };

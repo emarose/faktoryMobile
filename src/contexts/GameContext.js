@@ -205,7 +205,7 @@ export const GameProvider = ({ children }) => {
       // Group active miners/extractors by node
       const machinesByNode = {};
       machines.forEach((machine) => {
-        if ((machine.type !== "miner" && machine.type !== "oilExtractor") || !machine.assignedNodeId) return;
+        if ((machine.type !== "miner" && machine.type !== "extractor") || !machine.assignedNodeId) return;
         if (machine.isIdle) return; // Skip idle machines
         
         if (!machinesByNode[machine.assignedNodeId]) {
@@ -305,7 +305,7 @@ export const GameProvider = ({ children }) => {
     const interval = setInterval(() => {
       const machines = [...placedMachines, ...ownedMachines];
       const idleMiners = machines.filter(machine => 
-        (machine.type === "miner" || machine.type === "oilExtractor") && 
+        (machine.type === "miner" || machine.type === "extractor") && 
         machine.isIdle && 
         machine.assignedNodeId
       );
@@ -524,8 +524,6 @@ export const GameProvider = ({ children }) => {
       // Load map seed
       const savedSeed = await loadData(STORAGE_KEYS.MAP_SEED);
       if (savedSeed !== null && typeof savedSeed === 'number') {
-        // Call setSeed function from useMapNodes
-        // This should be accessed through our exposed function
         setSeed(savedSeed);
       }
       
@@ -559,12 +557,9 @@ export const GameProvider = ({ children }) => {
       
       // Load inventory and machines
       const savedInventory = await loadData(STORAGE_KEYS.INVENTORY);
-      // TESTING: Comment out to use initial test inventory from useInventory
-      // if (savedInventory) {
-      //   setInventory(savedInventory);
-      // }
-      console.log("Skipping saved inventory load - using test data from useInventory");
-      
+      if (savedInventory) {
+         setInventory(savedInventory);
+      }      
       // Load placed machines
       const savedMachines = await loadData(STORAGE_KEYS.MACHINES, []);
       if (savedMachines) {
@@ -591,9 +586,6 @@ export const GameProvider = ({ children }) => {
       showToast("Error loading game data", 3000);
     }
   }, [loadData, showToast]);
-
-  // We've removed the auto-save functionality
-  // Now game state will only be saved when the player manually saves
 
   // Function for manual saving
   const saveGameManually = useCallback(async () => {

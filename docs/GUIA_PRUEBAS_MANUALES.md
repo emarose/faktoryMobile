@@ -268,7 +268,7 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 - Recetas complejas que combinan productos intermedios
 - Fabricación de componentes avanzados para tecnologías superiores
 
-#### 8.7 Oil Extractor Screen (Extractor de Petróleo)
+#### 8.7 Extractor Screen (Extractor de Petróleo)
 **Funcionalidad:**
 - Extracción pasiva de petróleo crudo
 - No tiene sistema de recetas (solo extracción)
@@ -292,7 +292,7 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 **Funcionalidad:**
 - Se accede al intentar colocar una máquina que requiere asignación a un nodo
 - Filtrado inteligente de nodos compatibles según el tipo de máquina
-- **Comportamiento especial para Oil Extractor**: Muestra automáticamente solo nodos de petróleo crudo
+- **Comportamiento especial para Extractor**: Muestra automáticamente solo nodos de petróleo crudo
 - Agrupación de nodos por tipo de recurso
 - Sistema de filtros por tipo de recurso
 - Validación de nodos disponibles (descubiertos y con recursos)
@@ -301,7 +301,7 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 - Header con título "Node Selector" personalizado según la máquina
 - **Filtros por tipo de recurso**:
   - Botones de filtro organizados por tipo (Hierro, Cobre, Carbón, etc.)
-  - Auto-selección de filtro para Oil Extractors (solo petróleo crudo)
+  - Auto-selección de filtro para Extractors (solo petróleo crudo)
 - **Lista de nodos disponibles**:
   - Nodos agrupados por tipo de recurso
   - Información de posición (coordenadas X, Y)
@@ -313,7 +313,7 @@ El juego utiliza un **navegador de pestañas inferior** con 5 secciones principa
 
 **Pruebas Sugeridas:**
 - Verificar que solo aparezcan nodos del tipo correcto para cada máquina
-- Probar comportamiento especial con Oil Extractor (solo nodos de petróleo)
+- Probar comportamiento especial con Extractor (solo nodos de petróleo)
 - Confirmar que solo se muestren nodos descubiertos y con recursos disponibles
 - Validar que nodos ya ocupados por otras máquinas no aparezcan
 - Probar filtros por tipo de recurso y que funcionen correctamente

@@ -1,16 +1,17 @@
-import { useState } from "react";
-import { View, TouchableOpacity, Image } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../../../components";
-import ProgressBar from "../../../../components/ProgressBar";
-import Colors from "../../../../constants/Colors";
-import { useMinerCard } from "../../hooks";
-import { getMachineIcon } from "../../hooks/useMachineCard";
-import styles from "../../styles";
-import { GameAssets } from "../../../../components/AppLoader";
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Text } from '../../../../components';
+import ProgressBar from '../../../../components/ProgressBar';
+import Colors from '../../../../constants/Colors';
+import { useExtractorCard } from '../../hooks';
+import { getMachineIcon } from '../../hooks/useMachineCard';
+import styles from '../../styles';
 
-const MinerCard = ({ machine, navigation }) => {
+import { GameAssets } from '../../../../components/AppLoader';
+
+const ExtractorCard = ({ machine, navigation }) => {
   const {
     liveMachine,
     assignedNode,
@@ -19,9 +20,9 @@ const MinerCard = ({ machine, navigation }) => {
     machineColor,
     displayName,
     actions,
-  } = useMinerCard(machine);
+  } = useExtractorCard(machine);
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
     <View
@@ -33,52 +34,67 @@ const MinerCard = ({ machine, navigation }) => {
       ]}
     >
       {/* Machine Header */}
-      <LinearGradient
-        colors={["rgba(0, 0, 0, 0.6)", "rgba(0, 0, 0, 0.3)", "rgba(0, 0, 0, 0.6)"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+      <View
         style={{
           borderRadius: 8,
-          padding: 12,
-          marginBottom: isCollapsed ? 0 : 12,
+          padding: assignedNode ? 6 : 4,
+          marginBottom: (assignedNode && isCollapsed) ? 0 : (assignedNode ? 12 : 0),
         }}
       >
-        <View style={styles.rowAlignCenter}>
-          <View style={styles.machineInfo}>
-            <View style={styles.rowSpaceBetween}>
-              <View style={styles.rowAlignCenterGap}>
-                <View
-                  style={[
-                    styles.machineIconContainer,
-                    { borderColor: machineColor, borderWidth: 2 },
-                  ]}
-                >
-                  {getMachineIcon(machine.type, machineColor)}
-                </View>
-                <Text style={[styles.machineName, { color: machineColor }]}>
-                  {displayName}
-                </Text>
+        <View style={{ flexDirection: "column", gap: 12 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: assignedNode ? 12 : 8 }}>
+              <View
+                style={[styles.machineIconContainer, { borderColor: machineColor }]}
+              >
+                {getMachineIcon(machine.type, machineColor, 64)}
               </View>
+              <Text style={[styles.machineName, { color: machineColor, fontSize: 16 }]}>
+                {displayName}
+              </Text>
             </View>
+
+            {/* Show collapse toggle only when node is assigned */}
+            {assignedNode ? (
+              <TouchableOpacity
+                onPress={() => setIsCollapsed(!isCollapsed)}
+                style={{ padding: 8 }}
+                activeOpacity={0.7}
+              >
+                <MaterialIcons
+                  name={isCollapsed ? "keyboard-arrow-down" : "keyboard-arrow-up"}
+                  size={32}
+                  color={machineColor}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => navigation.navigate("NodeSelectorScreen", { machine: liveMachine })} activeOpacity={0.7} style={{ marginLeft: 8 }}>
+                <LinearGradient
+                  colors={["#00ffff", "#ff00cc"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{ borderRadius: 6, padding: 1.5 }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "rgba(0, 0, 0, 0.8)",
+                      borderRadius: 5,
+                      paddingHorizontal: 16,
+                      paddingVertical: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: 12, color: Colors.textPrimary, fontWeight: "bold" }}>
+                      Assign
+                    </Text>
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
 
-          {/* Collapse Toggle */}
-          <TouchableOpacity
-            onPress={() => setIsCollapsed(!isCollapsed)}
-            style={{ padding: 8 }}
-            activeOpacity={0.7}
-          >
-            <MaterialIcons
-              name={isCollapsed ? "keyboard-arrow-down" : "keyboard-arrow-up"}
-              size={24}
-              color={machineColor}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Assign Node Button - only show when expanded */}
-        {!isCollapsed && (
-          <View style={styles.marginVertical10}>
+          {/* Assign Node Button - only show when expanded and has node */}
+          {assignedNode && !isCollapsed && (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("NodeSelectorScreen", {
@@ -88,24 +104,24 @@ const MinerCard = ({ machine, navigation }) => {
               activeOpacity={0.7}
             >
               <LinearGradient
-                colors={["#00ffff", "#ff00cc"]}
+                colors={['#00ffff', '#ff00cc']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.assignNodeButton}
               >
                 <View style={styles.assignNodeButtonInner}>
                   <Text style={styles.assignNodeText}>
-                    {liveMachine.assignedNodeId ? "Change" : "Assign"}
+                    {status.isIdle ? "Change" : "Change"}
                   </Text>
                 </View>
               </LinearGradient>
             </TouchableOpacity>
-          </View>
-        )}
-      </LinearGradient>
+          )}
+        </View>
+      </View>
 
-      {/* Collapsed View */}
-      {isCollapsed && (
+      {/* Collapsed View - only show when has node and is collapsed */}
+      {assignedNode && isCollapsed && (
         <View
           style={{
             flexDirection: "row",
@@ -146,59 +162,28 @@ const MinerCard = ({ machine, navigation }) => {
           )}
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            {assignedNode && (
-              <View
-                style={[
-                  styles.selectedNodePill,
-                  {
-                    backgroundColor: status.color + "20",
-                    borderWidth: 1,
-                    borderColor: status.color,
-                    paddingHorizontal: 8,
-                    paddingVertical: 4,
-                  },
-                ]}
-              >
-                <Text style={{ fontSize: 10, color: status.color }}>
-                  {status.isIdle ? "Idle" : "Active"}
-                </Text>
-              </View>
-            )}
-
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("NodeSelectorScreen", {
-                  machine: liveMachine,
-                })
-              }
-              activeOpacity={0.7}
+            <View
+              style={[
+                styles.selectedNodePill,
+                {
+                  backgroundColor: status.color + "20",
+                  borderWidth: 1,
+                  borderColor: status.color,
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                },
+              ]}
             >
-              <LinearGradient
-                colors={["#00ffff", "#ff00cc"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{ borderRadius: 6, padding: 1 }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                  }}
-                >
-                  <Text style={{ fontSize: 10, color: Colors.textPrimary, fontWeight: "bold" }}>
-                    {liveMachine.assignedNodeId ? "Change" : "Assign"}
-                  </Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
+              <Text style={{ fontSize: 10, color: status.color }}>
+                {status.isIdle ? "Idle" : "Extracting"}
+              </Text>
+            </View>
           </View>
         </View>
       )}
 
-      {/* Expanded Miner Details */}
-      {!isCollapsed && assignedNode && (
+      {/* Expanded Extractor Details */}
+      {assignedNode && !isCollapsed && (
         <LinearGradient
           colors={["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.4)"]}
           start={{ x: 0, y: 0 }}
@@ -226,8 +211,7 @@ const MinerCard = ({ machine, navigation }) => {
                   styles.iconContainer,
                   {
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    borderColor: Colors.cyan,
-                    borderRadius:4
+                    borderColor: Colors.accentGold,
                   },
                 ]}
               >
@@ -242,7 +226,7 @@ const MinerCard = ({ machine, navigation }) => {
               <Text
                 style={[
                   styles.sectionTitle,
-                  { color: Colors.cyan, fontSize: 13, fontWeight: "600" },
+                  { color: Colors.accentGold, fontSize: 13, fontWeight: "600" },
                 ]}
               >
                 Assigned Node
@@ -342,7 +326,7 @@ const MinerCard = ({ machine, navigation }) => {
                 style={{ marginRight: 4 }}
               />
               <Text style={[styles.detachText, status.isDepleted && { color: Colors.textDanger }]}>
-                Detach Miner
+                Detach Extractor
               </Text>
             </TouchableOpacity>
           </View>
@@ -352,4 +336,4 @@ const MinerCard = ({ machine, navigation }) => {
   );
 };
 
-export default MinerCard;
+export default ExtractorCard;

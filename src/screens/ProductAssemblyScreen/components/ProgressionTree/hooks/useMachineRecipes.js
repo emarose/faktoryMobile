@@ -21,7 +21,7 @@ export const useMachineRecipes = () => {
     machineIds.forEach((machineId) => {
       const machine = items[machineId];
       const machineColor = MACHINE_COLORS[machineId] || MACHINE_COLORS.default;
-      const isMiningMachine = machineId === "miner" || machineId === "oilExtractor";
+      const isMiningMachine = machineId === "miner" || machineId === "extractor";
 
       if (isMiningMachine) {
         // For mining machines, we need to use the node resources

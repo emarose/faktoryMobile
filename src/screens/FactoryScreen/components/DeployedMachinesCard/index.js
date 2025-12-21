@@ -48,7 +48,7 @@ const DeployedMachinesCard = ({
       if (machine.isIdle) {
         status = "idle";
         activity = "Idle";
-      } else if (machine.type === "miner" || machine.type === "oilExtractor") {
+      } else if (machine.type === "miner" || machine.type === "extractor") {
         // Check if miner has an assigned node
         if (machine.assignedNodeId && allResourceNodes) {
           // Find the assigned node

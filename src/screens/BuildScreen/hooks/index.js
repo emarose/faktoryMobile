@@ -8,7 +8,7 @@ export const getMachineIcon = (machineId) => {
     foundry: "anvil",
     manufacturer: "factory",
     refinery: "chemical-weapon",
-    oilExtractor: "oil-lamp",
+    extractor: "oil-lamp",
   };
   return icons[machineId] || "cog";
 };

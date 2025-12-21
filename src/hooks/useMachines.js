@@ -14,7 +14,7 @@ export const useMachines = (
         (node) =>
           items[node.type]?.manualMineable ||
           items[node.type]?.machineRequired === "miner" ||
-          items[node.type]?.machineRequired === "oilExtractor"
+          items[node.type]?.machineRequired === "extractor"
       )
       .map((node) => {
         const itemDefinition = items[node.type];
@@ -26,7 +26,7 @@ export const useMachines = (
           : undefined;
 
         const assignedMachines = placedMachines.filter(
-          (m) => (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === node.id
+          (m) => (m.type === "miner" || m.type === "extractor") && m.assignedNodeId === node.id
         );
         const activeMachines = assignedMachines.filter(m => !m.isIdle);
         const automatedProductionRate =
@@ -82,7 +82,7 @@ export const useMachines = (
         return false;
       }
 
-      if (machineTypeData.id === "miner" || machineTypeData.id === "oilExtractor") {
+      if (machineTypeData.id === "miner" || machineTypeData.id === "extractor") {
         if (!targetNodeId) {
           console.warn(`A ${machineTypeData.name} must be assigned to a resource node.`);
           return false;
@@ -94,7 +94,7 @@ export const useMachines = (
         }
         // Check how many machines are already assigned to this node
         const assignedMachines = placedMachines.filter(
-          (m) => (m.type === "miner" || m.type === "oilExtractor") && m.assignedNodeId === targetNodeId
+          (m) => (m.type === "miner" || m.type === "extractor") && m.assignedNodeId === targetNodeId
         );
         const MAX_MACHINES_PER_NODE = 4;
         
@@ -148,7 +148,7 @@ export const useMachines = (
   );
 
 
-  // Función para pausar una máquina de extracción (miner o oilExtractor)
+  // Función para pausar una máquina de extracción (miner o extractor)
   // Pause a machine. opts: { system: boolean, user: boolean }
   const pauseMachine = useCallback((machineId, opts = {}) => {
     const { system = false, user = false } = opts;
@@ -156,7 +156,7 @@ export const useMachines = (
       prev.map((m) => {
         if (m.id !== machineId) {
           // ensure miners have isIdle defined for robustness
-          if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
+          if ((m.type === "miner" || m.type === "extractor") && typeof m.isIdle === 'undefined') {
             return { ...m, isIdle: false };
           }
           return m;
@@ -174,14 +174,14 @@ export const useMachines = (
     );
   }, []);
 
-  // Función para reanudar una máquina de extracción (miner o oilExtractor)
+  // Función para reanudar una máquina de extracción (miner o extractor)
   // Resume a machine. opts: { system: boolean, user: boolean }
   const resumeMachine = useCallback((machineId, opts = {}) => {
     const { system = false, user = false } = opts;
     setPlacedMachines((prev) =>
       prev.map((m) => {
         if (m.id !== machineId) {
-          if ((m.type === "miner" || m.type === "oilExtractor") && typeof m.isIdle === 'undefined') {
+          if ((m.type === "miner" || m.type === "extractor") && typeof m.isIdle === 'undefined') {
             return { ...m, isIdle: false };
           }
           return m;
