@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../../../components";
+import { Text, IconContainer } from "../../../../components";
 import ProgressBar from "../../../../components/ProgressBar";
 import Colors from "../../../../constants/Colors";
 import { useSmelterCard } from "../../hooks";
@@ -119,40 +119,26 @@ const SmelterCard = ({ machine, navigation }) => {
         >
           {(currentProcess || currentRecipe) ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              {currentProcess?.recipeId && GameAssets.icons[currentProcess.recipeId] ? (
-                <View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      borderColor: Colors.accentGreen,
-                      width: 24,
-                      height: 24,
-                    },
-                  ]}
-                >
-                  <Image
-                    source={GameAssets.icons[currentProcess.recipeId]}
-                    style={{ width: 12, height: 12 }}
-                  />
-                </View>
-              ) : currentRecipe && GameAssets.icons[currentRecipe.id] ? (
-                <View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      borderColor: Colors.accentBlue,
-                      width: 24,
-                      height: 24,
-                    },
-                  ]}
-                >
-                  <Image
-                    source={GameAssets.icons[currentRecipe.id]}
-                    style={{ width: 12, height: 12 }}
-                  />
-                </View>
+              {currentProcess?.recipeId ? (
+                <IconContainer
+                  iconId={currentProcess.recipeId}
+                  size={24}
+                  iconSize={12}
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderColor: Colors.accentGreen,
+                  }}
+                />
+              ) : currentRecipe ? (
+                <IconContainer
+                  iconId={currentRecipe.id}
+                  size={24}
+                  iconSize={12}
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderColor: Colors.accentBlue,
+                  }}
+                />
               ) : null}
               <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
                 {currentProcess ? currentProcess.itemName : currentRecipe?.name}
@@ -233,23 +219,15 @@ const SmelterCard = ({ machine, navigation }) => {
               ]}
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <View
-                  style={[
-                    styles.iconContainer,
-                    {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      borderColor: Colors.accentGreen,
-                    },
-                  ]}
-                >
-                  {currentProcess?.recipeId &&
-                    GameAssets.icons[currentProcess.recipeId] && (
-                      <Image
-                        source={GameAssets.icons[currentProcess.recipeId]}
-                        style={{ width: 16, height: 16 }}
-                      />
-                    )}
-                </View>
+                <IconContainer
+                  iconId={currentProcess?.recipeId}
+                  size={32}
+                  iconSize={16}
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    borderColor: Colors.accentGreen,
+                  }}
+                />
                 <Text
                   style={[
                     styles.selectedNodePillText,
@@ -360,12 +338,12 @@ const SmelterCard = ({ machine, navigation }) => {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            {GameAssets.icons[currentRecipe.id] && (
-              <Image
-                source={GameAssets.icons[currentRecipe.id]}
-                style={{ width: 16, height: 16, marginRight: 4 }}
-              />
-            )}
+            <IconContainer
+              iconId={currentRecipe.id}
+              size={24}
+              iconSize={16}
+              style={{ marginRight: 4 }}
+            />
             <Text style={styles.recipeInfo}>
               Ready to craft: {currentRecipe.name}
             </Text>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text } from "../../../../components";
+import { Text, IconContainer } from "../../../../components";
 import ProgressBar from "../../../../components/ProgressBar";
 import Colors from "../../../../constants/Colors";
 import { useMinerCard } from "../../hooks";
@@ -50,7 +50,7 @@ const MinerCard = ({ machine, navigation }) => {
                 <View
                   style={[
                     styles.machineIconContainer,
-                    { borderColor: machineColor, borderWidth: 2 },
+                    { borderColor: machineColor, borderWidth: 1 },
                   ]}
                 >
                   {getMachineIcon(machine.type, machineColor)}
@@ -117,24 +117,15 @@ const MinerCard = ({ machine, navigation }) => {
         >
           {assignedNode ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <View
-                style={[
-                  styles.iconContainer,
-                  {
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    borderColor: Colors.accentGold,
-                    width: 24,
-                    height: 24,
-                  },
-                ]}
-              >
-                {assignedNode.type && GameAssets.icons[`${assignedNode.type}`] && (
-                  <Image
-                    source={GameAssets.icons[`${assignedNode.type}`]}
-                    style={{ width: 12, height: 12 }}
-                  />
-                )}
-              </View>
+              <IconContainer
+                iconId={assignedNode.type}
+                size={24}
+                iconSize={12}
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  borderColor: Colors.accentGold,
+                }}
+              />
               <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
                 {assignedNode.name}
               </Text>
@@ -221,24 +212,15 @@ const MinerCard = ({ machine, navigation }) => {
             ]}
           >
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <View
-                style={[
-                  styles.iconContainer,
-                  {
-                    backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    borderColor: Colors.cyan,
-                    borderRadius:4
-                  },
-                ]}
-              >
-                {assignedNode.type &&
-                  GameAssets.icons[`${assignedNode.type}`] && (
-                    <Image
-                      source={GameAssets.icons[`${assignedNode.type}`]}
-                      style={{ width: 16, height: 16 }}
-                    />
-                  )}
-              </View>
+              <IconContainer
+                iconId={assignedNode.type}
+                size={32}
+                iconSize={16}
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  borderColor: Colors.cyan,
+                }}
+              />
               <Text
                 style={[
                   styles.sectionTitle,
